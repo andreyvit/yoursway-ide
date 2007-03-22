@@ -10,6 +10,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
+import com.yoursway.ide.ui.Activator;
+
 public class HumaneRubyEditor extends RubyEditor {
     
     public static final String EDITOR_ID = "com.yoursway.ide.ui.rubyeditor";
@@ -30,34 +32,42 @@ public class HumaneRubyEditor extends RubyEditor {
             }
             
         });
-        textWidget.addPaintListener(new PaintListener() {
+        PaintListener paintListener = new PaintListener() {
             
             public void paintControl(PaintEvent event) {
-                System.out.println(".paintControl()");
-                int startLine = textWidget.getLineIndex(event.y);
-                int y = textWidget.getLinePixel(startLine);
-                int endY = event.y + event.height;
-                int lineHeight = textWidget.getLineHeight();
-                event.gc.setForeground(assistTextColor);
-                if (endY > 0) {
-                    int lineCount = textWidget.getContent().getLineCount();
-                    // int x = 0 /* leftMargin */-
-                    // textWidget.getHorizontalPixel();
-                    for (int i = startLine; y < endY && i < lineCount; i++) {
-                        int startOffset = textWidget.getOffsetAtLine(i);
-                        int endOffset;
-                        if (i == lineCount - 1)
-                            endOffset = textWidget.getCharCount() - 1;
-                        else
-                            endOffset = textWidget.getOffsetAtLine(i + 1) - 1;
-                        Rectangle lineBounds = textWidget.getTextBounds(startOffset, endOffset);
-                        event.gc.drawText("Cool!", lineBounds.x + lineBounds.width, y, true);
-                        y += lineHeight;
+                try {
+                    System.out.println(".paintControl()");
+                    int startLine = textWidget.getLineIndex(event.y);
+                    int y = textWidget.getLinePixel(startLine);
+                    int endY = event.y + event.height;
+                    int lineHeight = textWidget.getLineHeight();
+                    event.gc.setForeground(assistTextColor);
+                    if (endY > 0) {
+                        int lineCount = textWidget.getContent().getLineCount();
+                        // int x = 0 /* leftMargin */-
+                        // textWidget.getHorizontalPixel();
+                        int charCount = textWidget.getCharCount();
+                        for (int i = startLine; y < endY && i < lineCount; i++) {
+                            int startOffset = textWidget.getOffsetAtLine(i);
+                            if (startOffset >= charCount)
+                                continue;
+                            int endOffset;
+                            if (i == lineCount - 1)
+                                endOffset = charCount - 1;
+                            else
+                                endOffset = textWidget.getOffsetAtLine(i + 1) - 1;
+                            Rectangle lineBounds = textWidget.getTextBounds(startOffset, endOffset);
+                            event.gc.drawText("Cool!", lineBounds.x + lineBounds.width, y, true);
+                            y += lineHeight;
+                        }
                     }
+                } catch (Throwable e) {
+                    Activator.log(e);
                 }
             }
             
-        });
+        };
+        textWidget.addPaintListener(paintListener);
     }
     
 }
