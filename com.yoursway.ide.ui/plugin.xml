@@ -20,5 +20,16 @@
             name="Next Step">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.yoursway.ide.ui.rubyeditor.HumaneRubyEditor"
+            default="true"
+            extensions="rb"
+            icon="icons/ruby_editor.gif"
+            id="com.yoursway.ide.ui.rubyeditor"
+            name="YourSway Ruby Editor">
+      </editor>
+   </extension>
 
 </plugin>
