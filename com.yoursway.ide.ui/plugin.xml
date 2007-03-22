@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Rails"
+            icon="icons/rails_perspective.gif"
+            class="com.yoursway.ide.ui.perspectives.RailsPerspective"
+            id="com.yoursway.ide.ui.perspectives.RailsPerspective">
+      </perspective>
+   </extension>
+
+</plugin>
