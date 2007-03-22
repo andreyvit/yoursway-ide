@@ -17,6 +17,8 @@ import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 
+import com.yoursway.ide.ui.advisor.AdvisorView;
+
 /**
  * Defines the layout of the primary perspective for Rails development.
  * 
@@ -24,6 +26,9 @@ import org.eclipse.ui.progress.IProgressConstants;
  */
 public class RailsPerspective implements IPerspectiveFactory {
     
+    private static final String RIGHT_BOTTOM_FOLDER = "rightBottom";
+    private static final String RIGHT_FOLDER = "right";
+    private static final String BOTTOM_FOLDER = "bottom";
     private IPageLayout factory;
     
     public RailsPerspective() {
@@ -40,7 +45,7 @@ public class RailsPerspective implements IPerspectiveFactory {
     }
     
     private void addViews() {
-        IPlaceholderFolderLayout bottom = factory.createPlaceholderFolder("bottom", IPageLayout.BOTTOM,
+        IPlaceholderFolderLayout bottom = factory.createPlaceholderFolder(BOTTOM_FOLDER, IPageLayout.BOTTOM,
                 0.75f, factory.getEditorArea());
         bottom.addPlaceholder(IPageLayout.ID_PROBLEM_VIEW);
         bottom.addPlaceholder(ThirdPartyInterfaceComponentsConstants.GENERIC_HISTORY_VIEW);
@@ -51,12 +56,13 @@ public class RailsPerspective implements IPerspectiveFactory {
         bottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
         bottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
         
-        IFolderLayout right = factory.createFolder("right", IPageLayout.RIGHT, 0.7f, factory.getEditorArea());
+        IFolderLayout right = factory.createFolder(RIGHT_FOLDER, IPageLayout.RIGHT, 0.7f, factory.getEditorArea());
         right.addView(ThirdPartyInterfaceComponentsConstants.DLTK_SCRIPT_EXPLORER_VIEW);
         right.addPlaceholder(IPageLayout.ID_OUTLINE);
         
-        // IFolderLayout rightBottom = factory.createFolder("rightBottom",
-        // IPageLayout.BOTTOM, 0.3f, "right");
+        IFolderLayout rightBottom = factory.createFolder(RIGHT_BOTTOM_FOLDER, IPageLayout.BOTTOM, 0.7f, RIGHT_FOLDER);
+        rightBottom.addView(AdvisorView.ID);
+        
         // factory.addFastView(CVS_REPOSITORIES_VIEW, 0.50f);
         // factory.addFastView(TEAM_SYNCHRONIZE_VIEW, 0.50f);
     }

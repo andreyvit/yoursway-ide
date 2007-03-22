@@ -8,5 +8,6 @@ Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.console,
- org.eclipse.jdt.ui
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.forms
 Eclipse-LazyStart: true
