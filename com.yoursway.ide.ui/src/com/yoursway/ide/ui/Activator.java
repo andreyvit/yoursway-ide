@@ -1,5 +1,6 @@
 package com.yoursway.ide.ui;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -11,6 +12,12 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
     
     public static final String PLUGIN_ID = "com.yoursway.ide.ui";
+    
+    public static boolean GENERAL_DEBUG = Boolean.parseBoolean(Platform
+            .getDebugOption("com.yoursway.ide.ui/generalDebug"));
+    
+    private static boolean LOG_EXCEPTIONS_TO_CONSOLE = Boolean.parseBoolean(Platform
+            .getDebugOption("com.yoursway.ide.ui/logExceptionsToConsole"));
     
     private static Activator plugin;
     
@@ -44,6 +51,8 @@ public class Activator extends AbstractUIPlugin {
     }
     
     public static void log(Throwable e) {
+        if (LOG_EXCEPTIONS_TO_CONSOLE)
+            e.printStackTrace(System.err);
         getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e));
     }
 }
