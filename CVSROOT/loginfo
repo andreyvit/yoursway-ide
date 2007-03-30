@@ -35,4 +35,4 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
-DEFAULT $CVSROOT/CVSROOT/collect_diffs.rb --to yoursway-commits@lists.dottedmag.net --from cvs-robot@dottedmag.net %{sVv}
+DEFAULT $CVSROOT/CVSROOT/collect_diffs.rb --to yoursway-commits@lists.dottedmag.net %{sVv}
