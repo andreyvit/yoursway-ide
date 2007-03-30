@@ -15,3 +15,5 @@ record_lastdir.rb
 collect_diffs.rb
 cvsspam.rb
 cvsspam.conf
+users
+passwd
