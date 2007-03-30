@@ -31,5 +31,27 @@
             name="YourSway Ruby Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.yoursway.ide.ui.testActionSet"
+            label="test"
+            visible="true">
+         <action
+               class="com.yoursway.rails.StartSearchAction"
+               id="com.yoursway.ide.ui.doSomething"
+               label="Start searching"
+               style="push"
+               toolbarPath="Normal/additions">
+         </action>
+         <action
+               class="com.yoursway.rails.ShowSearchResultAction"
+               id="com.yoursway.ide.ui.doSomethingAnother"
+               label="Show rails installations"
+               style="push"
+               toolbarPath="Normal/additions">
+         </action>
+      </actionSet>
+   </extension>
 
 </plugin>
