@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jvyaml
+Bundle-SymbolicName: org.jvyaml
+Bundle-Version: 1.0.0
+Export-Package: org.jvyaml,
+ org.jvyaml.events,
+ org.jvyaml.nodes,
+ org.jvyaml.tokens,
+ org.jvyaml.util
