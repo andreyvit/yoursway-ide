@@ -40,6 +40,7 @@ public class RailsController implements IRailsController {
     
     public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
         updateType();
+        deltaBuilder.somethingChanged();
     }
     
 }

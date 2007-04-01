@@ -19,7 +19,14 @@ public class Rails implements IRails, IResourceChangeListener {
     
     private final IWorkspaceRoot workspaceRoot;
     
-    private final TypedListenerList<IRailsChangeListener> listeners = new TypedListenerList<IRailsChangeListener>();
+    private final TypedListenerList<IRailsChangeListener> listeners = new TypedListenerList<IRailsChangeListener>() {
+        
+        @Override
+        protected IRailsChangeListener[] makeArray(int size) {
+            return new IRailsChangeListener[size];
+        }
+        
+    };
     
     public static Rails instance() {
         return INSTANCE;

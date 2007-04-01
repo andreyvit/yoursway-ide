@@ -33,13 +33,7 @@ package com.yoursway.utils;
  * 
  * @since org.eclipse.equinox.common 3.2
  */
-public class TypedListenerList<T> {
-    
-    /**
-     * The empty array singleton instance.
-     */
-    @SuppressWarnings("unchecked")
-    private final T[] EmptyArray = (T[]) new Object[0];
+public abstract class TypedListenerList<T> {
     
     /**
      * Mode constant (value 0) indicating that listeners should be considered
@@ -64,7 +58,7 @@ public class TypedListenerList<T> {
      * size capacity the first time a listener is added. Maintains invariant:
      * listeners != null
      */
-    private volatile T[] listeners = EmptyArray;
+    private volatile T[] listeners = makeArray(0);
     
     /**
      * Creates a listener list in which listeners are compared using equality.
@@ -72,6 +66,8 @@ public class TypedListenerList<T> {
     public TypedListenerList() {
         this(EQUALITY);
     }
+    
+    protected abstract T[] makeArray(int size);
     
     /**
      * Creates a listener list using the provided comparison mode.
@@ -106,8 +102,7 @@ public class TypedListenerList<T> {
                 return;
         }
         // Thread safety: create new array to avoid affecting concurrent readers
-        @SuppressWarnings("unchecked")
-        T[] newListeners = (T[]) new Object[oldSize + 1];
+        T[] newListeners = makeArray(oldSize + 1);
         System.arraycopy(listeners, 0, newListeners, 0, oldSize);
         newListeners[oldSize] = listener;
         //atomic assignment
@@ -156,11 +151,10 @@ public class TypedListenerList<T> {
             T listener2 = listeners[i];
             if (identity ? listener == listener2 : listener.equals(listener2)) {
                 if (oldSize == 1) {
-                    listeners = EmptyArray;
+                    listeners = makeArray(0);
                 } else {
                     // Thread safety: create new array to avoid affecting concurrent readers
-                    @SuppressWarnings("unchecked")
-                    T[] newListeners = (T[]) new Object[oldSize - 1];
+                    T[] newListeners = makeArray(oldSize - 1);
                     System.arraycopy(listeners, 0, newListeners, 0, i);
                     System.arraycopy(listeners, i + 1, newListeners, i, oldSize - i - 1);
                     //atomic assignment to field
@@ -184,6 +178,6 @@ public class TypedListenerList<T> {
      * Removes all listeners from this list.
      */
     public synchronized void clear() {
-        listeners = EmptyArray;
+        listeners = makeArray(0);
     }
 }

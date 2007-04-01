@@ -77,6 +77,8 @@ public class RailsControllersCollection implements IRailsControllersCollection {
             IFile file) {
         RailsController railsController = new RailsController(this, file);
         newControllers.add(railsController);
+        if (deltaBuilder != null)
+            deltaBuilder.somethingChanged();
     }
     
     public Collection<? extends IRailsController> getItems() {
@@ -143,6 +145,8 @@ public class RailsControllersCollection implements IRailsControllersCollection {
     
     private void removeController(RailsDeltaBuilder deltaBuilder, IRailsController controller, IFile resource) {
         controllers.remove(controller);
+        if (deltaBuilder != null)
+            deltaBuilder.somethingChanged();
     }
     
 }
