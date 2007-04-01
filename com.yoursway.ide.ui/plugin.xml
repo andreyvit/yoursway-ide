@@ -14,11 +14,16 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="com.yoursway.ide.rails"
             class="com.yoursway.ide.ui.advisor.AdvisorView"
             icon="icons/next_step_view.gif"
             id="com.yoursway.ide.ui.AdvisorView"
             name="Next Step">
       </view>
+      <category
+            id="com.yoursway.ide.rails"
+            name="Rails">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
