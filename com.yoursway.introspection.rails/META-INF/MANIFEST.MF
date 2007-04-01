@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Exploration Plug-in
+Bundle-SymbolicName: com.yoursway.introspection.rails;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.introspection.internal.rails.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.forms,
+ org.eclipse.dltk.ruby.core,
+ org.eclipse.dltk.ruby.ui,
+ org.eclipse.dltk.console,
+ org.eclipse.dltk.console.ui,
+ org.eclipse.dltk.core,
+ org.eclipse.dltk.debug,
+ org.eclipse.dltk.debug.ui,
+ org.eclipse.dltk.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.jface.text,
+ org.eclipse.core.resources,
+ com.yoursway.common.utilities,
+ com.yoursway.ide.ui
+Eclipse-LazyStart: true

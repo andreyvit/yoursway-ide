@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common Utilities
+Bundle-SymbolicName: com.yoursway.common.utilities
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.common.utilities.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true
+Export-Package: com.yoursway.utils

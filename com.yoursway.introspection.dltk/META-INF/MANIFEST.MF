@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DLTK Internals Explorer
+Bundle-SymbolicName: com.yoursway.introspection.dltk;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.introspection.internal.dltk.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.forms,
+ org.eclipse.dltk.ruby.core,
+ org.eclipse.dltk.ruby.ui,
+ org.eclipse.dltk.console,
+ org.eclipse.dltk.console.ui,
+ org.eclipse.dltk.core,
+ org.eclipse.dltk.debug,
+ org.eclipse.dltk.debug.ui,
+ org.eclipse.dltk.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.jface.text,
+ org.eclipse.core.resources,
+ com.yoursway.common.utilities,
+ org.eclipse.ui.ide,
+ com.yoursway.introspection.common
+Eclipse-LazyStart: true

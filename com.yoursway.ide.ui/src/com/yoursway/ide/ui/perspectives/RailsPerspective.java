@@ -56,11 +56,16 @@ public class RailsPerspective implements IPerspectiveFactory {
         bottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
         bottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
         
-        IFolderLayout right = factory.createFolder(RIGHT_FOLDER, IPageLayout.RIGHT, 0.7f, factory.getEditorArea());
+        IFolderLayout right = factory.createFolder(RIGHT_FOLDER, IPageLayout.RIGHT, 0.7f, factory
+                .getEditorArea());
         right.addView(ThirdPartyInterfaceComponentsConstants.DLTK_SCRIPT_EXPLORER_VIEW);
         right.addPlaceholder(IPageLayout.ID_OUTLINE);
+        right.addPlaceholder("com.yoursway.introspection.dltk.Model");
+        right.addPlaceholder("com.yoursway.introspection.rails.Model");
+        right.addPlaceholder("com.yoursway.introspection.resources.Model");
         
-        IFolderLayout rightBottom = factory.createFolder(RIGHT_BOTTOM_FOLDER, IPageLayout.BOTTOM, 0.7f, RIGHT_FOLDER);
+        IFolderLayout rightBottom = factory.createFolder(RIGHT_BOTTOM_FOLDER, IPageLayout.BOTTOM, 0.7f,
+                RIGHT_FOLDER);
         rightBottom.addView(AdvisorView.ID);
         
         // factory.addFastView(CVS_REPOSITORIES_VIEW, 0.50f);

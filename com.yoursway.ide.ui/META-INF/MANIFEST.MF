@@ -26,3 +26,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.core,
  org.jvyaml
 Eclipse-LazyStart: true
+Export-Package: com.yoursway.ide.analysis.model,
+ com.yoursway.ide.analysis.sample,
+ com.yoursway.ide.ui,
+ com.yoursway.ide.ui.advisor,
+ com.yoursway.ide.ui.perspectives,
+ com.yoursway.ide.ui.rubyeditor,
+ com.yoursway.rails,
+ com.yoursway.rails.model,
+ com.yoursway.rails.model.internal,
+ com.yoursway.rubygems,
+ com.yoursway.utils

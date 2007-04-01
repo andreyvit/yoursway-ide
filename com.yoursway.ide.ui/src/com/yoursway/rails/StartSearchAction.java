@@ -43,7 +43,7 @@ public class StartSearchAction implements IWorkbenchWindowActionDelegate {
             String stdout;
             try {
                 //FIXME
-                Process p = DebugPlugin.exec(new String[] { "ruby", "-", "rails" }, null);
+                Process p = DebugPlugin.exec(new String[] { "/usr/local/bin/ruby", "-", "rails" }, null);
                 Streams.writeString(p.getOutputStream(), loaderScript);
                 p.waitFor();
                 
@@ -68,7 +68,8 @@ public class StartSearchAction implements IWorkbenchWindowActionDelegate {
             for (String version : versions) {
                 String res;
                 try {
-                    Process p = DebugPlugin.exec(new String[] { "ruby", "-", "rails", version }, null);
+                    Process p = DebugPlugin.exec(
+                            new String[] { "/usr/local/bin/ruby", "-", "rails", version }, null);
                     Streams.writeString(p.getOutputStream(), loaderScript);
                     p.waitFor();
                     
