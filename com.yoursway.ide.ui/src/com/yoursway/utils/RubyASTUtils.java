@@ -33,7 +33,7 @@ public class RubyASTUtils {
         if (stringValue != null)
             return stringValue;
         if (value instanceof NumericLiteral)
-            return Integer.valueOf(((NumericLiteral) value).getIntValue());
+            return Long.valueOf(((NumericLiteral) value).getIntValue());
         return null;
     }
     
