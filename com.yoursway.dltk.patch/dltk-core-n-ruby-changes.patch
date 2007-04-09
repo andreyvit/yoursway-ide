@@ -1,60 +1,36 @@
 ### Eclipse Workspace Patch 1.0
-#P org.eclipse.dltk.debug
-Index: src/org/eclipse/dltk/debug/internal/core/model/ScriptThread.java
-===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/core/plugins/org.eclipse.dltk.debug/src/org/eclipse/dltk/debug/internal/core/model/ScriptThread.java,v
-retrieving revision 1.3
-diff -u -r1.3 ScriptThread.java
---- src/org/eclipse/dltk/debug/internal/core/model/ScriptThread.java	2 Mar 2007 11:59:51 -0000	1.3
-+++ src/org/eclipse/dltk/debug/internal/core/model/ScriptThread.java	22 Mar 2007 16:42:20 -0000
-@@ -131,9 +131,9 @@
- 
- 		engine = new DbgpDebugger(this, session, this);
- 
--		if (DLTKCore.DEBUG) {
--			DbgpDebugger.printEngineInfo(engine);
--		}
-+//		if (DLTKCore.DEBUG) {
-+//			DbgpDebugger.printEngineInfo(engine);
-+//		}
- 
- 		final IDbgpExtendedCommands extended = session.getExtendedCommands();
- 
-Index: src/org/eclipse/dltk/dbgp/internal/packets/DbgpPacketReceiver.java
-===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/core/plugins/org.eclipse.dltk.debug/src/org/eclipse/dltk/dbgp/internal/packets/DbgpPacketReceiver.java,v
-retrieving revision 1.1
-diff -u -r1.1 DbgpPacketReceiver.java
---- src/org/eclipse/dltk/dbgp/internal/packets/DbgpPacketReceiver.java	22 Feb 2007 08:40:17 -0000	1.1
-+++ src/org/eclipse/dltk/dbgp/internal/packets/DbgpPacketReceiver.java	22 Mar 2007 16:42:20 -0000
-@@ -71,8 +71,10 @@
- 
- 	protected void workingCycle() throws Exception {
- 		while (!Thread.interrupted()) {
-+			
-+			System.out.println("++++++++++++++++++ Before receiving package +++++++++++++++++"); 
- 			DbgpRawPacket packet = DbgpRawPacket.readPacket(input);
--			System.out.println(packet.toString());
-+			System.out.println("***********" + packet.toString());
- 			addDocument(packet.getParsedXml());
- 		}
- 
 #P org.eclipse.dltk.ruby.ui
+Index: plugin.xml
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/plugin.xml,v
+retrieving revision 1.15
+diff -u -r1.15 plugin.xml
+--- plugin.xml	6 Apr 2007 07:21:26 -0000	1.15
++++ plugin.xml	9 Apr 2007 05:55:27 -0000
+@@ -6,7 +6,7 @@
+ 	  <editor
+ 	        class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
+ 	        contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
+-	        default="true"
++	        default="false"
+ 	        extensions="rb"
+ 	        icon="icons/ruby_obj.gif"
+ 	        id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
 Index: META-INF/MANIFEST.MF
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
-retrieving revision 1.6
-diff -u -r1.6 MANIFEST.MF
---- META-INF/MANIFEST.MF	19 Mar 2007 09:41:47 -0000	1.6
-+++ META-INF/MANIFEST.MF	22 Mar 2007 16:42:22 -0000
-@@ -24,11 +24,19 @@
+retrieving revision 1.7
+diff -u -r1.7 MANIFEST.MF
+--- META-INF/MANIFEST.MF	5 Apr 2007 07:57:22 -0000	1.7
++++ META-INF/MANIFEST.MF	9 Apr 2007 05:55:27 -0000
+@@ -24,12 +24,19 @@
   org.eclipse.debug.core
  Eclipse-LazyStart: true
  Export-Package: org.eclipse.dltk.ruby.internal.ui,
 + org.eclipse.dltk.ruby.internal.ui.actions,
 + org.eclipse.dltk.ruby.internal.ui.docs,
 + org.eclipse.dltk.ruby.internal.ui.documentation,
-+ org.eclipse.dltk.ruby.internal.ui.editor,
+  org.eclipse.dltk.ruby.internal.ui.editor,
 + org.eclipse.dltk.ruby.internal.ui.infoviews,
   org.eclipse.dltk.ruby.internal.ui.preferences,
 + org.eclipse.dltk.ruby.internal.ui.search,
