@@ -1,5 +1,8 @@
 package com.yoursway.utils;
 
+/**
+ * This class is an equivalent to the Perl's join($delimiter, \@args);
+ */
 public class StringListBuilder {
     
     public static final String SPACE = " ";
@@ -8,7 +11,7 @@ public class StringListBuilder {
     
     public static final String COMMA_SPACE = ", ";
     
-    private StringBuilder builder = new StringBuilder();
+    private final StringBuilder builder = new StringBuilder();
     private final String delimiter;
     
     public StringListBuilder(String delimiter) {
@@ -21,33 +24,15 @@ public class StringListBuilder {
         return this;
     }
     
-    public StringListBuilder append(char[] str) {
-        autoAppendDelimiter();
-        builder.append(str);
-        return this;
-    }
-    
     public StringListBuilder append(CharSequence s, int start, int end) {
         autoAppendDelimiter();
         builder.append(s, start, end);
         return this;
     }
     
-    public StringListBuilder append(CharSequence s) {
+    public <T> StringListBuilder append(T arg) {
         autoAppendDelimiter();
-        builder.append(s);
-        return this;
-    }
-    
-    public StringListBuilder append(Object obj) {
-        autoAppendDelimiter();
-        builder.append(obj);
-        return this;
-    }
-    
-    public StringListBuilder append(String str) {
-        autoAppendDelimiter();
-        builder.append(str);
+        builder.append(arg);
         return this;
     }
     
@@ -59,7 +44,8 @@ public class StringListBuilder {
     public StringBuilder getBuilder() {
         return builder;
     }
-
+    
+    @Override
     public String toString() {
         return builder.toString();
     }
