@@ -9,6 +9,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import com.yoursway.rails.model.IRails;
 import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsProjectsCollection;
+import com.yoursway.rails.model.deltas.RailsChangeEvent;
 import com.yoursway.utils.TypedListenerList;
 
 public class Rails implements IRails, IResourceChangeListener {
@@ -32,6 +33,12 @@ public class Rails implements IRails, IResourceChangeListener {
         return INSTANCE;
     }
     
+    public void fire(RailsChangeEvent event) {
+        for (IRailsChangeListener listener : listeners.getListeners()) {
+            listener.railsModelChanged(event);
+        }
+    }
+    
     public Rails() {
         install();
         workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -42,7 +49,7 @@ public class Rails implements IRails, IResourceChangeListener {
         RailsDeltaBuilder deltaBuilder = new RailsDeltaBuilder(this);
         deltaBuilder.somethingChanged();
         projectsCollection.refresh();
-        deltaBuilder.fire(listeners.getListeners());
+        fire(deltaBuilder.build());
     }
     
     private void install() {
@@ -55,7 +62,7 @@ public class Rails implements IRails, IResourceChangeListener {
         IResourceDelta delta = event.getDelta();
         RailsDeltaBuilder deltaBuilder = new RailsDeltaBuilder(this);
         reconcile(delta, deltaBuilder);
-        deltaBuilder.fire(listeners.getListeners());
+        fire(deltaBuilder.build());
     }
     
     private void reconcile(IResourceDelta parentDelta, RailsDeltaBuilder deltaBuilder) {

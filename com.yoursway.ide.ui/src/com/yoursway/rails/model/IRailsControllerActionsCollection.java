@@ -6,4 +6,6 @@ public interface IRailsControllerActionsCollection {
     
     Collection<? extends IRailsAction> getActions();
     
+    boolean hasItems();
+    
 }

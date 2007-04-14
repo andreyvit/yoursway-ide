@@ -18,25 +18,44 @@ import com.yoursway.rails.model.IRailsProject;
 
 public class RailsControllersCollection implements IRailsControllersCollection {
     
-    private Collection<RailsController> controllers;
     private final IRailsProject railsProject;
+    private Collection<RailsController> controllers;
+    private boolean itemsKnown = false;
+    private IFolder controllersFolder;
     
     public RailsControllersCollection(IRailsProject railsProject) {
         this.railsProject = railsProject;
-        refresh();
     }
     
     public void refresh() {
-        IProject project = railsProject.getProject();
-        IResource controllersFolder = project.findMember("app/controllers");
-        Collection<RailsController> newControllers = controllers = new ArrayList<RailsController>();
-        if (controllersFolder != null && controllersFolder.getType() == IResource.FOLDER) {
-            if (controllersFolder.exists() && controllersFolder.getType() == IResource.FOLDER)
-                locateControllersInFolder(newControllers, (IFolder) controllersFolder);
-        }
+        System.out.println("RailsControllersCollection.refresh()");
+        controllers = new ArrayList<RailsController>();
+        IFolder controllersFolder = getControllersFolder();
+        if (controllersFolder != null)
+            locateControllersInFolder(controllersFolder);
+        itemsKnown = true;
     }
     
-    private void locateControllersInFolder(Collection<RailsController> newControllers, IFolder folder) {
+    public IFolder getControllersFolder() {
+        // XXX cache when this does not exist
+        if (controllersFolder == null)
+            controllersFolder = calculateControllersFolder();
+        else if (!controllersFolder.exists())
+            controllersFolder = calculateControllersFolder();
+        return controllersFolder;
+    }
+    
+    private IFolder calculateControllersFolder() {
+        IProject project = railsProject.getProject();
+        IResource controllersResource = project.findMember("app/controllers");
+        if (controllersResource != null && controllersResource.getType() == IResource.FOLDER) {
+            if (controllersResource.exists())
+                return (IFolder) controllersResource;
+        }
+        return null;
+    }
+    
+    private void locateControllersInFolder(IFolder folder) {
         IResource[] members;
         try {
             members = folder.members();
@@ -48,13 +67,12 @@ public class RailsControllersCollection implements IRailsControllersCollection {
             switch (resource.getType()) {
             case IResource.FILE:
                 IFile file = (IFile) resource;
-                if (canAddControllerFor(file)) {
-                    addController(null, newControllers, file);
-                }
+                if (canAddControllerFor(file))
+                    addController(null, file);
                 break;
             case IResource.FOLDER:
-                // TODO: handle namespaces
-                locateControllersInFolder(newControllers, (IFolder) resource);
+                IFolder subfolder = (IFolder) resource;
+                locateControllersInFolder(subfolder);
                 break;
             }
         }
@@ -73,19 +91,26 @@ public class RailsControllersCollection implements IRailsControllersCollection {
         return null;
     }
     
-    private void addController(RailsDeltaBuilder deltaBuilder, Collection<RailsController> newControllers,
-            IFile file) {
+    private void addController(RailsDeltaBuilder deltaBuilder, IFile file) {
         RailsController railsController = new RailsController(this, file);
-        newControllers.add(railsController);
+        controllers.add(railsController);
         if (deltaBuilder != null)
             deltaBuilder.somethingChanged();
     }
     
     public Collection<? extends IRailsController> getItems() {
+        open();
         return controllers;
     }
     
+    private void open() {
+        if (!itemsKnown)
+            refresh();
+    }
+    
     public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
+        controllersFolder = null;
+        open();
         IResourceDelta folderDelta = delta.findMember(new Path("app/controllers"));
         if (folderDelta == null)
             return;
@@ -108,10 +133,10 @@ public class RailsControllersCollection implements IRailsControllersCollection {
                 switch (resource.getType()) {
                 case IResource.FILE:
                     if (canAddControllerFor((IFile) resource))
-                        addController(deltaBuilder, controllers, (IFile) resource);
+                        addController(deltaBuilder, (IFile) resource);
                     break;
                 case IResource.FOLDER:
-                    locateControllersInFolder(controllers, (IFolder) resource);
+                    locateControllersInFolder((IFolder) resource);
                     break;
                 }
                 break;
@@ -123,7 +148,7 @@ public class RailsControllersCollection implements IRailsControllersCollection {
                         removeController(deltaBuilder, controller, (IFile) resource);
                     break;
                 case IResource.FOLDER:
-                    locateControllersInFolder(controllers, (IFolder) resource);
+                    locateControllersInFolder((IFolder) resource);
                     break;
                 }
                 break;
@@ -147,6 +172,14 @@ public class RailsControllersCollection implements IRailsControllersCollection {
         controllers.remove(controller);
         if (deltaBuilder != null)
             deltaBuilder.somethingChanged();
+    }
+    
+    public boolean isEmpty() {
+        return getControllersFolder() == null;
+    }
+    
+    public IRailsProject getRailsProject() {
+        return railsProject;
     }
     
 }

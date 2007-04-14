@@ -18,13 +18,20 @@ public class RailsProjectsCollection implements IRailsProjectsCollection {
     
     private final Map<IProject, RailsProject> projects = new HashMap<IProject, RailsProject>();
     
+    private boolean projectsKnown = false;
+    
     public RailsProjectsCollection(IWorkspaceRoot workspaceRoot) {
         this.workspaceRoot = workspaceRoot;
-        refresh();
     }
     
     public Collection<? extends IRailsProject> getRailsProjects() {
+        ensureAllKnown();
         return projects.values();
+    }
+    
+    private void ensureAllKnown() {
+        if (!projectsKnown)
+            refresh();
     }
     
     public void refresh() {
@@ -33,6 +40,7 @@ public class RailsProjectsCollection implements IRailsProjectsCollection {
             RailsProject railsProject = new RailsProject(this, project);
             projects.put(project, railsProject);
         }
+        projectsKnown = true;
     }
     
     public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta parentDelta) {
@@ -42,20 +50,36 @@ public class RailsProjectsCollection implements IRailsProjectsCollection {
                 IProject project = (IProject) resource;
                 switch (delta.getKind()) {
                 case IResourceDelta.ADDED:
-                    projects.put(project, new RailsProject(this, project));
+                    addProject(project);
                     deltaBuilder.somethingChanged();
                     break;
                 case IResourceDelta.REMOVED:
-                    projects.remove(project);
+                    removeProject(project);
                     deltaBuilder.somethingChanged();
                     break;
                 case IResourceDelta.CHANGED:
-                    RailsProject railsProject = projects.get(project);
+                    RailsProject railsProject = getProject(project);
                     deltaBuilder.somethingChanged();
                     railsProject.reconcile(deltaBuilder, delta);
                     break;
                 }
             }
         }
+    }
+    
+    private void addProject(IProject project) {
+        projects.put(project, new RailsProject(this, project));
+    }
+    
+    private RailsProject getProject(IProject project) {
+        RailsProject railsProject = projects.get(project);
+        if (railsProject == null && !projectsKnown) {
+            
+        }
+        return railsProject;
+    }
+    
+    private void removeProject(IProject project) {
+        projects.remove(project);
     }
 }

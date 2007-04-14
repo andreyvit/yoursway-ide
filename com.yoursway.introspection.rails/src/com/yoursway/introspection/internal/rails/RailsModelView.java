@@ -36,11 +36,15 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import com.yoursway.rails.model.IRails;
-import com.yoursway.rails.model.IRailsChangeEvent;
+import com.yoursway.rails.model.IRailsAction;
+import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.RailsCore;
+import com.yoursway.rails.model.deltas.RailsChangeEvent;
+import com.yoursway.rails.model.deltas.project.RailsProjectDelta;
+import com.yoursway.utils.RailsNamingConventions;
 
 public class RailsModelView extends ViewPart {
     private TreeViewer viewer;
@@ -76,17 +80,17 @@ public class RailsModelView extends ViewPart {
     
     class Change {
         
-        private final IRailsChangeEvent event;
+        private final RailsChangeEvent event;
         private final int ordinal;
         private final long timeMillis;
         
-        public Change(IRailsChangeEvent event, int ordinal, long timeMillis) {
+        public Change(RailsChangeEvent event, int ordinal, long timeMillis) {
             this.event = event;
             this.ordinal = ordinal;
             this.timeMillis = timeMillis;
         }
         
-        public IRailsChangeEvent getEvent() {
+        public RailsChangeEvent getEvent() {
             return event;
         }
         
@@ -141,9 +145,14 @@ public class RailsModelView extends ViewPart {
             } else if (parent instanceof IRailsController) {
                 IRailsController railsController = (IRailsController) parent;
                 Collection<Object> children = new ArrayList<Object>();
+                children.addAll(railsController.getActionsCollection().getActions());
+                children.addAll(railsController.getViewsCollection().getItems());
                 return children.toArray();
             } else if (parent instanceof Change) {
-                //                IRailsChangeEvent event = ((Change) parent).getEvent();
+                RailsChangeEvent event = ((Change) parent).getEvent();
+                return event.getProjectDeltas();
+            } else if (parent instanceof RailsProjectDelta) {
+                RailsProjectDelta projectDelta = (RailsProjectDelta) parent;
                 //                IModelElementDelta delta = event.getDelta();
                 //                if (delta != null)
                 //                    return new Object[] { delta };
@@ -159,6 +168,12 @@ public class RailsModelView extends ViewPart {
         }
         
         public boolean hasChildren(Object parent) {
+            if (parent instanceof IRailsProject) {
+                return !((IRailsProject) parent).getControllersCollection().isEmpty();
+            } else if (parent instanceof IRailsController) {
+                IRailsController railsController = (IRailsController) parent;
+                return railsController.getActionsCollection().hasItems();
+            }
             return getChildren(parent).length > 0;
         }
     }
@@ -189,11 +204,19 @@ public class RailsModelView extends ViewPart {
                 return className + ": " + railsProject.getProject().getName();
             } else if (element instanceof IRailsController) {
                 IRailsController railsController = (IRailsController) element;
-                return className + ": " + railsController.getFile().getProjectRelativePath() + " - "
-                        + railsController.getType().getElementName();
+                String[] classNameComponents = railsController.getExpectedClassName();
+                String className2 = RailsNamingConventions.joinNamespaces(classNameComponents);
+                return className + ": " + className2 + " - "
+                        + railsController.getFile().getProjectRelativePath();
+            } else if (element instanceof IRailsAction) {
+                IRailsAction railsAction = (IRailsAction) element;
+                return className + ": " + railsAction.getName() + " - " + railsAction.getMethod().getName();
+            } else if (element instanceof IRailsBaseView) {
+                IRailsBaseView view = (IRailsBaseView) element;
+                return className + ": " + view.getName() + " " + view.getFormat().toString();
             } else if (element instanceof Change) {
                 Change change = (Change) element;
-                IRailsChangeEvent event = change.getEvent();
+                RailsChangeEvent event = change.getEvent();
                 return change.getOrdinal() + ") " + className + " at " + change.getTimeMillis();
                 //            } else if (element instanceof IModelElementDelta) {
                 //                IModelElementDelta delta = (IModelElementDelta) element;
@@ -204,6 +227,10 @@ public class RailsModelView extends ViewPart {
                 //                        modelElement.getElementName());
                 //                appendDeltaFlags(result, delta);
                 //                return result.toString();
+            } else if (element instanceof RailsProjectDelta) {
+                RailsProjectDelta projectDelta = (RailsProjectDelta) element;
+                String name = projectDelta.getRailsProject().getProject().getName();
+                return className + ": " + name;
             }
             return className + " - " + element.toString();
         }
@@ -226,7 +253,7 @@ public class RailsModelView extends ViewPart {
             RailsCore.instance().removeChangeListener(this);
         }
         
-        public void railsModelChanged(final IRailsChangeEvent event) {
+        public void railsModelChanged(final RailsChangeEvent event) {
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
                     addElementChangedEvent(event);
@@ -249,7 +276,7 @@ public class RailsModelView extends ViewPart {
     public RailsModelView() {
     }
     
-    void addElementChangedEvent(IRailsChangeEvent event) {
+    void addElementChangedEvent(RailsChangeEvent event) {
         while (recentChanges.size() > 4) {
             Object old = recentChanges.remove(recentChanges.size() - 1);
             viewer.remove(old);
@@ -301,6 +328,7 @@ public class RailsModelView extends ViewPart {
         FontData[] fontData = font.getFontData();
         fontData[0].setStyle(SWT.BOLD);
         boldFont = new Font(null, fontData[0]);
+        
     }
     
     @Override

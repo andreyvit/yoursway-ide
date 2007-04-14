@@ -82,7 +82,12 @@ public class RailsNamingConventions {
         boolean uppercaseNext = true;
         for (int i = 0; i < length; i++) {
             char ch = result.charAt(i);
-            if (!Character.isLetterOrDigit(ch))
+            if (ch == '_') {
+                uppercaseNext = true;
+                result.deleteCharAt(i);
+                i--;
+                length--;
+            } else if (!Character.isLetterOrDigit(ch))
                 uppercaseNext = true;
             else {
                 if (uppercaseNext)

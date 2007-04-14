@@ -20,6 +20,7 @@ public class RailsProject implements IRailsProject {
     }
     
     public void refresh() {
+        System.out.println("RailsProject.refresh()");
         controllers.refresh();
     }
     
@@ -36,6 +37,10 @@ public class RailsProject implements IRailsProject {
     
     public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
         controllers.reconcile(deltaBuilder, delta);
+    }
+    
+    public IRailsProject getRailsProject() {
+        return this;
     }
     
 }
