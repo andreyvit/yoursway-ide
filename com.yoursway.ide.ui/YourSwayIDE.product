@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.1"?>
 
-<product name="YourSway IDE" id="com.yoursway.ide.ui.product" application="com.yoursway.ide.ui.application" useFeatures="true">
+<product name="YourSway IDE" id="com.yoursway.ide.ui.product" application="com.yoursway.ide.ui.application" useFeatures="false">
 
    <aboutInfo>
       <image path="/com.yoursway.ide.ui/product_images/logo.gif"/>
@@ -23,13 +23,14 @@
 
    <splash
       location="com.yoursway.ide.ui"
-      startupProgressRect="100,200,100,20" />
+      startupProgressRect="50,20,50,20" />
    <launcher name="yourswayide">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -98,6 +99,7 @@
       <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.pde.runtime"/>
       <plugin id="org.eclipse.search"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>

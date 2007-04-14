@@ -92,7 +92,7 @@
          </property>
          <property
                name="startupProgressRect"
-               value="100,200,100,20">
+               value="50,20,50,20">
          </property>
       </product>
    </extension>

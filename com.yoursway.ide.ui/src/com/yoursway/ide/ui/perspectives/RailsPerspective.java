@@ -68,7 +68,7 @@ public class RailsPerspective implements IPerspectiveFactory {
         
         IFolderLayout rightBottom = factory.createFolder(RIGHT_BOTTOM_FOLDER, IPageLayout.BOTTOM, 0.7f,
                 RIGHT_FOLDER);
-        rightBottom.addView(AdvisorView.ID);
+        rightBottom.addPlaceholder(AdvisorView.ID);
         
         // factory.addFastView(CVS_REPOSITORIES_VIEW, 0.50f);
         // factory.addFastView(TEAM_SYNCHRONIZE_VIEW, 0.50f);
