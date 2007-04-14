@@ -76,7 +76,14 @@ public class RailsControllerViewsCollection implements IRailsControllerViewsColl
     }
     
     private void addView(IFile file, RailsDeltaBuilder deltaBuilder) {
-        RailsBaseView view = new RailsBaseView(controller, file);
+        String baseName = PathUtils.getBaseNameWithoutExtension(file);
+        final RailsBaseView view;
+        if (!baseName.startsWith("_"))
+            view = new RailsView(controller, file, baseName);
+        else {
+            baseName = baseName.substring(1);
+            view = new RailsPartial(controller, file, baseName);
+        }
         items.add(view);
     }
     

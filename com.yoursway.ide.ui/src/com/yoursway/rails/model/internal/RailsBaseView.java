@@ -5,24 +5,18 @@ import org.eclipse.core.resources.IFile;
 import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsProject;
-import com.yoursway.utils.PathUtils;
 
-public class RailsBaseView implements IRailsBaseView {
+public abstract class RailsBaseView implements IRailsBaseView {
     
     private final IRailsController controller;
     private final IFile file;
-    private final boolean isPartial;
     private final String baseName;
     private final Format format;
     
-    public RailsBaseView(IRailsController controller, IFile file) {
+    public RailsBaseView(IRailsController controller, IFile file, String name) {
         this.controller = controller;
         this.file = file;
-        String baseName = PathUtils.getBaseNameWithoutExtension(file);
-        isPartial = (baseName.startsWith("_"));
-        if (isPartial)
-            baseName = baseName.substring(1);
-        this.baseName = baseName;
+        this.baseName = name;
         format = determineViewFormat(file);
     }
     

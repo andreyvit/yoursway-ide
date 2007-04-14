@@ -26,6 +26,8 @@ import com.yoursway.ide.ui.advisor.AdvisorView;
  */
 public class RailsPerspective implements IPerspectiveFactory {
     
+    public static final String ID = "com.yoursway.ide.ui.perspectives.RailsPerspective";
+    
     private static final String RIGHT_BOTTOM_FOLDER = "rightBottom";
     private static final String RIGHT_FOLDER = "right";
     private static final String BOTTOM_FOLDER = "bottom";

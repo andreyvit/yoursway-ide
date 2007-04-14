@@ -58,5 +58,43 @@
          </action>
       </actionSet>
    </extension>
+   
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.yoursway.ide.rcp.YourSwayIDEApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.yoursway.ide.ui.application"
+            name="YourSway IDE">
+         <property
+               name="windowImages"
+               value="product_images/icon16.gif,product_images/icon32.gif,product_images/icon48.gif">
+         </property>
+         <property
+               name="appName"
+               value="YourSway IDE">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_images/logo.gif">
+         </property>
+         <property
+               name="aboutText"
+               value="YourSway IDE — the best Ruby on Rails IDE. Ever.&#x0A;&#x0A;© 2007, YourSway, Inc.">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="100,200,100,20">
+         </property>
+      </product>
+   </extension>
 
 </plugin>
