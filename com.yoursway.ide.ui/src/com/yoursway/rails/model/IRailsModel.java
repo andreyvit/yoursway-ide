@@ -15,4 +15,6 @@ public interface IRailsModel extends IProvidesRailsProject {
     
     String getName();
     
+    String getTableName();
+    
 }

@@ -61,9 +61,11 @@ import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsController;
+import com.yoursway.rails.model.IRailsField;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsPartial;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.IRailsTable;
 import com.yoursway.rails.model.IRailsView;
 import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
@@ -93,6 +95,8 @@ public class RailsView extends ViewPart {
             + "partial.png");
     public static final ImageDescriptor ACTION_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
             + "base.png");
+    public static final ImageDescriptor FIELD_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
+            + "base.png");
     
     public static final Image MODEL_ICON_IMG = MODEL_ICON.createImage();
     
@@ -102,6 +106,7 @@ public class RailsView extends ViewPart {
     public static final Image VIEW_ICON_IMG = VIEW_ICON.createImage();
     public static final Image PARTIAL_ICON_IMG = PARTIAL_ICON.createImage();
     public static final Image ACTION_ICON_IMG = ACTION_ICON.createImage();
+    public static final Image FIELD_ICON_IMG = ACTION_ICON.createImage();
     
     private static final Object[] NO_CHILDREN = new Object[0];
     
@@ -144,6 +149,14 @@ public class RailsView extends ViewPart {
                 children.addAll(railsController.getActionsCollection().getActions());
                 children.addAll(railsController.getViewsCollection().getItems());
                 return children.toArray();
+            } else if (parent instanceof IRailsModel) {
+                IRailsModel railsModel = (IRailsModel) parent;
+                IRailsTable table = railsModel.getRailsProject().getSchema().findByName(
+                        railsModel.getTableName());
+                Collection<Object> children = new ArrayList<Object>();
+                if (table != null)
+                    children.addAll(table.getFields().getItems());
+                return children.toArray();
             }
             
             return NO_CHILDREN;
@@ -178,6 +191,8 @@ public class RailsView extends ViewPart {
                 return PARTIAL_ICON_IMG;
             } else if (element instanceof IRailsModel) {
                 return MODEL_ICON_IMG;
+            } else if (element instanceof IRailsField) {
+                return FIELD_ICON_IMG;
             }
             return null;
         }
@@ -204,6 +219,9 @@ public class RailsView extends ViewPart {
             } else if (element instanceof IRailsModel) {
                 IRailsModel model = (IRailsModel) element;
                 return model.getName();
+            } else if (element instanceof IRailsField) {
+                IRailsField railsField = (IRailsField) element;
+                return railsField.getName() + " (" + railsField.getType() + ")";
             }
             return "UNKNOWN " + className + " - " + element.toString();
         }

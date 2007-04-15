@@ -63,6 +63,13 @@ public class PathUtils {
         return null;
     }
     
+    public static IFile getFile(IContainer container, String path) {
+        IResource member = container.findMember(path);
+        if (member instanceof IFile)
+            return (IFile) member;
+        return null;
+    }
+    
     public static boolean isIgnoredResourceOrNoExtension(IResource resource) {
         String extension = resource.getFileExtension();
         if (extension == null || extension.length() == 0)

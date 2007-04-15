@@ -6,6 +6,9 @@ import org.eclipse.core.resources.IResourceDelta;
 import com.yoursway.rails.model.IRailsControllersCollection;
 import com.yoursway.rails.model.IRailsModelsCollection;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.IRailsSchema;
+import com.yoursway.utils.Inflector;
+import com.yoursway.utils.RailsNamingConventions;
 
 public class RailsProject implements IRailsProject {
     
@@ -15,7 +18,11 @@ public class RailsProject implements IRailsProject {
     
     private RailsModelsCollection models;
     
+    private RailsSchema tables;
+    
     private final RailsProjectsCollection parent;
+    
+    private Inflector inflector;
     
     public RailsProject(RailsProjectsCollection parent, IProject project) {
         this.parent = parent;
@@ -41,6 +48,7 @@ public class RailsProject implements IRailsProject {
     public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
         ((RailsControllersCollection) getControllersCollection()).reconcile(deltaBuilder, delta);
         ((RailsModelsCollection) getModelsCollection()).reconcile(deltaBuilder, delta);
+        ((RailsSchema) getSchema()).reconcile(deltaBuilder, delta);
     }
     
     public IRailsProject getRailsProject() {
@@ -52,6 +60,20 @@ public class RailsProject implements IRailsProject {
             models = new RailsModelsCollection(this);
         }
         return models;
+    }
+    
+    public IRailsSchema getSchema() {
+        if (tables == null) {
+            tables = new RailsSchema(this);
+        }
+        return tables;
+    }
+    
+    public Inflector getInflector() {
+        if (inflector == null) {
+            inflector = RailsNamingConventions.createInitializedInflector();
+        }
+        return inflector;
     }
     
 }

@@ -12,6 +12,10 @@ import org.eclipse.dltk.ruby.ast.SymbolReference;
 
 public class RubyASTUtils {
     
+    public static String resolveConstantStringArgument(CallExpression call, int index) {
+        return resolveConstantStringValue(getArgumentValue(call, index));
+    }
+    
     /**
      * @param value
      *            AST node whose value is to be resolved, can be
@@ -25,6 +29,15 @@ public class RubyASTUtils {
             return ((SymbolReference) value).getName();
         else if (value instanceof StringLiteral)
             return ((StringLiteral) value).getValue();
+        return null;
+    }
+    
+    public static Long resolveConstantFixnumValue(Statement value) {
+        Object v = resolveConstantValue(value);
+        if (v instanceof Long)
+            return (Long) v;
+        else if (v instanceof Number)
+            return Long.valueOf(((Number) v).longValue());
         return null;
     }
     
@@ -52,7 +65,7 @@ public class RubyASTUtils {
     public static Statement getArgumentValue(CallExpression callExpression, int argIndex) {
         List<Statement> expressions = callExpression.getArgs().getExpressions();
         if (expressions.size() > argIndex)
-            return expressions.get(0);
+            return expressions.get(argIndex);
         return null;
     }
     

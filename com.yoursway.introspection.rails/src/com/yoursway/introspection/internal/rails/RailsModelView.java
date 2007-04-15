@@ -40,7 +40,11 @@ import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsController;
+import com.yoursway.rails.model.IRailsField;
+import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.IRailsSchema;
+import com.yoursway.rails.model.IRailsTable;
 import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
 import com.yoursway.rails.model.deltas.project.RailsProjectDelta;
@@ -141,12 +145,24 @@ public class RailsModelView extends ViewPart {
                 IRailsProject railsProject = (IRailsProject) parent;
                 Collection<Object> children = new ArrayList<Object>();
                 children.addAll(railsProject.getControllersCollection().getItems());
+                children.addAll(railsProject.getModelsCollection().getItems());
+                children.add(railsProject.getSchema());
                 return children.toArray();
             } else if (parent instanceof IRailsController) {
                 IRailsController railsController = (IRailsController) parent;
                 Collection<Object> children = new ArrayList<Object>();
                 children.addAll(railsController.getActionsCollection().getActions());
                 children.addAll(railsController.getViewsCollection().getItems());
+                return children.toArray();
+            } else if (parent instanceof IRailsSchema) {
+                IRailsSchema railsSchema = (IRailsSchema) parent;
+                Collection<Object> children = new ArrayList<Object>();
+                children.addAll(railsSchema.getItems());
+                return children.toArray();
+            } else if (parent instanceof IRailsTable) {
+                IRailsTable railsTable = (IRailsTable) parent;
+                Collection<Object> children = new ArrayList<Object>();
+                children.addAll(railsTable.getFields().getItems());
                 return children.toArray();
             } else if (parent instanceof Change) {
                 RailsChangeEvent event = ((Change) parent).getEvent();
@@ -173,6 +189,12 @@ public class RailsModelView extends ViewPart {
             } else if (parent instanceof IRailsController) {
                 IRailsController railsController = (IRailsController) parent;
                 return railsController.getActionsCollection().hasItems();
+            } else if (parent instanceof IRailsSchema) {
+                IRailsSchema railsSchema = (IRailsSchema) parent;
+                return railsSchema.hasItems();
+            } else if (parent instanceof IRailsTable) {
+                IRailsTable railsTable = (IRailsTable) parent;
+                return railsTable.getFields().hasItems();
             }
             return getChildren(parent).length > 0;
         }
@@ -214,6 +236,22 @@ public class RailsModelView extends ViewPart {
             } else if (element instanceof IRailsBaseView) {
                 IRailsBaseView view = (IRailsBaseView) element;
                 return className + ": " + view.getName() + " " + view.getFormat().toString();
+            } else if (element instanceof IRailsModel) {
+                IRailsModel railsModel = (IRailsModel) element;
+                String[] classNameComponents = railsModel.getExpectedClassName();
+                String className2 = RailsNamingConventions.joinNamespaces(classNameComponents);
+                return className + ": " + className2 + " - "
+                        + railsModel.getCorrespondingFile().getProjectRelativePath() + ", table "
+                        + railsModel.getTableName();
+            } else if (element instanceof IRailsSchema) {
+                IRailsSchema railsSchema = (IRailsSchema) element;
+                return className + ": version " + railsSchema.getVersion();
+            } else if (element instanceof IRailsTable) {
+                IRailsTable railsTable = (IRailsTable) element;
+                return className + ": " + railsTable.getName();
+            } else if (element instanceof IRailsField) {
+                IRailsField railsField = (IRailsField) element;
+                return className + ": " + railsField.getName() + " - " + railsField.getType();
             } else if (element instanceof Change) {
                 Change change = (Change) element;
                 RailsChangeEvent event = change.getEvent();

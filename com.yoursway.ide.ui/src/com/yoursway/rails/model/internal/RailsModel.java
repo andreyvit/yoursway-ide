@@ -18,6 +18,7 @@ public class RailsModel implements IRailsModel {
     private final String[] className;
     private boolean typeKnown = false;
     private IType modelType;
+    private String tableName;
     
     public RailsModel(RailsModelsCollection parent, IFile file) {
         this.parent = parent;
@@ -58,6 +59,14 @@ public class RailsModel implements IRailsModel {
     
     public String getName() {
         return RailsNamingConventions.joinNamespaces(className);
+    }
+    
+    public String getTableName() {
+        if (tableName == null) {
+            tableName = RailsNamingConventions.tableize(getRailsProject().getInflector(),
+                    className[className.length - 1]);
+        }
+        return tableName;
     }
     
 }

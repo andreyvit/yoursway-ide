@@ -12,10 +12,6 @@ public class RailsNamingConventions {
     
     private static final int IS_DIGIT = 3;
     
-    public class Inflector {
-        
-    }
-    
     public static String controllerNameToPath(String controllerName) {
         return underscore(StringUtils.stripSuffix(controllerName, "Controller"));
     }
@@ -27,50 +23,6 @@ public class RailsNamingConventions {
             result[i] = underscore(controllerName[i]);
         result[length - 1] = controllerNameToPath(controllerName[length - 1]);
         return result;
-    }
-    
-    /**
-     * Returns the plural form of the word in the string. Examples:
-     * <ul>
-     * <li><code>"post".pluralize #=> "posts"</code></li>
-     * <li><code>"octopus".pluralize #=> "octopi"</code></li>
-     * <li><code>"sheep".pluralize #=> "sheep"</code></li>
-     * <li><code>"the blue mailman".pluralize #=> "the blue mailmen"</code></li>
-     * <li><code> "CamelOctopus".pluralize #=> "CamelOctopi"</code></li>
-     * </ul>
-     * 
-     * @param word
-     * @return
-     */
-    public static String pluralize(String word) {
-        throw new UnsupportedOperationException();
-        //      result = word.to_s.dup
-        //
-        //      if inflections.uncountables.include?(result.downcase)
-        //        result
-        //      else
-        //        inflections.plurals.each { |(rule, replacement)| break if result.gsub!(rule, replacement) }
-        //        result
-        //      end
-    }
-    
-    //    # Examples
-    //    #   "posts".singularize #=> "post"
-    //    #   "octopi".singularize #=> "octopus"
-    //    #   "sheep".singluarize #=> "sheep"
-    //    #   "word".singluarize #=> "word"
-    //    #   "the blue mailmen".singularize #=> "the blue mailman"
-    //    #   "CamelOctopi".singularize #=> "CamelOctopus"
-    public static String singularize(String word) {
-        throw new UnsupportedOperationException();
-        //      result = word.to_s.dup
-        //
-        //      if inflections.uncountables.include?(result.downcase)
-        //        result
-        //      else
-        //        inflections.singulars.each { |(rule, replacement)| break if result.gsub!(rule, replacement) }
-        //        result
-        //      end
     }
     
     //    # Examples
@@ -173,15 +125,15 @@ public class RailsNamingConventions {
     //    #   "RawScaledScorer".tableize #=> "raw_scaled_scorers"
     //    #   "egg_and_ham".tableize #=> "egg_and_hams"
     //    #   "fancyCategory".tableize #=> "fancy_categories"
-    public static String tableize(String className) {
-        return pluralize(underscore(className));
+    public static String tableize(Inflector inflector, String className) {
+        return inflector.pluralize(underscore(className));
     }
     
-    public static String classify(String tableName) {
+    public static String classify(Inflector inflector, String tableName) {
         int pos = tableName.lastIndexOf('.');
         if (pos >= 0)
             tableName = tableName.substring(pos + 1);
-        return camelize(singularize(tableName));
+        return camelize(inflector.singularize(tableName));
     }
     
     public static String demodulize(String className) {
@@ -204,6 +156,70 @@ public class RailsNamingConventions {
         return underscore(demodulize(className)) + (separateIdWithUnderscore ? "_id" : "id");
     }
     
+    public static final String DB_SCHEMA_RB = "db/schema.rb";
+    
+    public static Inflector createInitializedInflector() {
+        Inflector inflect = new Inflector();
+        inflect.plural("$", "s");
+        inflect.plural("s$", "s");
+        inflect.plural("(ax|test)is$", "\\1es");
+        inflect.plural("(octop|vir)us$", "\\1i");
+        inflect.plural("(alias|status)$", "\\1es");
+        inflect.plural("(bu)s$", "\\1ses");
+        inflect.plural("(buffal|tomat)o$", "\\1oes");
+        inflect.plural("([ti])um$", "\\1a");
+        inflect.plural("sis$", "ses");
+        inflect.plural("(?:([^f])fe|([lr])f)$", "\\1\\2ves");
+        inflect.plural("(hive)$", "\\1s");
+        inflect.plural("([^aeiouy]|qu)y$", "\\1ies");
+        inflect.plural("(x|ch|ss|sh)$", "\\1es");
+        inflect.plural("(matr|vert|ind)ix|ex$", "\\1ices");
+        inflect.plural("([m|l])ouse$", "\\1ice");
+        inflect.plural("^(ox)$", "\\1en");
+        inflect.plural("(quiz)$", "\\1zes");
+        
+        inflect.singular("s$", "");
+        inflect.singular("(n)ews$", "\\1ews");
+        inflect.singular("([ti])a$", "\\1um");
+        inflect.singular("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "\\1\\2sis");
+        inflect.singular("(^analy)ses$", "\\1sis");
+        inflect.singular("([^f])ves$", "\\1fe");
+        inflect.singular("(hive)s$", "\\1");
+        inflect.singular("(tive)s$", "\\1");
+        inflect.singular("([lr])ves$", "\\1f");
+        inflect.singular("([^aeiouy]|qu)ies$", "\\1y");
+        inflect.singular("(s)eries$", "\\1eries");
+        inflect.singular("(m)ovies$", "\\1ovie");
+        inflect.singular("(x|ch|ss|sh)es$", "\\1");
+        inflect.singular("([m|l])ice$", "\\1ouse");
+        inflect.singular("(bus)es$", "\\1");
+        inflect.singular("(o)es$", "\\1");
+        inflect.singular("(shoe)s$", "\\1");
+        inflect.singular("(cris|ax|test)es$", "\\1is");
+        inflect.singular("(octop|vir)i$", "\\1us");
+        inflect.singular("(alias|status)es$", "\\1");
+        inflect.singular("^(ox)en", "\\1");
+        inflect.singular("(vert|ind)ices$", "\\1ex");
+        inflect.singular("(matr)ices$", "\\1ix");
+        inflect.singular("(quiz)zes$", "\\1");
+        
+        inflect.irregular("person", "people");
+        inflect.irregular("man", "men");
+        inflect.irregular("child", "children");
+        inflect.irregular("sex", "sexes");
+        inflect.irregular("move", "moves");
+        
+        inflect.uncountable("equipment");
+        inflect.uncountable("information");
+        inflect.uncountable("rice");
+        inflect.uncountable("money");
+        inflect.uncountable("species");
+        inflect.uncountable("series");
+        inflect.uncountable("fish");
+        inflect.uncountable("sheep");
+        
+        return inflect;
+    }
     //    # A singleton instance of this class is yielded by Inflector.inflections, which can then be used to specify additional
     //    # inflection rules. Examples:
     //    #

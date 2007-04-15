@@ -2,6 +2,8 @@ package com.yoursway.rails.model;
 
 import org.eclipse.core.resources.IProject;
 
+import com.yoursway.utils.Inflector;
+
 public interface IRailsProject extends IProvidesRailsProject {
     
     IProject getProject();
@@ -9,5 +11,9 @@ public interface IRailsProject extends IProvidesRailsProject {
     IRailsControllersCollection getControllersCollection();
     
     IRailsModelsCollection getModelsCollection();
+    
+    IRailsSchema getSchema();
+    
+    Inflector getInflector();
     
 }
