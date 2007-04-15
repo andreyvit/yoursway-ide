@@ -9,6 +9,12 @@ import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterRunnerConfiguration;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
+/**
+ * This class adapts IInterpreterRunner interface to the standard
+ * IRunnableWithProgress interface.
+ * 
+ * (Yes, in the language with currying this adapter would be unnecessary)
+ */
 public class InterpreterRunnerAdapter implements IRunnableWithProgress {
     
     private final IInterpreterRunner runner;
