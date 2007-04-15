@@ -18,6 +18,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import com.yoursway.ide.ui.advisor.AdvisorView;
+import com.yoursway.ide.ui.railsview.RailsView;
 
 /**
  * Defines the layout of the primary perspective for Rails development.
@@ -60,14 +61,15 @@ public class RailsPerspective implements IPerspectiveFactory {
         
         IFolderLayout right = factory.createFolder(RIGHT_FOLDER, IPageLayout.RIGHT, 0.7f, factory
                 .getEditorArea());
+        right.addView(RailsView.ID);
         right.addView(ThirdPartyInterfaceComponentsConstants.DLTK_SCRIPT_EXPLORER_VIEW);
         right.addPlaceholder(IPageLayout.ID_OUTLINE);
         right.addPlaceholder("com.yoursway.introspection.dltk.Model");
         right.addPlaceholder("com.yoursway.introspection.rails.Model");
         right.addPlaceholder("com.yoursway.introspection.resources.Model");
         
-        IFolderLayout rightBottom = factory.createFolder(RIGHT_BOTTOM_FOLDER, IPageLayout.BOTTOM, 0.7f,
-                RIGHT_FOLDER);
+        IPlaceholderFolderLayout rightBottom = factory.createPlaceholderFolder(RIGHT_BOTTOM_FOLDER,
+                IPageLayout.BOTTOM, 0.7f, RIGHT_FOLDER);
         rightBottom.addPlaceholder(AdvisorView.ID);
         
         // factory.addFastView(CVS_REPOSITORIES_VIEW, 0.50f);

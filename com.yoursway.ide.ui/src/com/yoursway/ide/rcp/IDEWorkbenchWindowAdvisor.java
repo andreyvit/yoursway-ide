@@ -44,6 +44,11 @@ import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.MarkerTransfer;
 import org.eclipse.ui.part.ResourceTransfer;
 
+import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.windowmodel.IRailsWindowModelListener;
+import com.yoursway.rails.windowmodel.RailsWindowModel;
+import com.yoursway.rails.windowmodel.RailsWindowModelChange;
+
 /**
  * Window-level advisor for the IDE.
  */
@@ -57,7 +62,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     private IPerspectiveDescriptor lastPerspective = null;
     
     private IWorkbenchPage lastActivePage;
-    private String lastEditorTitle = ""; //$NON-NLS-1$
+    private final String lastEditorTitle = ""; //$NON-NLS-1$
     
     private final IPropertyListener editorPropertyListener = new IPropertyListener() {
         public void propertyChanged(Object source, int propId) {
@@ -180,7 +185,8 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
      */
     private void hookTitleUpdateListeners(IWorkbenchWindowConfigurer configurer) {
         // hook up the listeners to update the window title
-        configurer.getWindow().addPageListener(new IPageListener() {
+        final IWorkbenchWindow window = configurer.getWindow();
+        window.addPageListener(new IPageListener() {
             public void pageActivated(IWorkbenchPage page) {
                 updateTitle();
             }
@@ -193,7 +199,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 // do nothing
             }
         });
-        configurer.getWindow().addPerspectiveListener(new PerspectiveAdapter() {
+        window.addPerspectiveListener(new PerspectiveAdapter() {
             @Override
             public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
                 updateTitle();
@@ -210,7 +216,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 updateTitle();
             }
         });
-        configurer.getWindow().getPartService().addPartListener(new IPartListener2() {
+        window.getPartService().addPartListener(new IPartListener2() {
             public void partActivated(IWorkbenchPartReference ref) {
                 if (ref instanceof IEditorReference) {
                     updateTitle();
@@ -247,11 +253,21 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 // do nothing
             }
         });
+        RailsWindowModel.instance().addListener(new IRailsWindowModelListener() {
+            
+            public void mappingChanged(RailsWindowModelChange event) {
+                if (event.getWindow() == window) {
+                    updateTitle();
+                }
+            }
+            
+        });
     }
     
     private String computeTitle() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        IWorkbenchPage currentPage = configurer.getWindow().getActivePage();
+        IWorkbenchWindow currentWindow = configurer.getWindow();
+        IWorkbenchPage currentPage = currentWindow.getActivePage();
         IEditorPart activeEditor = null;
         if (currentPage != null) {
             activeEditor = currentPage.getActiveEditor();
@@ -266,23 +282,28 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             title = ""; //$NON-NLS-1$
         }
         
-        if (currentPage != null) {
-            if (activeEditor != null) {
-                lastEditorTitle = activeEditor.getTitleToolTip();
-                title = NLS.bind(IDEWorkbenchMessages.WorkbenchWindow_shellTitle, lastEditorTitle, title);
-            }
-            IPerspectiveDescriptor persp = currentPage.getPerspective();
-            String label = ""; //$NON-NLS-1$
-            if (persp != null) {
-                label = persp.getLabel();
-            }
-            IAdaptable input = currentPage.getInput();
-            if (input != null && !input.equals(wbAdvisor.getDefaultPageInput())) {
-                label = currentPage.getLabel();
-            }
-            if (label != null && !label.equals("")) { //$NON-NLS-1$ 
-                title = NLS.bind(IDEWorkbenchMessages.WorkbenchWindow_shellTitle, label, title);
-            }
+        //        if (currentPage != null) {
+        //            if (activeEditor != null) {
+        //                lastEditorTitle = activeEditor.getTitleToolTip();
+        //                title = NLS.bind(IDEWorkbenchMessages.WorkbenchWindow_shellTitle, lastEditorTitle, title);
+        //            }
+        //            IPerspectiveDescriptor persp = currentPage.getPerspective();
+        //            String label = ""; //$NON-NLS-1$
+        //            if (persp != null) {
+        //                label = persp.getLabel();
+        //            }
+        //            IAdaptable input = currentPage.getInput();
+        //            if (input != null && !input.equals(wbAdvisor.getDefaultPageInput())) {
+        //                label = currentPage.getLabel();
+        //            }
+        //            if (label != null && !label.equals("")) { //$NON-NLS-1$ 
+        //                title = NLS.bind(IDEWorkbenchMessages.WorkbenchWindow_shellTitle, label, title);
+        //            }
+        //        }
+        
+        IRailsProject currentProject = RailsWindowModel.instance().getProject(currentWindow);
+        if (currentProject != null) {
+            title = NLS.bind("{0} - {1}", currentProject.getProject().getName(), title);
         }
         
         String workspaceLocation = wbAdvisor.getWorkspaceLocation();
@@ -321,10 +342,10 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         }
         
         // Nothing to do if the editor hasn't changed
-        if (activeEditor == lastActiveEditor && currentPage == lastActivePage && persp == lastPerspective
-                && input == lastInput) {
-            return;
-        }
+        //        if (activeEditor == lastActiveEditor && currentPage == lastActivePage && persp == lastPerspective
+        //                && input == lastInput) {
+        //            return;
+        //        }
         
         if (lastActiveEditor != null) {
             lastActiveEditor.removePropertyListener(editorPropertyListener);

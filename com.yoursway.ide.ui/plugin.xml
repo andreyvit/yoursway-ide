@@ -20,6 +20,13 @@
             id="com.yoursway.ide.ui.AdvisorView"
             name="Next Step">
       </view>
+      <view
+            category="com.yoursway.ide.rails"
+            class="com.yoursway.ide.ui.railsview.RailsView"
+            icon="icons/rails_view.gif"
+            id="com.yoursway.ide.ui.RailsView"
+            name="Project">
+      </view>
       <category
             id="com.yoursway.ide.rails"
             name="Rails">

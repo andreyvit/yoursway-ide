@@ -37,6 +37,16 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.jdt" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.jdt.core" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.swt" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.team.cvs" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.ui.ide" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.ui.views" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.ui.workbench" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.ui.workbench.pluspak" fragment="true"/>
+      <plugin id="com.instantiations.assist.eclipse.fragment.ui.workbench.texteditor" fragment="true"/>
+      <plugin id="com.jcraft.jsch"/>
       <plugin id="com.yoursway.common.utilities"/>
       <plugin id="com.yoursway.ide.launching"/>
       <plugin id="com.yoursway.ide.ui"/>
@@ -64,6 +74,7 @@
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.cvs"/>
       <plugin id="org.eclipse.debug.core"/>
       <plugin id="org.eclipse.debug.ui"/>
       <plugin id="org.eclipse.dltk.console"/>
@@ -95,6 +106,7 @@
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.jsch.core"/>
       <plugin id="org.eclipse.ltk.core.refactoring"/>
       <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
@@ -104,6 +116,10 @@
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.team.core"/>
+      <plugin id="org.eclipse.team.cvs.core"/>
+      <plugin id="org.eclipse.team.cvs.ssh"/>
+      <plugin id="org.eclipse.team.cvs.ssh2"/>
+      <plugin id="org.eclipse.team.cvs.ui"/>
       <plugin id="org.eclipse.team.ui"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
