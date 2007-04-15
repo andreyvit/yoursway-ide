@@ -1,11 +1,12 @@
 package com.yoursway.rails;
 
+import java.util.List;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-
 
 public class ShowSearchResultAction implements IWorkbenchWindowActionDelegate {
     
@@ -19,12 +20,20 @@ public class ShowSearchResultAction implements IWorkbenchWindowActionDelegate {
     }
     
     public void run(IAction action) {
-        MessageBox mb = new MessageBox(this.window.getShell());
+        List<Rails> rails = RailsRuntime.getRails();
         
-        String msg = "";
-        for (Rails r : RailsRuntime.getRails())
-            msg += r.getVersion() + " " + r.getPaths().toString() + "\n";
-        mb.setMessage(msg);
+        String railsInfo = "Rails installations:\n";
+        
+        for (Rails r : rails) {
+            railsInfo += "Rails " + r.getVersion() + " (" + r.getRuby().getName() + ")\n";
+            for (String s : r.getPaths()) {
+                railsInfo += "  [" + s + "]\n";
+            }
+            railsInfo += "\n";
+        }
+        
+        MessageBox mb = new MessageBox(window.getShell());
+        mb.setMessage(railsInfo);
         mb.open();
     }
     

@@ -10,13 +10,13 @@ import org.jvyaml.nodes.ScalarNode;
 
 import com.yoursway.utils.YamlUtil;
 
-public class LocalGems implements ILocalGems {
+public class LocalGems {
     
     private static final String[] EMPTY_STRING_LIST = new String[0];
     private static final IGem[] EMPTY_IGEM_LIST = new IGem[0];
     
     @SuppressWarnings("unchecked")
-    public String[] parseGemVersions(String serializedGems) {
+    public static String[] parseGemVersions(String serializedGems) {
         Node yamlData = YamlUtil.parseYaml(serializedGems);
         
         ArrayList<String> versions = new ArrayList<String>();
@@ -24,7 +24,7 @@ public class LocalGems implements ILocalGems {
         for (Node gemInfo : (List<Node>) yamlData.getValue()) {
             Map<Node, Node> gemAttributes = (Map<Node, Node>) gemInfo.getValue();
             for (Entry<Node, Node> attributeEntry : gemAttributes.entrySet())
-                if ("version".equals((String) attributeEntry.getKey().getValue())) {
+                if ("version".equals(attributeEntry.getKey().getValue())) {
                     versions.add((String) attributeEntry.getValue().getValue());
                     break;
                 }
@@ -33,7 +33,7 @@ public class LocalGems implements ILocalGems {
     }
     
     @SuppressWarnings("unchecked")
-    public IGem[] parseGemsInfo(String serializedGems) {
+    public static IGem[] parseGemsInfo(String serializedGems) {
         Node yamlData = YamlUtil.parseYaml(serializedGems);
         
         ArrayList<IGem> gems = new ArrayList<IGem>();

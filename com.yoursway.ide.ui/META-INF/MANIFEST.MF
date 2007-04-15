@@ -5,21 +5,23 @@ Bundle-SymbolicName: com.yoursway.ide.ui; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: com.yoursway.ide.ui.Activator
 Bundle-Vendor: YourSway
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.debug.core,
+ org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.ui.forms,
  org.eclipse.dltk.ruby.core,
  org.eclipse.dltk.ruby.ui,
  org.eclipse.dltk.core,
- org.eclipse.jface.text,
- org.eclipse.debug.core,
  org.jvyaml,
  org.eclipse.ui.ide,
  org.eclipse.dltk.ruby.launching,
  org.eclipse.dltk.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.net,
+ org.eclipse.dltk.launching,
+ com.yoursway.common.utilities,
  org.eclipse.update.core
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.ide.analysis.model,
