@@ -51,8 +51,8 @@ public final class InterpreterRunnerUtil {
          * This loop is the workaround. ILaunch does not provide event
          * listeners, so all launch listeners need to be registered in
          * ILaunchManager. Adding launch to the ILaunchManager automatically
-         * associtates it with the console, which sucks away the stdout/stderr
-         * of launch preventing it from the processing.
+         * associates it with the console, which sucks away the stdout/stderr of
+         * launch preventing it from the processing.
          * 
          * It is impossible to create our own implementation of ILaunchManager
          * and register ILaunch in this implementation, because Launch (the
