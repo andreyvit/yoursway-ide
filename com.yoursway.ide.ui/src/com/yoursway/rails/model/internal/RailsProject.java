@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 
 import com.yoursway.rails.model.IRailsControllersCollection;
+import com.yoursway.rails.model.IRailsModelsCollection;
 import com.yoursway.rails.model.IRailsProject;
 
 public class RailsProject implements IRailsProject {
@@ -11,6 +12,8 @@ public class RailsProject implements IRailsProject {
     private final IProject project;
     
     private RailsControllersCollection controllers;
+    
+    private RailsModelsCollection models;
     
     private final RailsProjectsCollection parent;
     
@@ -36,11 +39,19 @@ public class RailsProject implements IRailsProject {
     }
     
     public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
-        controllers.reconcile(deltaBuilder, delta);
+        ((RailsControllersCollection) getControllersCollection()).reconcile(deltaBuilder, delta);
+        ((RailsModelsCollection) getModelsCollection()).reconcile(deltaBuilder, delta);
     }
     
     public IRailsProject getRailsProject() {
         return this;
+    }
+    
+    public IRailsModelsCollection getModelsCollection() {
+        if (models == null) {
+            models = new RailsModelsCollection(this);
+        }
+        return models;
     }
     
 }

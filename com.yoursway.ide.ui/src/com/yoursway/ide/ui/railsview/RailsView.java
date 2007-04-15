@@ -61,6 +61,7 @@ import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsController;
+import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsPartial;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.IRailsView;
@@ -81,7 +82,7 @@ public class RailsView extends ViewPart {
     
     private static final String MODEL_ICONS_PATH = "icons/rails_model/";
     public static final ImageDescriptor MODEL_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
-            + "model.gif");
+            + "model.png");
     public static final ImageDescriptor PROJECT_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
             + "project.gif");
     public static final ImageDescriptor CONTROLLER_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
@@ -135,6 +136,7 @@ public class RailsView extends ViewPart {
                 IRailsProject railsProject = (IRailsProject) parent;
                 Collection<Object> children = new ArrayList<Object>();
                 children.addAll(railsProject.getControllersCollection().getItems());
+                children.addAll(railsProject.getModelsCollection().getItems());
                 return children.toArray();
             } else if (parent instanceof IRailsController) {
                 IRailsController railsController = (IRailsController) parent;
@@ -174,6 +176,8 @@ public class RailsView extends ViewPart {
                 return VIEW_ICON_IMG;
             } else if (element instanceof IRailsPartial) {
                 return PARTIAL_ICON_IMG;
+            } else if (element instanceof IRailsModel) {
+                return MODEL_ICON_IMG;
             }
             return null;
         }
@@ -197,6 +201,9 @@ public class RailsView extends ViewPart {
             } else if (element instanceof IRailsBaseView) {
                 IRailsBaseView view = (IRailsBaseView) element;
                 return view.getName() + " (" + view.getFormat().toString() + ")";
+            } else if (element instanceof IRailsModel) {
+                IRailsModel model = (IRailsModel) element;
+                return model.getName();
             }
             return "UNKNOWN " + className + " - " + element.toString();
         }
@@ -515,6 +522,9 @@ public class RailsView extends ViewPart {
                 } else if (obj instanceof IRailsBaseView) {
                     IRailsBaseView railsBaseView = (IRailsBaseView) obj;
                     fileToOpen = railsBaseView.getCorrespondingFile();
+                } else if (obj instanceof IRailsModel) {
+                    IRailsModel model = (IRailsModel) obj;
+                    fileToOpen = model.getCorrespondingFile();
                 }
                 if (fileToOpen != null) {
                     try {

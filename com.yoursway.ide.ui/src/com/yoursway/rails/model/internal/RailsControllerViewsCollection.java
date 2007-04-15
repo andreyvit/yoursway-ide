@@ -26,7 +26,7 @@ public class RailsControllerViewsCollection implements IRailsControllerViewsColl
     
     private final IRailsController controller;
     
-    private final IFolder viewsFolder;
+    private IFolder viewsFolder;
     
     public RailsControllerViewsCollection(IRailsController controller) {
         this.controller = controller;
@@ -36,7 +36,8 @@ public class RailsControllerViewsCollection implements IRailsControllerViewsColl
     private void refresh() {
         items = new ArrayList<RailsBaseView>();
         itemsKnown = true;
-        if (viewsFolder == null)
+        viewsFolder = calculateViewsFolder();
+        if (viewsFolder == null || !viewsFolder.exists())
             return;
         IResource[] members;
         try {

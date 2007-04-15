@@ -5,14 +5,6 @@ import org.eclipse.dltk.core.IType;
 
 public interface IRailsController extends IProvidesRailsProject {
     
-    public enum Caching {
-        
-        NORMAL,
-
-        CACHED_ONLY
-        
-    }
-    
     IFile getFile();
     
     String[] getPathComponents();

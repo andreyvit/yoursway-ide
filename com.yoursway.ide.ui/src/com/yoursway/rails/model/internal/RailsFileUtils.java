@@ -15,11 +15,20 @@ public class RailsFileUtils {
     
     public static IType findControllerTypeInFile(IFile file) {
         String baseName = PathUtils.getBaseNameWithoutExtension(file);
-        String controllerName;
+        String correctedUnderscoredName;
         if ("application".equals(baseName))
-            controllerName = "application_controller";
+            correctedUnderscoredName = "application_controller";
         else
-            controllerName = baseName;
+            correctedUnderscoredName = baseName;
+        return findTypeInFile(file, correctedUnderscoredName);
+    }
+    
+    public static IType findModelTypeInFile(IFile file) {
+        String baseName = PathUtils.getBaseNameWithoutExtension(file);
+        return findTypeInFile(file, baseName);
+    }
+    
+    public static IType findTypeInFile(IFile file, String underscoredName) {
         IModelElement modelElement = DLTKCore.create(file);
         if (modelElement.getElementType() == IModelElement.SOURCE_MODULE) {
             ISourceModule sourceModule = (ISourceModule) modelElement;
@@ -29,7 +38,7 @@ public class RailsFileUtils {
                     String elementName = type.getElementName();
                     String simpleName = RailsNamingConventions.demodulize(elementName);
                     String pathName = RailsNamingConventions.underscore(simpleName);
-                    if (pathName.equals(controllerName)) {
+                    if (pathName.equals(underscoredName)) {
                         return type;
                     }
                 }

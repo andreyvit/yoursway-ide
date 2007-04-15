@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.dltk.core.IType;
 
+import com.yoursway.rails.model.Caching;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllerActionsCollection;
 import com.yoursway.rails.model.IRailsControllerViewsCollection;

@@ -8,4 +8,6 @@ public interface IRailsProject extends IProvidesRailsProject {
     
     IRailsControllersCollection getControllersCollection();
     
+    IRailsModelsCollection getModelsCollection();
+    
 }

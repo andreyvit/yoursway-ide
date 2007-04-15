@@ -8,10 +8,10 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.model.Caching;
 import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllerActionsCollection;
-import com.yoursway.rails.model.IRailsController.Caching;
 import com.yoursway.ruby.model.RubyFactory;
 import com.yoursway.ruby.model.RubyMethod;
 
