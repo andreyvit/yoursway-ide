@@ -86,7 +86,7 @@ begin
   begin
     require "rubygems"
   rescue LoadError
-    error_exit(3, {"no_rubygems" => $:})
+    error_exit(3, {"no_rubygems" => nil})
   end
 
   error_exit(1, {"no_input_gem" => nil}) if ARGV.size == 0
