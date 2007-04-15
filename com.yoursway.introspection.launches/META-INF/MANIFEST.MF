@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Launches Plug-in
+Bundle-SymbolicName: com.yoursway.introspection.launches; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.introspection.internal.launches.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core
+Eclipse-LazyStart: true
