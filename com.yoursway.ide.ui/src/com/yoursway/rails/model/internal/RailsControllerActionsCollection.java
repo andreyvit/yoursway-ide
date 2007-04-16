@@ -15,7 +15,8 @@ import com.yoursway.rails.model.IRailsControllerActionsCollection;
 import com.yoursway.ruby.model.RubyFactory;
 import com.yoursway.ruby.model.RubyMethod;
 
-public class RailsControllerActionsCollection implements IRailsControllerActionsCollection {
+public class RailsControllerActionsCollection extends RailsElement implements
+        IRailsControllerActionsCollection {
     
     private Collection<RailsAction> actions;
     private final IRailsController railsController;

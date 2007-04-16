@@ -4,7 +4,7 @@ import com.yoursway.rails.model.IRailsField;
 import com.yoursway.rails.model.IRailsFieldsCollection;
 import com.yoursway.rails.utils.schemaparser.FieldInfo;
 
-public class RailsField implements IRailsField {
+public class RailsField extends RailsElement implements IRailsField {
     
     private final IRailsFieldsCollection parent;
     private final String name;

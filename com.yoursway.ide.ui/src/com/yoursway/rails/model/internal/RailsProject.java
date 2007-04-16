@@ -10,7 +10,7 @@ import com.yoursway.rails.model.IRailsSchema;
 import com.yoursway.utils.Inflector;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class RailsProject implements IRailsProject {
+public class RailsProject extends RailsElement implements IRailsProject {
     
     private final IProject project;
     

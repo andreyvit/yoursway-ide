@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IFolder;
 
-public interface IRailsControllersCollection extends IProvidesRailsProject {
+public interface IRailsControllersCollection extends IRailsElement, IProvidesRailsProject {
     
     boolean isEmpty();
     

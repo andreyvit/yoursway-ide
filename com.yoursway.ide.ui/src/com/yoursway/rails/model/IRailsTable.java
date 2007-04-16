@@ -1,6 +1,6 @@
 package com.yoursway.rails.model;
 
-public interface IRailsTable {
+public interface IRailsTable extends IRailsElement {
     
     String getName();
     

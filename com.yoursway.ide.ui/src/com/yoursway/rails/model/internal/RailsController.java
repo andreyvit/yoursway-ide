@@ -11,9 +11,10 @@ import com.yoursway.rails.model.IRailsControllerViewsCollection;
 import com.yoursway.rails.model.IRailsControllersCollection;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.utils.PathUtils;
+import com.yoursway.utils.RailsFileUtils;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class RailsController implements IRailsController {
+public class RailsController extends RailsElement implements IRailsController {
     
     private final IRailsControllersCollection parent;
     private final IFile file;

@@ -18,7 +18,7 @@ import com.yoursway.rails.model.IRailsControllerViewsCollection;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.StringUtils;
 
-public class RailsControllerViewsCollection implements IRailsControllerViewsCollection {
+public class RailsControllerViewsCollection extends RailsElement implements IRailsControllerViewsCollection {
     
     private Collection<RailsBaseView> items;
     

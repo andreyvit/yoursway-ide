@@ -12,7 +12,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.IRailsProjectsCollection;
 
-public class RailsProjectsCollection implements IRailsProjectsCollection {
+public class RailsProjectsCollection extends RailsElement implements IRailsProjectsCollection {
     
     private final IWorkspaceRoot workspaceRoot;
     

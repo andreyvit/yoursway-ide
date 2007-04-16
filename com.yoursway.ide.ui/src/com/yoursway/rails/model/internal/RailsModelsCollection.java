@@ -16,8 +16,9 @@ import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsModelsCollection;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.utils.PathUtils;
+import com.yoursway.utils.RailsFileUtils;
 
-public class RailsModelsCollection implements IRailsModelsCollection {
+public class RailsModelsCollection extends RailsElement implements IRailsModelsCollection {
     
     private final IRailsProject railsProject;
     private Collection<RailsModel> models;

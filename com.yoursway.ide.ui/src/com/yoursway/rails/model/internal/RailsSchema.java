@@ -23,7 +23,7 @@ import com.yoursway.ruby.model.RubyFile;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class RailsSchema implements IRailsSchema, IProvidesRailsProject {
+public class RailsSchema extends RailsElement implements IRailsSchema, IProvidesRailsProject {
     
     private final IRailsProject railsProject;
     

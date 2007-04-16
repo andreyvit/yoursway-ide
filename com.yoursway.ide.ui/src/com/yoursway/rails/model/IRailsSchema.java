@@ -2,7 +2,7 @@ package com.yoursway.rails.model;
 
 import java.util.Collection;
 
-public interface IRailsSchema {
+public interface IRailsSchema extends IRailsElement {
     
     boolean hasItems();
     

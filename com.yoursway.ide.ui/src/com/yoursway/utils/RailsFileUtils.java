@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.internal;
+package com.yoursway.utils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
@@ -8,8 +8,6 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.utils.PathUtils;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class RailsFileUtils {
     

@@ -4,7 +4,7 @@ import org.eclipse.core.resources.IProject;
 
 import com.yoursway.utils.Inflector;
 
-public interface IRailsProject extends IProvidesRailsProject {
+public interface IRailsProject extends IRailsElement, IProvidesRailsProject {
     
     IProject getProject();
     

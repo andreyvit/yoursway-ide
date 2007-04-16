@@ -4,7 +4,7 @@ import org.eclipse.core.resources.IFile;
 
 import com.yoursway.ruby.model.RubyMethod;
 
-public interface IRailsAction {
+public interface IRailsAction extends IRailsElement {
     
     String getName();
     

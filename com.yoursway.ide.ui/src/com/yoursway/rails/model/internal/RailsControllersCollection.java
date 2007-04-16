@@ -15,8 +15,9 @@ import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllersCollection;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.utils.RailsFileUtils;
 
-public class RailsControllersCollection implements IRailsControllersCollection {
+public class RailsControllersCollection extends RailsElement implements IRailsControllersCollection {
     
     private final IRailsProject railsProject;
     private Collection<RailsController> controllers;

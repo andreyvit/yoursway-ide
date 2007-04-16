@@ -7,7 +7,7 @@ import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsControllerActionsCollection;
 import com.yoursway.ruby.model.RubyMethod;
 
-public class RailsAction implements IRailsAction {
+public class RailsAction extends RailsElement implements IRailsAction {
     
     private final IRailsControllerActionsCollection parent;
     private final RubyMethod method;

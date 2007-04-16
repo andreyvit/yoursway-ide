@@ -6,7 +6,7 @@ import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsProject;
 
-public abstract class RailsBaseView implements IRailsBaseView {
+public abstract class RailsBaseView extends RailsElement implements IRailsBaseView {
     
     private final IRailsController controller;
     private final IFile file;

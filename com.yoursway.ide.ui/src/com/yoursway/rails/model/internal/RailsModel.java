@@ -8,9 +8,10 @@ import com.yoursway.rails.model.Caching;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.utils.PathUtils;
+import com.yoursway.utils.RailsFileUtils;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class RailsModel implements IRailsModel {
+public class RailsModel extends RailsElement implements IRailsModel {
     
     private final RailsModelsCollection parent;
     private final IFile file;

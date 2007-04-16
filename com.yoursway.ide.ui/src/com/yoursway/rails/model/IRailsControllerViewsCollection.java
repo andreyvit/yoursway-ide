@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IFolder;
 
-public interface IRailsControllerViewsCollection {
+public interface IRailsControllerViewsCollection extends IRailsElement {
     
     boolean hasItems();
     

@@ -12,7 +12,7 @@ import com.yoursway.rails.model.IRailsTable;
 import com.yoursway.rails.utils.schemaparser.FieldInfo;
 import com.yoursway.rails.utils.schemaparser.TableInfo;
 
-public class RailsTable implements IRailsTable, IRailsFieldsCollection {
+public class RailsTable extends RailsElement implements IRailsTable, IRailsFieldsCollection {
     
     private final RailsSchema railsSchema;
     private final String name;
