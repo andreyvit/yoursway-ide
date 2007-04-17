@@ -1,5 +1,6 @@
 package com.yoursway.rails.model.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
@@ -10,7 +11,7 @@ public class RailsDeltaBuilder {
     private boolean somethingChanged = false;
     private final Rails rails;
     
-    private Collection<RailsProjectDelta> projectDeltasCollection;
+    private final Collection<RailsProjectDelta> projectDeltasCollection = new ArrayList<RailsProjectDelta>();
     
     public RailsDeltaBuilder(Rails rails) {
         this.rails = rails;
