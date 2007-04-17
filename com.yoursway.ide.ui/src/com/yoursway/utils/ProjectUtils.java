@@ -120,6 +120,32 @@ public class ProjectUtils {
         
     }
     
+    public static abstract class FailedToConvertProjectException extends Exception {
+        
+        public FailedToConvertProjectException() {
+            super();
+        }
+        
+        public FailedToConvertProjectException(Throwable cause) {
+            super(cause);
+        }
+        
+    }
+    
+    public static class FailedToCreateProjectBecauseAnotherProjectWithThisNameExistsException extends
+            FailedToCreateProjectException {
+        
+        private static final long serialVersionUID = 1L;
+        
+    }
+    
+    public static class FailedToCreateProjectBecauseFolderWasNotEmptyException extends
+            FailedToCreateProjectException {
+        
+        private static final long serialVersionUID = 1L;
+        
+    }
+    
     public static class FailedToCreateProjectBecauseBurWasTooLazyException extends
             FailedToCreateProjectException {
         
@@ -127,10 +153,74 @@ public class ProjectUtils {
         
     }
     
+    public static class FailedToConvertProjectBecauseBurWasTooLazyException extends
+            FailedToConvertProjectException {
+        
+        private static final long serialVersionUID = 1L;
+        
+    }
+    
+    /**
+     * Creates a new project with a specified name in the specified parent
+     * folder. The project should be put in a subfolder with a name equal to the
+     * given project name. The function should only proceed if the given folder
+     * either does not exist or is absolutely empty.
+     * 
+     * Should provide a <em>strong exception safety warranty</em>: all
+     * modifications should be reverted if the function was not able to succeed
+     * fully.
+     * 
+     * As part of it's actions, launches Rails command to generate the contents
+     * of the project. Should use the most recent Rails version available in all
+     * the installed Ruby interpreters.
+     * 
+     * Should also add the <code>lib</code> subfolders of Rails gems into the
+     * buildpath of the created project as external source folders.
+     * 
+     * If another project with the given name already exists in the workspace,
+     * <code>FailedToCreateProjectBecauseAnotherProjectWithThisNameExistsException</code>
+     * should be thrown.
+     * 
+     * If the given folder is not empty,
+     * <code>FailedToCreateProjectBecauseFolderWasNotEmptyException</code>
+     * should be thrown.
+     * 
+     * Other errors should be reported using exceptions too.
+     * 
+     * @return the created and fully set up project; never <code>null</code>;
+     *         never returns a partially set up project.
+     * @throws FailedToCreateProjectException
+     */
     public static IProject createRailsProject(File parentFolder, String projectName,
             IProgressMonitor progressMonitor) throws FailedToCreateProjectException {
         // TODO 4bur
         throw new FailedToCreateProjectBecauseBurWasTooLazyException();
+    }
+    
+    /**
+     * Converts the given Eclipse project to be usable inside YourSway IDE. As
+     * part of the convertion process, correct natures should be set up and
+     * Rails gems included into buildpaths.
+     * 
+     * This method is <em>not</em> required to provide a strong exception
+     * safety warranty.
+     * 
+     * The method should not make any changes that would prevent using this
+     * project in the Eclipse IDEs it used to be used in, unless absolutely
+     * necessary. I.e., it should not remove any existing natures and builders.
+     * 
+     * The method is expected to execute very fast if the project does not need
+     * convertion. It will be called at least once on the first activation of a
+     * project after the IDE restart.
+     * 
+     * @param project
+     *            an existing project to convert
+     * @throws FailedToConvertProjectException
+     */
+    public static void convertToRailsProject(IProject project, IProgressMonitor progressMonitor)
+            throws FailedToConvertProjectException {
+        // TODO 4bur
+        throw new FailedToConvertProjectBecauseBurWasTooLazyException();
     }
     
 }
