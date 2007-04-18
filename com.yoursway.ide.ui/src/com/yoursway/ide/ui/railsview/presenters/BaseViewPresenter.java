@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
+import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.rails.model.IRailsBaseView;
 
@@ -38,6 +39,10 @@ public abstract class BaseViewPresenter extends AbstractPresenter {
     
     public void handleDoubleClick() {
         openEditor(railsBaseView.getCorrespondingFile());
+    }
+    
+    public void fillContextMenu(IContextMenuContext context) {
+        // TODO Auto-generated method stub
     }
     
 }

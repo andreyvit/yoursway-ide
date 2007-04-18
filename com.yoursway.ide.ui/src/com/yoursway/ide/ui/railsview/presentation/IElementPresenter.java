@@ -18,4 +18,6 @@ public interface IElementPresenter {
     
     boolean canEditInPlace();
     
+    void fillContextMenu(IContextMenuContext context);
+    
 }

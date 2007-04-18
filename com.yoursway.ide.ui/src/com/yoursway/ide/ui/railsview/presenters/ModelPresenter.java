@@ -10,6 +10,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
+import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsTable;
@@ -53,6 +54,11 @@ public class ModelPresenter extends AbstractPresenter {
     
     public void handleDoubleClick() {
         openEditor(railsModel.getCorrespondingFile());
+    }
+    
+    public void fillContextMenu(IContextMenuContext context) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

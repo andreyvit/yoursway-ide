@@ -10,6 +10,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
+import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.rails.model.IRailsField;
 
@@ -48,6 +49,10 @@ public class FieldPresenter extends AbstractPresenter {
     }
     
     public void handleDoubleClick() {
+    }
+    
+    public void fillContextMenu(IContextMenuContext context) {
+        
     }
     
 }

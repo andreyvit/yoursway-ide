@@ -10,6 +10,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
+import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.ruby.model.RubyMethod;
@@ -52,6 +53,11 @@ public class ActionPresenter extends AbstractPresenter {
         RubyMethod method = railsAction.getMethod();
         if (method != null)
             openEditor(method.getDLTKMethod());
+    }
+    
+    public void fillContextMenu(IContextMenuContext context) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

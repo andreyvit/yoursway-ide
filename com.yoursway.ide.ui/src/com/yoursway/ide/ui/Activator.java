@@ -2,6 +2,7 @@ package com.yoursway.ide.ui;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -62,5 +63,28 @@ public class Activator extends AbstractUIPlugin {
         if (LOG_EXCEPTIONS_TO_CONSOLE)
             e.printStackTrace(System.err);
         getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e));
+    }
+    
+    public static void log(String string) {
+        if (LOG_EXCEPTIONS_TO_CONSOLE)
+            System.err.println(string);
+        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, string, null));
+    }
+    
+    /**
+     * Returns a section in the plugin's dialog settings. If the section doesn't
+     * exist yet, it is created.
+     * 
+     * @param name
+     *            the name of the section
+     * @return the section of the given name
+     */
+    public IDialogSettings getDialogSettingsSection(String name) {
+        IDialogSettings dialogSettings = getDialogSettings();
+        IDialogSettings section = dialogSettings.getSection(name);
+        if (section == null) {
+            section = dialogSettings.addNewSection(name);
+        }
+        return section;
     }
 }

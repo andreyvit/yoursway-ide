@@ -33,6 +33,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import com.yoursway.ide.ui.railsview.presentation.ElementPresenterFactory;
+import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IElementPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterFactory;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
@@ -47,7 +48,7 @@ public class RailsProjectTree implements IPresenterOwner {
     
     private final Tree tree;
     
-    private final TreeViewer viewer;
+    private final PublicMorozovTreeViewer viewer;
     
     private IRailsProject currentRailsProject;
     
@@ -62,9 +63,10 @@ public class RailsProjectTree implements IPresenterOwner {
         tree = formToolkit.createTree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        viewer = new TreeViewer(tree);
+        viewer = new PublicMorozovTreeViewer(tree);
         viewer.setContentProvider(infoProvider);
         viewer.setLabelProvider(infoProvider);
+        viewer.expandToLevel(null, 1);
         
         contextMenuManager = new MenuManager("#PopupMenu");
         contextMenuManager.setRemoveAllWhenShown(true);
@@ -108,7 +110,7 @@ public class RailsProjectTree implements IPresenterOwner {
         }
     }
     
-    protected void fillContextMenu(IMenuManager manager) {
+    protected void fillContextMenu(final IMenuManager manager) {
         ISelection selection = viewer.getSelection();
         final Object obj = ((IStructuredSelection) selection).getFirstElement();
         if (obj != null) {
@@ -121,6 +123,21 @@ public class RailsProjectTree implements IPresenterOwner {
                 }
                 
             });
+            
+            final TreeItem treeItem = viewer.getCorrespondingWidget(obj);
+            
+            IContextMenuContext context = new IContextMenuContext() {
+                
+                public IMenuManager getMenuManager() {
+                    return manager;
+                }
+                
+                public TreeItem getTreeItem() {
+                    return treeItem;
+                }
+                
+            };
+            presenter.fillContextMenu(context);
         }
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
@@ -216,6 +233,14 @@ public class RailsProjectTree implements IPresenterOwner {
         treeEditor.minimumHeight = minSize.y;
         treeEditor.setEditor(editor, treeItem);
         editor.setFocus();
+    }
+    
+    public Tree getTree() {
+        return tree;
+    }
+    
+    public TreeViewer getTreeViewer() {
+        return viewer;
     }
     
 }

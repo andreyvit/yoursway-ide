@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
+import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.rails.model.IRailsProject;
 
@@ -49,6 +50,9 @@ public class ProjectPresenter extends AbstractPresenter {
     }
     
     public void handleDoubleClick() {
+    }
+    
+    public void fillContextMenu(IContextMenuContext context) {
     }
     
 }

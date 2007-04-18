@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -37,4 +38,13 @@ public abstract class AbstractPresenter implements IElementPresenter {
             Activator.log(e);
         }
     }
+    
+    protected void addRenameResourceAction(MenuManager menuManager) {
+        
+    }
+    
+    public IPresenterOwner getOwner() {
+        return owner;
+    }
+    
 }
