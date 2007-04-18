@@ -79,8 +79,8 @@ public class Activator extends AbstractUIPlugin {
      *            the name of the section
      * @return the section of the given name
      */
-    public IDialogSettings getDialogSettingsSection(String name) {
-        IDialogSettings dialogSettings = getDialogSettings();
+    public static IDialogSettings getDialogSettingsSection(String name) {
+        IDialogSettings dialogSettings = getDefault().getDialogSettings();
         IDialogSettings section = dialogSettings.getSection(name);
         if (section == null) {
             section = dialogSettings.addNewSection(name);
