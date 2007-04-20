@@ -26,3 +26,4 @@
 # in addition to the first matching regex or "DEFAULT".
 
 DEFAULT $CVSROOT/CVSROOT/record_lastdir.rb %r/%p %s
+ALL /usr/local/bin/loginfo  --commitinfo
