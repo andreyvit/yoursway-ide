@@ -28,7 +28,7 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.ISourceModuleInfoCache.ISourceModuleInfo;
 import org.eclipse.dltk.internal.core.ModelManager;
-import org.eclipse.dltk.ruby.ast.HashExpression;
+import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 import org.eclipse.dltk.ruby.internal.parser.RubySourceElementParser;
 import org.eclipse.dltk.ruby.typeinference.RubyModelUtils;
 import org.eclipse.jface.text.BadLocationException;
@@ -188,8 +188,9 @@ public class ControllerNavigationProvider implements IAdviceProvider {
                         private void processRenderMethod(final Collection<String> renderedActions,
                                 CallExpression callExpression) {
                             Statement arg = RubyASTUtils.getArgumentValue(callExpression, 0);
-                            if (arg instanceof HashExpression) {
-                                Statement v = RubyASTUtils.findHashItemValue((HashExpression) arg, "action");
+                            if (arg instanceof RubyHashExpression) {
+                                Statement v = RubyASTUtils.findHashItemValue((RubyHashExpression) arg,
+                                        "action");
                                 String stringValue = RubyASTUtils.resolveConstantStringValue(v);
                                 if (stringValue != null)
                                     renderedActions.add(stringValue);

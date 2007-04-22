@@ -2,7 +2,7 @@ package com.yoursway.rails.utils.schemaparser;
 
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.statements.Statement;
-import org.eclipse.dltk.ruby.ast.HashExpression;
+import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 
 import com.yoursway.utils.HumaneASTVisitor;
 import com.yoursway.utils.RubyASTUtils;
@@ -24,8 +24,8 @@ public class RubySchemaParser extends HumaneASTVisitor {
         final String methodName = node.getName();
         if ("define".equals(methodName)) {
             Statement arg = RubyASTUtils.getArgumentValue(node, 0);
-            if (arg instanceof HashExpression) {
-                Statement versionValue = RubyASTUtils.findHashItemValue((HashExpression) arg, "version");
+            if (arg instanceof RubyHashExpression) {
+                Statement versionValue = RubyASTUtils.findHashItemValue((RubyHashExpression) arg, "version");
                 Long version = RubyASTUtils.resolveConstantFixnumValue(versionValue);
                 if (version != null)
                     schema.schemaVersion = version;

@@ -6,9 +6,9 @@ import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.statements.Statement;
-import org.eclipse.dltk.ruby.ast.HashExpression;
-import org.eclipse.dltk.ruby.ast.HashPairExpression;
-import org.eclipse.dltk.ruby.ast.SymbolReference;
+import org.eclipse.dltk.ruby.ast.RubyHashExpression;
+import org.eclipse.dltk.ruby.ast.RubyHashPairExpression;
+import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 
 public class RubyASTUtils {
     
@@ -25,8 +25,8 @@ public class RubyASTUtils {
      *         <code>null</code>.
      */
     public static String resolveConstantStringValue(Statement value) {
-        if (value instanceof SymbolReference)
-            return ((SymbolReference) value).getName();
+        if (value instanceof RubySymbolReference)
+            return ((RubySymbolReference) value).getName();
         else if (value instanceof StringLiteral)
             return ((StringLiteral) value).getValue();
         return null;
@@ -51,9 +51,9 @@ public class RubyASTUtils {
     }
     
     @SuppressWarnings("unchecked")
-    public static Statement findHashItemValue(HashExpression hash, String keyName) {
-        List<HashPairExpression> pairs = hash.getExpressions();
-        for (HashPairExpression pair : pairs) {
+    public static Statement findHashItemValue(RubyHashExpression hash, String keyName) {
+        List<RubyHashPairExpression> pairs = hash.getExpressions();
+        for (RubyHashPairExpression pair : pairs) {
             String currentKeyName = resolveConstantStringValue(pair.getKey());
             if (keyName.equals(currentKeyName))
                 return pair.getValue();
