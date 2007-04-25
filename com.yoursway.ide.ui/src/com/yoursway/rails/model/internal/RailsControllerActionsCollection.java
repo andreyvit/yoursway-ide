@@ -12,6 +12,7 @@ import com.yoursway.rails.model.Caching;
 import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllerActionsCollection;
+import com.yoursway.rails.model.internal.deltas.RailsDeltaBuilder;
 import com.yoursway.ruby.model.RubyFactory;
 import com.yoursway.ruby.model.RubyMethod;
 
@@ -62,13 +63,10 @@ public class RailsControllerActionsCollection extends RailsElement implements
     private void addAction(RailsDeltaBuilder deltaBuilder, RubyMethod method) {
         RailsAction action = new RailsAction(this, method);
         actions.add(action);
-        if (deltaBuilder != null)
-            deltaBuilder.somethingChanged();
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder) {
+    public void reconcile() {
         refresh();
-        deltaBuilder.somethingChanged();
     }
     
     public Collection<? extends IRailsAction> getActions() {

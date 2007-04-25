@@ -10,6 +10,7 @@ import com.yoursway.rails.model.IRails;
 import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsProjectsCollection;
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
+import com.yoursway.rails.model.internal.deltas.RailsDeltaBuilder;
 import com.yoursway.utils.TypedListenerList;
 
 public class Rails implements IRails, IResourceChangeListener {
@@ -47,7 +48,6 @@ public class Rails implements IRails, IResourceChangeListener {
     
     public void refresh() {
         RailsDeltaBuilder deltaBuilder = new RailsDeltaBuilder(this);
-        deltaBuilder.somethingChanged();
         projectsCollection.refresh();
         fire(deltaBuilder.build());
     }

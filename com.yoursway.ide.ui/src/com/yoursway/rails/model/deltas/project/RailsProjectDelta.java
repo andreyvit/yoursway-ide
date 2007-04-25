@@ -8,24 +8,6 @@ public abstract class RailsProjectDelta {
     
     private final IRailsProject railsProject;
     
-    public enum Kind {
-        
-        CHANGED,
-
-        ADDED,
-
-        REMOVED,
-
-        OPENED,
-
-        CLOSED,
-
-        BECAME_RAILS_PROJECT,
-
-        STOPPED_BEING_RAILS_PROJECT,
-        
-    }
-    
     public RailsProjectDelta(IRailsProject railsProject) {
         this.railsProject = railsProject;
     }

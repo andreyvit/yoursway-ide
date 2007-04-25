@@ -35,9 +35,9 @@ import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
-import com.yoursway.rails.windowmodel.IRailsWindowModelListener;
 import com.yoursway.rails.windowmodel.RailsWindowModel;
-import com.yoursway.rails.windowmodel.RailsWindowModelChange;
+import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
+import com.yoursway.rails.windowmodel.RailsWindowModelProjectChange;
 
 public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
@@ -47,7 +47,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
     static final Object[] NO_CHILDREN = new Object[0];
     
-    class WindowModelListener implements IRailsWindowModelListener {
+    class WindowModelListener extends RailsWindowModelListenerAdapter {
         
         public void install() {
             RailsWindowModel.instance().addListener(this);
@@ -57,9 +57,10 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             RailsWindowModel.instance().removeListener(this);
         }
         
-        public void mappingChanged(RailsWindowModelChange event) {
+        @Override
+        public void activeProjectChanged(RailsWindowModelProjectChange event) {
             if (event.getWindow() == getSite().getWorkbenchWindow())
-                activeProjectChanged();
+                handleActiveProjectChanged();
         }
         
     }
@@ -105,8 +106,9 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     public RailsView() {
     }
     
-    public void activeProjectChanged() {
-        IRailsProject project = RailsWindowModel.instance().getProject(getSite().getWorkbenchWindow());
+    public void handleActiveProjectChanged() {
+        IRailsProject project = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+                .getRailsProject();
         projectTree.setVisibleProject(project);
         updateProjectChooser();
         if (project == null) {
@@ -148,7 +150,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         getSite()
                 .registerContextMenu(projectTree.getContextMenuManager(), projectTree.getSelectionProvider());
         
-        activeProjectChanged();
+        handleActiveProjectChanged();
         makeActions();
         
         contributeToActionBars();
@@ -174,7 +176,8 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             
         });
         
-        IRailsProject activeProject = RailsWindowModel.instance().getProject(getSite().getWorkbenchWindow());
+        IRailsProject activeProject = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+                .getRailsProject();
         
         Control[] children = expanderComposite.getChildren();
         for (Control control : children) {
@@ -193,7 +196,8 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
                     
                     @Override
                     public void linkActivated(HyperlinkEvent e) {
-                        RailsWindowModel.instance().setProject(getSite().getWorkbenchWindow(), railsProject);
+                        RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+                                .setRailsProject(railsProject);
                         expander.setExpanded(false);
                     }
                     

@@ -15,6 +15,7 @@ import com.yoursway.rails.model.IProvidesRailsProject;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.IRailsSchema;
 import com.yoursway.rails.model.IRailsTable;
+import com.yoursway.rails.model.internal.deltas.RailsProjectChangedDeltaBuilder;
 import com.yoursway.rails.utils.schemaparser.RubySchemaParser;
 import com.yoursway.rails.utils.schemaparser.SchemaInfo;
 import com.yoursway.rails.utils.schemaparser.TableInfo;
@@ -78,7 +79,7 @@ public class RailsSchema extends RailsElement implements IRailsSchema, IProvides
         return railsProject;
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
+    public void reconcile(RailsProjectChangedDeltaBuilder db, IResourceDelta delta) {
         IResourceDelta member = delta.findMember(new Path(RailsNamingConventions.DB_SCHEMA_RB));
         if (member != null)
             refresh();

@@ -7,6 +7,7 @@ import org.eclipse.dltk.core.IType;
 import com.yoursway.rails.model.Caching;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.internal.deltas.RailsProjectChangedDeltaBuilder;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RailsFileUtils;
 import com.yoursway.utils.RailsNamingConventions;
@@ -49,7 +50,7 @@ public class RailsModel extends RailsElement implements IRailsModel {
         return pathComponents;
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
+    public void reconcile(RailsProjectChangedDeltaBuilder db, IResourceDelta delta) {
         typeKnown = false;
         modelType = null;
     }

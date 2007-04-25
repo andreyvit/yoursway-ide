@@ -45,9 +45,9 @@ import org.eclipse.ui.part.MarkerTransfer;
 import org.eclipse.ui.part.ResourceTransfer;
 
 import com.yoursway.rails.model.IRailsProject;
-import com.yoursway.rails.windowmodel.IRailsWindowModelListener;
 import com.yoursway.rails.windowmodel.RailsWindowModel;
-import com.yoursway.rails.windowmodel.RailsWindowModelChange;
+import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
+import com.yoursway.rails.windowmodel.RailsWindowModelProjectChange;
 
 /**
  * Window-level advisor for the IDE.
@@ -253,9 +253,10 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 // do nothing
             }
         });
-        RailsWindowModel.instance().addListener(new IRailsWindowModelListener() {
+        RailsWindowModel.instance().addListener(new RailsWindowModelListenerAdapter() {
             
-            public void mappingChanged(RailsWindowModelChange event) {
+            @Override
+            public void activeProjectChanged(RailsWindowModelProjectChange event) {
                 if (event.getWindow() == window) {
                     updateTitle();
                 }
@@ -301,7 +302,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         //            }
         //        }
         
-        IRailsProject currentProject = RailsWindowModel.instance().getProject(currentWindow);
+        IRailsProject currentProject = RailsWindowModel.instance().getWindow(currentWindow).getRailsProject();
         if (currentProject != null) {
             title = NLS.bind("{0} - {1}", currentProject.getProject().getName(), title);
         }

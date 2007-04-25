@@ -3,10 +3,11 @@ package com.yoursway.rails.model.internal;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 
-import com.yoursway.rails.model.IRailsControllersCollection;
+import com.yoursway.rails.model.IRailsControllersManager;
 import com.yoursway.rails.model.IRailsModelsCollection;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.IRailsSchema;
+import com.yoursway.rails.model.internal.deltas.RailsProjectChangedDeltaBuilder;
 import com.yoursway.utils.Inflector;
 import com.yoursway.utils.RailsNamingConventions;
 
@@ -38,17 +39,17 @@ public class RailsProject extends RailsElement implements IRailsProject {
         return project;
     }
     
-    public IRailsControllersCollection getControllersCollection() {
+    public IRailsControllersManager getControllersCollection() {
         if (controllers == null) {
             controllers = new RailsControllersCollection(this);
         }
         return controllers;
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
-        ((RailsControllersCollection) getControllersCollection()).reconcile(deltaBuilder, delta);
-        ((RailsModelsCollection) getModelsCollection()).reconcile(deltaBuilder, delta);
-        ((RailsSchema) getSchema()).reconcile(deltaBuilder, delta);
+    public void reconcile(RailsProjectChangedDeltaBuilder db, IResourceDelta delta) {
+        ((RailsControllersCollection) getControllersCollection()).reconcile(db, delta);
+        ((RailsModelsCollection) getModelsCollection()).reconcile(db, delta);
+        ((RailsSchema) getSchema()).reconcile(db, delta);
     }
     
     public IRailsProject getRailsProject() {

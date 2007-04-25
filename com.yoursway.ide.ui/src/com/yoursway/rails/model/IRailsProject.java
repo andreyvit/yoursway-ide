@@ -8,7 +8,7 @@ public interface IRailsProject extends IRailsElement, IProvidesRailsProject {
     
     IProject getProject();
     
-    IRailsControllersCollection getControllersCollection();
+    IRailsControllersManager getControllersCollection();
     
     IRailsModelsCollection getModelsCollection();
     

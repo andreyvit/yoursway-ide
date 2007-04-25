@@ -7,14 +7,13 @@ import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.utils.TypedListenerList;
 
 public class RailsWindowModel {
     
     private static final RailsWindowModel INSTANCE = new RailsWindowModel();
     
-    private final Map<IWorkbenchWindow, IRailsProject> mapping = new HashMap<IWorkbenchWindow, IRailsProject>();
+    private final Map<IWorkbenchWindow, RailsWindow> mapping = new HashMap<IWorkbenchWindow, RailsWindow>();
     
     private final TypedListenerList<IRailsWindowModelListener> listeners = new TypedListenerList<IRailsWindowModelListener>() {
         
@@ -56,23 +55,19 @@ public class RailsWindowModel {
         listeners.remove(listener);
     }
     
-    public IRailsProject getProject(IWorkbenchWindow window) {
-        return mapping.get(window);
+    public RailsWindow getWindow(IWorkbenchWindow window) {
+        RailsWindow railsWindow = mapping.get(window);
+        if (railsWindow == null) {
+            railsWindow = new RailsWindow(this, window);
+            mapping.put(window, railsWindow);
+        }
+        return railsWindow;
     }
     
-    public void setProject(IWorkbenchWindow window, IRailsProject project) {
-        IRailsProject oldProject;
-        if (project == null)
-            oldProject = mapping.remove(window);
-        else
-            oldProject = mapping.put(window, project);
-        fire(new RailsWindowModelChange(window, oldProject, project));
-    }
-    
-    private void fire(RailsWindowModelChange event) {
+    void fire(RailsWindowModelChange event) {
         IRailsWindowModelListener[] array = listeners.getListeners();
         for (IRailsWindowModelListener listener : array) {
-            listener.mappingChanged(event);
+            event.sendTo(listener);
         }
     }
     

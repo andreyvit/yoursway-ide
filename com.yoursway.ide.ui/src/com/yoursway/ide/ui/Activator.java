@@ -87,4 +87,24 @@ public class Activator extends AbstractUIPlugin {
         }
         return section;
     }
+    
+    /**
+     * Use this method instead of real assertions to code defensively. Warning:
+     * only use when you are sure that you can recover completely.
+     * 
+     * @param condition
+     *            the result of a check that should always be true
+     * @return the boolean passed in (to allow caller to conditionally invoke
+     *         the recovering code)
+     */
+    public static boolean softAssert(boolean condition) {
+        if (!condition) {
+            try {
+                throw new Exception("Soft Assertion Failure");
+            } catch (Exception e) {
+                log(e);
+            }
+        }
+        return condition;
+    }
 }

@@ -8,15 +8,15 @@ import com.yoursway.rails.model.Caching;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllerActionsCollection;
 import com.yoursway.rails.model.IRailsControllerViewsCollection;
-import com.yoursway.rails.model.IRailsControllersCollection;
+import com.yoursway.rails.model.IRailsControllersFolder;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.deltas.controllers.ControllerChangedDelta;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RailsFileUtils;
 import com.yoursway.utils.RailsNamingConventions;
 
 public class RailsController extends RailsElement implements IRailsController {
     
-    private final IRailsControllersCollection parent;
     private final IFile file;
     private IType controllerType;
     private final RailsControllerActionsCollection actionsCollection;
@@ -24,12 +24,14 @@ public class RailsController extends RailsElement implements IRailsController {
     private final String[] pathComponents;
     private final String[] className;
     private boolean typeKnown = false;
+    private final IRailsControllersFolder parentFolder;
     
-    public RailsController(IRailsControllersCollection parent, IFile file) {
-        this.parent = parent;
+    public RailsController(IRailsControllersFolder parentFolder, IFile file) {
+        this.parentFolder = parentFolder;
         this.file = file;
         
-        pathComponents = PathUtils.determinePathComponents(parent.getControllersFolder(), file);
+        pathComponents = PathUtils.determinePathComponents(parentFolder.getControllersManager()
+                .getRootFolder().getCorrespondingFolder(), file);
         className = RailsNamingConventions.camelize(pathComponents);
         if (className.length == 1 && className[0].equals("Application"))
             className[0] = "ApplicationController";
@@ -59,11 +61,11 @@ public class RailsController extends RailsElement implements IRailsController {
         controllerType = null;
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
+    public ControllerChangedDelta reconcile(IResourceDelta delta) {
         resetType();
-        actionsCollection.reconcile(deltaBuilder);
-        viewsCollection.reconcile(deltaBuilder, delta);
-        deltaBuilder.somethingChanged();
+        actionsCollection.reconcile();
+        viewsCollection.reconcile(delta);
+        return new ControllerChangedDelta(this);
     }
     
     public IRailsControllerActionsCollection getActionsCollection() {
@@ -79,7 +81,15 @@ public class RailsController extends RailsElement implements IRailsController {
     }
     
     public IRailsProject getRailsProject() {
-        return parent.getRailsProject();
+        return parentFolder.getRailsProject();
+    }
+    
+    public String getDisplayName() {
+        return RailsNamingConventions.joinNamespaces(className);
+    }
+    
+    public IRailsControllersFolder getParentFolder() {
+        return parentFolder;
     }
     
 }

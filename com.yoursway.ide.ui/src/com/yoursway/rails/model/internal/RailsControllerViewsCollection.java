@@ -15,6 +15,7 @@ import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.model.IRailsBaseView;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllerViewsCollection;
+import com.yoursway.rails.model.internal.deltas.RailsDeltaBuilder;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.StringUtils;
 
@@ -61,7 +62,7 @@ public class RailsControllerViewsCollection extends RailsElement implements IRai
         return true;
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
+    public void reconcile(IResourceDelta delta) {
         IResourceDelta viewsDelta = delta.findMember(new Path("app/views"));
         if (viewsDelta != null)
             // TODO: interpret delta

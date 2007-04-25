@@ -32,7 +32,8 @@ public class ProjectPresenter extends AbstractPresenter {
     
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
-        children.addAll(railsProject.getControllersCollection().getItems());
+        children.addAll(railsProject.getControllersCollection().getRootFolder().getControllersCollection()
+                .getControllers());
         children.addAll(railsProject.getModelsCollection().getItems());
         return children.toArray();
     }

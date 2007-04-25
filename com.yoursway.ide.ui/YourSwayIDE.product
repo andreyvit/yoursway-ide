@@ -31,7 +31,6 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -84,6 +83,7 @@
       <plugin id="org.eclipse.dltk.debug.ui"/>
       <plugin id="org.eclipse.dltk.launching"/>
       <plugin id="org.eclipse.dltk.ruby.core"/>
+      <plugin id="org.eclipse.dltk.ruby.debug"/>
       <plugin id="org.eclipse.dltk.ruby.debug.ui"/>
       <plugin id="org.eclipse.dltk.ruby.launching"/>
       <plugin id="org.eclipse.dltk.ruby.ui"/>

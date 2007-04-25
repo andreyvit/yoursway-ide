@@ -11,6 +11,10 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.IRailsProjectsCollection;
+import com.yoursway.rails.model.deltas.project.RailsProjectAddedDelta;
+import com.yoursway.rails.model.deltas.project.RailsProjectRemovedDelta;
+import com.yoursway.rails.model.internal.deltas.RailsDeltaBuilder;
+import com.yoursway.rails.model.internal.deltas.RailsProjectChangedDeltaBuilder;
 
 public class RailsProjectsCollection extends RailsElement implements IRailsProjectsCollection {
     
@@ -50,25 +54,34 @@ public class RailsProjectsCollection extends RailsElement implements IRailsProje
                 IProject project = (IProject) resource;
                 switch (delta.getKind()) {
                 case IResourceDelta.ADDED:
-                    addProject(project);
-                    deltaBuilder.somethingChanged();
+                    addProject(project, deltaBuilder);
                     break;
                 case IResourceDelta.REMOVED:
-                    removeProject(project);
-                    deltaBuilder.somethingChanged();
+                    removeProject(project, deltaBuilder);
                     break;
                 case IResourceDelta.CHANGED:
                     RailsProject railsProject = getProject(project);
-                    deltaBuilder.somethingChanged();
-                    railsProject.reconcile(deltaBuilder, delta);
+                    if (railsProject == null)
+                        addProject(project, deltaBuilder);
+                    else {
+                        RailsProjectChangedDeltaBuilder db = new RailsProjectChangedDeltaBuilder(railsProject);
+                        railsProject.reconcile(db, delta);
+                        deltaBuilder.add(db.build());
+                    }
                     break;
                 }
             }
         }
     }
     
-    private void addProject(IProject project) {
-        projects.put(project, new RailsProject(this, project));
+    private void addProject(IProject project, RailsDeltaBuilder deltaBuilder) {
+        RailsProject railsProject = projects.get(project);
+        if (railsProject != null) {
+            deltaBuilder.add(new RailsProjectRemovedDelta(railsProject));
+        }
+        railsProject = new RailsProject(this, project);
+        projects.put(project, railsProject);
+        deltaBuilder.add(new RailsProjectAddedDelta(railsProject));
     }
     
     private RailsProject getProject(IProject project) {
@@ -79,7 +92,9 @@ public class RailsProjectsCollection extends RailsElement implements IRailsProje
         return railsProject;
     }
     
-    private void removeProject(IProject project) {
-        projects.remove(project);
+    private void removeProject(IProject project, RailsDeltaBuilder deltaBuilder) {
+        RailsProject railsProject = projects.remove(project);
+        if (railsProject != null)
+            deltaBuilder.add(new RailsProjectRemovedDelta(railsProject));
     }
 }

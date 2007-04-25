@@ -1,10 +1,11 @@
-package com.yoursway.rails.model.internal;
+package com.yoursway.rails.model.internal.deltas;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
 import com.yoursway.rails.model.deltas.project.RailsProjectDelta;
+import com.yoursway.rails.model.internal.Rails;
 
 public class RailsDeltaBuilder {
     

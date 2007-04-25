@@ -5,6 +5,8 @@ import org.eclipse.dltk.core.IType;
 
 public interface IRailsController extends IRailsElement, IProvidesRailsProject {
     
+    String getDisplayName();
+    
     IFile getFile();
     
     String[] getPathComponents();
@@ -16,5 +18,7 @@ public interface IRailsController extends IRailsElement, IProvidesRailsProject {
     IRailsControllerActionsCollection getActionsCollection();
     
     IRailsControllerViewsCollection getViewsCollection();
+    
+    IRailsControllersFolder getParentFolder();
     
 }

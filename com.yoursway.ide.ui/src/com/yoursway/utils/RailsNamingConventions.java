@@ -1,5 +1,8 @@
 package com.yoursway.utils;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+
 public class RailsNamingConventions {
     
     private static final int IS_START = -1;
@@ -157,6 +160,14 @@ public class RailsNamingConventions {
     }
     
     public static final String DB_SCHEMA_RB = "db/schema.rb";
+    
+    public static final String APP_CONTROLLERS = "app/controllers";
+    
+    public static final Path APP_CONTROLLERS_PATH = new Path(APP_CONTROLLERS);
+    
+    public static final IPath APP_PATH = new Path("app");
+    
+    public static final IPath CONTROLLERS_PATH = new Path("controllers");
     
     public static Inflector createInitializedInflector() {
         Inflector inflect = new Inflector();

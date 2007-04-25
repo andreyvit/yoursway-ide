@@ -15,6 +15,7 @@ import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsModelsCollection;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.internal.deltas.RailsProjectChangedDeltaBuilder;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RailsFileUtils;
 
@@ -86,11 +87,9 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
         return null;
     }
     
-    private void addModel(RailsDeltaBuilder deltaBuilder, IFile file) {
+    private void addModel(RailsProjectChangedDeltaBuilder db, IFile file) {
         RailsModel railsModel = new RailsModel(this, file);
         models.add(railsModel);
-        if (deltaBuilder != null)
-            deltaBuilder.somethingChanged();
     }
     
     public Collection<? extends IRailsModel> getItems() {
@@ -103,7 +102,7 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
             refresh();
     }
     
-    public void reconcile(RailsDeltaBuilder deltaBuilder, IResourceDelta delta) {
+    public void reconcile(RailsProjectChangedDeltaBuilder db, IResourceDelta delta) {
         open();
         IResourceDelta folderDelta = delta.findMember(new Path("app/models"));
         if (folderDelta == null)
@@ -114,12 +113,12 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
             refresh();
             break;
         case IResourceDelta.CHANGED:
-            reconcileChildDeltas(deltaBuilder, delta);
+            reconcileChildDeltas(db, delta);
             break;
         }
     }
     
-    private void reconcileChildDeltas(RailsDeltaBuilder deltaBuilder, IResourceDelta parentDelta) {
+    private void reconcileChildDeltas(RailsProjectChangedDeltaBuilder db, IResourceDelta parentDelta) {
         for (IResourceDelta delta : parentDelta.getAffectedChildren()) {
             IResource resource = delta.getResource();
             switch (delta.getKind()) {
@@ -127,7 +126,7 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
                 switch (resource.getType()) {
                 case IResource.FILE:
                     if (canAddModelFor((IFile) resource))
-                        addModel(deltaBuilder, (IFile) resource);
+                        addModel(db, (IFile) resource);
                     break;
                 case IResource.FOLDER:
                     locateModelsInFolder((IFolder) resource);
@@ -139,7 +138,7 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
                 case IResource.FILE:
                     IRailsModel controller = findModelFor((IFile) resource);
                     if (controller != null)
-                        removeModel(deltaBuilder, controller, (IFile) resource);
+                        removeModel(db, controller, (IFile) resource);
                     break;
                 case IResource.FOLDER:
                     locateModelsInFolder((IFolder) resource);
@@ -151,10 +150,10 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
                 case IResource.FILE:
                     RailsModel model = findModelFor((IFile) resource);
                     if (model != null)
-                        model.reconcile(deltaBuilder, delta);
+                        model.reconcile(db, delta);
                     break;
                 case IResource.FOLDER:
-                    reconcileChildDeltas(deltaBuilder, delta);
+                    reconcileChildDeltas(db, delta);
                     break;
                 }
                 break;
@@ -162,10 +161,8 @@ public class RailsModelsCollection extends RailsElement implements IRailsModelsC
         }
     }
     
-    private void removeModel(RailsDeltaBuilder deltaBuilder, IRailsModel model, IFile resource) {
+    private void removeModel(RailsProjectChangedDeltaBuilder db, IRailsModel model, IFile resource) {
         models.remove(model);
-        if (deltaBuilder != null)
-            deltaBuilder.somethingChanged();
     }
     
     public boolean isEmpty() {
