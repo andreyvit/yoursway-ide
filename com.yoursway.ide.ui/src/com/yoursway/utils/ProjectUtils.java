@@ -1,7 +1,10 @@
 package com.yoursway.utils;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.EnumSet;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -18,6 +21,8 @@ import org.eclipse.dltk.ui.DLTKUIPlugin;
 import com.yoursway.ide.rcp.YourSwayIDEApplication;
 
 public class ProjectUtils {
+    private static final String[] RAILS_OBLIGATORY_DIRS = new String[] { "app", "config", "public" };
+    
     public enum ProjectNameStatus {
         VALID, DUPLICATE, INVALID
     }
@@ -111,7 +116,7 @@ public class ProjectUtils {
             return null;
         }
         
-        File projectFile = getDotProjectFile(path);
+        File projectFile = getFile(path, IProjectDescription.DESCRIPTION_FILE_NAME);
         ProjectRecord projectRecord = new ProjectRecord(projectFile);
         String[] natureIds = projectRecord.description.getNatureIds();
         EnumSet<KnownNature> natures = EnumSet.noneOf(KnownNature.class);
@@ -127,13 +132,12 @@ public class ProjectUtils {
         return new EclipseProjectInfo(projectRecord.getProjectName(), natures);
     }
     
-    private static File getDotProjectFile(File directory) {
+    public static File getFile(File directory, String name) {
         File[] contents = directory.listFiles();
         // first look for project description files
-        final String dotProject = IProjectDescription.DESCRIPTION_FILE_NAME;
         for (int i = 0; i < contents.length; i++) {
             File file = contents[i];
-            if (file.isFile() && file.getName().equals(dotProject)) {
+            if (file.isFile() && file.getName().equals(name)) {
                 return file;
             }
         }
@@ -150,8 +154,38 @@ public class ProjectUtils {
      * @return
      */
     public static boolean looksLikeRailsApplication(File path) {
-        // TODO 4bur
+        if (!hasDirectories(path, RAILS_OBLIGATORY_DIRS)) {
+            return false;
+        }
+        File config = new File(path.getAbsolutePath() + File.separator + "config");
+        if (getFile(config, "environment.rb") != null || getFile(config, "boot.rb") != null) {
+            return true;
+        }
         return false;
+    }
+    
+    /**
+     * Tests if path has subdirectories with given names
+     * 
+     * @param path
+     * @param directoryList
+     * @return True or False
+     */
+    private static boolean hasDirectories(File path, String[] directoryList) {
+        File[] contents = path.listFiles();
+        // first look for project description files
+        HashSet<String> dirHash = new HashSet<String>();
+        for (String dir : directoryList) {
+            dirHash.add(dir);
+        }
+        
+        for (int i = 0; i < contents.length; i++) {
+            File file = contents[i];
+            if (file.isDirectory()) {
+                dirHash.remove(file.getName());
+            }
+        }
+        return dirHash.isEmpty();
     }
     
     /**
@@ -161,8 +195,7 @@ public class ProjectUtils {
      *         <tt>.tmproj</tt> file.
      */
     public static boolean looksLikeTextMateProject(File path) {
-        // TODO 4bur
-        return false;
+        return getFile(path, ".tmproj") != null;
     }
     
     /**
@@ -171,8 +204,16 @@ public class ProjectUtils {
      * @see YourSwayIDEApplication#readWorkspaceVersion
      */
     public static boolean looksLikeEclipseWorkspace(File path) {
-        // TODO 4bur
-        return false;
+        if (!hasDirectories(path, new String[] { ProjectImportUtils.METADATA_FOLDER }))
+            return false;
+        String strPath = path.getAbsolutePath().replace(File.separatorChar, '/');
+        URL url;
+        try {
+            url = new URL("file", null, strPath);
+        } catch (MalformedURLException e) {
+            return false;
+        } //$NON-NLS-1$
+        return (YourSwayIDEApplication.readWorkspaceVersion(url) != null);
     }
     
     public static abstract class FailedToCreateProjectException extends Exception {

@@ -321,7 +321,7 @@ public class YourSwayIDEApplication implements IApplication, IExecutableExtensio
      * Look at the argument URL for the workspace's version information. Return
      * that version if found and null otherwise.
      */
-    private static String readWorkspaceVersion(URL workspace) {
+    public static String readWorkspaceVersion(URL workspace) {
         File versionFile = getVersionFile(workspace, false);
         if (versionFile == null || !versionFile.exists()) {
             return null;

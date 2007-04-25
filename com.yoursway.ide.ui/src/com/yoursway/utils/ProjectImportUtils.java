@@ -140,7 +140,6 @@ public class ProjectImportUtils {
     }
     
     public void runCollectProjects(Shell shell, IProgressMonitor monitor, String path) {
-        
         monitor.beginTask(DataTransferMessages.WizardProjectsImportPage_SearchingMessage, 100);
         File directory = new File(path);
         ProjectRecord[] selectedProjects = new ProjectRecord[0];
