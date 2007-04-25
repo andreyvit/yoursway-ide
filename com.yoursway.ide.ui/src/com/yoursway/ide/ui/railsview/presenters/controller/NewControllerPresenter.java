@@ -64,7 +64,8 @@ public class NewControllerPresenter extends AbstractPresenter {
                 
                 @Override
                 protected IStatus run(IProgressMonitor monitor) {
-                    final IFile file = createFile(body, folder, fileName + ".rb");
+                    final IFile file = createFile(body, folder, fileName + ".rb",
+                            "Controller creation failed");
                     if (file != null) {
                         Display.getDefault().asyncExec(new Runnable() {
                             public void run() {

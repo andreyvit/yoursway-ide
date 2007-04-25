@@ -5,9 +5,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.core.DLTKCore;
@@ -108,7 +110,22 @@ public abstract class AbstractPresenter implements IElementPresenter {
         deleteJob.schedule();
     }
     
-    protected IFile createFile(String body, IFolder folder, final String fileNameWithPath) {
+    protected IFile createFile(String body, IFolder folder, String fileNameWithPath,
+            String userActionFailedMessage) {
+        if (fileNameWithPath.contains("/")) {
+            Path path = new Path(fileNameWithPath);
+            IPath purePath = path.removeLastSegments(1);
+            IFolder folderToCreate = folder.getFolder(purePath);
+            if (!folderToCreate.exists())
+                try {
+                    folderToCreate.create(true, true, null);
+                } catch (CoreException e) {
+                    Activator.reportException(e, userActionFailedMessage);
+                    return null;
+                }
+            folder = folderToCreate;
+            fileNameWithPath = path.lastSegment();
+        }
         IModelElement modelElement = DLTKCore.create(folder);
         if (modelElement instanceof IProjectFragment) {
             IProjectFragment projectFragment = (IProjectFragment) modelElement;
@@ -122,7 +139,7 @@ public abstract class AbstractPresenter implements IElementPresenter {
                 IFile newFile = (IFile) sourceModule.getCorrespondingResource();
                 return newFile;
             } catch (ModelException e) {
-                Activator.reportException(e, "Controller creation failed");
+                Activator.reportException(e, userActionFailedMessage);
             }
         } else {
             System.out.println("Context.setValue() - modelElement is " + modelElement.getClass());
