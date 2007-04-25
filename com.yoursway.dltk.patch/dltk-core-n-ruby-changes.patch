@@ -1,12 +1,28 @@
 ### Eclipse Workspace Patch 1.0
+#P org.eclipse.dltk.ruby.core
+Index: src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.core/src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java,v
+retrieving revision 1.24
+diff -u -r1.24 RubyModelUtils.java
+--- src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	11 Apr 2007 10:38:28 -0000	1.24
++++ src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	25 Apr 2007 05:25:15 -0000
+@@ -237,6 +237,7 @@
+ 			String prefix) {
+ 		List result = new ArrayList();
+ 		if (type instanceof RubyClassType) {
++		    System.out.println("SEARCH CLASS METHODS for " + ((RubyClassType) type).getModelKey());
+ 			RubyClassType rubyClassType = (RubyClassType) type;
+ 			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+ 					.createRubyClass(rubyClassType);
 #P org.eclipse.dltk.ruby.ui
 Index: plugin.xml
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/plugin.xml,v
-retrieving revision 1.15
-diff -u -r1.15 plugin.xml
---- plugin.xml	6 Apr 2007 07:21:26 -0000	1.15
-+++ plugin.xml	9 Apr 2007 05:55:27 -0000
+retrieving revision 1.17
+diff -u -r1.17 plugin.xml
+--- plugin.xml	20 Apr 2007 15:24:28 -0000	1.17
++++ plugin.xml	25 Apr 2007 05:25:20 -0000
 @@ -6,7 +6,7 @@
  	  <editor
  	        class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
@@ -22,7 +38,7 @@ RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.rub
 retrieving revision 1.7
 diff -u -r1.7 MANIFEST.MF
 --- META-INF/MANIFEST.MF	5 Apr 2007 07:57:22 -0000	1.7
-+++ META-INF/MANIFEST.MF	9 Apr 2007 05:55:27 -0000
++++ META-INF/MANIFEST.MF	25 Apr 2007 05:25:20 -0000
 @@ -24,12 +24,19 @@
   org.eclipse.debug.core
  Eclipse-LazyStart: true
