@@ -4,37 +4,32 @@ import java.io.File;
 import java.util.EnumSet;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
 
 import com.yoursway.ide.rcp.YourSwayIDEApplication;
 
 public class ProjectUtils {
-    
     public enum ProjectNameStatus {
-        
-        VALID,
-
-        DUPLICATE,
-
-        INVALID
-        
+        VALID, DUPLICATE, INVALID
     }
     
     public enum KnownNature {
-        
-        YOURSWAY_RAILS,
-
-        DLTK_RUBY,
-
-        RUBYGEARS,
-
-        RDT,
-
-        RADRAILS,
-
-        UNKNOWN_NATURE
-        
+        YOURSWAY_RAILS, DLTK_RUBY, RDT, RADRAILS, UNKNOWN_NATURE
     }
+    
+    public static String YOURSWAY_RAILS_NATURE = "com.yoursway.ide.rails.nature";
+    public static String DLTK_RUBY_NATURE = "org.eclipse.dltk.ruby.core.nature";
+    
+    //public static String RUBYGEARS_NATURE = "com.xored.rubygears.project.core.FreezedRailsNature";
     
     public static class EclipseProjectInfo {
         
@@ -52,10 +47,22 @@ public class ProjectUtils {
     
     /**
      * Checks if a project with the given name can be created.
+     * 
+     * @throws FailedToCreateProjectException
      */
-    public static ProjectNameStatus checkProjectName(String projectName) {
-        // TODO 4bur
+    public static ProjectNameStatus checkProjectName(String projectName)
+            throws FailedToCreateProjectException {
+        final IWorkspace workspace = DLTKUIPlugin.getWorkspace();
+        final IStatus nameStatus = workspace.validateName(projectName, IResource.PROJECT);
+        if (!nameStatus.isOK()) {
+            throw new FailedToCreateProjectBecauseAnotherProjectWithThisNameExistsException(nameStatus
+                    .getMessage());
+        }
         return ProjectNameStatus.VALID;
+    }
+    
+    public static IProject getProjectHandle(File fNameGroup) {
+        return ResourcesPlugin.getWorkspace().getRoot().getProject(fNameGroup.getName());
     }
     
     /**
@@ -69,7 +76,67 @@ public class ProjectUtils {
      *         <code>.project</code> file.
      */
     public static EclipseProjectInfo looksLikeEclipseProject(File path) {
-        // TODO 4bur
+        final IWorkspace workspace = DLTKUIPlugin.getWorkspace();
+        final String name = path.getName();
+        // check whether the project name field is empty
+        if (name.length() == 0) {
+            return null;
+        }
+        // check whether the project name is valid
+        final IStatus nameStatus = workspace.validateName(name, IResource.PROJECT);
+        if (!nameStatus.isOK()) {
+            return null;
+        }
+        // check whether project already exists
+        final IProject handle = getProjectHandle(path);
+        if (handle.exists()) {
+            return null;
+        }
+        final String location = path.getAbsolutePath();
+        // check whether location is empty
+        if (location.length() == 0) {
+            return null;
+        }
+        // check whether the location is a syntactically correct path
+        if (!Path.EMPTY.isValidPath(location)) {
+            return null;
+        }
+        // check whether the location has the workspace as prefix
+        IPath projectPath = Path.fromOSString(location);
+        if (Platform.getLocation().isPrefixOf(projectPath)) {
+            return null;
+        }
+        final IStatus locationStatus = workspace.validateProjectLocation(handle, projectPath);
+        if (!locationStatus.isOK()) {
+            return null;
+        }
+        
+        File projectFile = getDotProjectFile(path);
+        ProjectRecord projectRecord = new ProjectRecord(projectFile);
+        String[] natureIds = projectRecord.description.getNatureIds();
+        EnumSet<KnownNature> natures = EnumSet.noneOf(KnownNature.class);
+        for (String nature : natureIds) {
+            if (nature.equalsIgnoreCase(DLTK_RUBY_NATURE)) {
+                natures.add(KnownNature.DLTK_RUBY);
+            }
+            if (nature.equalsIgnoreCase(YOURSWAY_RAILS_NATURE)) {
+                natures.add(KnownNature.YOURSWAY_RAILS);
+            }
+            //FIXME add other natures
+        }
+        return new EclipseProjectInfo(projectRecord.getProjectName(), natures);
+    }
+    
+    private static File getDotProjectFile(File directory) {
+        File[] contents = directory.listFiles();
+        // first look for project description files
+        final String dotProject = IProjectDescription.DESCRIPTION_FILE_NAME;
+        for (int i = 0; i < contents.length; i++) {
+            File file = contents[i];
+            if (file.isFile() && file.getName().equals(dotProject)) {
+                return file;
+            }
+        }
         return null;
     }
     
@@ -118,6 +185,10 @@ public class ProjectUtils {
             super(cause);
         }
         
+        public FailedToCreateProjectException(String message) {
+            super(message);
+        }
+        
     }
     
     public static abstract class FailedToConvertProjectException extends Exception {
@@ -134,6 +205,10 @@ public class ProjectUtils {
     
     public static class FailedToCreateProjectBecauseAnotherProjectWithThisNameExistsException extends
             FailedToCreateProjectException {
+        
+        public FailedToCreateProjectBecauseAnotherProjectWithThisNameExistsException(String message) {
+            super(message);
+        }
         
         private static final long serialVersionUID = 1L;
         
