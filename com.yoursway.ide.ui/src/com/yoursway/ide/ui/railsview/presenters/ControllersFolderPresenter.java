@@ -13,16 +13,15 @@ import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
-import com.yoursway.rails.model.IRailsModel;
-import com.yoursway.rails.model.IRailsTable;
+import com.yoursway.rails.model.IRailsControllersFolder;
 
-public class ModelPresenter extends AbstractPresenter {
+public class ControllersFolderPresenter extends AbstractPresenter {
     
-    private final IRailsModel railsModel;
+    private final IRailsControllersFolder controllersFolder;
     
-    public ModelPresenter(IPresenterOwner owner, IRailsModel railsModel) {
+    public ControllersFolderPresenter(IPresenterOwner owner, IRailsControllersFolder controllersFolder) {
         super(owner);
-        this.railsModel = railsModel;
+        this.controllersFolder = controllersFolder;
     }
     
     public boolean canEditInPlace() {
@@ -30,31 +29,27 @@ public class ModelPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        return railsModel.getName();
+        return controllersFolder.getCorrespondingFolder().getProjectRelativePath().toString();
     }
     
     public Object[] getChildren() {
-        IRailsTable table = railsModel.getRailsProject().getSchema().findByName(railsModel.getTableName());
         Collection<Object> children = new ArrayList<Object>();
-        if (table != null)
-            children.addAll(table.getFields().getItems());
         return children.toArray();
     }
     
     public ImageDescriptor getImage() {
-        return RailsViewImages.MODEL_ICON;
+        return RailsViewImages.ACTION_ICON;
     }
     
     public Object getParent() {
-        return railsModel.getRailsProject();
+        return null;
     }
     
     public boolean hasChildren() {
-        return getChildren().length > 0;
+        return false;
     }
     
     public void handleDoubleClick(IProvidesTreeItem context) {
-        openEditor(railsModel.getCorrespondingFile());
     }
     
     public void fillContextMenu(IContextMenuContext context) {

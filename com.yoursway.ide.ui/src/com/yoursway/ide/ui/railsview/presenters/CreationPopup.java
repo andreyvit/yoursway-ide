@@ -1,4 +1,4 @@
-package com.yoursway.ide.ui.railsview.presenters.controller;
+package com.yoursway.ide.ui.railsview.presenters;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,9 +19,9 @@ import com.yoursway.ui.popup.SnapPosition;
 import com.yoursway.ui.popup.table.InfoEntry;
 import com.yoursway.ui.popup.table.TableBasedPopup;
 
-public class ControllerCreationPopup extends TableBasedPopup {
+public class CreationPopup extends TableBasedPopup {
     
-    public ControllerCreationPopup(IPopupHost popupOwner, Collection<? extends SnapPosition> snapPositions) {
+    public CreationPopup(IPopupHost popupOwner, Collection<? extends SnapPosition> snapPositions) {
         super(popupOwner, snapPositions, ParentShellActivation.ACTIVATE_PARENT_WHEN_POSSIBLE);
     }
     

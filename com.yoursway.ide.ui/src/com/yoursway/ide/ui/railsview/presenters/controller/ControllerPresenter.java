@@ -6,7 +6,6 @@ package com.yoursway.ide.ui.railsview.presenters.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Event;
@@ -67,18 +66,6 @@ public class ControllerPresenter extends AbstractPresenter {
         }
     }
     
-    public final class DeleteAction extends Action {
-        
-        private DeleteAction() {
-            super("Delete " + railsController.getFile().getProjectRelativePath());
-        }
-        
-        @Override
-        public void runWithEvent(Event event) {
-            scheduleDeleteJob(new IResource[] { railsController.getFile() });
-        }
-    }
-    
     private final IRailsController railsController;
     
     public ControllerPresenter(IPresenterOwner owner, IRailsController railsController) {
@@ -92,7 +79,7 @@ public class ControllerPresenter extends AbstractPresenter {
     
     public String getCaption() {
         String[] classNameComponents = railsController.getExpectedClassName();
-        return RailsNamingConventions.joinNamespaces(classNameComponents);
+        return "  " + RailsNamingConventions.joinNamespaces(classNameComponents);
     }
     
     public Object[] getChildren() {
@@ -121,6 +108,6 @@ public class ControllerPresenter extends AbstractPresenter {
     
     public void fillContextMenu(final IContextMenuContext context) {
         context.getMenuManager().add(new RenameAction(new Context(getOwner(), context, railsController)));
-        context.getMenuManager().add(new DeleteAction());
+        context.getMenuManager().add(new DeleteFileAction(railsController.getFile()));
     }
 }

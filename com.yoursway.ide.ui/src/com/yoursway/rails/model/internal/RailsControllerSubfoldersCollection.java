@@ -61,7 +61,7 @@ public class RailsControllerSubfoldersCollection extends RailsElement implements
             RailsControllersFolder existingFolder = subfolders.get(subfolder);
             if (existingFolder != null)
                 removed(existingFolder);
-            RailsControllersFolder railsFolder = new RailsControllersFolder(parent, folder);
+            RailsControllersFolder railsFolder = new RailsControllersFolder(parent, subfolder);
             subfolders.put(subfolder, railsFolder);
             if (deltaBuilder != null)
                 deltaBuilder.addChildFolderDelta(new ControllersFolderAddedDelta(railsFolder));

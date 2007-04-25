@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.yoursway.ide.ui.railsview.presenters.controller;
+package com.yoursway.ide.ui.railsview.presenters.model;
 
 import java.util.Collection;
 
@@ -12,9 +12,9 @@ import com.yoursway.ui.popup.IPopupHost;
 import com.yoursway.ui.popup.SnapPosition;
 import com.yoursway.ui.popup.table.TableBasedPopup;
 
-public final class ControllerCreationMode extends PopupBasedMode {
+public final class ModelCreationMode extends PopupBasedMode {
     
-    public ControllerCreationMode(IRenameContext renameContext) {
+    public ModelCreationMode(IRenameContext renameContext) {
         super(renameContext);
     }
     
@@ -25,7 +25,7 @@ public final class ControllerCreationMode extends PopupBasedMode {
     
     @Override
     protected String createHint() {
-        return "admin/foo_bar or Admin::FooBar";
+        return "stock/quote or Stock::Quote";
     }
     
 }

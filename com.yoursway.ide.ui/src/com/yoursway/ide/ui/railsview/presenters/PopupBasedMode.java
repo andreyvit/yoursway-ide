@@ -122,7 +122,7 @@ public abstract class PopupBasedMode implements INonModalMode {
             }
             
         });
-        final String hint = "admin/foo_bar or Admin::FooBar";
+        final String hint = createHint();
         popup2.getTextControl().setText(hint);
         popup2.getTextControl().setForeground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
         popup2.getTextControl().addModifyListener(new ModifyListener() {
@@ -197,6 +197,8 @@ public abstract class PopupBasedMode implements INonModalMode {
             
         });
     }
+    
+    protected abstract String createHint();
     
     protected abstract TableBasedPopup createPopup(IPopupHost owner, Collection<SnapPosition> snaps);
     

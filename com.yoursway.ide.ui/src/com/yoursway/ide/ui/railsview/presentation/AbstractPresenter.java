@@ -19,7 +19,9 @@ import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -30,6 +32,21 @@ import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 import com.yoursway.ide.ui.Activator;
 
 public abstract class AbstractPresenter implements IElementPresenter {
+    
+    public final class DeleteFileAction extends Action {
+        
+        private final IFile file;
+        
+        public DeleteFileAction(IFile file) {
+            super("Delete " + file.getProjectRelativePath());
+            this.file = file;
+        }
+        
+        @Override
+        public void runWithEvent(Event event) {
+            scheduleDeleteJob(new IResource[] { file });
+        }
+    }
     
     private final IPresenterOwner owner;
     

@@ -21,4 +21,9 @@ public final class RenameMode extends PopupBasedMode {
         return new RenamePopup(owner, snaps);
     }
     
+    @Override
+    protected String createHint() {
+        return null;
+    }
+    
 }

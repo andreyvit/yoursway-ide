@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.yoursway.ide.ui.railsview.presenters.controller;
+package com.yoursway.ide.ui.railsview.presenters.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +28,7 @@ import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.StringUtils;
 
-public class NewControllerPresenter extends AbstractPresenter {
+public class NewModelPresenter extends AbstractPresenter {
     
     private final IRailsProject railsProject;
     
@@ -49,23 +49,19 @@ public class NewControllerPresenter extends AbstractPresenter {
         public void setValue(String value) {
             String className = RailsNamingConventions.joinNamespaces(RailsNamingConventions
                     .camelize(RailsNamingConventions.splitPath(value)));
-            if (!className.endsWith("Controller"))
-                className += "Controller";
             
             final String fileName = StringUtils.join(RailsNamingConventions.underscore(RailsNamingConventions
                     .splitNamespaces(className)), "/");
             
-            final String body = "\n" + "class " + className + " < ApplicationController\n" + "end\n";
+            final String body = "\n" + "class " + className + " < ActiveRecord::Base\n" + "end\n";
             
-            final IFolder folder = railsProject.getControllersCollection().getRootFolder()
-                    .getCorrespondingFolder();
+            final IFolder folder = railsProject.getModelsCollection().getModelsFolder();
             
-            new Job("Creating controller") {
+            new Job("Creating model") {
                 
                 @Override
                 protected IStatus run(IProgressMonitor monitor) {
-                    final IFile file = createFile(body, folder, fileName + ".rb",
-                            "Controller creation failed");
+                    final IFile file = createFile(body, folder, fileName + ".rb", "Model creation failed");
                     if (file != null) {
                         Display.getDefault().asyncExec(new Runnable() {
                             public void run() {
@@ -82,10 +78,10 @@ public class NewControllerPresenter extends AbstractPresenter {
     
     public final static class NewAction extends Action {
         private final IRenameContext renameContext;
-        private ControllerCreationMode renameMode;
+        private ModelCreationMode renameMode;
         
         private NewAction(IRenameContext renameContext) {
-            super("New Controller");
+            super("New Model");
             this.renameContext = renameContext;
         }
         
@@ -96,12 +92,12 @@ public class NewControllerPresenter extends AbstractPresenter {
         
         @Override
         public void run() {
-            renameMode = new ControllerCreationMode(renameContext);
+            renameMode = new ModelCreationMode(renameContext);
             renameMode.enterMode();
         }
     }
     
-    public NewControllerPresenter(IPresenterOwner owner, IRailsProject railsProject) {
+    public NewModelPresenter(IPresenterOwner owner, IRailsProject railsProject) {
         super(owner);
         this.railsProject = railsProject;
     }
@@ -111,7 +107,7 @@ public class NewControllerPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        return "  " + "New Controller (double-click to create)";
+        return "New Model (double-click to create)";
     }
     
     public Object[] getChildren() {
