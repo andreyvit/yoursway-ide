@@ -1,12 +1,12 @@
 package com.yoursway.ide.ui.railsview.presentation;
 
 import com.yoursway.ide.ui.railsview.presenters.ActionPresenter;
-import com.yoursway.ide.ui.railsview.presenters.ControllerPresenter;
 import com.yoursway.ide.ui.railsview.presenters.FieldPresenter;
 import com.yoursway.ide.ui.railsview.presenters.ModelPresenter;
 import com.yoursway.ide.ui.railsview.presenters.PartialPresenter;
 import com.yoursway.ide.ui.railsview.presenters.ProjectPresenter;
 import com.yoursway.ide.ui.railsview.presenters.ViewPresenter;
+import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
 import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsField;
@@ -24,6 +24,8 @@ public class ElementPresenterFactory implements IPresenterFactory {
     }
     
     public IElementPresenter createPresenter(Object element) {
+        if (element instanceof IElementPresenter)
+            return (IElementPresenter) element;
         if (element instanceof IRailsProject)
             return new ProjectPresenter(owner, (IRailsProject) element);
         if (element instanceof IRailsController)

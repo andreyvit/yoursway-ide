@@ -14,7 +14,7 @@ public interface IElementPresenter {
     
     Object getParent();
     
-    void handleDoubleClick();
+    void handleDoubleClick(IProvidesTreeItem context);
     
     boolean canEditInPlace();
     

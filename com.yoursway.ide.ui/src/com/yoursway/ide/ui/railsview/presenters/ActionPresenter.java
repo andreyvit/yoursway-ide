@@ -12,6 +12,7 @@ import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.rails.model.IRailsAction;
 import com.yoursway.ruby.model.RubyMethod;
 
@@ -49,7 +50,7 @@ public class ActionPresenter extends AbstractPresenter {
         return false;
     }
     
-    public void handleDoubleClick() {
+    public void handleDoubleClick(IProvidesTreeItem context) {
         RubyMethod method = railsAction.getMethod();
         if (method != null)
             openEditor(method.getDLTKMethod());

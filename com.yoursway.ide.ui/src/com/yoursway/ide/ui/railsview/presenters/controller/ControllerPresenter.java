@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.yoursway.ide.ui.railsview.presenters;
+package com.yoursway.ide.ui.railsview.presenters.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Event;
@@ -14,16 +15,47 @@ import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
+import com.yoursway.ide.ui.railsview.presenters.RenameContextAdapter;
+import com.yoursway.ide.ui.railsview.presenters.RenameMode;
 import com.yoursway.rails.model.IRailsController;
 import com.yoursway.utils.RailsNamingConventions;
+import com.yoursway.utils.StringUtils;
 
 public class ControllerPresenter extends AbstractPresenter {
     
+    private final static class Context extends RenameContextAdapter {
+        
+        private final IRailsController railsController;
+        
+        public Context(IPresenterOwner presenterOwner, IContextMenuContext contextMenuContext,
+                IRailsController railsController) {
+            super(presenterOwner, contextMenuContext);
+            this.railsController = railsController;
+        }
+        
+        public IRailsController getRailsController() {
+            return railsController;
+        }
+        
+        public String getInitialValue() {
+            return StringUtils.join(railsController.getPathComponents(), "/");
+        }
+        
+        public boolean isValidValue(String value) {
+            return true;
+        }
+        
+        public void setValue(String value) {
+        }
+        
+    }
+    
     public final static class RenameAction extends Action {
-        private final IRenameContext renameContext;
+        private final Context renameContext;
         private RenameMode renameMode;
         
-        private RenameAction(IRenameContext renameContext) {
+        private RenameAction(Context renameContext) {
             super("Rename " + renameContext.getRailsController().getDisplayName());
             this.renameContext = renameContext;
         }
@@ -32,6 +64,18 @@ public class ControllerPresenter extends AbstractPresenter {
         public void runWithEvent(Event event) {
             renameMode = new RenameMode(renameContext);
             renameMode.enterMode();
+        }
+    }
+    
+    public final class DeleteAction extends Action {
+        
+        private DeleteAction() {
+            super("Delete " + railsController.getFile().getProjectRelativePath());
+        }
+        
+        @Override
+        public void runWithEvent(Event event) {
+            scheduleDeleteJob(new IResource[] { railsController.getFile() });
         }
     }
     
@@ -71,12 +115,12 @@ public class ControllerPresenter extends AbstractPresenter {
                 || railsController.getViewsCollection().hasItems();
     }
     
-    public void handleDoubleClick() {
+    public void handleDoubleClick(IProvidesTreeItem context) {
         openEditor(railsController.getFile());
     }
     
     public void fillContextMenu(final IContextMenuContext context) {
-        context.getMenuManager().add(
-                new RenameAction(new RenameContextAdapter(getOwner(), context, railsController)));
+        context.getMenuManager().add(new RenameAction(new Context(getOwner(), context, railsController)));
+        context.getMenuManager().add(new DeleteAction());
     }
 }

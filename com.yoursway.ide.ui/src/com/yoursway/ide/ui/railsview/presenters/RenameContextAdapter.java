@@ -5,21 +5,17 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPage;
 
-import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
-import com.yoursway.rails.model.IRailsController;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 
-public class RenameContextAdapter implements IRenameContext {
+public abstract class RenameContextAdapter implements IRenameContext {
     
     private final IPresenterOwner presenterOwner;
-    private final IContextMenuContext contextMenuContext;
-    private final IRailsController railsController;
+    private final IProvidesTreeItem contextMenuContext;
     
-    public RenameContextAdapter(IPresenterOwner presenterOwner, IContextMenuContext contextMenuContext,
-            IRailsController railsController) {
+    public RenameContextAdapter(IPresenterOwner presenterOwner, IProvidesTreeItem contextMenuContext) {
         this.presenterOwner = presenterOwner;
         this.contextMenuContext = contextMenuContext;
-        this.railsController = railsController;
     }
     
     public Tree getTree() {
@@ -32,10 +28,6 @@ public class RenameContextAdapter implements IRenameContext {
     
     public IWorkbenchPage getWorkbenchPage() {
         return presenterOwner.getWorkbenchPage();
-    }
-    
-    public IRailsController getRailsController() {
-        return railsController;
     }
     
     public TreeItem getTreeItem() {

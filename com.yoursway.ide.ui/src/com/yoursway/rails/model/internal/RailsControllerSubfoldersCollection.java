@@ -38,16 +38,22 @@ public class RailsControllerSubfoldersCollection extends RailsElement implements
         
         @Override
         protected void visitAddedDelta(IResourceDelta delta) {
+            if (delta.getResource().getType() != IResource.FOLDER)
+                return;
             add((IFolder) delta.getResource());
         }
         
         @Override
         protected void visitChangedDelta(IResourceDelta delta) {
+            if (delta.getResource().getType() != IResource.FOLDER)
+                return;
             changed((IFolder) delta.getResource(), delta);
         }
         
         @Override
         protected void visitRemovedDelta(IResourceDelta delta) {
+            if (delta.getResource().getType() != IResource.FOLDER)
+                return;
             removed((IFolder) delta.getResource());
         }
         

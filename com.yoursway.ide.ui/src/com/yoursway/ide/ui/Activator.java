@@ -3,7 +3,9 @@ package com.yoursway.ide.ui;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -60,9 +62,16 @@ public class Activator extends AbstractUIPlugin {
     }
     
     public static void log(Throwable e) {
+        log(e, null);
+    }
+    
+    public static void log(Throwable e, String additionalMessage) {
         if (LOG_EXCEPTIONS_TO_CONSOLE)
             e.printStackTrace(System.err);
-        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e));
+        String message = e.getMessage();
+        if (additionalMessage != null)
+            message = additionalMessage + ": " + message;
+        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, e));
     }
     
     public static void log(String string) {
@@ -106,5 +115,12 @@ public class Activator extends AbstractUIPlugin {
             }
         }
         return condition;
+    }
+    
+    public static void reportException(Throwable e, String failedUserActionMessage) {
+        log(e, failedUserActionMessage);
+        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                failedUserActionMessage, "The following error occured:\n\n" + e.getMessage() + "\n\n"
+                        + "See error log for details.");
     }
 }

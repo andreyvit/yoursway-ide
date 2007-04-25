@@ -5,8 +5,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPage;
 
-import com.yoursway.rails.model.IRailsController;
-
 public interface IRenameContext {
     
     IWorkbenchPage getWorkbenchPage();
@@ -17,6 +15,10 @@ public interface IRenameContext {
     
     TreeItem getTreeItem();
     
-    IRailsController getRailsController();
+    String getInitialValue();
+    
+    boolean isValidValue(String value);
+    
+    void setValue(String value);
     
 }

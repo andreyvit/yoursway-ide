@@ -120,6 +120,10 @@ public class RailsNamingConventions {
         return name.split("::");
     }
     
+    public static String[] splitPath(String name) {
+        return name.split("/");
+    }
+    
     public static String joinNamespaces(String[] name) {
         return StringUtils.join(name, "::");
     }

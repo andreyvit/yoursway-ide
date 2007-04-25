@@ -55,6 +55,8 @@ public class PopupPoll {
     }
     
     public void publishResultsInNewspaper() {
+        if (popup.getShell() == null || popup.getShell().isDisposed())
+            return;
         if (strongestResult == Result.CLOSE) {
             popup.close();
         } else if (strongestResult == Result.HIDDEN) {

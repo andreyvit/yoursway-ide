@@ -12,6 +12,7 @@ import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsTable;
 
@@ -52,7 +53,7 @@ public class ModelPresenter extends AbstractPresenter {
         return getChildren().length > 0;
     }
     
-    public void handleDoubleClick() {
+    public void handleDoubleClick(IProvidesTreeItem context) {
         openEditor(railsModel.getCorrespondingFile());
     }
     

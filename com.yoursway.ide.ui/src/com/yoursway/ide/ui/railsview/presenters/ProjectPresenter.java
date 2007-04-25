@@ -11,6 +11,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
+import com.yoursway.ide.ui.railsview.presenters.controller.NewControllerPresenter;
 import com.yoursway.rails.model.IRailsProject;
 
 public class ProjectPresenter extends AbstractPresenter {
@@ -34,6 +36,7 @@ public class ProjectPresenter extends AbstractPresenter {
         Collection<Object> children = new ArrayList<Object>();
         children.addAll(railsProject.getControllersCollection().getRootFolder().getControllersCollection()
                 .getControllers());
+        children.add(new NewControllerPresenter(getOwner(), railsProject));
         children.addAll(railsProject.getModelsCollection().getItems());
         return children.toArray();
     }
@@ -50,7 +53,7 @@ public class ProjectPresenter extends AbstractPresenter {
         return true;
     }
     
-    public void handleDoubleClick() {
+    public void handleDoubleClick(IProvidesTreeItem context) {
     }
     
     public void fillContextMenu(IContextMenuContext context) {

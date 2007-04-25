@@ -9,6 +9,7 @@ import java.util.Collection;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.rails.model.IRailsBaseView;
 
 public abstract class BaseViewPresenter extends AbstractPresenter {
@@ -37,7 +38,7 @@ public abstract class BaseViewPresenter extends AbstractPresenter {
         return false;
     }
     
-    public void handleDoubleClick() {
+    public void handleDoubleClick(IProvidesTreeItem context) {
         openEditor(railsBaseView.getCorrespondingFile());
     }
     

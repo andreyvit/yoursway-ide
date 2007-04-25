@@ -28,6 +28,7 @@ import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IElementPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterFactory;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presentation.PresentersBasedProvider;
 import com.yoursway.rails.model.IRailsProject;
 
@@ -89,7 +90,14 @@ public class RailsProjectTree implements IPresenterOwner {
         ISelection selection = viewer.getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         if (obj != null) {
-            presenterFactory.createPresenter(obj).handleDoubleClick();
+            final TreeItem treeItem = viewer.getCorrespondingWidget(obj);
+            presenterFactory.createPresenter(obj).handleDoubleClick(new IProvidesTreeItem() {
+                
+                public TreeItem getTreeItem() {
+                    return treeItem;
+                }
+                
+            });
         }
     }
     

@@ -41,16 +41,22 @@ public class RailsFolderControllersCollection extends RailsElement implements
         
         @Override
         protected void visitAddedDelta(IResourceDelta delta) {
+            if (delta.getResource().getType() != IResource.FILE)
+                return;
             added((IFile) delta.getResource());
         }
         
         @Override
         protected void visitChangedDelta(IResourceDelta delta) {
+            if (delta.getResource().getType() != IResource.FILE)
+                return;
             changed((IFile) delta.getResource(), delta);
         }
         
         @Override
         protected void visitRemovedDelta(IResourceDelta delta) {
+            if (delta.getResource().getType() != IResource.FILE)
+                return;
             removed((IFile) delta.getResource());
         }
         
