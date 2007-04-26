@@ -63,6 +63,13 @@
                style="push"
                toolbarPath="Normal/additions">
          </action>
+         <action
+               class="com.yoursway.ide.ui.stubs.Foobar"
+               id="com.yoursway.ide.ui.action2"
+               label="foobar"
+               style="push"
+               toolbarPath="Normal/additions">
+         </action>
       </actionSet>
    </extension>
    
