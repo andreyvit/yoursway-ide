@@ -50,6 +50,8 @@ public class LocalGems {
                     gem.setName((String) attributeValue);
                 else if ("directory".equals(attributeName))
                     gem.setDirectory((String) attributeValue);
+                else if ("bindir".equals(attributeName))
+                    gem.setBinDir((String) attributeValue);
                 else if ("require_path".equals(attributeName)) {
                     ArrayList<String> paths = new ArrayList<String>();
                     for (Node path : (ArrayList<ScalarNode>) attributeValue)

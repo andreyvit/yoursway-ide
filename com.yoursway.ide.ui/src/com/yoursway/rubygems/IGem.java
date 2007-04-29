@@ -31,4 +31,11 @@ public interface IGem {
      * @return absolute path to the installation gem directory.
      */
     String getDirectory();
+    
+    /**
+     * Returns the binaries directory for the gem.
+     * 
+     * @return relative path to the directory, from the installation directory.
+     */
+    String getBinDir();
 }

@@ -12,6 +12,7 @@
 #   - name: <name>
 #   - version: <version>
 #   - directory: <installation directory>
+#   - bindir: <directory with executables>, inside installation directory
 #   - require_path:
 #      - <path>
 #      - <path>
@@ -51,6 +52,7 @@ def dump_gem(gem)
   { "name" => gem.name,
     "version" => gem.version.to_s,
     "directory" => gem.full_gem_path,
+    "bindir" => gem.bindir,
     "require_path" => gem.require_paths
   }
 end

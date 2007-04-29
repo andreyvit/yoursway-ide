@@ -4,6 +4,7 @@ public class Gem implements IGem {
     private String name;
     private String version;
     private String directory;
+    private String binDir;
     private String[] requirePaths;
     
     public String getName() {
@@ -28,6 +29,14 @@ public class Gem implements IGem {
     
     public void setDirectory(String directory) {
         this.directory = directory;
+    }
+    
+    public String getBinDir() {
+        return binDir;
+    }
+    
+    public void setBinDir(String binDir) {
+        this.binDir = binDir;
     }
     
     public String[] getRequirePaths() {
