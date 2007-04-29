@@ -5,16 +5,15 @@ plugin@com.yoursway.ide.ui=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/
 plugin@org.jvyaml=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
 
 feature@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/features,org.eclipse.dltk.core-feature
+plugin@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.debug.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.launching=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.console=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.console.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.validators.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+plugin@org.eclipse.dltk.validators.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
+
 feature@org.eclipse.dltk.ruby=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/features,org.eclipse.dltk.ruby-feature
-
 plugin@org.eclipse.dltk.ruby.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.debug.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.launching=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.console=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.console.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.validators.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.validators.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-
