@@ -9,12 +9,12 @@ feature@org.eclipse.dltk.ruby=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ru
 
 plugin@org.eclipse.dltk.ruby.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.ui,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.debug,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.debug.ui,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.launching,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.console,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.console.ui,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.validators.core,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
-plugin@org.eclipse.dltk.validators.ui,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.debug.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.launching=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.console=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.console.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.validators.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.validators.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 
