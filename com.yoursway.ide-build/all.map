@@ -4,5 +4,5 @@ plugin@com.yoursway.common.utilities=CVS,tag=HEAD,cvsRoot=:pserver:builder@dotte
 plugin@com.yoursway.ide.ui=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
 plugin@org.jvyaml=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
 
-feature@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclispe.dltk/core/features,org.eclipse.dltk.core-feature
+feature@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/features,org.eclipse.dltk.core-feature
 plugin@org.eclipse.dltk.ruby.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
