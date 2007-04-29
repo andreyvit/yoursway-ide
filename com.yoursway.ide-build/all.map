@@ -1,4 +1,8 @@
-feature@com.yoursway.ide.feature=HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-plugin@com.yoursway.common.utilities=HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-plugin@com.yoursway.ide.ui=HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-plugin@org.jvyaml=HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+feature@com.yoursway.ide.feature=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
+
+plugin@com.yoursway.common.utilities=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
+plugin@com.yoursway.ide.ui=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
+plugin@org.jvyaml=CVS,tag=HEAD,cvsRoot=:pserver:builder@dottedmag.net:/opt/cvs/yoursway,password=eep%ief0aiJ4yoo,
+
+feature@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclispe.dltk/core/features,org.eclipse.dltk.core-feature
+plugin@org.eclipse.dltk.ruby.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
