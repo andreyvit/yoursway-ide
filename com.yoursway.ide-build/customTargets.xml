@@ -25,13 +25,12 @@
 	<!-- Check out map files from correct repository -->
 	<!-- Replace values for mapsCheckoutTag as desired. -->
 	<!-- ===================================================================== -->
-	<target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
-		<copy file="all.map" todir="${buildDirectory}/maps"/>
+	<target name="getMapFiles" depends="checkLocalMaps">
+		<copy file="${builder}/all.map" todir="${buildDirectory}/maps"/>
 	</target>
 
 	<target name="checkLocalMaps">
 		<mkdir dir="${buildDirectory}/maps"/>
-		<available property="skipMaps" file="${buildDirectory}/maps" />
 	</target>
 
 	<target name="tagMapFiles" if="tagMaps">
