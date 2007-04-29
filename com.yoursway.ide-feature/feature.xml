@@ -21,29 +21,26 @@
          id="org.eclipse.dltk.core"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.dltk.ruby"
+         version="0.0.0"/>
+
    <plugin
          id="com.yoursway.common.utilities"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.yoursway.ide.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.jvyaml"
-         download-size="0"
-         install-size="0"
-         version="1.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.dltk.ruby.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
