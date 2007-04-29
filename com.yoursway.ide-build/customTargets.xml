@@ -26,8 +26,8 @@
 	<!-- Replace values for mapsCheckoutTag as desired. -->
 	<!-- ===================================================================== -->
 	<target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
-		<property name="mapsCheckoutTag" value="HEAD" />
-		<cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
+		<mkdir dir="${buildDirectory}/maps"/>
+		<copy file="all.map" todir="${buildDirectory}/maps"/>
 	</target>
 
 	<target name="checkLocalMaps">
