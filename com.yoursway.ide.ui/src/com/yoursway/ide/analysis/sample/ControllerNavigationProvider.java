@@ -28,7 +28,6 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.ISourceModuleInfoCache.ISourceModuleInfo;
 import org.eclipse.dltk.internal.core.ModelManager;
-import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 import org.eclipse.dltk.ruby.internal.parser.RubySourceElementParser;
 import org.eclipse.dltk.ruby.typeinference.RubyModelUtils;
 import org.eclipse.jface.text.BadLocationException;
@@ -165,7 +164,7 @@ public class ControllerNavigationProvider implements IAdviceProvider {
                         public boolean visitGeneral(ASTNode node) throws Exception {
                             if (node instanceof CallExpression) {
                                 CallExpression callExpression = (CallExpression) node;
-                                Statement receiver = callExpression.getReceiver();
+                                ASTNode receiver = callExpression.getReceiver();
                                 if (receiver == null) {
                                     String name = callExpression.getName();
                                     if ("render".equals(name))
@@ -187,14 +186,15 @@ public class ControllerNavigationProvider implements IAdviceProvider {
                         
                         private void processRenderMethod(final Collection<String> renderedActions,
                                 CallExpression callExpression) {
-                            Statement arg = RubyASTUtils.getArgumentValue(callExpression, 0);
-                            if (arg instanceof RubyHashExpression) {
-                                Statement v = RubyASTUtils.findHashItemValue((RubyHashExpression) arg,
-                                        "action");
-                                String stringValue = RubyASTUtils.resolveConstantStringValue(v);
-                                if (stringValue != null)
-                                    renderedActions.add(stringValue);
-                            }
+                            //FIXME: broken at latest DLTK
+                            //                          Statement arg = RubyASTUtils.getArgumentValue(callExpression, 0);
+                            //                            if (arg instanceof RubyHashExpression) {
+                            //                                Statement v = RubyASTUtils.findHashItemValue((RubyHashExpression) arg,
+                            //                                        "action");
+                            //                                String stringValue = RubyASTUtils.resolveConstantStringValue(v);
+                            //                                if (stringValue != null)
+                            //                                    renderedActions.add(stringValue);
+                            //                            }
                         }
                         
                     });

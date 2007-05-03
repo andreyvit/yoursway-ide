@@ -6,8 +6,6 @@ import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.statements.Statement;
-import org.eclipse.dltk.ruby.ast.RubyHashExpression;
-import org.eclipse.dltk.ruby.ast.RubyHashPairExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 
 public class RubyASTUtils {
@@ -50,16 +48,17 @@ public class RubyASTUtils {
         return null;
     }
     
-    @SuppressWarnings("unchecked")
-    public static Statement findHashItemValue(RubyHashExpression hash, String keyName) {
-        List<RubyHashPairExpression> pairs = hash.getExpressions();
-        for (RubyHashPairExpression pair : pairs) {
-            String currentKeyName = resolveConstantStringValue(pair.getKey());
-            if (keyName.equals(currentKeyName))
-                return pair.getValue();
-        }
-        return null;
-    }
+    // FIXME: fix: broken with latest DLTK
+    //    @SuppressWarnings("unchecked")
+    //    public static Statement findHashItemValue(RubyHashExpression hash, String keyName) {
+    //        List<RubyHashPairExpression> pairs = hash.getExpressions();
+    //        for (RubyHashPairExpression pair : pairs) {
+    //            String currentKeyName = resolveConstantStringValue(pair.getKey());
+    //            if (keyName.equals(currentKeyName))
+    //                return pair.getValue();
+    //        }
+    //        return null;
+    //    }
     
     @SuppressWarnings("unchecked")
     public static Statement getArgumentValue(CallExpression callExpression, int argIndex) {
