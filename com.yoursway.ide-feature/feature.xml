@@ -36,20 +36,37 @@
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.dltk.ruby.core"/>
       <import plugin="org.eclipse.dltk.core"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.dltk.launching"/>
       <import plugin="org.eclipse.dltk.ui"/>
-      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.dltk.ruby.ui"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.dltk.debug"/>
-      <import plugin="org.eclipse.dltk.debug.ui"/>
-      <import plugin="org.eclipse.dltk.ruby.debug.ui"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.dltk.ruby.debug"/>
+      <import plugin="org.eclipse.core.expressions" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.update.configurator" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.update.core" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.update.ui" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.commands" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.text" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.2.1" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.2.1" match="compatible"/>
    </requires>
 
    <plugin
@@ -74,14 +91,77 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.dltk.ruby.ui"
+         id="org.eclipse.dltk.debug"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.dltk.ruby.launching"
+         id="org.eclipse.dltk.debug.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.variables"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.editors"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.dltk.ruby.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.dltk.console"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ltk.core.refactoring"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.navigator"
          download-size="0"
          install-size="0"
          version="0.0.0"
