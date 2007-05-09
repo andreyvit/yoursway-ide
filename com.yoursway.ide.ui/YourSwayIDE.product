@@ -31,12 +31,13 @@
       </win>
    </launcher>
 
+
    <vm>
+      <linux type="jre">java-6-sun-1.6.0.00</linux>
    </vm>
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.swtdesigner.gwt.saf.browser" fragment="true"/>
       <plugin id="com.yoursway.common.utilities"/>
       <plugin id="com.yoursway.ide.ui"/>
       <plugin id="javax.servlet"/>
