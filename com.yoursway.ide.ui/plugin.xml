@@ -90,7 +90,7 @@
             name="YourSway IDE">
          <property
                name="windowImages"
-               value="/com.yoursway.ide-product/product_images/icon16.gif,/com.yoursway.ide-product/product_images/icon32.gif,/com.yoursway.ide-product/product_images/icon48.gif">
+               value="/com.yoursway.ide-product/product_images/icon16.png,/com.yoursway.ide-product/product_images/icon32.png,/com.yoursway.ide-product/product_images/icon48.png">
          </property>
          <property
                name="appName"
@@ -102,11 +102,19 @@
          </property>
          <property
                name="aboutText"
-               value="YourSway IDE — the best Ruby on Rails IDE. Ever.&#x0A;&#x0A;© 2007, YourSway.">
+               value="YourSway IDE. The best Ruby on Rails IDE. Ever.&#x0A;&#x0A;© 2007, YourSway.">
          </property>
          <property
                name="startupProgressRect"
                value="50,20,50,20">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="0,0,0,0">
          </property>
       </product>
    </extension>
