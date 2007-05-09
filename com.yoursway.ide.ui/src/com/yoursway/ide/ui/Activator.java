@@ -61,23 +61,28 @@ public class Activator extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
     
+    /**
+     * @deprecated use <code>unexpectedError</code> instead
+     */
+    @Deprecated
     public static void log(Throwable e) {
-        log(e, null);
+        unexpectedError(e);
     }
     
+    /**
+     * @deprecated use <code>unexpectedError</code> instead
+     */
+    @Deprecated
     public static void log(Throwable e, String additionalMessage) {
-        if (LOG_EXCEPTIONS_TO_CONSOLE)
-            e.printStackTrace(System.err);
-        String message = e.getMessage();
-        if (additionalMessage != null)
-            message = additionalMessage + ": " + message;
-        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, e));
+        unexpectedError(e, additionalMessage);
     }
     
+    /**
+     * @deprecated use <code>unexpectedError</code> instead
+     */
+    @Deprecated
     public static void log(String string) {
-        if (LOG_EXCEPTIONS_TO_CONSOLE)
-            System.err.println(string);
-        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, string, null));
+        unexpectedError(string);
     }
     
     /**
@@ -115,6 +120,25 @@ public class Activator extends AbstractUIPlugin {
             }
         }
         return condition;
+    }
+    
+    public static void unexpectedError(Throwable e) {
+        unexpectedError(e, null);
+    }
+    
+    public static void unexpectedError(Throwable e, String additionalMessage) {
+        if (LOG_EXCEPTIONS_TO_CONSOLE)
+            e.printStackTrace(System.err);
+        String message = e.getMessage();
+        if (additionalMessage != null)
+            message = additionalMessage + ": " + message;
+        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, e));
+    }
+    
+    public static void unexpectedError(String message) {
+        if (LOG_EXCEPTIONS_TO_CONSOLE)
+            System.err.println(message);
+        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, null));
     }
     
     public static void reportException(Throwable e, String failedUserActionMessage) {
