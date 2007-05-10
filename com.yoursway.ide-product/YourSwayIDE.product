@@ -36,6 +36,9 @@
 
    <vm>
       <linux type="jre">java-6-sun-1.6.0.00</linux>
+      <macos type="jre">java-6-sun-1.6.0.00</macos>
+      <solaris type="jre">java-6-sun-1.6.0.00</solaris>
+      <windows type="jre">java-6-sun-1.6.0.00</windows>
    </vm>
 
    <plugins>
