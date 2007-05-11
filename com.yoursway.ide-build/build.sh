@@ -19,4 +19,4 @@ $JAVA -jar ${ECLIPSE_DIR}/plugins/org.eclipse.equinox.launcher_*.jar \
     -DbuildDirectory=${CURDIR}/src \
     -DbaseLocation=${ECLIPSE_DIR} \
     -DbuildId=${STAMP} && \
-  cp -R ${CURDIRSRC}/src/I.* /home/ftp/yoursway
+  cp -R ${CURDIR}/src/I.* /home/ftp/yoursway
