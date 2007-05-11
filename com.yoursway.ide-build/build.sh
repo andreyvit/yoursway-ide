@@ -1,18 +1,22 @@
 #!/bin/sh
 
+rm -rf src
+
 JAVA=java
 ECLIPSE_DIR=/home/builder/eclipse
-BASEBUILD_DIR=/home/builder/org.eclipse.releng.basebuilder
+PDEBUILD_DIR=${ECLIPSE_DIR}/plugins/org.eclipse.pde.build_*
+STAMP=`date +%Y%m%d.%H%M`
 
 CURDIR=$PWD
 
-(cd $BASEBUILD_DIR/plugins/org.eclipse.pde.build/scripts; \
- $JAVA -jar $ECLIPSE_DIR/plugins/org.eclipse.platform_*/startup.jar \
-        -application org.eclipse.ant.core.antRunner \
-        -console \
-        -consoleLog \
-        -install $ECLIPSE_DIR \
-        -Dbuilder=$CURDIR \
-        -DbuildDirectory=$CURDIR/work \
-        -DbaseLocation=$ECLIPSE_DIR \
-)
+$JAVA -jar ${ECLIPSE_DIR}/plugins/org.eclipse.equinox.launcher_*.jar \
+    -noSplash \
+    -console \
+    -consoleLog \
+    -application org.eclipse.ant.core.antRunner \
+    -buildfile ${PDEBUILD_DIR}/scripts/productBuild/productBuild.xml \
+    -Dbuilder=${CURDIR} \
+    -DbuildDirectory=${CURDIR}/src \
+    -DbaseLocation=${ECLIPSE_DIR} \
+    -DbuildId=${STAMP} && \
+  cp -R ${CURDIRSRC}/src/I.* /home/ftp/yoursway
