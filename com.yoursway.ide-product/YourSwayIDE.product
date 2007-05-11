@@ -44,10 +44,7 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.dltk.core" version="1.0.0.qualifier"/>
-      <feature id="org.eclipse.dltk.ruby" version="1.0.0.qualifier"/>
       <feature id="com.yoursway.ide.feature" version="1.0.0"/>
-      <feature id="org.eclipse.platform" version="3.3.0.v20070426-_19QEikF-XqdF5NwSTqN"/>
    </features>
 
 </product>
