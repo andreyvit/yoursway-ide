@@ -18,5 +18,6 @@ $JAVA -jar ${ECLIPSE_DIR}/plugins/org.eclipse.equinox.launcher_*.jar \
     -Dbuilder=${CURDIR} \
     -DbuildDirectory=${CURDIR}/src \
     -DbaseLocation=${ECLIPSE_DIR} \
-    -DbuildId=${STAMP} && \
+    -DbuildId=${STAMP} > build.log && \
   cp -R ${CURDIR}/src/I.* /home/ftp/yoursway
+
