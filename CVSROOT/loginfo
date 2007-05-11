@@ -36,3 +36,4 @@
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
 DEFAULT $CVSROOT/CVSROOT/collect_diffs.rb --from $USER --to yoursway-commits@lists.dottedmag.net %{sVv}
+DEFAULT buildbot sendchange --master 10.10.30.200:9989 -u $USER -F - %{s}
