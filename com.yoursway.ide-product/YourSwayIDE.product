@@ -33,7 +33,6 @@
       </win>
    </launcher>
 
-
    <vm>
       <linux type="jre">java-6-sun-1.6.0.00</linux>
       <macos type="jre">java-6-sun-1.6.0.00</macos>
@@ -45,9 +44,9 @@
    </plugins>
 
    <features>
-      <feature id="com.yoursway.ide.feature" version="1.0.0"/>
-      <feature id="org.eclipse.dltk.ruby" version="1.0.0.qualifier"/>
       <feature id="org.eclipse.dltk.core" version="1.0.0.qualifier"/>
+      <feature id="org.eclipse.dltk.ruby" version="1.0.0.qualifier"/>
+      <feature id="com.yoursway.ide.feature" version="1.0.0"/>
       <feature id="org.eclipse.platform" version="3.3.0.v20070426-_19QEikF-XqdF5NwSTqN"/>
    </features>
 
