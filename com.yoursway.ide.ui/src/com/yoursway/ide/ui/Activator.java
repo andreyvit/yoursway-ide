@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -141,10 +142,14 @@ public class Activator extends AbstractUIPlugin {
         getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, null));
     }
     
-    public static void reportException(Throwable e, String failedUserActionMessage) {
+    public static void reportException(final Throwable e, final String failedUserActionMessage) {
         log(e, failedUserActionMessage);
-        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                failedUserActionMessage, "The following error occured:\n\n" + e.getMessage() + "\n\n"
-                        + "See error log for details.");
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        failedUserActionMessage, "The following error occured:\n\n" + e.getMessage() + "\n\n"
+                                + "See error log for details.");
+            }
+        });
     }
 }
