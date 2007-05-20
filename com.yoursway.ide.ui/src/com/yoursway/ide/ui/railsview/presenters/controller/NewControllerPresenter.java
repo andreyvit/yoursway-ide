@@ -120,7 +120,7 @@ public class NewControllerPresenter extends AbstractPresenter {
     }
     
     public ImageDescriptor getImage() {
-        return RailsViewImages.ACTION_ICON;
+        return RailsViewImages.EMPTY_ICON;
     }
     
     public Object getParent() {

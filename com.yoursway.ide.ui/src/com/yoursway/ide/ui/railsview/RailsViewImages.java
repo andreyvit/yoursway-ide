@@ -13,6 +13,9 @@ public class RailsViewImages {
     
     private static final String MODEL_ICONS_PATH = "icons/rails_model/";
     
+    public static final ImageDescriptor EMPTY_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
+            + "empty.png");
+    
     public static final ImageDescriptor ACTION_ICON = Activator.getImageDescriptor(MODEL_ICONS_PATH
             + "base.png");
     public static final Image ACTION_ICON_IMG = ACTION_ICON.createImage();
