@@ -118,5 +118,12 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.processFactories">
+      <processFactory
+            class="com.yoursway.rails.models.launch.PublicMorozovProcessFactory"
+            id="com.yoursway.ide.publicMorozovRuntimeProcessFactory">
+      </processFactory>
+   </extension>
 
 </plugin>
