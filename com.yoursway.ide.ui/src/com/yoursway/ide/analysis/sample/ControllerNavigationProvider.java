@@ -17,7 +17,6 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
-import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
@@ -178,7 +177,7 @@ public class ControllerNavigationProvider implements IAdviceProvider {
                         
                         private void processRenderActionMethod(final Collection<String> renderedActions,
                                 CallExpression callExpression) {
-                            Statement argNode = RubyASTUtils.getArgumentValue(callExpression, 0);
+                            ASTNode argNode = RubyASTUtils.getArgumentValue(callExpression, 0);
                             String stringValue = RubyASTUtils.resolveConstantStringValue(argNode);
                             if (stringValue != null)
                                 renderedActions.add(stringValue);
