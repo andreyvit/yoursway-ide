@@ -1,4 +1,7 @@
-package com.yoursway.rails;
+package com.yoursway.utils;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -11,8 +14,6 @@ import org.eclipse.dltk.launching.AbstractInterpreterRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterRunnerConfiguration;
-
-import com.yoursway.utils.StringListBuilder;
 
 /**
  * Utility class wrapping {@link AbstractInterpreterRunner} with convenience
@@ -79,7 +80,15 @@ public final class InterpreterRunnerUtil {
      * This function converts the set of arguments to string representation of
      * command line. The output is directly copy-pasteable to the shell.
      */
-    private static String convertCommandLineToString(String[] args) {
+    public static String convertCommandLineToString(String[] args) {
+        return convertCommandLineToString(Arrays.asList(args));
+    }
+    
+    /**
+     * This function converts the set of arguments to string representation of
+     * command line. The output is directly copy-pasteable to the shell.
+     */
+    public static String convertCommandLineToString(Collection<String> args) {
         StringListBuilder result = new StringListBuilder(" ");
         for (String arg : args)
             result.append(wrapArgument(arg));

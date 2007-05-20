@@ -2,6 +2,7 @@ package com.yoursway.rails.model.internal;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.debug.core.ILaunch;
 
 import com.yoursway.rails.model.IRailsControllersManager;
 import com.yoursway.rails.model.IRailsModelsCollection;
@@ -24,6 +25,8 @@ public class RailsProject extends RailsElement implements IRailsProject {
     private final RailsProjectsCollection parent;
     
     private Inflector inflector;
+    
+    private ILaunch launch;
     
     public RailsProject(RailsProjectsCollection parent, IProject project) {
         this.parent = parent;

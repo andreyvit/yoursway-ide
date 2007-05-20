@@ -20,7 +20,9 @@ Require-Bundle: org.eclipse.core.runtime,
  com.yoursway.common.utilities,
  org.eclipse.dltk.ui,
  org.eclipse.dltk.ruby.ui,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.debug.ui,
+ org.eclipse.dltk.ruby.launching
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.ide.analysis.model,
  com.yoursway.ide.analysis.sample,

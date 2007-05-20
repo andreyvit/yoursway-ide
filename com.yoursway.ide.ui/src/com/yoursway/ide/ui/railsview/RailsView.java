@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -35,6 +36,11 @@ import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
+import com.yoursway.rails.models.launch.ILaunchingModelListener;
+import com.yoursway.rails.models.launch.IProjectLaunching;
+import com.yoursway.rails.models.launch.RailsServersModel;
+import com.yoursway.rails.models.launch.IProjectLaunching.PortNumberNotAvailable;
+import com.yoursway.rails.windowmodel.RailsWindow;
 import com.yoursway.rails.windowmodel.RailsWindowModel;
 import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
 import com.yoursway.rails.windowmodel.RailsWindowModelProjectChange;
@@ -85,6 +91,26 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
     }
     
+    class ServerModelListener implements ILaunchingModelListener {
+        
+        public void install() {
+            RailsServersModel.instance().addListener(this);
+        }
+        
+        public void uninstall() {
+            RailsServersModel.instance().removeListener(this);
+        }
+        
+        public void projectStateChanged(IProjectLaunching launching) {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    updateBottom();
+                }
+            });
+        }
+        
+    }
+    
     private final ElementChangedListener elementChangedListener = new ElementChangedListener();
     private final WindowModelListener windowModelListener = new WindowModelListener();
     private Font boldFont;
@@ -100,6 +126,10 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
     private RailsProjectTree projectTree;
     
+    private Composite bottomComposite;
+    
+    private final ServerModelListener serverModelListener = new ServerModelListener();
+    
     class NameSorter extends ViewerSorter {
     }
     
@@ -111,6 +141,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
                 .getRailsProject();
         projectTree.setVisibleProject(project);
         updateProjectChooser();
+        updateBottom();
         if (project == null) {
             if (chooserProjects.isEmpty())
                 expander.setText("Create or import a project");
@@ -133,8 +164,32 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         form = formToolkit.createForm(parent);
         //        form.setLayoutData(treeData);
         Composite formBody = form.getBody();
-        formBody.setLayout(FormLayoutFactory.createFormGridLayout(false, 1));
+        final GridLayout layout = FormLayoutFactory.createFormGridLayout(false, 1);
+        layout.verticalSpacing = 5;
+        formBody.setLayout(layout);
         
+        createTopControls(formBody);
+        
+        projectTree = new RailsProjectTree(formBody, formToolkit, this);
+        getSite()
+                .registerContextMenu(projectTree.getContextMenuManager(), projectTree.getSelectionProvider());
+        createBottomControls(formBody);
+        
+        handleActiveProjectChanged();
+        makeActions();
+        
+        contributeToActionBars();
+        windowModelListener.install();
+        elementChangedListener.install();
+        serverModelListener.install();
+        
+        //        Font font = viewer.getTree().getFont();
+        //        FontData[] fontData = font.getFontData();
+        //        fontData[0].setStyle(SWT.BOLD);
+        //        boldFont = new Font(null, fontData[0]);
+    }
+    
+    private void createTopControls(Composite formBody) {
         expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
                 | ExpandableComposite.CLIENT_INDENT);
         expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -145,22 +200,22 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         updateProjectChooser();
         
         expanderComposite.setLayout(FormLayoutFactory.createSectionClientGridLayout(false, 1));
+    }
+    
+    private void createBottomControls(Composite formBody) {
+//        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
+//                | ExpandableComposite.CLIENT_INDENT);
+//        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+//        
+        bottomComposite = formToolkit.createComposite(formBody);
+//        expander.setClient(expanderComposite);
+        final GridLayout layout = FormLayoutFactory.createSectionClientGridLayout(false, 1);
+        layout.marginHeight = 0;
+        layout.marginTop = 0;
+        layout.verticalSpacing = 0;
+        bottomComposite.setLayout(layout);
         
-        projectTree = new RailsProjectTree(formBody, formToolkit, this);
-        getSite()
-                .registerContextMenu(projectTree.getContextMenuManager(), projectTree.getSelectionProvider());
-        
-        handleActiveProjectChanged();
-        makeActions();
-        
-        contributeToActionBars();
-        windowModelListener.install();
-        elementChangedListener.install();
-        
-        //        Font font = viewer.getTree().getFont();
-        //        FontData[] fontData = font.getFontData();
-        //        fontData[0].setStyle(SWT.BOLD);
-        //        boldFont = new Font(null, fontData[0]);
+        updateBottom();
     }
     
     private void updateProjectChooser() {
@@ -179,10 +234,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         IRailsProject activeProject = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
                 .getRailsProject();
         
-        Control[] children = expanderComposite.getChildren();
-        for (Control control : children) {
-            control.dispose();
-        }
+        disposeChildren(expanderComposite);
         
         for (final IRailsProject railsProject : chooserProjects) {
             Control hyperlink;
@@ -222,6 +274,8 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         newWindowLabel.setText("<form><p><b>Tip:</b> To work on several projects at once, "
                 + "<a href=\"new_win\">open a new window</a>.</p></form>", true, false);
+//        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
+//                SWT.DEFAULT).y;
         newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
             
             @Override
@@ -235,6 +289,96 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             
         });
         
+        expanderComposite.layout();
+    }
+    
+    private void disposeChildren(final Composite parent) {
+        Control[] children = parent.getChildren();
+        for (Control control : children) {
+            control.dispose();
+        }
+    }
+    
+    private void updateBottom() {
+        disposeChildren(bottomComposite);
+        
+        RailsWindow w = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow());
+        IRailsProject railsProject = w.getRailsProject();
+        
+        if (railsProject != null) {
+            IProjectLaunching launching = RailsServersModel.instance().get(railsProject);
+            int port;
+            try {
+                port = launching.getPortNumber();
+            } catch (PortNumberNotAvailable e) {
+                port = 0;
+            }
+            switch (launching.getState()) {
+            case NOT_RUNNING:
+                createServerControls(railsProject, "<form><p><a href=\"start\">Start "
+                        + railsProject.getProject().getName() + "</a></p></form>");
+                break;
+            case RUNNING:
+                if (port == 0)
+                    createServerControls(railsProject, "<form><p>Server is running. "
+                            + "<a href=\"stop\">Stop</a></p></form>");
+                else
+                    createServerControls(railsProject, "<form><p>Server is running on port " + port + ". "
+                            + "<a href=\"stop\">Stop</a></p></form>");
+                break;
+            case LAUNCHING:
+                createServerControls(railsProject, "<form><p>Launching server... "
+                        + "<a href=\"cancel_start\">Cancel</a></p></form>");
+                break;
+            case STOPPING:
+                createServerControls(railsProject, "<form><p>Stopping server...</p></form>");
+                break;
+            case FAILED:
+                createServerControls(railsProject, "<form><p>Server failed to start. "
+                        + "<a href=\"start\">Retry</a>.</p></form>");
+                break;
+            default:
+                assert false;
+            }
+        }
+        
+        form.getBody().layout();
+    }
+    
+    private void createServerControls(IRailsProject railsProject, String markup) {
+        FormText newWindowLabel = formToolkit.createFormText(bottomComposite, true);
+        newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        newWindowLabel.setText(markup, true, false);
+//        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
+//                SWT.DEFAULT).y;
+        newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
+            
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+                String href = (String) e.getHref();
+                if (href.equals("start"))
+                    doStartServer();
+                else if (href.equals("stop"))
+                    doStopServer();
+                else if (href.equals("cancel_start"))
+                    doStopServer();
+            }
+            
+        });
+    }
+    
+    private void doStartServer() {
+        RailsWindow w = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow());
+        IRailsProject railsProject = w.getRailsProject();
+        IProjectLaunching projectLaunching = RailsServersModel.instance().get(railsProject);
+        projectLaunching.startDefaultServer();
+    }
+    
+    private void doStopServer() {
+        RailsWindow w = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow());
+        IRailsProject railsProject = w.getRailsProject();
+        IProjectLaunching projectLaunching = RailsServersModel.instance().get(railsProject);
+        projectLaunching.stopServer();
     }
     
     @Override
@@ -242,6 +386,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         super.dispose();
         windowModelListener.uninstall();
         elementChangedListener.uninstall();
+        serverModelListener.uninstall();
         boldFont.dispose();
     }
     

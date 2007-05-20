@@ -30,6 +30,7 @@ import org.eclipse.dltk.ruby.core.RubyNature;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rubygems.IGem;
 import com.yoursway.rubygems.LocalGems;
+import com.yoursway.utils.InterpreterRunnerUtil;
 
 public class RailsRuntime {
     
