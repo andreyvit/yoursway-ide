@@ -11,6 +11,7 @@ plugin@org.jvyaml=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%
 # requisites
 
 feature@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/features,org.eclipse.dltk.core-feature
+plugin@org.eclipse.dltk=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
 plugin@org.eclipse.dltk.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
 plugin@org.eclipse.dltk.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
 plugin@org.eclipse.dltk.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
@@ -22,6 +23,7 @@ plugin@org.eclipse.dltk.validators.core=COPY,/home/ftp/dltk/repository/org.eclip
 plugin@org.eclipse.dltk.validators.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/core/plugins
 
 feature@org.eclipse.dltk.ruby=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/features,org.eclipse.dltk.ruby-feature
+plugin@org.eclipse.dltk.ruby=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.core=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.launching=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
