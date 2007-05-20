@@ -1,6 +1,7 @@
 package com.yoursway.rails.models.launch;
 
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.ruby.RubyInstallation;
 
 public interface IProjectLaunching {
     
@@ -19,5 +20,7 @@ public interface IProjectLaunching {
     }
     
     int getPortNumber() throws PortNumberNotAvailable;
+    
+    RubyInstallation getRubyInstallationToRunTools();
     
 }

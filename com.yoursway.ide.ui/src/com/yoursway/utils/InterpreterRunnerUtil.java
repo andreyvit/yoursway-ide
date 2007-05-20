@@ -7,9 +7,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.launching.AbstractInterpreterRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterRunner;
@@ -166,5 +168,21 @@ public final class InterpreterRunnerUtil {
         if (arg.contains(" \t\r\n"))
             return "\"" + arg + "\"";
         return arg;
+    }
+
+    /**
+     * Returns the exit value from the finished process.
+     * 
+     * @see IProcess#getExitValue()
+     * @param launchProcess
+     *            process to get exit value
+     * @return process exit value
+     */
+    public static int getFinishedProcessExitValue(IProcess launchProcess) {
+        try {
+            return launchProcess.getExitValue();
+        } catch (DebugException e) {
+            throw new AssertionError("DebugError won't be thrown on finished process");
+        }
     }
 }

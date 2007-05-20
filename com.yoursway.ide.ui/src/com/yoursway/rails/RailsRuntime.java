@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -110,7 +109,7 @@ public class RailsRuntime {
                 IProcess launchProcess = launchProcesses[0];
                 
                 System.out.println(getName() + " exit value: "
-                        + String.valueOf(getFinishedProcessExitValue(launchProcess)));
+                        + String.valueOf(InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess)));
                 
                 // FIXME: proper error handling
                 String errorMsg = checkFinishedProcess(launchProcess, getName());
@@ -119,7 +118,7 @@ public class RailsRuntime {
                     return Status.OK_STATUS;
                 }
                 
-                if (RailsRuntime.getFinishedProcessExitValue(launchProcess) != 0)
+                if (InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess) != 0)
                     return Status.OK_STATUS;
                 
                 String railsInfo = launchProcess.getStreamsProxy().getOutputStreamMonitor().getContents();
@@ -204,7 +203,7 @@ public class RailsRuntime {
                 IProcess launchProcess = launchProcesses[0];
                 
                 System.out.println(getName() + " exit value: "
-                        + String.valueOf(getFinishedProcessExitValue(launchProcess)));
+                        + String.valueOf(InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess)));
                 
                 // FIXME: proper error hadling
                 String errorMsg = checkFinishedProcess(launchProcess, getName());
@@ -257,25 +256,9 @@ public class RailsRuntime {
             runSearchRails(rubyInterpreter);
     }
     
-    /**
-     * Returns the exit value from the finished process.
-     * 
-     * @see IProcess#getExitValue()
-     * @param launchProcess
-     *            process to get exit value
-     * @return process exit value
-     */
-    private static int getFinishedProcessExitValue(IProcess launchProcess) {
-        try {
-            return launchProcess.getExitValue();
-        } catch (DebugException e) {
-            throw new AssertionError("DebugError won't be thrown on finished process");
-        }
-    }
-    
     // FIXME: ugly
     private static String checkFinishedProcess(IProcess launchProcess, String processLabel) {
-        int exitValue = RailsRuntime.getFinishedProcessExitValue(launchProcess);
+        int exitValue = InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess);
         switch (exitValue) {
         case 0:
             return null;

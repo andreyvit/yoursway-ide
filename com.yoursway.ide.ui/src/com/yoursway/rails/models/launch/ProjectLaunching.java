@@ -4,6 +4,7 @@
 package com.yoursway.rails.models.launch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -27,6 +28,8 @@ import org.eclipse.dltk.ruby.launching.IRubyLaunchConfigurationConstants;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.ruby.RubyInstallation;
+import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.utils.InterpreterRunnerUtil;
 import com.yoursway.utils.ServerUtils;
 import com.yoursway.utils.ServerUtils.NoFreePortFound;
@@ -39,6 +42,8 @@ class ProjectLaunching implements IProjectLaunching {
     private final RailsServersModel model;
     private LaunchState state = LaunchState.NOT_RUNNING;
     private int port;
+    
+    private int pidToKill;
     
     private final class StartServerJob extends Job {
         
@@ -66,6 +71,7 @@ class ProjectLaunching implements IProjectLaunching {
             setPort(port);
             
             List<String> arguments = new ArrayList<String>();
+            arguments.add("webrick");
             arguments.add("--port=" + port);
             
             final ILaunchConfiguration configToLaunch;
@@ -81,6 +87,7 @@ class ProjectLaunching implements IProjectLaunching {
                         .getProjectRelativePath().toPortableString());
                 wc.setAttribute(IDLTKLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS,
                         InterpreterRunnerUtil.convertCommandLineToString(arguments));
+                wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, PublicMorozovProcessFactory.ID);
                 wc.setAttribute(RailsLaunchingConstants.ATTR_YOURSWAY_CREATED, "true");
                 wc.setMappedResources(new IResource[] { serverFile.getProject() });
                 configToLaunch = wc.doSave();
@@ -96,6 +103,20 @@ class ProjectLaunching implements IProjectLaunching {
                 return Status.CANCEL_STATUS;
             }
             
+            IProcess[] processes = launch.getProcesses();
+            pidToKill = 0; // by default don't kill anyone
+            if (processes.length != 1)
+                Activator.unexpectedError("Unexpected number of processes, cannot extract pid: "
+                        + processes.length);
+            else {
+                IProcess runtimeProcess = processes[0];
+                if (runtimeProcess instanceof PublicMorozovProcess) {
+                    pidToKill = ((PublicMorozovProcess) runtimeProcess).getPid();
+                    System.out.println("Launched Rails server PID: " + pidToKill);
+                }
+            }
+            
+            // TODO: add time limit (maybe)
             while (!launch.isTerminated() && ServerUtils.isPortAvailable(port)) {
                 try {
                     Thread.sleep(50);
@@ -106,9 +127,11 @@ class ProjectLaunching implements IProjectLaunching {
             }
             
             if (!ServerUtils.isPortAvailable(port))
-                setFailed();
-            else
                 setStarted();
+            else {
+                setFailed();
+                // TODO: more help for user on server failure (pop up console?)
+            }
             
             return Status.OK_STATUS;
         }
@@ -144,17 +167,42 @@ class ProjectLaunching implements IProjectLaunching {
         
         @Override
         protected IStatus run(IProgressMonitor monitor) {
-            for (IProcess process : launch.getProcesses()) {
-                
+            final RubyInstallation ruby = getRubyInstallationToRunTools();
+            if (pidToKill != 0) {
+                System.out.println("Sending SIGINT to process " + pidToKill + "...");
+                RubyToolUtils.sendInterruptSignal(ruby, pidToKill, null);
+                waitForTermination(monitor, 500);
+                if (launch.isTerminated()) {
+                    System.out.println("Server has terminated.");
+                } else {
+                    System.out.println("Timeout. Sending SIGKILL to process " + pidToKill + "...");
+                    RubyToolUtils.sendKillSignal(ruby, pidToKill, null);
+                    waitForTermination(monitor, 500);
+                    if (launch.isTerminated()) {
+                        System.out.println("Server has terminated.");
+                    }
+                }
             }
-            try {
-                launch.terminate();
-            } catch (DebugException e) {
-                Activator.reportException(e, "Cannot terminate Rails server");
-            }
+            if (!launch.isTerminated())
+                try {
+                    launch.terminate();
+                } catch (DebugException e) {
+                    Activator.reportException(e, "Cannot terminate Rails server");
+                }
             setStopped();
             return Status.OK_STATUS;
         }
+    }
+    
+    private void waitForTermination(IProgressMonitor monitor, int timeout) {
+        int period = 50;
+        int periods = timeout / period;
+        while (!launch.isTerminated())
+            try {
+                monitor.worked(1);
+                Thread.sleep(period);
+            } catch (InterruptedException e) {
+            }
     }
     
     private final IRailsProject railsProject;
@@ -240,6 +288,14 @@ class ProjectLaunching implements IProjectLaunching {
     void setPort(int port) {
         this.port = port;
         model.fireProjectStateChanged(this);
+    }
+    
+    public RubyInstallation getRubyInstallationToRunTools() {
+        Collection<? extends RubyInstallation> installations = RubyInstallation.getRubyInstallations();
+        if (installations.isEmpty())
+            return null;
+        else
+            return installations.iterator().next();
     }
     
 }

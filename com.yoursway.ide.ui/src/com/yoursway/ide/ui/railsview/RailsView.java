@@ -342,6 +342,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             }
         }
         
+        bottomComposite.layout();
         form.getBody().layout();
     }
     
