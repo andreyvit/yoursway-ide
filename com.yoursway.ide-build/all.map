@@ -4,6 +4,8 @@ plugin@com.yoursway.ide-product=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs
 # main feature
 feature@com.yoursway.ide.feature=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide-feature
 
+# our plugins
+
 plugin@com.yoursway.common.utilities=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 plugin@com.yoursway.ide.ui=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 plugin@org.jvyaml=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
