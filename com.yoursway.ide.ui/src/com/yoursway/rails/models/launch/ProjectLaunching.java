@@ -96,7 +96,7 @@ class ProjectLaunching implements IProjectLaunching {
                 return Status.CANCEL_STATUS;
             }
             
-            while (!launch.isTerminated() && !ServerUtils.isPortAvailable(port)) {
+            while (!launch.isTerminated() && ServerUtils.isPortAvailable(port)) {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
