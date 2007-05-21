@@ -1,0 +1,36 @@
+Index: src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/core/plugins/org.eclipse.dltk.ui/src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java,v
+retrieving revision 1.3
+diff -u -r1.3 AutoEditUtils.java
+--- src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java	7 May 2007 12:54:49 -0000	1.3
++++ src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java	21 May 2007 15:22:47 -0000
+@@ -570,7 +570,28 @@
+ 		return length;
+ 	}
+ 
++	/**
++     * Determine if the given offset is right before the end-of-line
++     * character(s) on the given line. Also returns true if the given offset
++     * is equal to the <code>endOffset</code>. 
++     * 
++     * @param document
++     *            the document that determines the set of legal line delimiter
++     *            strings
++     * @param offset
++     *            the offset to check
++     * @param endOffset
++     *            the offset right after the end of the line containing
++     *            <code>offset</code>, should equal the value that would be
++     *            returned from
++     *            <code>document.getLineOffset(document.getLineOfOffset(offset)) +
++     * document.getLineLength(document.getLineOfOffset(offset))</code>.
++     * @return
++     * @throws BadLocationException
++     */
+ 	public static boolean atEndOfLine(IDocument document, int offset, int endOffset) throws BadLocationException {
++	    if (offset == endOffset)
++	        return true;
+ 		int maxDelta = getMaximumLineDelimiterLength(document);
+ 		if (offset + maxDelta < endOffset)
+ 			return false;

@@ -1,0 +1,15 @@
+Index: src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.core/src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java,v
+retrieving revision 1.28
+diff -u -r1.28 RubyModelUtils.java
+--- src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	2 May 2007 15:05:34 -0000	1.28
++++ src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	21 May 2007 15:23:43 -0000
+@@ -241,6 +241,7 @@
+ 			String prefix) {
+ 		List result = new ArrayList();
+ 		if (type instanceof RubyClassType) {
++		    System.out.println("SEARCH CLASS METHODS for " + ((RubyClassType) type).getModelKey());
+ 			RubyClassType rubyClassType = (RubyClassType) type;
+ 			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+ 					.createRubyClass(rubyClassType);
