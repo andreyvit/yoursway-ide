@@ -1,10 +1,26 @@
+Index: plugin.xml
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/plugin.xml,v
+retrieving revision 1.23
+diff -u -r1.23 plugin.xml
+--- plugin.xml	22 May 2007 08:11:56 -0000	1.23
++++ plugin.xml	22 May 2007 16:09:14 -0000
+@@ -6,7 +6,7 @@
+ 	  <editor
+          class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
+          contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
+-         default="true"
++         default="false"
+          extensions="rb"
+          icon="icons/ruby_obj.gif"
+          id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
 Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java,v
 retrieving revision 1.7
 diff -u -r1.7 RubyAutoEditStrategy.java
 --- src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java	7 May 2007 12:54:53 -0000	1.7
-+++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java	21 May 2007 15:22:14 -0000
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java	22 May 2007 16:09:14 -0000
 @@ -279,7 +279,7 @@
  			final int firstTargetLineHome = AutoEditUtils.findEndOfWhiteSpace(d, firstLineStart,
  					firstTargetLineEnd);
@@ -14,29 +30,13 @@ diff -u -r1.7 RubyAutoEditStrategy.java
  			int firstSourceIndentedLineIndex;
  			final int targetLineIndexToCalculateCommonIndentationFor;
  			if (reindentFirstInsertedLine) {
-Index: plugin.xml
-===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/plugin.xml,v
-retrieving revision 1.19
-diff -u -r1.19 plugin.xml
---- plugin.xml	10 May 2007 14:33:12 -0000	1.19
-+++ plugin.xml	21 May 2007 15:22:13 -0000
-@@ -6,7 +6,7 @@
- 	  <editor
- 	        class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
- 	        contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
--	        default="true"
-+	        default="false"
- 	        extensions="rb"
- 	        icon="icons/ruby_obj.gif"
- 	        id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
 Index: META-INF/MANIFEST.MF
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
 retrieving revision 1.8
 diff -u -r1.8 MANIFEST.MF
 --- META-INF/MANIFEST.MF	7 May 2007 11:08:02 -0000	1.8
-+++ META-INF/MANIFEST.MF	21 May 2007 15:22:13 -0000
++++ META-INF/MANIFEST.MF	22 May 2007 16:09:14 -0000
 @@ -25,12 +25,19 @@
   org.eclipse.ui.console
  Eclipse-LazyStart: true
