@@ -99,6 +99,20 @@
 	<!-- Steps to do after fetching the build elements -->
 	<!-- ===================================================================== -->
 	<target name="postFetch">
+      <!--
+          Applying our patches to DLTK: fetching CVS module containing patches
+          for different projects, and applying patch for each project.
+      -->
+      <ant antfile="${genericTargets}" target="fetchElement">
+        <property name="type" value="plugin"/>
+        <property name="id" value="com.yoursway.dltk.patch"/>
+      </ant>
+      
+      <exec executable="${builder}/patch-dltk.sh" failonerror="true">
+	<arg value="patch-dltk.sh"/>
+        <arg value="${buildDirectory}/plugins/com.yoursway.dltk.patch"/>
+        <arg value="${buildDirectory}/plugins"/>
+      </exec>
 	</target>
 
 	<!-- ===================================================================== -->

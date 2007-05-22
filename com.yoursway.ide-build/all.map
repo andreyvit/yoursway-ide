@@ -32,3 +32,5 @@ plugin@org.eclipse.dltk.ruby.launching=COPY,/home/ftp/dltk/repository/org.eclips
 plugin@org.eclipse.dltk.ruby.debug.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 
+plugin@com.yoursway.dltk.patch=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+
