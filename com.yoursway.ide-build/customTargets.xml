@@ -109,7 +109,6 @@
       </ant>
       
       <exec executable="${builder}/patch-dltk.sh" failonerror="true">
-	<arg value="patch-dltk.sh"/>
         <arg value="${buildDirectory}/plugins/com.yoursway.dltk.patch"/>
         <arg value="${buildDirectory}/plugins"/>
       </exec>
