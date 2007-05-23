@@ -6,17 +6,30 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.ControlContribution;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -52,6 +65,77 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     private Action action1;
     
     static final Object[] NO_CHILDREN = new Object[0];
+    
+    private final static class DummyMenuCreator implements IMenuCreator {
+        private Menu menu;
+        private final String[] actions;
+        
+        public DummyMenuCreator(String[] actions) {
+            this.actions = actions;
+        }
+        
+        public void dispose() {
+            if (menu != null)
+                menu.dispose();
+        }
+        
+        public Menu getMenu(Control parent) {
+            if (menu != null)
+                menu.dispose();
+            menu = new Menu(parent);
+            fillMenu();
+            return menu;
+        }
+        
+        public Menu getMenu(Menu parent) {
+            if (menu != null)
+                menu.dispose();
+            menu = new Menu(parent);
+            fillMenu();
+            return menu;
+        }
+        
+        private void fillMenu() {
+            for (String actionName : actions) {
+                if (actionName.equals("-"))
+                    new Separator().fill(menu, -1);
+                else
+                    new ActionContributionItem(new DummyAction(actionName)).fill(menu, -1);
+            }
+        }
+    }
+    
+    private final class XMouseListener implements MouseListener {
+        private final FormText text;
+        private final IMenuCreator menuCreator;
+        
+        private XMouseListener(FormText text, IMenuCreator menuCreator) {
+            this.text = text;
+            this.menuCreator = menuCreator;
+        }
+        
+        public void mouseDoubleClick(MouseEvent e) {
+        }
+        
+        public void mouseDown(MouseEvent e) {
+            FormText ti = text;
+            Menu m = menuCreator.getMenu(ti);
+            if (m != null) {
+                // position the menu below the drop down item
+                Rectangle b = ti.getBounds();
+                Point p = ti.getParent().toDisplay(new Point(b.x, b.y + b.height));
+                m.setLocation(p.x, p.y); // waiting for SWT
+                // 0.42
+                m.setVisible(true);
+                
+                // necessary to display the menu immediately under OS X
+                Display.getDefault().readAndDispatch();
+            }
+        }
+        
+        public void mouseUp(MouseEvent e) {
+        }
+    }
     
     class WindowModelListener extends RailsWindowModelListenerAdapter {
         
@@ -203,12 +287,12 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     private void createBottomControls(Composite formBody) {
-//        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
-//                | ExpandableComposite.CLIENT_INDENT);
-//        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-//        
+        //        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
+        //                | ExpandableComposite.CLIENT_INDENT);
+        //        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        //        
         bottomComposite = formToolkit.createComposite(formBody);
-//        expander.setClient(expanderComposite);
+        //        expander.setClient(expanderComposite);
         final GridLayout layout = FormLayoutFactory.createSectionClientGridLayout(false, 1);
         layout.marginHeight = 0;
         layout.marginTop = 0;
@@ -274,8 +358,8 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         newWindowLabel.setText("<form><p><b>Tip:</b> To work on several projects at once, "
                 + "<a href=\"new_win\">open a new window</a>.</p></form>", true, false);
-//        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
-//                SWT.DEFAULT).y;
+        //        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
+        //                SWT.DEFAULT).y;
         newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
             
             @Override
@@ -283,7 +367,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
                 try {
                     PlatformUI.getWorkbench().openWorkbenchWindow(null);
                 } catch (WorkbenchException ex) {
-                    Activator.log(ex);
+                    Activator.unexpectedError(ex);
                 }
             }
             
@@ -350,8 +434,8 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         FormText newWindowLabel = formToolkit.createFormText(bottomComposite, true);
         newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         newWindowLabel.setText(markup, true, false);
-//        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
-//                SWT.DEFAULT).y;
+        //        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
+        //                SWT.DEFAULT).y;
         newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
             
             @Override
@@ -398,12 +482,76 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     private void fillLocalPullDown(IMenuManager manager) {
-        manager.add(action1);
+        //        manager.add(action1);
     }
     
     private void fillLocalToolBar(IToolBarManager manager) {
-        manager.add(action1);
-        manager.add(new Separator());
+        //        manager.add(action1);
+        //        manager.add(new Separator());
+        final Action action = new Action("New (" + KeyStroke.getInstance(SWT.COMMAND, SWT.F2).format() + ")",
+                IAction.AS_DROP_DOWN_MENU) {
+            
+            @Override
+            public void runWithEvent(Event event) {
+                ToolItem ti = (ToolItem) event.widget;
+                IMenuCreator mc = getMenuCreator();
+                Menu m = mc.getMenu(ti.getParent());
+                if (m != null) {
+                    // position the menu below the drop down item
+                    Rectangle b = ti.getBounds();
+                    Point p = ti.getParent().toDisplay(new Point(b.x, b.y + b.height));
+                    m.setLocation(p.x, p.y); // waiting for SWT
+                    // 0.42
+                    m.setVisible(true);
+                }
+            }
+            
+        };
+        //        manager.add(action);
+        action.setMenuCreator(new DummyMenuCreator(new String[] { "Check Out" }));
+        ControlContribution controlContribution = new ControlContribution("foo") {
+            
+            @Override
+            protected Control createControl(Composite parent) {
+                Composite controls = new Composite(parent, SWT.NONE);
+                
+                final GridLayout gridLayout = new GridLayout(3, false);
+                gridLayout.marginTop = 0;
+                gridLayout.marginHeight = 0;
+                gridLayout.horizontalSpacing = 8;
+                controls.setLayout(gridLayout);
+                
+                addSubmenu(controls, "New", KeyStroke.getInstance(SWT.COMMAND, 'N').format(), new String[] {
+                        "New Project", "Import Existing Project", "-", "New Controller" });
+                
+                addSubmenu(controls, "CVS", KeyStroke.getInstance(SWT.CTRL, 'C').format(), new String[] {
+                        "Check Out Project From CVS", "-", "Update Project", "Update selected_controller.rb",
+                        "-", "Commit All Changes", "Commit Changes in selected_controller.rb", "-",
+                        "More CVS Options >" });
+                
+                Text search = new Text(controls, SWT.SEARCH);
+                search.setText("Live search...");
+                
+                return controls;
+            }
+            
+            private void addSubmenu(Composite parent, final String label, final String shortcut,
+                    final String[] submenu) {
+                FormText text = new FormText(parent, SWT.NONE);
+                text.setText("<form><p><b>" + label + "</b> (" + shortcut + ") ▾</p></form>", true, false);
+                text.addMouseListener(new XMouseListener(text, new DummyMenuCreator(submenu)));
+            }
+            
+        };
+        manager.add(controlContribution);
+    }
+    
+    private static class DummyAction extends Action {
+        
+        public DummyAction(String text) {
+            super(text);
+        }
+        
     }
     
     private void makeActions() {
