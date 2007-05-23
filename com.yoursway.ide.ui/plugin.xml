@@ -125,5 +125,80 @@
             id="com.yoursway.ide.publicMorozovRuntimeProcessFactory">
       </processFactory>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="rhtml"
+            id="com.yoursway.erbhtml"
+            name="RHTML (erb + HTML)">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.fileTypes">
+      <fileTypes
+            extension="rhtml"
+            type="text">
+      </fileTypes>
+      <fileTypes
+            extension="rb"
+            type="text">
+      </fileTypes>
+      <fileTypes
+            extension="rake"
+            type="text">
+      </fileTypes>
+      <fileTypes
+            extension="log"
+            type="text">
+      </fileTypes>
+      <fileTypes
+            extension="cgi"
+            type="text">
+      </fileTypes>
+      <fileTypes
+            extension="fcgi"
+            type="text">
+      </fileTypes>
+      <fileTypes
+            extension="yml"
+            type="text">
+      </fileTypes>
+   </extension>
+   
+   <extension
+         point="org.eclipse.wst.sse.ui.editorConfiguration">
+      <sourceViewerConfiguration
+            class="com.yoursway.ide.rhtml.editor.ErbHtmlSourceViewerConfiguration"
+            target="com.yoursway.erbhtml">
+      </sourceViewerConfiguration>
+   </extension>
+
+	<extension point="org.eclipse.ui.editors">
+		<editor
+			name="YourSway RHTML Editor"
+			icon="icons/rhtml_editor.gif"
+			extensions="rhtml"
+			class="org.eclipse.wst.sse.ui.StructuredTextEditor"
+			symbolicFontName="org.eclipse.wst.sse.ui.textfont"
+			id="com.yoursway.erbhtml.source">
+			<contentTypeBinding
+				contentTypeId="com.yoursway.erbhtml" />
+		</editor>
+	</extension>
+	
+	<extension point="org.eclipse.core.filebuffers.documentCreation">
+		<factory
+			contentTypeId="com.yoursway.erbhtml"
+			class="org.eclipse.wst.sse.core.internal.filebuffers.BasicStructuredDocumentFactory" />
+	</extension>
+	
+	<extension point="org.eclipse.wst.sse.core.modelHandler">
+		<modelHandler
+			class="com.yoursway.ide.rhtml.editor.ErbHtmlModelHandler"
+			associatedContentTypeId="com.yoursway.erbhtml.source"
+			id="com.yoursway.erbhtml.modelhandler">
+		</modelHandler>
+	</extension>
 
 </plugin>

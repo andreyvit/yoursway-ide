@@ -152,4 +152,11 @@ public class Activator extends AbstractUIPlugin {
             }
         });
     }
+    
+    /**
+     * Temporary, for copying JSP editor.
+     */
+    public static void unexpectedError(String string, Throwable e) {
+        unexpectedError(e, string);
+    }
 }
