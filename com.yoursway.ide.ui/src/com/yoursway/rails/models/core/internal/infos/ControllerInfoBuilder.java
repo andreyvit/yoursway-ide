@@ -1,17 +1,16 @@
-package com.yoursway.rails.model.internal.infos;
+package com.yoursway.rails.models.core.internal.infos;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.eclipse.core.internal.resources.ProjectInfo;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 
-import com.yoursway.rails.models.controller.RailsController;
+import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.utils.RailsFileUtils;
+import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.ResourceSwitch;
 
 public class ControllerInfoBuilder {
@@ -40,26 +39,24 @@ public class ControllerInfoBuilder {
         }
     }
     
-    private final ArrayList<RailsController> result = new ArrayList<RailsController>();
-    private final ProjectInfo projectInfo;
+    private final RailsProject railsProject;
+    private final IControllerInfoRequestor infoRequestor;
     
-    public ControllerInfoBuilder(ProjectInfo projectInfo) {
-        Assert.isLegal(projectInfo != null);
-        this.projectInfo = projectInfo;
+    public ControllerInfoBuilder(RailsProject railsProject, IControllerInfoRequestor infoRequestor) {
+        Assert.isLegal(railsProject != null);
+        this.railsProject = railsProject;
+        this.infoRequestor = infoRequestor;
     }
     
-    public Collection<RailsController> build() {
-        //        IFolder controllersFolder = projectInfo.getProject().getFolder(
-        //                RailsNamingConventions.APP_CONTROLLERS_PATH);
-        //        if (controllersFolder.exists())
-        //            try {
-        //                controllersFolder.accept(new CollectingVisitor());
-        //            } catch (CoreException e) {
-        //                //FIXME: Activator no longer has unexpectedError()
-        //                //Activator.unexpectedError(e);
-        //            }
-        //        return result;
-        return null;
+    public void build() {
+        IFolder controllersFolder = railsProject.getProject().getFolder(
+                RailsNamingConventions.APP_CONTROLLERS_PATH);
+        if (controllersFolder.exists())
+            try {
+                controllersFolder.accept(new CollectingVisitor());
+            } catch (CoreException e) {
+                Activator.unexpectedError(e);
+            }
     }
     
     private boolean canAddControllerFor(IFile file) {
@@ -67,7 +64,7 @@ public class ControllerInfoBuilder {
     }
     
     private void addController(IFile file) {
-        //        result.add(new RailsController(projectInfo, file));
+        infoRequestor.consumeInfo(railsProject, file);
     }
     
 }

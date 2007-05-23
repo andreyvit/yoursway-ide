@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.internal.infos;
+package com.yoursway.rails.models.core.internal.infos;
 
 
 public class DeltaProcessor {

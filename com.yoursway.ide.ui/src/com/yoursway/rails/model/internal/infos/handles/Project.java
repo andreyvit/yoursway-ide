@@ -5,9 +5,9 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 
-import com.yoursway.rails.model.internal.infos.ControllerInfo;
-import com.yoursway.rails.model.internal.infos.InfoCore;
-import com.yoursway.rails.model.internal.infos.ProjectInfo;
+import com.yoursway.rails.models.controller.RailsController;
+import com.yoursway.rails.models.core.internal.infos.InfoCore;
+import com.yoursway.rails.models.project.RailsProject;
 
 public class Project {
     
@@ -21,17 +21,17 @@ public class Project {
         return getInfo() != null;
     }
     
-    ProjectInfo getInfo() {
-        return InfoCore.PROJECT_INFOS.obtainActualInfo(project);
+    RailsProject getInfo() {
+        return InfoCore.PROJECT_INFOS.get(project);
     }
     
     public Collection<Controller> getControllers() throws ElementDoesNotExistException {
-        final ProjectInfo info = getInfo();
+        final RailsProject info = getInfo();
         if (info == null)
             throw new ElementDoesNotExistException();
         Collection<Controller> result = new ArrayList<Controller>();
-        for (ControllerInfo controllerInfo : InfoCore.CONTROLLER_INFOS.obtainActualInfos(info))
-            result.add(new Controller(this, controllerInfo.getFile()));
+        for (RailsController railsController : InfoCore.CONTROLLER_INFOS.obtainActualInfos(info))
+            result.add(new Controller(this, railsController.getFile()));
         return result;
     }
 }

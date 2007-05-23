@@ -1,12 +1,14 @@
-package com.yoursway.rails.model.internal.infos;
+package com.yoursway.rails.models.project;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Assert;
 
-public class ProjectInfo {
+public class RailsProject {
     
     private final IProject project;
     
-    public ProjectInfo(IProject project) {
+    public RailsProject(IProject project) {
+        Assert.isLegal(project != null);
         this.project = project;
     }
     

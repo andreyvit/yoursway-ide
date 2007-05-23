@@ -2,9 +2,9 @@ package com.yoursway.rails.model.internal.infos.handles;
 
 import org.eclipse.core.resources.IFile;
 
-import com.yoursway.rails.model.internal.infos.ControllerInfo;
-import com.yoursway.rails.model.internal.infos.InfoCore;
-import com.yoursway.rails.model.internal.infos.ProjectInfo;
+import com.yoursway.rails.models.controller.RailsController;
+import com.yoursway.rails.models.core.internal.infos.InfoCore;
+import com.yoursway.rails.models.project.RailsProject;
 
 public class Controller {
     
@@ -34,8 +34,8 @@ public class Controller {
         return getInfo() != null;
     }
     
-    ControllerInfo getInfo() {
-        ProjectInfo info = parent.getInfo();
+    RailsController getInfo() {
+        RailsProject info = parent.getInfo();
         if (info != null)
             return InfoCore.CONTROLLER_INFOS.obtainActualInfo(info, file);
         return null;
