@@ -22,7 +22,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
-import org.eclipse.dltk.launching.InterpreterRunnerConfiguration;
+import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
@@ -89,8 +89,8 @@ public class RailsRuntime {
                     return Status.CANCEL_STATUS;
                 }
                 
-                InterpreterRunnerConfiguration config = new InterpreterRunnerConfiguration(fileName);
-                config.setProgramArguments(new String[] { "rails", railsVersion });
+                InterpreterConfig config = new InterpreterConfig(new File(fileName));
+                config.addScriptArgs(new String[] { "rails", railsVersion });
                 
                 ILaunch launch = null;
                 try {
@@ -183,8 +183,8 @@ public class RailsRuntime {
                     return Status.CANCEL_STATUS;
                 }
                 
-                InterpreterRunnerConfiguration config = new InterpreterRunnerConfiguration(fileName);
-                config.setProgramArguments(new String[] { "rails" });
+                InterpreterConfig config = new InterpreterConfig(new File(fileName));
+                config.addScriptArgs(new String[] { "rails" });
                 
                 ILaunch launch = null;
                 try {

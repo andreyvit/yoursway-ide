@@ -11,6 +11,7 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.ruby.RubyInstallation.RubyScriptInvokationError;
 
 public class RubyToolUtils {
     
@@ -48,7 +49,11 @@ public class RubyToolUtils {
     public static void sendSignal(RubyInstallation ruby, String signalName, int pid, IProgressMonitor monitor) {
         String scriptPath = getScriptCopySuitableForRunning("kill.rb");
         String[] args = new String[] { "INT", "" + pid };
-        ruby.runRubyScript(scriptPath, Arrays.asList(args), monitor);
+        try {
+            ruby.runRubyScript(scriptPath, Arrays.asList(args), monitor);
+        } catch (RubyScriptInvokationError e) {
+            Activator.reportException(e, "Stopping a process");
+        }
     }
     
     /**

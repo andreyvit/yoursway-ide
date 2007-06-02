@@ -15,7 +15,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.launching.AbstractInterpreterRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterRunner;
-import org.eclipse.dltk.launching.InterpreterRunnerConfiguration;
+import org.eclipse.dltk.launching.InterpreterConfig;
 
 /**
  * Utility class wrapping {@link AbstractInterpreterRunner} with convenience
@@ -40,8 +40,8 @@ public final class InterpreterRunnerUtil {
      * @return finished launch with information about launch
      * @throws CoreException
      */
-    public static ILaunch run(IInterpreterInstall install, InterpreterRunnerConfiguration config,
-            IProgressMonitor monitor) throws CoreException {
+    public static ILaunch run(IInterpreterInstall install, InterpreterConfig config, IProgressMonitor monitor)
+            throws CoreException {
         
         SubMonitor progress = SubMonitor.convert(monitor);
         
@@ -169,7 +169,7 @@ public final class InterpreterRunnerUtil {
             return "\"" + arg + "\"";
         return arg;
     }
-
+    
     /**
      * Returns the exit value from the finished process.
      * 

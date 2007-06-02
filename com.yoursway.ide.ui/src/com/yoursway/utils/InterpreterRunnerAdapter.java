@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.launching.IInterpreterRunner;
-import org.eclipse.dltk.launching.InterpreterRunnerConfiguration;
+import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
@@ -18,10 +18,10 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 public class InterpreterRunnerAdapter implements IRunnableWithProgress {
     
     private final IInterpreterRunner runner;
-    private final InterpreterRunnerConfiguration config;
+    private final InterpreterConfig config;
     private final ILaunch launch;
     
-    InterpreterRunnerAdapter(IInterpreterRunner runner, InterpreterRunnerConfiguration config, ILaunch launch) {
+    InterpreterRunnerAdapter(IInterpreterRunner runner, InterpreterConfig config, ILaunch launch) {
         this.runner = runner;
         this.config = config;
         this.launch = launch;
