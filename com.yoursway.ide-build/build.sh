@@ -23,3 +23,7 @@ $JAVA -jar ${ECLIPSE_DIR}/plugins/org.eclipse.equinox.launcher_*.jar \
   find ${CURDIR}/src/I.* -type f -print0 | xargs -0 chmod 644 && \
   cp -R ${CURDIR}/src/I.* /home/ftp/yoursway
 
+if [ $? != 0 ]; then
+    cat build.log
+    exit 1
+fi
