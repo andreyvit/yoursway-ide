@@ -108,7 +108,7 @@
         <property name="id" value="com.yoursway.dltk.patch"/>
       </ant>
       
-      <exec executable="${builder}/patch-dltk.sh" failonerror="true">
+      <exec executable="${builder}/patch-dltk.sh" failonerror="true" logError="true">
         <arg value="${buildDirectory}/plugins/com.yoursway.dltk.patch"/>
         <arg value="${buildDirectory}/plugins"/>
       </exec>
