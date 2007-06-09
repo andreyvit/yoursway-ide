@@ -4,9 +4,9 @@
 <product name="YourSway IDE" id="com.yoursway.ide.ui.product" application="com.yoursway.ide.ui.application" useFeatures="true">
 
    <aboutInfo>
-      <image path="/com.yoursway.ide-product/product_images/logo.gif"/>
+      <image path="/com.yoursway.ide.ui/product_images/logo.gif"/>
       <text>
-         YourSway IDE. The best Ruby on Rails IDE. Ever.
+         YourSway IDE — the tool for your Rails masterpiece.
 
 © 2007, YourSway.
       </text>
@@ -27,8 +27,10 @@
       startupMessageRect="0,0,0,0"
       startupForegroundColor="000000" />
    <launcher name="yourswayide">
+      <macosx icon="/com.yoursway.ide-product/yoursway.icns"/>
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/com.yoursway.ide-product/yoursway.ico"/>
          <bmp/>
       </win>
    </launcher>
