@@ -19,7 +19,7 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/com.yoursway.ide-product/product_images/icon16.png" i32="/com.yoursway.ide-product/product_images/icon32.png" i48="/com.yoursway.ide-product/product_images/icon48.png"/>
+   <windowImages i16="/com.yoursway.ide.ui/product_images/icon16.gif" i32="/com.yoursway.ide.ui/product_images/icon32.gif" i48="/com.yoursway.ide.ui/product_images/icon48.gif" i64="/com.yoursway.ide.ui/product_images/icon64.gif" i128="/com.yoursway.ide.ui/product_images/icon128.gif"/>
 
    <splash
       location="com.yoursway.ide.ui"

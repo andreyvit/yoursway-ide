@@ -90,7 +90,7 @@
             name="YourSway IDE">
          <property
                name="windowImages"
-               value="/com.yoursway.ide-product/product_images/icon16.png,/com.yoursway.ide-product/product_images/icon32.png,/com.yoursway.ide-product/product_images/icon48.png">
+               value="product_images/icon16.gif,product_images/icon32.gif,product_images/icon48.gif,product_images/icon64.gif,product_images/icon128.gif">
          </property>
          <property
                name="appName"
@@ -196,7 +196,7 @@
 	<extension point="org.eclipse.wst.sse.core.modelHandler">
 		<modelHandler
 			class="com.yoursway.ide.rhtml.editor.ErbHtmlModelHandler"
-			associatedContentTypeId="com.yoursway.erbhtml.source"
+			associatedContentTypeId="com.yoursway.erbhtml"
 			id="com.yoursway.erbhtml.modelhandler">
 		</modelHandler>
 	</extension>
