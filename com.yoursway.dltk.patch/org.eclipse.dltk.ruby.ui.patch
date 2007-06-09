@@ -1,42 +1,129 @@
+Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java,v
+retrieving revision 1.8
+diff -u -r1.8 RubyPartitionScanner.java
+--- src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java	8 Jun 2007 17:54:45 -0000	1.8
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java	9 Jun 2007 16:39:40 -0000
+@@ -21,7 +21,7 @@
+ import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
+ import org.eclipse.jface.text.rules.Token;
+ 
+-public class RubyPartitionScanner extends RuleBasedPartitionScanner {
++public class RubyPartitionScanner extends RuleBasedPartitionScanner implements ICodeScannerWithContextLookups {
+ 
+ 	private Token string;
+ 	private Token comment;
+@@ -67,10 +67,6 @@
+ 		return fOffset;		
+ 	}
+ 
+-	public RubyContext getCurrentContext() {
+-		return RubyContextUtils.determineContext(fDocument, fOffset, RubyContext.MODE_FULL);
+-	}
+-
+ 	public RubyContext getContext(int offset) {
+ 		return RubyContextUtils.determineContext(fDocument, offset, RubyContext.MODE_FULL);
+ 	}
+Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java,v
+retrieving revision 1.2
+diff -u -r1.2 RubyCodeScanner.java
+--- src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java	2 May 2007 15:04:28 -0000	1.2
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java	9 Jun 2007 16:39:40 -0000
+@@ -12,7 +12,9 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import org.eclipse.dltk.ruby.core.text.RubyContext;
+ import org.eclipse.dltk.ruby.internal.ui.text.rules.StartWithRule;
++import org.eclipse.dltk.ruby.internal.ui.text.syntax.RubyContextUtils;
+ import org.eclipse.dltk.ui.text.AbstractScriptScanner;
+ import org.eclipse.dltk.ui.text.IColorManager;
+ import org.eclipse.jface.preference.IPreferenceStore;
+@@ -21,7 +23,7 @@
+ import org.eclipse.jface.text.rules.WhitespaceRule;
+ import org.eclipse.jface.text.rules.WordRule;
+ 
+-public class RubyCodeScanner extends AbstractScriptScanner {
++public class RubyCodeScanner extends AbstractScriptScanner implements ICodeScannerWithContextLookups {
+ 	private static String[] fgKeywords = { "alias", "alias_method", "and", "BEGIN", "begin", "break", "case", "class", "def", "defined", "do",
+ 			"else", "elsif", "END", "end", "ensure", "for", "if", "in", "module", "next", "not", "or", "redo", "rescue", "retry", "return", "super",
+ 			"then", "undef", "unless", "until", "when", "while", "yield",
+@@ -107,4 +109,13 @@
+ 		setDefaultReturnToken(other);
+ 		return rules;
+ 	}
++
++    public int getOffsetForLaterContextLookup() {
++        return fOffset;     
++    }
++
++    public RubyContext getContext(int offset) {
++        return RubyContextUtils.determineContext(fDocument, offset, RubyContext.MODE_FULL);
++    }
++
+ }
+Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java,v
+retrieving revision 1.2
+diff -u -r1.2 RubySlashRegexpRule.java
+--- src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java	2 May 2007 15:04:28 -0000	1.2
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java	9 Jun 2007 16:39:40 -0000
+@@ -23,7 +23,7 @@
+ 	}
+ 
+ 	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
+-		RubyPartitionScanner s = (RubyPartitionScanner) scanner;
++		ICodeScannerWithContextLookups s = (ICodeScannerWithContextLookups) scanner;
+ 		int offset = s.getOffsetForLaterContextLookup();
+ 		IToken token = super.evaluate(scanner, resume);
+ 		if (token.isUndefined())
+Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java,v
+retrieving revision 1.2
+diff -u -r1.2 RubyColorConstants.java
+--- src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java	2 May 2007 15:04:28 -0000	1.2
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java	9 Jun 2007 16:39:40 -0000
+@@ -64,4 +64,12 @@
+ 	public static final String RUBY_PREDEFINED_VARIABLE = RUBY_VARIABLE + ".predefined"; //$NON-NLS-1$
+ 	
+ 	public static final String RUBY_SYMBOLS = "ruby.symbols"; //$NON-NLS-1$
++	
++	public static final String[] ALL = new String[] {
++	    RUBY_STRING, RUBY_SINGLE_LINE_COMMENT, RUBY_NUMBER, RUBY_KEYWORD, RUBY_KEYWORD_RETURN,
++	    RUBY_DEFAULT, RUBY_DOC, RUBY_DOC_TOPIC, RUBY_VARIABLE, RUBY_CLASS_VARIABLE,
++	    RUBY_GLOBAL_VARIABLE, RUBY_CONSTANT_VARIABLE, RUBY_INSTANCE_VARIABLE,
++	    RUBY_PSEUDO_VARIABLE, RUBY_PREDEFINED_VARIABLE, RUBY_SYMBOLS,
++	};
++	
+ }
 Index: plugin.xml
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/plugin.xml,v
-retrieving revision 1.23
-diff -u -r1.23 plugin.xml
---- plugin.xml	22 May 2007 08:11:56 -0000	1.23
-+++ plugin.xml	22 May 2007 16:09:14 -0000
-@@ -6,7 +6,7 @@
+retrieving revision 1.31
+diff -u -r1.31 plugin.xml
+--- plugin.xml	9 Jun 2007 07:08:23 -0000	1.31
++++ plugin.xml	9 Jun 2007 16:39:39 -0000
+@@ -62,7 +62,7 @@
  	  <editor
           class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
           contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
 -         default="true"
 +         default="false"
           extensions="rb"
-          icon="icons/ruby_obj.gif"
+          icon="$nl$/icons/obj16/ruby_obj.gif"
           id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
-Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java
-===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java,v
-retrieving revision 1.7
-diff -u -r1.7 RubyAutoEditStrategy.java
---- src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java	7 May 2007 12:54:53 -0000	1.7
-+++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyAutoEditStrategy.java	22 May 2007 16:09:14 -0000
-@@ -279,7 +279,7 @@
- 			final int firstTargetLineHome = AutoEditUtils.findEndOfWhiteSpace(d, firstLineStart,
- 					firstTargetLineEnd);
- 
--			final boolean reindentFirstInsertedLine = (pasteOffset < firstTargetLineHome);
-+			final boolean reindentFirstInsertedLine = (pasteOffset <= firstTargetLineHome);
- 			int firstSourceIndentedLineIndex;
- 			final int targetLineIndexToCalculateCommonIndentationFor;
- 			if (reindentFirstInsertedLine) {
 Index: META-INF/MANIFEST.MF
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
-retrieving revision 1.8
-diff -u -r1.8 MANIFEST.MF
---- META-INF/MANIFEST.MF	7 May 2007 11:08:02 -0000	1.8
-+++ META-INF/MANIFEST.MF	22 May 2007 16:09:14 -0000
+retrieving revision 1.9
+diff -u -r1.9 MANIFEST.MF
+--- META-INF/MANIFEST.MF	30 May 2007 12:53:24 -0000	1.9
++++ META-INF/MANIFEST.MF	9 Jun 2007 16:39:39 -0000
 @@ -25,12 +25,19 @@
   org.eclipse.ui.console
  Eclipse-LazyStart: true
@@ -58,3 +145,21 @@ diff -u -r1.8 MANIFEST.MF
 + org.eclipse.dltk.ruby.internal.ui.wizards,
   org.eclipse.dltk.ruby.ui.preferences
 -
+Index: src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
+===================================================================
+RCS file: src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
+diff -N src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,11 @@
++package org.eclipse.dltk.ruby.internal.ui.text;
++
++import org.eclipse.dltk.ruby.core.text.RubyContext;
++
++public interface ICodeScannerWithContextLookups {
++    
++    int getOffsetForLaterContextLookup();
++    
++    RubyContext getContext(int offset);
++    
++}

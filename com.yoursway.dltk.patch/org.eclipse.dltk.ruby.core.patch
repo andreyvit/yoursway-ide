@@ -1,11 +1,25 @@
 Index: src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.core/src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java,v
-retrieving revision 1.28
-diff -u -r1.28 RubyModelUtils.java
---- src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	2 May 2007 15:05:34 -0000	1.28
-+++ src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	21 May 2007 15:23:43 -0000
-@@ -241,6 +241,7 @@
+retrieving revision 1.31
+diff -u -r1.31 RubyModelUtils.java
+--- src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	7 Jun 2007 13:54:23 -0000	1.31
++++ src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	9 Jun 2007 16:40:37 -0000
+@@ -276,11 +276,11 @@
+ 					}
+ 				}
+ 				return result;
+-			}
++	}
+ 		}
+ 		return null;
+ 	}
+-	
++
+ 	public static List getAllSourceMethods(RubyMixinMethod[] methods, RubyMixinClass selfKlass) {
+ 		List result = new ArrayList ();
+ 		for (int i = 0; i < methods.length; i++) {
+@@ -309,6 +309,7 @@
  			String prefix) {
  		List result = new ArrayList();
  		if (type instanceof RubyClassType) {

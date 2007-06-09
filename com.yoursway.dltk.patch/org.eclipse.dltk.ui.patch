@@ -1,36 +1,32 @@
-Index: src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java
+Index: src/org/eclipse/dltk/ui/text/AbstractScriptScanner.java
 ===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/core/plugins/org.eclipse.dltk.ui/src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java,v
-retrieving revision 1.3
-diff -u -r1.3 AutoEditUtils.java
---- src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java	7 May 2007 12:54:49 -0000	1.3
-+++ src/org/eclipse/dltk/ui/text/util/AutoEditUtils.java	21 May 2007 15:22:47 -0000
-@@ -570,7 +570,28 @@
- 		return length;
- 	}
+RCS file: /cvsroot/technology/org.eclipse.dltk/core/plugins/org.eclipse.dltk.ui/src/org/eclipse/dltk/ui/text/AbstractScriptScanner.java,v
+retrieving revision 1.2
+diff -u -r1.2 AbstractScriptScanner.java
+--- src/org/eclipse/dltk/ui/text/AbstractScriptScanner.java	2 May 2007 15:07:29 -0000	1.2
++++ src/org/eclipse/dltk/ui/text/AbstractScriptScanner.java	9 Jun 2007 16:40:15 -0000
+@@ -14,6 +14,7 @@
+ import java.util.List;
+ import java.util.Map;
  
++import org.eclipse.core.runtime.Assert;
+ import org.eclipse.dltk.ui.PreferenceConstants;
+ import org.eclipse.jface.preference.IPreferenceStore;
+ import org.eclipse.jface.preference.PreferenceConverter;
+@@ -351,4 +352,16 @@
+ 	protected IPreferenceStore getPreferenceStore() {
+ 		return fPreferenceStore;
+ 	}
++	
 +	/**
-+     * Determine if the given offset is right before the end-of-line
-+     * character(s) on the given line. Also returns true if the given offset
-+     * is equal to the <code>endOffset</code>. 
-+     * 
-+     * @param document
-+     *            the document that determines the set of legal line delimiter
-+     *            strings
-+     * @param offset
-+     *            the offset to check
-+     * @param endOffset
-+     *            the offset right after the end of the line containing
-+     *            <code>offset</code>, should equal the value that would be
-+     *            returned from
-+     *            <code>document.getLineOffset(document.getLineOfOffset(offset)) +
-+     * document.getLineLength(document.getLineOfOffset(offset))</code>.
-+     * @return
-+     * @throws BadLocationException
-+     */
- 	public static boolean atEndOfLine(IDocument document, int offset, int endOffset) throws BadLocationException {
-+	    if (offset == endOffset)
-+	        return true;
- 		int maxDelta = getMaximumLineDelimiterLength(document);
- 		if (offset + maxDelta < endOffset)
- 			return false;
++	 * @return never <code>null</code>.
++	 */
++	public TextAttribute getTextAttribute(String key) {
++	    Token token = getToken(key);
++	    Assert.isNotNull(token);
++	    TextAttribute attr = (TextAttribute) token.getData();
++	    Assert.isNotNull(attr);
++	    return attr;
++	}
++	
+ }
