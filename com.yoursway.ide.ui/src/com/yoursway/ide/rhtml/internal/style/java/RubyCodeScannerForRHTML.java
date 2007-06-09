@@ -19,16 +19,6 @@ public class RubyCodeScannerForRHTML extends RubyCodeScanner {
         super(manager, store);
     }
     
-    private static class CannotGetPartitionerRules extends Exception {
-        
-        private static final long serialVersionUID = -7534912517337210769L;
-        
-        public CannotGetPartitionerRules(Throwable cause) {
-            super(cause);
-        }
-        
-    }
-    
     private static final String[] STRING_PROPERTIES = new String[] { RubyColorConstants.RUBY_STRING };
     
     @Override
