@@ -32,6 +32,22 @@
    <includes
          id="org.eclipse.cvs"
          version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.wst"
+         version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.emf"
+         version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.gef"
+         version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.datatools.modelbase.feature"
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
