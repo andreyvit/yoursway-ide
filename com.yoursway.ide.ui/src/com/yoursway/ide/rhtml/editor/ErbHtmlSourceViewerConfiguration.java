@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IAutoEditStrategy;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -30,12 +32,15 @@ import org.eclipse.wst.sse.ui.internal.provisional.style.LineStyleProvider;
 import org.eclipse.wst.sse.ui.internal.taginfo.TextHoverManager;
 import org.eclipse.wst.sse.ui.internal.util.EditorUtility;
 import org.eclipse.wst.xml.core.internal.provisional.contenttype.ContentTypeIdForXML;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.eclipse.wst.xml.core.text.IXMLPartitions;
 import org.eclipse.wst.xml.ui.StructuredTextViewerConfigurationXML;
 import org.eclipse.wst.xml.ui.internal.contentoutline.JFaceNodeLabelProvider;
 import org.w3c.dom.Node;
 
 import com.yoursway.ide.rhtml.internal.contenttype.ContentTypeIdForJSP;
+import com.yoursway.ide.rhtml.internal.style.java.LineStyleProviderForJSP;
+import com.yoursway.ide.rhtml.internal.style.java.LineStyleProviderForJava;
 import com.yoursway.ide.rhtml.internal.text.IJSPPartitions;
 import com.yoursway.ide.rhtml.internal.text.StructuredTextPartitionerForJSP;
 
@@ -49,6 +54,7 @@ import com.yoursway.ide.rhtml.internal.text.StructuredTextPartitionerForJSP;
  * @see org.eclipse.wst.sse.ui.StructuredTextViewerConfiguration
  * @since 1.0
  */
+@SuppressWarnings("restriction")
 public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfiguration {
     /*
      * One instance per configuration because not sourceviewer-specific and it's
@@ -71,6 +77,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
 //    private JavaSourceViewerConfiguration fJavaSourceViewerConfiguration;
     private StructuredTextViewerConfiguration fXMLSourceViewerConfiguration;
     private ILabelProvider fStatusLineLabelProvider;
+    private ISourceViewer savedSourceViewer;
     
     /**
      * Create new instance of StructuredTextViewerConfigurationJSP
@@ -95,7 +102,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
             strategies = getXMLSourceViewerConfiguration().getAutoEditStrategies(sourceViewer, contentType);
         } else if (contentType == IJSPPartitions.JSP_CONTENT_JAVA) {
             // jsp java autoedit strategies
-            List allStrategies = new ArrayList(0);
+            List<AutoEditStrategyForTabs> allStrategies = new ArrayList<AutoEditStrategyForTabs>(0);
             
 //            IAutoEditStrategy[] javaStrategies = getJavaSourceViewerConfiguration().getAutoEditStrategies(
 //                    sourceViewer, IJavaPartitions.JAVA_PARTITIONING);
@@ -107,12 +114,11 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
             // add auto edit strategy that handles when tab key is pressed
             allStrategies.add(new AutoEditStrategyForTabs());
             
-            strategies = (IAutoEditStrategy[]) allStrategies.toArray(new IAutoEditStrategy[allStrategies
-                    .size()]);
+            strategies = allStrategies.toArray(new IAutoEditStrategy[allStrategies.size()]);
         } else if (contentType == IHTMLPartitions.HTML_DEFAULT
                 || contentType == IHTMLPartitions.HTML_DECLARATION) {
             // html and jsp autoedit strategies
-            List allStrategies = new ArrayList(0);
+            List<IAutoEditStrategy> allStrategies = new ArrayList<IAutoEditStrategy>(0);
             
 //            // add the jsp autoedit strategy first then add all html's
 //            allStrategies.add(new StructuredAutoEditStrategyJSP());
@@ -123,11 +129,10 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
                 allStrategies.add(htmlStrategies[i]);
             }
             
-            strategies = (IAutoEditStrategy[]) allStrategies.toArray(new IAutoEditStrategy[allStrategies
-                    .size()]);
+            strategies = allStrategies.toArray(new IAutoEditStrategy[allStrategies.size()]);
         } else {
             // default autoedit strategies
-            List allStrategies = new ArrayList(0);
+            List<IAutoEditStrategy> allStrategies = new ArrayList<IAutoEditStrategy>(0);
             
             IAutoEditStrategy[] superStrategies = super.getAutoEditStrategies(sourceViewer, contentType);
             for (int i = 0; i < superStrategies.length; i++) {
@@ -139,8 +144,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
             // add auto edit strategy that handles when tab key is pressed
             allStrategies.add(new AutoEditStrategyForTabs());
             
-            strategies = (IAutoEditStrategy[]) allStrategies.toArray(new IAutoEditStrategy[allStrategies
-                    .size()]);
+            strategies = allStrategies.toArray(new IAutoEditStrategy[allStrategies.size()]);
         }
         
         return strategies;
@@ -148,6 +152,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
     
     @Override
     public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+        this.savedSourceViewer = sourceViewer;
         if (fConfiguredContentTypes == null) {
             /*
              * A little bit of cheating because assuming html's configured
@@ -351,14 +356,14 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
     
     private LineStyleProvider getLineStyleProviderForJava() {
         if (fLineStyleProviderForJava == null) {
-//            fLineStyleProviderForJava = new LineStyleProviderForJava();
+            fLineStyleProviderForJava = new LineStyleProviderForJava();
         }
         return fLineStyleProviderForJava;
     }
     
     private LineStyleProvider getLineStyleProviderForJSP() {
         if (fLineStyleProviderForJSP == null) {
-//            fLineStyleProviderForJSP = new LineStyleProviderForJSP();
+            fLineStyleProviderForJSP = new LineStyleProviderForJSP();
         }
         return fLineStyleProviderForJSP;
     }
@@ -381,14 +386,39 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
                         return null;
                     
                     StringBuffer s = new StringBuffer();
-                    Node node = (Node) element;
+                    IDOMNode node = (IDOMNode) element;
                     while (node != null) {
                         if (node.getNodeType() != Node.DOCUMENT_NODE) {
                             s.insert(0, super.getText(node));
                         }
-                        node = node.getParentNode();
+                        node = (IDOMNode) node.getParentNode();
                         if (node != null && node.getNodeType() != Node.DOCUMENT_NODE) {
                             s.insert(0, IPath.SEPARATOR);
+                        }
+                    }
+                    if (savedSourceViewer != null) {
+                        node = (IDOMNode) element;
+                        IDocument document = savedSourceViewer.getDocument();
+                        int startOffset = node.getStartOffset();
+                        int endOffset = node.getEndOffset();
+                        System.out.println();
+                        try {
+                            System.out.print("Partition at startOffset-1 is  ");
+                            System.out.println(document.getPartition(startOffset - 1));
+                        } catch (BadLocationException e) {
+                            System.out.println("invalid.");
+                        }
+                        try {
+                            System.out.print("Partition at startOffset is    ");
+                            System.out.println(document.getPartition(startOffset));
+                        } catch (BadLocationException e) {
+                            System.out.println("invalid.");
+                        }
+                        try {
+                            System.out.print("Partition at endOffset is      ");
+                            System.out.println(document.getPartition(endOffset));
+                        } catch (BadLocationException e) {
+                            System.out.println("invalid.");
                         }
                     }
                     return s.toString();

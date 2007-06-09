@@ -24,15 +24,13 @@ import org.eclipse.wst.xml.core.internal.text.rules.StructuredTextPartitionerFor
 
 import com.yoursway.ide.rhtml.internal.encoding.JSPDocumentHeadContentDetector;
 import com.yoursway.ide.rhtml.internal.parser.JSPSourceParser;
-import com.yoursway.ide.rhtml.internal.provisional.JSP12Namespace;
 import com.yoursway.ide.rhtml.internal.regions.DOMJSPRegionContexts;
 
+@SuppressWarnings("restriction")
 public class StructuredTextPartitionerForJSP extends StructuredTextPartitioner {
     // for compatibility with v5.1.0, we'll reuse ST_JSP_DIRECTIVE for action
     // tags
     private final static boolean fEnableJSPActionPartitions = true;
-    // list of valid JSP 1.2 tag and action names
-    private static List fJSPActionTagNames = null;
     private static final String HTML_MIME_TYPE = "text/html"; //$NON-NLS-1$
     private static final String XHTML_MIME_TYPE = "text/xhtml"; //$NON-NLS-1$
     private static final String XML_MIME_TYPE = "text/xml"; //$NON-NLS-1$
@@ -68,27 +66,6 @@ public class StructuredTextPartitionerForJSP extends StructuredTextPartitioner {
      */
     public StructuredTextPartitionerForJSP() {
         super();
-        if (fJSPActionTagNames == null) {
-            fJSPActionTagNames = new ArrayList(); // uses .equals() for
-            // contains()
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.DECLARATION);
-            // fJSPActionTagNames.add(JSP12Namespace.ElementName.DIRECTIVE_INCLUDE);
-            // fJSPActionTagNames.add(JSP12Namespace.ElementName.DIRECTIVE_PAGE);
-            // fJSPActionTagNames.add(JSP12Namespace.ElementName.DIRECTIVE_TAGLIB);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.EXPRESSION);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.FALLBACK);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.FORWARD);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.GETPROPERTY);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.INCLUDE);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.PARAM);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.PARAMS);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.PLUGIN);
-            // fJSPActionTagNames.add(JSP12Namespace.ElementName.ROOT);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.SCRIPTLET);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.SETPROPERTY);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.TEXT);
-            fJSPActionTagNames.add(JSP12Namespace.ElementName.USEBEAN);
-        }
     }
     
     /**

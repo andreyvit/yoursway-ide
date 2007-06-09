@@ -3,7 +3,6 @@ package com.yoursway.ide.rhtml.internal.parser;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.wst.sse.core.internal.ltk.parser.BlockTokenizer;
 import org.eclipse.wst.sse.core.internal.ltk.parser.JSPCapableParser;
 import org.eclipse.wst.sse.core.internal.ltk.parser.RegionParser;
 import org.eclipse.wst.sse.core.internal.ltk.parser.StructuredDocumentRegionHandler;
@@ -28,7 +27,7 @@ import com.yoursway.ide.rhtml.internal.regions.DOMJSPRegionContexts;
 /**
  * Takes input from the JSPTokenizer and creates a tag list
  */
-
+@SuppressWarnings("restriction")
 public class JSPSourceParser extends XMLSourceParser implements JSPCapableParser {
     protected class NestablePrefixHandler implements StructuredDocumentRegionHandler,
             StructuredDocumentRegionHandlerExtension {
@@ -48,12 +47,12 @@ public class JSPSourceParser extends XMLSourceParser implements JSPCapableParser
         protected void enableForTaglib(String prefix, IStructuredDocumentRegion anchorFlatNode) {
             if (prefix == null)
                 return;
-            List tagmarkers = ((JSPTokenizer) getTokenizer()).getNestablePrefixes();
+            List<TagMarker> tagmarkers = (getTokenizer()).getNestablePrefixes();
             for (int i = 0; i < tagmarkers.size(); i++) {
-                if (((TagMarker) tagmarkers.get(i)).getTagName().equals(prefix))
+                if ((tagmarkers.get(i)).getTagName().equals(prefix))
                     return;
             }
-            ((JSPTokenizer) getTokenizer()).getNestablePrefixes().add(new TagMarker(prefix, anchorFlatNode));
+            (getTokenizer()).getNestablePrefixes().add(new TagMarker(prefix, anchorFlatNode));
         }
         
         public void nodeParsed(IStructuredDocumentRegion aCoreFlatNode) {
@@ -165,9 +164,9 @@ public class JSPSourceParser extends XMLSourceParser implements JSPCapableParser
         }
         
         public void resetNodes() {
-            Iterator tagmarkers = ((JSPTokenizer) getTokenizer()).getNestablePrefixes().iterator();
+            Iterator<TagMarker> tagmarkers = getTokenizer().getNestablePrefixes().iterator();
             while (tagmarkers.hasNext()) {
-                if (!((TagMarker) tagmarkers.next()).isGlobal())
+                if (!tagmarkers.next().isGlobal())
                     tagmarkers.remove();
             }
         }
@@ -190,20 +189,21 @@ public class JSPSourceParser extends XMLSourceParser implements JSPCapableParser
     }
     
     public void addNestablePrefix(TagMarker marker) {
-        ((JSPTokenizer) getTokenizer()).addNestablePrefix(marker);
+        (getTokenizer()).addNestablePrefix(marker);
     }
     
     public List getNestablePrefixes() {
-        return ((JSPTokenizer) getTokenizer()).getNestablePrefixes();
+        return (getTokenizer()).getNestablePrefixes();
     }
     
     @Override
-    protected BlockTokenizer getTokenizer() {
+    @SuppressWarnings("unchecked")
+    protected JSPTokenizer getTokenizer() {
         if (fTokenizer == null) {
             fTokenizer = new JSPTokenizer();
             getStructuredDocumentRegionHandlers().add(new NestablePrefixHandler());
         }
-        return fTokenizer;
+        return (JSPTokenizer) fTokenizer;
     }
     
     @Override
@@ -443,7 +443,7 @@ public class JSPSourceParser extends XMLSourceParser implements JSPCapableParser
     }
     
     public void removeNestablePrefix(String tagName) {
-        ((JSPTokenizer) getTokenizer()).removeNestablePrefix(tagName);
+        (getTokenizer()).removeNestablePrefix(tagName);
     }
     
 }

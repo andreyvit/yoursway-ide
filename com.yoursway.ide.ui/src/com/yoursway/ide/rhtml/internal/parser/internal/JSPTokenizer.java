@@ -25,6 +25,7 @@ import com.yoursway.ide.ui.Activator;
  * on 6/7/06 1:46 AM from the specification file
  * <tt>file:/D:/eclipse.wtp/workspace/org.eclipse.wst.sse.core/DevTimeSupport/SedModel/HTMLTokenizer/devel/JSPTokenizer.jflex</tt>
  */
+@SuppressWarnings("restriction")
 public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     
     /** this character denotes the end of file */
@@ -758,8 +759,8 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     private String internalContext = null;
     
     // the list of tag name BlockMarkers
-    private final List fBlockMarkers = new ArrayList(0);
-    private final List fNestablePrefixes = new ArrayList(1);
+    private final List<BlockMarker> fBlockMarkers = new ArrayList<BlockMarker>(0);
+    private final List<TagMarker> fNestablePrefixes = new ArrayList<TagMarker>(1);
     
     // where the last internal container block was found
     private int fLastInternalBlockStart = -1;
@@ -791,7 +792,7 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     }
     
     /* user method */
-    public List getNestablePrefixes() {
+    public List<TagMarker> getNestablePrefixes() {
         return fNestablePrefixes;
     }
     
@@ -816,9 +817,9 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
      */
     public final void removeNestablePrefix(String name) {
         if (fNestablePrefixes != null) {
-            Iterator nestables = fNestablePrefixes.iterator();
+            Iterator<TagMarker> nestables = fNestablePrefixes.iterator();
             while (nestables.hasNext()) {
-                if (((TagMarker) nestables.next()).getTagName().equalsIgnoreCase(name))
+                if (nestables.next().getTagName().equalsIgnoreCase(name))
                     nestables.remove();
             }
         }
@@ -836,9 +837,9 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
      */
     public final void removeBlockMarker(String tagname) {
         if (fBlockMarkers != null) {
-            Iterator blocks = fBlockMarkers.iterator();
+            Iterator<BlockMarker> blocks = fBlockMarkers.iterator();
             while (blocks.hasNext()) {
-                if (((BlockMarker) blocks.next()).getTagName().equals(tagname))
+                if (blocks.next().getTagName().equals(tagname))
                     blocks.remove();
             }
         }
@@ -1013,9 +1014,9 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     
     /* user method */
     public boolean getBlockMarkerAllowsJSP(String name) {
-        Iterator iterator = fBlockMarkers.iterator();
+        Iterator<BlockMarker> iterator = fBlockMarkers.iterator();
         while (iterator.hasNext()) {
-            BlockMarker marker = (BlockMarker) iterator.next();
+            BlockMarker marker = iterator.next();
             boolean casesensitive = marker.isCaseSensitive();
             if (casesensitive && marker.getTagName().equals(name))
                 return marker.allowsJSP();
@@ -1031,9 +1032,9 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     }
     
     public boolean getBlockMarkerCaseSensitivity(String name) {
-        Iterator iterator = fBlockMarkers.iterator();
+        Iterator<BlockMarker> iterator = fBlockMarkers.iterator();
         while (iterator.hasNext()) {
-            BlockMarker marker = (BlockMarker) iterator.next();
+            BlockMarker marker = iterator.next();
             boolean casesensitive = marker.isCaseSensitive();
             if (casesensitive && marker.getTagName().equals(name))
                 return casesensitive;
@@ -1050,9 +1051,9 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     
     /* user method */
     public String getBlockMarkerContext(String name) {
-        Iterator iterator = fBlockMarkers.iterator();
+        Iterator<BlockMarker> iterator = fBlockMarkers.iterator();
         while (iterator.hasNext()) {
-            BlockMarker marker = (BlockMarker) iterator.next();
+            BlockMarker marker = iterator.next();
             if (marker.getTagName().equals(name))
                 return marker.getContext();
         }
@@ -1060,7 +1061,7 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     }
     
     /* user method */
-    public List getBlockMarkers() {
+    public List<BlockMarker> getBlockMarkers() {
         return fBlockMarkers;
     }
     
@@ -1248,41 +1249,41 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
  * XMLRegionContexts.XML_CDATA_CLOSE); } yybegin(resumeState); return
  * searchContext; }
  */              /*
-                     * // 2) yy_currentPos - cdataStarter.length: There's not
-                     * searchStringLength of input available; check for a CDATA
-                     * right here spots back in what we could read // --- //
-                     * Look for a JSP beginning at the current position; this
-                     * case wouldn't be handled by the preceding section //
-                     * since it relies upon *having* closeTagStringLength amount
-                     * of input to work as designed. Must be sure we don't //
-                     * spill over the end of the buffer while checking. else
-                     * if(checkCDATA && yy_startRead != fLastInternalBlockStart &&
-                     * yy_currentPos > 0 && yy_currentPos < yy_buffer.length - 1 &&
-                     * yy_buffer[yy_currentPos - 1] == '<' &&
-                     * yy_buffer[yy_currentPos] == '%') {
-                     * fLastInternalBlockStart = yy_markedPos = yy_currentPos -
-                     * 1; yy_currentPos = yy_markedPos + 1; int resumeState =
-                     * yystate(); yybegin(ST_BLOCK_TAG_INTERNAL_SCAN);
-                     * if(yy_markedPos == yy_startRead) { String jspContext =
-                     * primGetNextToken(); yybegin(resumeState); return
-                     * jspContext; } return searchContext; } // 3) yy_currentPos :
-                     * Check at the start of the block one time // --- // Look
-                     * for a JSP beginning immediately in the block area; this
-                     * case wouldn't be handled by the preceding section //
-                     * since it relies upon yy_currentPos equaling exactly the
-                     * previous end +1 to work as designed. else if(checkCDATA &&
-                     * !checkedForCDATAOnce && yy_startRead !=
-                     * fLastInternalBlockStart && yy_startRead > 0 &&
-                     * yy_startRead < yy_buffer.length - 1 &&
-                     * yy_buffer[yy_startRead] == '<' && yy_buffer[yy_startRead +
-                     * 1] == '%') { checkedForCDATAOnce = true;
-                     * fLastInternalBlockStart = yy_markedPos = yy_startRead;
-                     * yy_currentPos = yy_markedPos + 1; int resumeState =
-                     * yystate(); yybegin(ST_BLOCK_TAG_INTERNAL_SCAN);
-                     * if(yy_markedPos == yy_startRead) { String jspContext =
-                     * primGetNextToken(); yybegin(resumeState); return
-                     * jspContext; } return searchContext; }
-                     */
+                 * // 2) yy_currentPos - cdataStarter.length: There's not
+                 * searchStringLength of input available; check for a CDATA
+                 * right here spots back in what we could read // --- //
+                 * Look for a JSP beginning at the current position; this
+                 * case wouldn't be handled by the preceding section //
+                 * since it relies upon *having* closeTagStringLength amount
+                 * of input to work as designed. Must be sure we don't //
+                 * spill over the end of the buffer while checking. else
+                 * if(checkCDATA && yy_startRead != fLastInternalBlockStart &&
+                 * yy_currentPos > 0 && yy_currentPos < yy_buffer.length - 1 &&
+                 * yy_buffer[yy_currentPos - 1] == '<' &&
+                 * yy_buffer[yy_currentPos] == '%') {
+                 * fLastInternalBlockStart = yy_markedPos = yy_currentPos -
+                 * 1; yy_currentPos = yy_markedPos + 1; int resumeState =
+                 * yystate(); yybegin(ST_BLOCK_TAG_INTERNAL_SCAN);
+                 * if(yy_markedPos == yy_startRead) { String jspContext =
+                 * primGetNextToken(); yybegin(resumeState); return
+                 * jspContext; } return searchContext; } // 3) yy_currentPos :
+                 * Check at the start of the block one time // --- // Look
+                 * for a JSP beginning immediately in the block area; this
+                 * case wouldn't be handled by the preceding section //
+                 * since it relies upon yy_currentPos equaling exactly the
+                 * previous end +1 to work as designed. else if(checkCDATA &&
+                 * !checkedForCDATAOnce && yy_startRead !=
+                 * fLastInternalBlockStart && yy_startRead > 0 &&
+                 * yy_startRead < yy_buffer.length - 1 &&
+                 * yy_buffer[yy_startRead] == '<' && yy_buffer[yy_startRead +
+                 * 1] == '%') { checkedForCDATAOnce = true;
+                 * fLastInternalBlockStart = yy_markedPos = yy_startRead;
+                 * yy_currentPos = yy_markedPos + 1; int resumeState =
+                 * yystate(); yybegin(ST_BLOCK_TAG_INTERNAL_SCAN);
+                 * if(yy_markedPos == yy_startRead) { String jspContext =
+                 * primGetNextToken(); yybegin(resumeState); return
+                 * jspContext; } return searchContext; }
+                 */
                 // Check the characters in the target versus the last targetLength characters read from the buffer
                 // and see if it matches
                 if (n == YYEOF) {
@@ -1561,12 +1562,12 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
         // global tagmarkers can be shared; they have no state and 
         // are never destroyed (e.g. 'release')
         for (int i = 0; i < fBlockMarkers.size(); i++) {
-            BlockMarker blockMarker = (BlockMarker) fBlockMarkers.get(i);
+            BlockMarker blockMarker = fBlockMarkers.get(i);
             if (blockMarker.isGlobal())
                 newInstance.addBlockMarker(blockMarker);
         }
         for (int i = 0; i < fNestablePrefixes.size(); i++) {
-            TagMarker marker = (TagMarker) fNestablePrefixes.get(i);
+            TagMarker marker = fNestablePrefixes.get(i);
             if (marker.isGlobal())
                 newInstance.addNestablePrefix(marker);
         }
@@ -1785,7 +1786,7 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
      */
     protected final boolean containsTagName(char[] markerTagName, int offset, int tagnameLength) {
         for (int j = 0; j < fBlockMarkers.size(); j++) {
-            BlockMarker marker = (BlockMarker) fBlockMarkers.get(j);
+            BlockMarker marker = fBlockMarkers.get(j);
             if (marker.getTagName().length() == tagnameLength) {
                 boolean matchesSoFar = true;
                 for (int i = 0; i < tagnameLength && matchesSoFar; i++) {
@@ -1811,8 +1812,8 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
      * Return ALL of the regions scannable within the remaining text Note: for
      * verification use
      */
-    public final List getRegions() {
-        List tokens = new ArrayList();
+    public final List<ITextRegion> getRegions() {
+        List<ITextRegion> tokens = new ArrayList<ITextRegion>();
         ITextRegion region = null;
         try {
             region = getNextToken();
@@ -1853,9 +1854,9 @@ public class JSPTokenizer implements BlockTokenizer, DOMJSPRegionContexts {
     
 /* user method - skeleton.sed */
     protected final boolean containsTagName(String markerTagName) {
-        Iterator blocks = fBlockMarkers.iterator();
+        Iterator<BlockMarker> blocks = fBlockMarkers.iterator();
         while (blocks.hasNext()) {
-            BlockMarker marker = (BlockMarker) blocks.next();
+            BlockMarker marker = blocks.next();
             if (marker.isCaseSensitive()) {
                 if (marker.getTagName().equals(markerTagName))
                     return true;

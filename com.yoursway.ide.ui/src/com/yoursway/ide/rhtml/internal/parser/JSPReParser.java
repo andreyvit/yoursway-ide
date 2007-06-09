@@ -18,6 +18,7 @@ import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext;
 
 import com.yoursway.ide.rhtml.internal.regions.DOMJSPRegionContexts;
 
+@SuppressWarnings("restriction")
 public class JSPReParser extends XMLStructuredDocumentReParser {
     
     /**
