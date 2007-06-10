@@ -27,6 +27,7 @@
       startupMessageRect="0,0,0,0"
       startupForegroundColor="000000" />
    <launcher name="yourswayide">
+      <linux icon="/com.yoursway.ide-product/yoursway.xpm"/>
       <macosx icon="/com.yoursway.ide-product/yoursway.icns"/>
       <solaris/>
       <win useIco="true">
