@@ -22,9 +22,9 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.dltk.launching.IDLTKLaunchConfigurationConstants;
+import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.launching.IRubyLaunchConfigurationConstants;
+import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.model.IRailsProject;
@@ -56,7 +56,7 @@ class ProjectLaunching implements IProjectLaunching {
             IFile serverFile = railsProject.getProject().getFile("script/server");
             ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
             ILaunchConfigurationType rubyLaunchConfigurationType = lm
-                    .getLaunchConfigurationType(IRubyLaunchConfigurationConstants.ID_RUBY_SCRIPT);
+                    .getLaunchConfigurationType(RubyLaunchConfigurationConstants.ID_RUBY_SCRIPT);
             
             removeStaleLaunchConfigurations(serverFile, lm, rubyLaunchConfigurationType);
             
@@ -80,12 +80,12 @@ class ProjectLaunching implements IProjectLaunching {
                 ILaunchConfigurationType configType = rubyLaunchConfigurationType;
                 wc = configType.newInstance(null, lm.generateUniqueLaunchConfigurationNameFrom(serverFile
                         .getName()));
-                wc.setAttribute(IDLTKLaunchConfigurationConstants.ATTR_NATURE, RubyNature.NATURE_ID);
-                wc.setAttribute(IDLTKLaunchConfigurationConstants.ATTR_PROJECT_NAME, serverFile.getProject()
+                wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE, RubyNature.NATURE_ID);
+                wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, serverFile.getProject()
                         .getName());
-                wc.setAttribute(IDLTKLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, serverFile
+                wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, serverFile
                         .getProjectRelativePath().toPortableString());
-                wc.setAttribute(IDLTKLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS,
+                wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS,
                         InterpreterRunnerUtil.convertCommandLineToString(arguments));
                 wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, PublicMorozovProcessFactory.ID);
                 wc.setAttribute(RailsLaunchingConstants.ATTR_YOURSWAY_CREATED, "true");
@@ -149,7 +149,7 @@ class ProjectLaunching implements IProjectLaunching {
                 ILaunchConfiguration config = configs[i];
                 try {
                     if (config
-                            .getAttribute(IDLTKLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, "").equals(serverFile.getProjectRelativePath().toPortableString())) { //$NON-NLS-1$
+                            .getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, "").equals(serverFile.getProjectRelativePath().toPortableString())) { //$NON-NLS-1$
                         if (config.getAttribute(RailsLaunchingConstants.ATTR_YOURSWAY_CREATED, "").length() > 0)
                             config.delete();
                     }

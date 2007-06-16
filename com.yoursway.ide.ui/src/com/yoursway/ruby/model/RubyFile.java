@@ -67,7 +67,7 @@ public class RubyFile {
                 return null;
             }
         }
-        return RubySourceElementParser.parseModule(sourceModuleInfoCache.get(module), source, null);
+        return RubySourceElementParser.parseModule(sourceModuleInfoCache.get(module), source, null, null);
     }
     
 }
