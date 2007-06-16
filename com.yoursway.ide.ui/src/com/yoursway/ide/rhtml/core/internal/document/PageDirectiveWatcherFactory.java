@@ -1,4 +1,4 @@
-package com.yoursway.ide.rhtml.internal.document;
+package com.yoursway.ide.rhtml.core.internal.document;
 
 import org.eclipse.wst.sse.core.internal.PropagatingAdapterFactory;
 import org.eclipse.wst.sse.core.internal.provisional.INodeAdapter;

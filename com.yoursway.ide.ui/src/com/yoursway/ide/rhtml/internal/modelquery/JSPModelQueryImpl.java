@@ -19,7 +19,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.yoursway.ide.rhtml.internal.document.PageDirectiveAdapter;
+import com.yoursway.ide.rhtml.core.internal.document.PageDirectiveAdapter;
 
 public class JSPModelQueryImpl extends ModelQueryImpl {
     

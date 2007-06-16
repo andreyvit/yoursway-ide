@@ -38,6 +38,9 @@ import org.eclipse.wst.xml.ui.StructuredTextViewerConfigurationXML;
 import org.eclipse.wst.xml.ui.internal.contentoutline.JFaceNodeLabelProvider;
 import org.w3c.dom.Node;
 
+import com.yoursway.ide.rhtml.internal.contentassist.JSPContentAssistProcessor;
+import com.yoursway.ide.rhtml.internal.contentassist.JSPJavaContentAssistProcessor;
+import com.yoursway.ide.rhtml.internal.contentassist.NoRegionContentAssistProcessorForJSP;
 import com.yoursway.ide.rhtml.internal.contenttype.ContentTypeIdForJSP;
 import com.yoursway.ide.rhtml.internal.style.java.LineStyleProviderForJSP;
 import com.yoursway.ide.rhtml.internal.style.java.LineStyleProviderForJava;
@@ -74,7 +77,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
      */
     private LineStyleProvider fLineStyleProviderForJSPEL;
     private StructuredTextViewerConfiguration fHTMLSourceViewerConfiguration;
-//    private JavaSourceViewerConfiguration fJavaSourceViewerConfiguration;
+    //    private JavaSourceViewerConfiguration fJavaSourceViewerConfiguration;
     private StructuredTextViewerConfiguration fXMLSourceViewerConfiguration;
     private ILabelProvider fStatusLineLabelProvider;
     private ISourceViewer savedSourceViewer;
@@ -104,11 +107,11 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
             // jsp java autoedit strategies
             List<AutoEditStrategyForTabs> allStrategies = new ArrayList<AutoEditStrategyForTabs>(0);
             
-//            IAutoEditStrategy[] javaStrategies = getJavaSourceViewerConfiguration().getAutoEditStrategies(
-//                    sourceViewer, IJavaPartitions.JAVA_PARTITIONING);
-//            for (int i = 0; i < javaStrategies.length; i++) {
-//                allStrategies.add(javaStrategies[i]);
-//            }
+            //            IAutoEditStrategy[] javaStrategies = getJavaSourceViewerConfiguration().getAutoEditStrategies(
+            //                    sourceViewer, IJavaPartitions.JAVA_PARTITIONING);
+            //            for (int i = 0; i < javaStrategies.length; i++) {
+            //                allStrategies.add(javaStrategies[i]);
+            //            }
             // be sure this is added last, after others, so it can modify
             // results from earlier steps.
             // add auto edit strategy that handles when tab key is pressed
@@ -120,8 +123,8 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
             // html and jsp autoedit strategies
             List<IAutoEditStrategy> allStrategies = new ArrayList<IAutoEditStrategy>(0);
             
-//            // add the jsp autoedit strategy first then add all html's
-//            allStrategies.add(new StructuredAutoEditStrategyJSP());
+            //            // add the jsp autoedit strategy first then add all html's
+            //            allStrategies.add(new StructuredAutoEditStrategyJSP());
             
             IAutoEditStrategy[] htmlStrategies = getHTMLSourceViewerConfiguration().getAutoEditStrategies(
                     sourceViewer, contentType);
@@ -208,17 +211,17 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
                 || (partitionType == IJSPPartitions.JSP_CONTENT_JAVASCRIPT)
                 || (partitionType == IJSPPartitions.JSP_COMMENT)) {
             // jsp
-//            processors = new IContentAssistProcessor[] { new JSPContentAssistProcessor() };
+            processors = new IContentAssistProcessor[] { new JSPContentAssistProcessor() };
         } else if ((partitionType == IXMLPartitions.XML_CDATA)
                 || (partitionType == IJSPPartitions.JSP_CONTENT_JAVA)) {
             // jsp java
-//            processors = new IContentAssistProcessor[] { new JSPJavaContentAssistProcessor() };
+            processors = new IContentAssistProcessor[] { new JSPJavaContentAssistProcessor() };
         } else if (partitionType == IJSPPartitions.JSP_DEFAULT_EL) {
             // jsp el
-//            processors = new IContentAssistProcessor[] { new JSPELContentAssistProcessor() };
+            //            processors = new IContentAssistProcessor[] { new JSPELContentAssistProcessor() };
         } else if (partitionType == IStructuredPartitions.UNKNOWN_PARTITION) {
             // unknown
-//            processors = new IContentAssistProcessor[] { new NoRegionContentAssistProcessorForJSP() };
+            processors = new IContentAssistProcessor[] { new NoRegionContentAssistProcessorForJSP() };
         }
         
         return processors;
@@ -230,7 +233,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
                 getConfiguredDocumentPartitioning(sourceViewer), IXMLPartitions.XML_DEFAULT);
         
         formatter.setMasterStrategy(new StructuredFormattingStrategy(new HTMLFormatProcessorImpl()));
-//        formatter.setSlaveStrategy(new FormattingStrategyJSPJava(), IJSPPartitions.JSP_CONTENT_JAVA);
+        //        formatter.setSlaveStrategy(new FormattingStrategyJSPJava(), IJSPPartitions.JSP_CONTENT_JAVA);
         
         return formatter;
     }
@@ -242,10 +245,10 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
         // html or javascript
         if (contentType == IHTMLPartitions.HTML_DEFAULT || contentType == IHTMLPartitions.SCRIPT)
             strategy = getHTMLSourceViewerConfiguration().getDoubleClickStrategy(sourceViewer, contentType);
-//        else if (contentType == IJSPPartitions.JSP_CONTENT_JAVA
-//                || contentType == IJSPPartitions.JSP_CONTENT_JAVASCRIPT)
-//            // JSP Java or JSP JavaScript
-//            strategy = getJavaSourceViewerConfiguration().getDoubleClickStrategy(sourceViewer, contentType);
+        //        else if (contentType == IJSPPartitions.JSP_CONTENT_JAVA
+        //                || contentType == IJSPPartitions.JSP_CONTENT_JAVASCRIPT)
+        //            // JSP Java or JSP JavaScript
+        //            strategy = getJavaSourceViewerConfiguration().getDoubleClickStrategy(sourceViewer, contentType);
         else if (contentType == IJSPPartitions.JSP_DEFAULT)
             // JSP (just treat like html)
             strategy = getHTMLSourceViewerConfiguration().getDoubleClickStrategy(sourceViewer,
@@ -296,29 +299,29 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
         } else if ((partitionType == IJSPPartitions.JSP_DEFAULT)
                 || (partitionType == IJSPPartitions.JSP_DIRECTIVE)) {
             // JSP tags
-//            provider = new JSPInformationProvider();
+            //            provider = new JSPInformationProvider();
         } else if (partitionType == IJSPPartitions.JSP_CONTENT_JAVA) {
             // JSP java
-//            provider = new JSPJavaJavadocInformationProvider();
+            //            provider = new JSPJavaJavadocInformationProvider();
         }
         return provider;
     }
     
-//    private JavaSourceViewerConfiguration getJavaSourceViewerConfiguration() {
-//        if (fJavaSourceViewerConfiguration == null) {
-//            IPreferenceStore store = PreferenceConstants.getPreferenceStore();
-//            /*
-//             * NOTE: null text editor is being passed to
-//             * JavaSourceViewerConfiguration because
-//             * StructuredTextViewerConfiguration does not know current editor.
-//             * this is okay because editor is not needed in the cases we are
-//             * using javasourceviewerconfiguration.
-//             */
-//            fJavaSourceViewerConfiguration = new JavaSourceViewerConfiguration(JavaUI.getColorManager(),
-//                    store, null, IJavaPartitions.JAVA_PARTITIONING);
-//        }
-//        return fJavaSourceViewerConfiguration;
-//    }
+    //    private JavaSourceViewerConfiguration getJavaSourceViewerConfiguration() {
+    //        if (fJavaSourceViewerConfiguration == null) {
+    //            IPreferenceStore store = PreferenceConstants.getPreferenceStore();
+    //            /*
+    //             * NOTE: null text editor is being passed to
+    //             * JavaSourceViewerConfiguration because
+    //             * StructuredTextViewerConfiguration does not know current editor.
+    //             * this is okay because editor is not needed in the cases we are
+    //             * using javasourceviewerconfiguration.
+    //             */
+    //            fJavaSourceViewerConfiguration = new JavaSourceViewerConfiguration(JavaUI.getColorManager(),
+    //                    store, null, IJavaPartitions.JAVA_PARTITIONING);
+    //        }
+    //        return fJavaSourceViewerConfiguration;
+    //    }
     
     @Override
     public LineStyleProvider[] getLineStyleProviders(ISourceViewer sourceViewer, String partitionType) {
@@ -370,7 +373,7 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
     
     private LineStyleProvider getLineStyleProviderForJSPEL() {
         if (fLineStyleProviderForJSPEL == null) {
-//            fLineStyleProviderForJSPEL = new LineStyleProviderForJSPEL();
+            //            fLineStyleProviderForJSPEL = new LineStyleProviderForJSPEL();
         }
         return fLineStyleProviderForJSPEL;
     }
@@ -453,19 +456,19 @@ public class ErbHtmlSourceViewerConfiguration extends StructuredTextViewerConfig
                         if ((contentType == IJSPPartitions.JSP_DEFAULT)
                                 || (contentType == IJSPPartitions.JSP_DIRECTIVE)) {
                             // JSP
-//                            hover = manager.createBestMatchHover(new JSPTagInfoHoverProcessor());
+                            //                            hover = manager.createBestMatchHover(new JSPTagInfoHoverProcessor());
                         } else {
                             // JSP Java
-//                            hover = manager.createBestMatchHover(new JSPJavaJavadocHoverProcessor());
+                            //                            hover = manager.createBestMatchHover(new JSPJavaJavadocHoverProcessor());
                         }
                     } else if (TextHoverManager.DOCUMENTATION_HOVER.equalsIgnoreCase(hoverType)) {
                         if ((contentType == IJSPPartitions.JSP_DEFAULT)
                                 || (contentType == IJSPPartitions.JSP_DIRECTIVE)) {
                             // JSP
-//                            hover = new JSPTagInfoHoverProcessor();
+                            //                            hover = new JSPTagInfoHoverProcessor();
                         } else {
                             // JSP Java
-//                            hover = new JSPJavaJavadocHoverProcessor();
+                            //                            hover = new JSPJavaJavadocHoverProcessor();
                         }
                     }
                 }

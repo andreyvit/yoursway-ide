@@ -49,12 +49,12 @@ import org.eclipse.wst.xml.core.internal.ssemodelquery.ModelQueryAdapter;
 import org.eclipse.wst.xml.core.internal.text.rules.StructuredTextPartitionerForXML;
 import org.w3c.dom.Document;
 
-import com.yoursway.ide.rhtml.internal.contentproperties.JSPFContentProperties;
+import com.yoursway.ide.rhtml.core.internal.contentproperties.JSPFContentProperties;
+import com.yoursway.ide.rhtml.core.internal.document.PageDirectiveAdapter;
+import com.yoursway.ide.rhtml.core.internal.document.PageDirectiveAdapterFactory;
+import com.yoursway.ide.rhtml.core.internal.document.PageDirectiveWatcherFactory;
 import com.yoursway.ide.rhtml.internal.contenttype.ContentTypeIdForJSP;
 import com.yoursway.ide.rhtml.internal.contenttype.IContentDescriptionForJSP;
-import com.yoursway.ide.rhtml.internal.document.PageDirectiveAdapter;
-import com.yoursway.ide.rhtml.internal.document.PageDirectiveAdapterFactory;
-import com.yoursway.ide.rhtml.internal.document.PageDirectiveWatcherFactory;
 import com.yoursway.ide.rhtml.internal.domdocument.DOMModelForJSP;
 import com.yoursway.ide.rhtml.internal.encoding.IJSPHeadContentDetector;
 import com.yoursway.ide.rhtml.internal.encoding.JSPDocumentHeadContentDetector;

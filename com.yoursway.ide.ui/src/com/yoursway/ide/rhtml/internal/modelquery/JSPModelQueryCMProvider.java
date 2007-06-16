@@ -8,7 +8,7 @@ import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.w3c.dom.Node;
 
-import com.yoursway.ide.rhtml.internal.contentmodel.JSPCMDocumentFactory;
+import com.yoursway.ide.rhtml.core.internal.contentmodel.JSPCMDocumentFactory;
 
 /**
  * CMDocument provider for HTML and JSP documents.

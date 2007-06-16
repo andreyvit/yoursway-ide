@@ -1,4 +1,4 @@
-package com.yoursway.ide.rhtml.internal.contentproperties;
+package com.yoursway.ide.rhtml.core.internal.contentproperties;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

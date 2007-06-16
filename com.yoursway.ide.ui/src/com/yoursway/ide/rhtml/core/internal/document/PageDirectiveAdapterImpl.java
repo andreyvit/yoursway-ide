@@ -1,4 +1,4 @@
-package com.yoursway.ide.rhtml.internal.document;
+package com.yoursway.ide.rhtml.core.internal.document;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import org.eclipse.wst.sse.core.internal.util.DocumentInputStream;
 import org.eclipse.wst.sse.core.utils.StringUtils;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 
-import com.yoursway.ide.rhtml.internal.contentproperties.JSPFContentProperties;
+import com.yoursway.ide.rhtml.core.internal.contentproperties.JSPFContentProperties;
 import com.yoursway.ide.rhtml.internal.contenttype.ContentTypeIdForJSP;
 import com.yoursway.ide.rhtml.internal.contenttype.IContentDescriptionForJSP;
 import com.yoursway.ide.rhtml.internal.modelhandler.EmbeddedTypeStateData;

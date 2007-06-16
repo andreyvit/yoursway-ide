@@ -1,2 +1,4 @@
 com.yoursway.ide.ui/generalDebug = false
 com.yoursway.ide.ui/logExceptionsToConsole = false
+com.yoursway.ide.ui/debug/erbRubyMapping = false
+com.yoursway.ide.ui/debug/erbRubyToDisk = false

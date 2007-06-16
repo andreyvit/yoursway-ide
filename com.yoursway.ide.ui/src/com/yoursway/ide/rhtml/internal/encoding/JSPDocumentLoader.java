@@ -36,8 +36,8 @@ import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.eclipse.wst.xml.core.internal.ssemodelquery.ModelQueryAdapter;
 import org.w3c.dom.Document;
 
+import com.yoursway.ide.rhtml.core.internal.document.PageDirectiveWatcherFactory;
 import com.yoursway.ide.rhtml.internal.contenttype.ContentTypeIdForJSP;
-import com.yoursway.ide.rhtml.internal.document.PageDirectiveWatcherFactory;
 import com.yoursway.ide.rhtml.internal.parser.JSPReParser;
 import com.yoursway.ide.rhtml.internal.parser.JSPSourceParser;
 import com.yoursway.ide.rhtml.internal.provisional.JSP11Namespace;

@@ -1,4 +1,4 @@
-package com.yoursway.ide.rhtml.internal.contentmodel;
+package com.yoursway.ide.rhtml.core.internal.contentmodel;
 
 import org.eclipse.wst.html.core.internal.contentmodel.HTMLCMDocumentFactory;
 import org.eclipse.wst.xml.core.internal.contentmodel.CMDocument;

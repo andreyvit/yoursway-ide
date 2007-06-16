@@ -1,4 +1,4 @@
-package com.yoursway.ide.rhtml.internal.document;
+package com.yoursway.ide.rhtml.core.internal.document;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.sse.core.internal.provisional.AbstractAdapterFactory;
