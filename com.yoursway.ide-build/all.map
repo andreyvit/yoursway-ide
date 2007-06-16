@@ -1,9 +1,9 @@
 # product
 plugin@com.yoursway.ide-product=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 
-# main feature
+# features
 feature@com.yoursway.ide.feature=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide-feature
-
+feature@com.yoursway.ide.debug.feature=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide.debug-feature
 # our plugins
 
 plugin@com.yoursway.common.utilities=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
