@@ -19,7 +19,6 @@ import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -27,7 +26,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.wst.html.core.internal.contentmodel.JSP20Namespace;
@@ -62,11 +60,6 @@ import com.yoursway.ide.ui.Activator;
 @SuppressWarnings("restriction")
 public class JSPTranslator {
     
-    private static final String ELTRANSLATOR_PROP_NAME = "ELTranslator"; //$NON-NLS-1$
-    
-    // handy plugin ID constant
-    private static final String JSP_CORE_PLUGIN_ID = "org.eclipse.jst.jsp.core"; //$NON-NLS-1$
-    
     // for debugging
     private static final boolean DEBUG = "true".equalsIgnoreCase(Platform.getDebugOption("com.yoursway.ide.ui/debug/erbRubyMapping")); //$NON-NLS-1$  //$NON-NLS-2$
     private static final boolean DEBUG_SAVE_OUTPUT = "true".equalsIgnoreCase(Platform.getDebugOption("com.yoursway.ide.ui/debug/erbRubyToDisk")); //$NON-NLS-1$  //$NON-NLS-2$
@@ -80,19 +73,11 @@ public class JSPTranslator {
             "import javax.servlet.http.*;" + ENDL + //$NON-NLS-1$
             "import javax.servlet.jsp.*;" + ENDL + ENDL; //$NON-NLS-1$
     
-    String fServiceHeader = "public void _jspService(javax.servlet.http.HttpServletRequest request," + //$NON-NLS-1$
-            " javax.servlet.http.HttpServletResponse response)" + ENDL + //$NON-NLS-1$
-            "\t\tthrows java.io.IOException, javax.servlet.ServletException {" + ENDL + //$NON-NLS-1$
-            "javax.servlet.jsp.PageContext pageContext = null;" + ENDL + //$NON-NLS-1$
-            "javax.servlet.http.HttpSession session = null;" + ENDL + //$NON-NLS-1$
-            "javax.servlet.ServletContext application = null;" + ENDL + //$NON-NLS-1$
-            "javax.servlet.ServletConfig config = null;" + ENDL + //$NON-NLS-1$ 
-            "javax.servlet.jsp.JspWriter out = null;" + ENDL + //$NON-NLS-1$
-            "Object page = null;" + ENDL; //$NON-NLS-1$
+    String fServiceHeader = "" + ENDL; //$NON-NLS-1$
     
-    private final String fFooter = "}}"; //$NON-NLS-1$
+    private final String fFooter = ""; //$NON-NLS-1$
     private final String fException = "Throwable exception = null;"; //$NON-NLS-1$
-    public static final String EXPRESSION_PREFIX = "out.print(\"\"+"; //$NON-NLS-1$
+    public static final String EXPRESSION_PREFIX = "_erbout.concat("; //$NON-NLS-1$
     public static final String EXPRESSION_SUFFIX = ");"; //$NON-NLS-1$
     String fSuperclass = "javax.servlet.http.HttpServlet"; //$NON-NLS-1$
     
@@ -195,16 +180,6 @@ public class JSPTranslator {
      */
     private StringBuffer fJspTextBuffer = new StringBuffer();
     
-    /**
-     * List of EL problems to be translated
-     */
-    private ArrayList fELProblems = new ArrayList();
-    
-    /**
-     * EL Translator ID
-     */
-    private String fELTranslatorID;
-    
     public JSPTranslator() {
         init();
     }
@@ -219,10 +194,6 @@ public class JSPTranslator {
         
         fProgressMonitor = monitor;
         fStructuredModel = node.getModel();
-        String baseLocation = fStructuredModel.getBaseLocation();
-        
-        fELTranslatorID = getELTranslatorProperty(baseLocation);
-        
         fStructuredDocument = fStructuredModel.getStructuredDocument();
         
         String className = createClassname(node);
@@ -244,8 +215,6 @@ public class JSPTranslator {
         // fStructuredModel, fPositionNode, fModelQuery, fStructuredDocument
         // are all null
         fProgressMonitor = monitor;
-        
-        fELTranslatorID = getELTranslatorProperty(jspFile);
         
         String className = createClassname(jspFile);
         if (className.length() > 0) {
@@ -274,54 +243,6 @@ public class JSPTranslator {
         } catch (IOException e) {
             Activator.unexpectedError(e);
         }
-    }
-    
-    /**
-     * Get the value of the ELTranslator property from a workspace relative path
-     * string
-     * 
-     * @param baseLocation
-     *            Workspace-relative string path
-     * @return Value of the ELTranslator property associated with the project.
-     */
-    private String getELTranslatorProperty(String baseLocation) {
-        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-        String elTranslatorValue = null;
-        IFile file = workspaceRoot.getFile(new Path(baseLocation));
-        if (file != null) {
-            elTranslatorValue = getELTranslatorProperty(file);
-        }
-        return elTranslatorValue;
-    }
-    
-    /**
-     * Get the value of the ELTranslator property from an IFile
-     * 
-     * @param file
-     *            IFile
-     * @return Value of the ELTranslator property associated with the project.
-     */
-    private String getELTranslatorProperty(IFile file) {
-        String elTranslatorValue = null;
-        if (file != null) {
-            if (file.exists()) {
-                try {
-                    elTranslatorValue = file.getPersistentProperty(new QualifiedName(JSP_CORE_PLUGIN_ID,
-                            ELTRANSLATOR_PROP_NAME));
-                    if (null == elTranslatorValue) {
-                        
-                        elTranslatorValue = file.getProject().getPersistentProperty(
-                                new QualifiedName(JSP_CORE_PLUGIN_ID, ELTRANSLATOR_PROP_NAME));
-                    }
-                } catch (CoreException e) {
-                    // ISSUE: why do we log this here? Instead of allowing to
-                    // throwup?
-                    Activator.unexpectedError(e);
-                }
-                
-            }
-        }
-        return elTranslatorValue;
     }
     
     /**
@@ -432,8 +353,6 @@ public class JSPTranslator {
         
         fJspTextBuffer = new StringBuffer();
         
-        fELProblems = new ArrayList();
-        
     }
     
     /**
@@ -471,20 +390,17 @@ public class JSPTranslator {
         
         int javaOffset = 0;
         
-        fResult.append(fImplicitImports);
-        javaOffset += fImplicitImports.length();
-        
         // updateRanges(fIndirectImports, javaOffset);
         updateRanges(fImportRanges, javaOffset);
         // user imports
         append(fUserImports);
         javaOffset += fUserImports.length();
         
-        // class header
-        fResult.append(fClassHeader); //$NON-NLS-1$
-        javaOffset += fClassHeader.length();
-        fResult.append(fSuperclass + "{" + ENDL); //$NON-NLS-1$
-        javaOffset += fSuperclass.length() + 2;
+        //        // class header
+        //        fResult.append(fClassHeader); //$NON-NLS-1$
+        //        javaOffset += fClassHeader.length();
+        //        fResult.append(fSuperclass + "{" + ENDL); //$NON-NLS-1$
+        //        javaOffset += fSuperclass.length() + 2;
         
         updateRanges(fDeclarationRanges, javaOffset);
         // user declarations
@@ -495,16 +411,16 @@ public class JSPTranslator {
         append(fUserELExpressions);
         javaOffset += fUserELExpressions.length();
         
-        fResult.append(fServiceHeader);
-        javaOffset += fServiceHeader.length();
+        //        fResult.append(fServiceHeader);
+        //        javaOffset += fServiceHeader.length();
         // error page
-        if (fIsErrorPage) {
-            fResult.append(fException);
-            javaOffset += fException.length();
-        }
+        //        if (fIsErrorPage) {
+        //            fResult.append(fException);
+        //            javaOffset += fException.length();
+        //        }
         
-        fResult.append(fTryCatchStart);
-        javaOffset += fTryCatchStart.length();
+        //        fResult.append(fTryCatchStart);
+        //        javaOffset += fTryCatchStart.length();
         
         updateRanges(fCodeRanges, javaOffset);
         
@@ -512,8 +428,8 @@ public class JSPTranslator {
         append(fUserCode);
         javaOffset += fUserCode.length();
         
-        fResult.append(fTryCatchEnd);
-        javaOffset += fTryCatchEnd.length();
+        //        fResult.append(fTryCatchEnd);
+        //        javaOffset += fTryCatchEnd.length();
         
         // footer
         fResult.append(fFooter);
@@ -796,15 +712,7 @@ public class JSPTranslator {
                 "import javax.servlet.http.*;" + ENDL + //$NON-NLS-1$
                 "import javax.servlet.jsp.*;" + ENDL + ENDL; //$NON-NLS-1$
         
-        fServiceHeader = "public void _jspService(javax.servlet.http.HttpServletRequest request," + //$NON-NLS-1$
-                " javax.servlet.http.HttpServletResponse response)" + ENDL + //$NON-NLS-1$
-                "\t\tthrows java.io.IOException, javax.servlet.ServletException {" + ENDL + //$NON-NLS-1$
-                "javax.servlet.jsp.PageContext pageContext = null;" + ENDL + //$NON-NLS-1$
-                "javax.servlet.http.HttpSession session = null;" + ENDL + //$NON-NLS-1$
-                "javax.servlet.ServletContext application = null;" + ENDL + //$NON-NLS-1$
-                "javax.servlet.ServletConfig config = null;" + ENDL + //$NON-NLS-1$ 
-                "javax.servlet.jsp.JspWriter out = null;" + ENDL + //$NON-NLS-1$
-                "Object page = null;" + ENDL; //$NON-NLS-1$
+        fServiceHeader = "" + ENDL; //$NON-NLS-1$
         fSuperclass = "javax.servlet.http.HttpServlet"; //$NON-NLS-1$
     }
     
@@ -2320,10 +2228,6 @@ public class JSPTranslator {
     
     final public IStructuredDocumentRegion getCurrentNode() {
         return fCurrentNode;
-    }
-    
-    public ArrayList getELProblems() {
-        return fELProblems;
     }
     
     public IStructuredDocument getStructuredDocument() {

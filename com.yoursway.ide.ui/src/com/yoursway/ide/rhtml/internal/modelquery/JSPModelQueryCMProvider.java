@@ -29,10 +29,9 @@ public class JSPModelQueryCMProvider implements ModelQueryCMProvider {
             IDOMModel model = ((IDOMNode) node).getModel();
             String modelPath = model.getBaseLocation();
             if (modelPath != null && !IModelManager.UNMANAGED_MODEL.equals(modelPath)) {
-                float version = 3.14159f;
-//                    DeploymentDescriptorPropertyCache.getInstance().getJSPVersion(
-//                        new Path(modelPath));
-                jcmdoc = JSPCMDocumentFactory.getCMDocument(version);
+                //                    DeploymentDescriptorPropertyCache.getInstance().getJSPVersion(
+                //                        new Path(modelPath));
+                jcmdoc = JSPCMDocumentFactory.getCMDocument();
             }
         }
         if (jcmdoc == null) {
@@ -51,21 +50,6 @@ public class JSPModelQueryCMProvider implements ModelQueryCMProvider {
                 if (dec != null) {
                     result = jcmdoc;
                 }
-            }
-            
-            String prefix = node.getPrefix();
-            
-            if (result == null && prefix != null && prefix.length() > 0 && node instanceof IDOMNode) {
-                // check position dependent
-                IDOMNode xmlNode = (IDOMNode) node;
-//                TLDCMDocumentManager tldmgr = TaglibController.getTLDCMDocumentManager(xmlNode
-//                        .getStructuredDocument());
-//                if (tldmgr != null) {
-//                    List documents = tldmgr.getCMDocumentTrackers(node.getPrefix(), xmlNode.getStartOffset());
-//                    // there shouldn't be more than one cmdocument returned
-//                    if (documents != null && documents.size() > 0)
-//                        result = (CMDocument) documents.get(0);
-//                }
             }
         } catch (Exception e) {
             e.printStackTrace();

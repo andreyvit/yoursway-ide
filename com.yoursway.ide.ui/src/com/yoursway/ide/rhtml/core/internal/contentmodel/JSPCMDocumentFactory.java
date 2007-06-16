@@ -15,7 +15,7 @@ public final class JSPCMDocumentFactory {
     }
     
     public static CMDocument getCMDocument() {
-        return getCMDocument(CMDocType.JSP20_DOC_TYPE);
+        return getCMDocument(CMDocType.HTML_DOC_TYPE);
     }
     
     /**
@@ -29,13 +29,4 @@ public final class JSPCMDocumentFactory {
         return HTMLCMDocumentFactory.getCMDocument(cmtype);
     }
     
-    public static CMDocument getCMDocument(float jspVersion) {
-        if (jspVersion >= 2)
-            return getCMDocument(CMDocType.JSP20_DOC_TYPE);
-        if (jspVersion >= 1.2)
-            return getCMDocument(CMDocType.JSP12_DOC_TYPE);
-        if (jspVersion >= 1)
-            return getCMDocument(CMDocType.JSP11_DOC_TYPE);
-        return getCMDocument();
-    }
 }

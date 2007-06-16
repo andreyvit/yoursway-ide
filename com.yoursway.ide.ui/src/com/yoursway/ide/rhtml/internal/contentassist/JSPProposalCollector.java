@@ -6,14 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.dltk.core.CompletionProposal;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyCompletionProposalCollector;
 import org.eclipse.dltk.ui.text.completion.CompletionProposalComparator;
-import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.dltk.ui.text.completion.IScriptCompletionProposal;
-import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
-import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
-import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
@@ -27,7 +23,7 @@ import com.yoursway.ide.rhtml.core.java.JSPTranslation;
  * 
  * @plannedfor 1.0
  */
-public class JSPProposalCollector extends ScriptCompletionProposalCollector {
+public class JSPProposalCollector extends RubyCompletionProposalCollector {
     
     private final JSPTranslation fTranslation;
     private Comparator fComparator;
@@ -70,7 +66,8 @@ public class JSPProposalCollector extends ScriptCompletionProposalCollector {
      * cursor-position-after - fix mangled servlet name in display string -
      * remove unwanted proposals (servlet constructor)
      */
-    protected IScriptCompletionProposal createJavaCompletionProposal(CompletionProposal proposal) {
+    @Override
+    protected IScriptCompletionProposal createScriptCompletionProposal(CompletionProposal proposal) {
         
         JSPCompletionProposal jspProposal = null;
         
@@ -164,47 +161,6 @@ public class JSPProposalCollector extends ScriptCompletionProposalCollector {
     
     public JSPTranslation getTranslation() {
         return fTranslation;
-    }
-    
-    @Override
-    protected CompletionProposalLabelProvider createLabelProvider() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    protected ScriptCompletionProposal createOverrideCompletionProposal(IScriptProject scriptProject,
-            ISourceModule compilationUnit, String name, String[] paramTypes, int start, int length,
-            String label, String string) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    protected ScriptCompletionProposal createScriptCompletionProposal(String completion, int replaceStart,
-            int length, Image image, String displayString, int i) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    protected ScriptCompletionProposal createScriptCompletionProposal(String completion, int replaceStart,
-            int length, Image image, String displayString, int i, boolean isInDoc) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    protected ScriptContentAssistInvocationContext createScriptContentAssistInvocationContext(
-            ISourceModule sourceModule) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    protected char[] getVarTrigger() {
-        // TODO Auto-generated method stub
-        return null;
     }
     
 }

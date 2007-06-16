@@ -59,7 +59,6 @@ public class JSPTranslation implements IJSPTranslation {
     private HashMap fJava2JspImportsMap = null;
     private HashMap fJava2JspUseBeanMap = null;
     private HashMap fJava2JspIndirectMap = null;
-    private List fELProblems = null;
     
     // don't want to hold onto model (via translator)
     // all relevant info is extracted in the constructor.
@@ -90,7 +89,6 @@ public class JSPTranslation implements IJSPTranslation {
             fJava2JspImportsMap = translator.getJava2JspImportRanges();
             fJava2JspUseBeanMap = translator.getJava2JspUseBeanRanges();
             fJava2JspIndirectMap = translator.getJava2JspIndirectRanges();
-            fELProblems = translator.getELProblems();
         }
     }
     
@@ -511,15 +509,6 @@ public class JSPTranslation implements IJSPTranslation {
     public List getProblems() {
         List problems = getProblemRequestor().getCollectedProblems();
         return problems != null ? problems : new ArrayList();
-    }
-    
-    /**
-     * 
-     * @return the List of problems collected during reconcile of the
-     *         compilation unit
-     */
-    public List getELProblems() {
-        return fELProblems != null ? fELProblems : new ArrayList();
     }
     
     /**

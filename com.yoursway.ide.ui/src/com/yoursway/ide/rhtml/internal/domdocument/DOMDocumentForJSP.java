@@ -6,6 +6,7 @@ import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -120,4 +121,14 @@ public class DOMDocumentForJSP extends DocumentStyleImpl {
     protected void setModel(IDOMModel model) {
         super.setModel(model);
     }
+    
+    @Override
+    public DocumentType getDoctype() {
+        DocumentType doctype = super.getDoctype();
+        //        if (doctype == null) {
+        //            doctype = createDoctype("HTML");
+        //        }
+        return doctype;
+    }
+    
 }
