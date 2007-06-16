@@ -36,7 +36,6 @@
       </win>
    </launcher>
 
-
    <vm>
       <linux type="jre">java-6-sun-1.6.0.00</linux>
       <macos type="jre">java-6-sun-1.6.0.00</macos>
@@ -49,6 +48,7 @@
 
    <features>
       <feature id="com.yoursway.ide.feature" version="1.0.0"/>
+      <feature id="com.yoursway.ide.debug.feature" version="1.0.0"/>
    </features>
 
 </product>
