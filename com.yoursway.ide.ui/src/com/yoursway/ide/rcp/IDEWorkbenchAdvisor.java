@@ -56,7 +56,6 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.model.WorkbenchAdapterBuilder;
 import org.eclipse.ui.internal.ide.undo.WorkspaceUndoMonitor;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
-import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.statushandlers.AbstractStatusHandler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -202,12 +201,16 @@ public class IDEWorkbenchAdvisor extends WorkbenchAdvisor {
         // Suspend background jobs while we startup
         Platform.getJobManager().suspend();
         
+        //
+        // FIXME: this code suddenly stopped working. Temporarily disabled.
+        //
+        
         // Register the build actions
-        IProgressService service = PlatformUI.getWorkbench().getProgressService();
-        ImageDescriptor newImage = IDEInternalWorkbenchImages
-                .getImageDescriptor(IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC);
-        service.registerIconForFamily(newImage, ResourcesPlugin.FAMILY_MANUAL_BUILD);
-        service.registerIconForFamily(newImage, ResourcesPlugin.FAMILY_AUTO_BUILD);
+        //IProgressService service = PlatformUI.getWorkbench().getProgressService();
+        //ImageDescriptor newImage = IDEInternalWorkbenchImages
+        //        .getImageDescriptor(IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC);
+        //service.registerIconForFamily(newImage, ResourcesPlugin.FAMILY_MANUAL_BUILD);
+        //service.registerIconForFamily(newImage, ResourcesPlugin.FAMILY_AUTO_BUILD);
     }
     
     /*
