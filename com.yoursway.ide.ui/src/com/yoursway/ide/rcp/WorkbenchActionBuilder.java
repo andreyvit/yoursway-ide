@@ -436,8 +436,8 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
     protected void fillMenuBar(IMenuManager menuBar) {
         menuBar.add(createFileMenu());
         menuBar.add(createEditMenu());
-        menuBar.add(createNavigateMenu());
-        menuBar.add(createProjectMenu());
+        //        menuBar.add(createNavigateMenu());
+        //        menuBar.add(createProjectMenu());
         menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         menuBar.add(createWindowMenu());
         menuBar.add(createHelpMenu());
@@ -585,6 +585,7 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
         {
             
             MenuManager showInSubMenu = new MenuManager(IDEWorkbenchMessages.Workbench_showIn, "showIn") { //$NON-NLS-1$
+                @Override
                 public String getMenuText() {
                     String result = super.getMenuText();
                     if (showInQuickMenu == null) {

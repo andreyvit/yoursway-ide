@@ -6,6 +6,8 @@ import org.eclipse.dltk.launching.PropertyChangeEvent;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
+import com.yoursway.rails.search.RailsSearching;
+
 /**
  * Object of this class listens for the changes in installed RREs and runs Rails
  * search on modified ones.
@@ -39,7 +41,7 @@ public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListene
      */
     public void interpreterAdded(IInterpreterInstall interpreter) {
         if (isRubyInterpreter(interpreter)) {
-            RailsRuntime.runSearchRails(interpreter);
+            RailsSearching.runSearchRails(interpreter);
         }
     }
     
@@ -49,7 +51,7 @@ public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListene
     public void interpreterChanged(PropertyChangeEvent event) {
         IInterpreterInstall interpreter = (IInterpreterInstall) event.getSource();
         if (isRubyInterpreter(interpreter)) {
-            RailsRuntime.runSearchRails(interpreter);
+            RailsSearching.runSearchRails(interpreter);
         }
     }
     

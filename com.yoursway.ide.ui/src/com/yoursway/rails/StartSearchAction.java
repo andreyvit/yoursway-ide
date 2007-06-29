@@ -9,6 +9,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import com.yoursway.rails.search.RailsSearching;
+
 public class StartSearchAction implements IWorkbenchWindowActionDelegate {
     class RailsSearchJob extends Job {
         public RailsSearchJob(String name) {
@@ -17,7 +19,7 @@ public class StartSearchAction implements IWorkbenchWindowActionDelegate {
         
         @Override
         protected IStatus run(IProgressMonitor monitor) {
-            RailsRuntime.runSearchRails();
+            RailsSearching.runSearchRails();
             return Status.OK_STATUS;
         }
     }

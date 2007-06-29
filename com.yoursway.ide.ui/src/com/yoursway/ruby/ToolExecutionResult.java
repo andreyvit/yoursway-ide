@@ -4,10 +4,12 @@ public class ToolExecutionResult {
     
     private final int exitCode;
     private final String outputData;
+    private final String errorData;
     
-    public ToolExecutionResult(int exitCode, String outputData) {
+    public ToolExecutionResult(int exitCode, String outputData, String errorData) {
         this.exitCode = exitCode;
         this.outputData = outputData;
+        this.errorData = errorData;
     }
     
     public int getExitCode() {
@@ -16,6 +18,10 @@ public class ToolExecutionResult {
     
     public String getOutputData() {
         return outputData;
+    }
+    
+    public String getErrorData() {
+        return errorData;
     }
     
 }

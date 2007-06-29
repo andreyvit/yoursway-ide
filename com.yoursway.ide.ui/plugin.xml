@@ -208,5 +208,34 @@
 			<contentType id="com.yoursway.erbhtml" />
 		</adapterFactoryDescription>
 	</extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="menu:org.eclipse.ui.main.menu">
+       <menu
+             id="com.yoursway.project"
+             label="Project">
+          <command
+                commandId="com.yoursway.ide.project.createRailsApplication"
+                id="com.yoursway.ide.project.createRailsApplication"
+                label="New Rails Application"
+                mnemonic="a">
+          </command>
+          <command
+                commandId="com.yoursway.ide.project.createRailsApplication"
+                id="com.yoursway.ide.project.openRailsApplication"
+                label="Open Rails Application...">
+          </command>
+       </menu>
+    </menuContribution>
+ </extension>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          defaultHandler="com.yoursway.ide.projects.commands.CreateRailsApplicationHandler"
+          id="com.yoursway.ide.project.createRailsApplication"
+          name="Create Rails Application">
+    </command>
+ </extension>
 
 </plugin>

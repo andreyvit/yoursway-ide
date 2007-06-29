@@ -82,7 +82,7 @@ public class RubyInstallation {
         SubMonitor progress = SubMonitor.convert(monitor);
         InterpreterConfig config = new InterpreterConfig(new File(fileName));
         config.addScriptArgs(arguments.toArray(new String[arguments.size()]));
-        
+        config.addEnvVars(System.getenv());
         ILaunch launch = null;
         try {
             launch = InterpreterRunnerUtil.run(interpreterInstall, config, progress
@@ -99,6 +99,7 @@ public class RubyInstallation {
         
         final int exitCode = InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess);
         String output = launchProcess.getStreamsProxy().getOutputStreamMonitor().getContents();
-        return new ToolExecutionResult(exitCode, output);
+        String error = launchProcess.getStreamsProxy().getErrorStreamMonitor().getContents();
+        return new ToolExecutionResult(exitCode, output, error);
     }
 }

@@ -1,10 +1,5 @@
 package com.yoursway.ide.ui.railsview;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ControlContribution;
@@ -32,15 +27,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.part.ViewPart;
 
 import com.yoursway.ide.ui.Activator;
@@ -149,8 +140,13 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
         @Override
         public void activeProjectChanged(RailsWindowModelProjectChange event) {
-            if (event.getWindow() == getSite().getWorkbenchWindow())
-                handleActiveProjectChanged();
+            if (event.getWindow() == getSite().getWorkbenchWindow()) {
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        handleActiveProjectChanged();
+                    }
+                });
+            }
         }
         
     }
@@ -198,15 +194,15 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     private final ElementChangedListener elementChangedListener = new ElementChangedListener();
     private final WindowModelListener windowModelListener = new WindowModelListener();
     private Font boldFont;
-    private List<IRailsProject> chooserProjects;
+    //    private List<IRailsProject> chooserProjects;
     
-    private ExpandableComposite expander;
+    //    private ExpandableComposite expander;
     
     private FormToolkit formToolkit;
     
     private Form form;
     
-    private Composite expanderComposite;
+    //    private Composite expanderComposite;
     
     private RailsProjectTree projectTree;
     
@@ -224,22 +220,22 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         IRailsProject project = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
                 .getRailsProject();
         projectTree.setVisibleProject(project);
-        updateProjectChooser();
+        //        updateProjectChooser();
         updateBottom();
-        if (project == null) {
-            if (chooserProjects.isEmpty())
-                expander.setText("Create or import a project");
-            else
-                expander.setText("Choose a project");
-            expander.setExpanded(true);
-        } else {
-            expander.setText(project.getProject().getName());
-        }
+        //        if (project == null) {
+        //            if (chooserProjects.isEmpty())
+        //                expander.setText("Create or import a project");
+        //            else
+        //                expander.setText("Choose a project");
+        //            expander.setExpanded(true);
+        //        } else {
+        //            expander.setText(project.getProject().getName());
+        //        }
     }
     
     void handleElementChangedEvent(RailsChangeEvent event) {
         projectTree.refresh();
-        updateProjectChooser();
+        //        updateProjectChooser();
     }
     
     @Override
@@ -274,16 +270,16 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     private void createTopControls(Composite formBody) {
-        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
-                | ExpandableComposite.CLIENT_INDENT);
-        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        //        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
+        //                | ExpandableComposite.CLIENT_INDENT);
+        //        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        //        
+        //        expanderComposite = formToolkit.createComposite(expander);
+        //        expander.setClient(expanderComposite);
+        //        
+        //        updateProjectChooser();
         
-        expanderComposite = formToolkit.createComposite(expander);
-        expander.setClient(expanderComposite);
-        
-        updateProjectChooser();
-        
-        expanderComposite.setLayout(FormLayoutFactory.createSectionClientGridLayout(false, 1));
+        //        expanderComposite.setLayout(FormLayoutFactory.createSectionClientGridLayout(false, 1));
     }
     
     private void createBottomControls(Composite formBody) {
@@ -302,79 +298,79 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         updateBottom();
     }
     
-    private void updateProjectChooser() {
-        chooserProjects = new ArrayList<IRailsProject>();
-        chooserProjects.addAll(RailsCore.instance().getProjectsCollection().getRailsProjects());
-        Collections.sort(chooserProjects, new Comparator<IRailsProject>() {
-            
-            public int compare(IRailsProject o1, IRailsProject o2) {
-                String n1 = o1.getProject().getName();
-                String n2 = o2.getProject().getName();
-                return n1.compareTo(n2);
-            }
-            
-        });
-        
-        IRailsProject activeProject = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
-                .getRailsProject();
-        
-        disposeChildren(expanderComposite);
-        
-        for (final IRailsProject railsProject : chooserProjects) {
-            Control hyperlink;
-            String name = railsProject.getProject().getName();
-            if (railsProject.equals(activeProject)) {
-                hyperlink = formToolkit.createLabel(expanderComposite, name);
-            } else {
-                Hyperlink hyperlink2 = formToolkit.createHyperlink(expanderComposite, name, SWT.NONE);
-                hyperlink = hyperlink2;
-                hyperlink2.addHyperlinkListener(new HyperlinkAdapter() {
-                    
-                    @Override
-                    public void linkActivated(HyperlinkEvent e) {
-                        RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
-                                .setRailsProject(railsProject);
-                        expander.setExpanded(false);
-                    }
-                    
-                });
-            }
-            hyperlink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        }
-        
-        Hyperlink newProjectLink = formToolkit.createHyperlink(expanderComposite,
-                "» Create a brand-new Rails application", SWT.NONE);
-        newProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        
-        Hyperlink importProjectLink = formToolkit.createHyperlink(expanderComposite,
-                "» Import an existing Rails application", SWT.NONE);
-        importProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        
-        Hyperlink sampleProjectLink = formToolkit.createHyperlink(expanderComposite,
-                "» Import a sample Rails application", SWT.NONE);
-        sampleProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        
-        FormText newWindowLabel = formToolkit.createFormText(expanderComposite, true);
-        newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        newWindowLabel.setText("<form><p><b>Tip:</b> To work on several projects at once, "
-                + "<a href=\"new_win\">open a new window</a>.</p></form>", true, false);
-        //        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
-        //                SWT.DEFAULT).y;
-        newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
-            
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-                try {
-                    PlatformUI.getWorkbench().openWorkbenchWindow(null);
-                } catch (WorkbenchException ex) {
-                    Activator.unexpectedError(ex);
-                }
-            }
-            
-        });
-        
-        expanderComposite.layout();
-    }
+    //    private void updateProjectChooser() {
+    //        chooserProjects = new ArrayList<IRailsProject>();
+    //        chooserProjects.addAll(RailsCore.instance().getProjectsCollection().getRailsProjects());
+    //        Collections.sort(chooserProjects, new Comparator<IRailsProject>() {
+    //            
+    //            public int compare(IRailsProject o1, IRailsProject o2) {
+    //                String n1 = o1.getProject().getName();
+    //                String n2 = o2.getProject().getName();
+    //                return n1.compareTo(n2);
+    //            }
+    //            
+    //        });
+    //        
+    //        IRailsProject activeProject = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+    //                .getRailsProject();
+    //        
+    //        disposeChildren(expanderComposite);
+    //        
+    //        for (final IRailsProject railsProject : chooserProjects) {
+    //            Control hyperlink;
+    //            String name = railsProject.getProject().getName();
+    //            if (railsProject.equals(activeProject)) {
+    //                hyperlink = formToolkit.createLabel(expanderComposite, name);
+    //            } else {
+    //                Hyperlink hyperlink2 = formToolkit.createHyperlink(expanderComposite, name, SWT.NONE);
+    //                hyperlink = hyperlink2;
+    //                hyperlink2.addHyperlinkListener(new HyperlinkAdapter() {
+    //                    
+    //                    @Override
+    //                    public void linkActivated(HyperlinkEvent e) {
+    //                        RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+    //                                .setRailsProject(railsProject);
+    //                        expander.setExpanded(false);
+    //                    }
+    //                    
+    //                });
+    //            }
+    //            hyperlink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    //        }
+    //        
+    //        Hyperlink newProjectLink = formToolkit.createHyperlink(expanderComposite,
+    //                "» Create a brand-new Rails application", SWT.NONE);
+    //        newProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    //        
+    //        Hyperlink importProjectLink = formToolkit.createHyperlink(expanderComposite,
+    //                "» Import an existing Rails application", SWT.NONE);
+    //        importProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    //        
+    //        Hyperlink sampleProjectLink = formToolkit.createHyperlink(expanderComposite,
+    //                "» Import a sample Rails application", SWT.NONE);
+    //        sampleProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    //        
+    //        FormText newWindowLabel = formToolkit.createFormText(expanderComposite, true);
+    //        newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    //        newWindowLabel.setText("<form><p><b>Tip:</b> To work on several projects at once, "
+    //                + "<a href=\"new_win\">open a new window</a>.</p></form>", true, false);
+    //        //        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
+    //        //                SWT.DEFAULT).y;
+    //        newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
+    //            
+    //            @Override
+    //            public void linkActivated(HyperlinkEvent e) {
+    //                try {
+    //                    PlatformUI.getWorkbench().openWorkbenchWindow(null);
+    //                } catch (WorkbenchException ex) {
+    //                    Activator.unexpectedError(ex);
+    //                }
+    //            }
+    //            
+    //        });
+    //        
+    //        expanderComposite.layout();
+    //    }
     
     private void disposeChildren(final Composite parent) {
         Control[] children = parent.getChildren();

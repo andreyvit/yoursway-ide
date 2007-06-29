@@ -31,4 +31,13 @@ public class Streams {
         streamWriter.write(s);
         streamWriter.close();
     }
+    
+    public static void copy(InputStream source, OutputStream destination) throws IOException {
+        byte[] buffer = new byte[64 * 1024];
+        int len;
+        while ((len = source.read(buffer)) != -1)
+            destination.write(buffer, 0, len);
+        
+    }
+    
 }

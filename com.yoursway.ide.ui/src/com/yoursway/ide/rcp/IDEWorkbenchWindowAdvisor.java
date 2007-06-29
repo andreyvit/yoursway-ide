@@ -259,7 +259,11 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             @Override
             public void activeProjectChanged(RailsWindowModelProjectChange event) {
                 if (event.getWindow() == window) {
-                    updateTitle();
+                    Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                            updateTitle();
+                        }
+                    });
                 }
             }
             

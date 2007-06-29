@@ -69,7 +69,8 @@ public class RubyToolUtils {
                 + rubyFile;
         File pluginDirFile = new File(directoryFile);
         
-        if (!pluginDirFile.exists()) {
+        // TODO: caching disabled for debugging
+        if (true || !pluginDirFile.exists()) {
             try {
                 pluginDirFile.createNewFile();
                 URL u = Activator.getDefault().getBundle().getEntry("/scripts/" + rubyFile);

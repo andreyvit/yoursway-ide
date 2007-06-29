@@ -1,21 +1,49 @@
 package com.yoursway.rails;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
+import com.yoursway.rubygems.IGem;
+
 public class Rails {
-    private final String version;
+    private final Version version;
     private final IInterpreterInstall ruby;
     private final Set<String> paths;
+    private final IGem[] gems;
+    private IGem railsGem;
     
-    public Rails(IInterpreterInstall ruby, String version, Set<String> paths) {
-        this.version = version;
+    public Rails(IInterpreterInstall ruby, String version, IGem[] gems) {
+        this.gems = gems;
+        this.version = Version.fromDotDelimitedString(version);
         this.ruby = ruby;
-        this.paths = paths;
+        paths = new HashSet<String>();
+        for (IGem gem : gems)
+            for (String requirePath : gem.getRequirePaths()) {
+                Path p = new Path(gem.getDirectory());
+                p.append(requirePath);
+                paths.add(p.toOSString());
+            }
+        for (IGem gem : this.gems)
+            if (gem.getName().equals("rails"))
+                railsGem = gem;
     }
     
-    public String getVersion() {
+    public IGem getRailsGem() {
+        return railsGem;
+    }
+    
+    public IGem[] getGems() {
+        return gems;
+    }
+    
+    public String getVersionAsString() {
+        return version.asDotDelimitedString();
+    }
+    
+    public Version getVersion() {
         return version;
     }
     

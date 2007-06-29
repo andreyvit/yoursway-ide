@@ -11,9 +11,7 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -25,13 +23,13 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.ide.ChooseWorkspaceData;
-import org.eclipse.ui.internal.ide.ChooseWorkspaceDialog;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.ide.StatusUtil;
+
+import com.yoursway.ide.ui.Activator;
+import com.yoursway.utils.SystemUtilities;
 
 public class YourSwayIDEApplication implements IApplication, IExecutableExtension {
+    
+    private static final String WORKSPACE_CANNOT_BE_CREATED = "Workspace Cannot Be Created";
     
     /**
      * The name of the folder containing metadata information for the workspace.
@@ -132,15 +130,16 @@ public class YourSwayIDEApplication implements IApplication, IExecutableExtensio
      *         otherwise
      */
     private boolean checkInstanceLocation(Shell shell) {
-        // -data @none was specified but an ide requires workspace
         Location instanceLoc = Platform.getInstanceLocation();
         if (instanceLoc == null) {
-            MessageDialog.openError(shell, IDEWorkbenchMessages.IDEApplication_workspaceMandatoryTitle,
-                    IDEWorkbenchMessages.IDEApplication_workspaceMandatoryMessage);
+            // "-data @none" was specified
+            MessageDialog
+                    .openError(shell, "Workspace is Mandatory",
+                            "IDE really needs a valid workspace. Restart without the @none option. Thanks in advance!");
             return false;
         }
         
-        // -data "/valid/path", workspace already set
+        // -data "/valid/path" was specified
         if (instanceLoc.isSet()) {
             // make sure the meta data version is compatible (or the user has
             // chosen to overwrite it).
@@ -162,113 +161,55 @@ public class YourSwayIDEApplication implements IApplication, IExecutableExtensio
                 // 2. directory could not be created
                 File workspaceDirectory = new File(instanceLoc.getURL().getFile());
                 if (workspaceDirectory.exists()) {
-                    MessageDialog.openError(shell,
-                            IDEWorkbenchMessages.IDEApplication_workspaceCannotLockTitle,
-                            IDEWorkbenchMessages.IDEApplication_workspaceCannotLockMessage);
+                    MessageDialog
+                            .openError(
+                                    shell,
+                                    "Workspace Cannot Be Locked",
+                                    "Could not launch the product because the associated workspace is currently in use by another Eclipse application.");
                 } else {
-                    MessageDialog.openError(shell,
-                            IDEWorkbenchMessages.IDEApplication_workspaceCannotBeSetTitle,
-                            IDEWorkbenchMessages.IDEApplication_workspaceCannotBeSetMessage);
+                    MessageDialog
+                            .openError(
+                                    shell,
+                                    WORKSPACE_CANNOT_BE_CREATED,
+                                    "Could not launch the product because the specified workspace cannot be created.  The specified workspace directory is either invalid or read-only.");
                 }
             } catch (IOException e) {
-                IDEWorkbenchPlugin.log("Could not obtain lock for workspace location", //$NON-NLS-1$
-                        e);
-                MessageDialog.openError(shell, IDEWorkbenchMessages.InternalError, e.getMessage());
+                Activator.reportException(e, "Could not obtain lock for workspace location");
             }
             return false;
         }
         
-        // -data @noDefault or -data not specified, prompt and set
-        ChooseWorkspaceData launchData = new ChooseWorkspaceData(instanceLoc.getDefault());
-        
-        boolean force = false;
-        while (true) {
-            URL workspaceUrl = promptForWorkspace(shell, launchData, force);
-            if (workspaceUrl == null) {
-                return false;
-            }
+        URL workspaceUrl;
+        final File workspaceFolder;
+        try {
+            workspaceFolder = SystemUtilities.getInstance().getRCPWorkspaceStorageLocation(YourSwayRCP.NAME);
+            if (!workspaceFolder.exists())
+                workspaceFolder.mkdir();
             
-            // if there is an error with the first selection, then force the
-            // dialog to open to give the user a chance to correct
-            force = true;
-            
-            try {
-                // the operation will fail if the url is not a valid
-                // instance data area, so other checking is unneeded
-                if (instanceLoc.setURL(workspaceUrl, true)) {
-                    launchData.writePersistedData();
-                    writeWorkspaceVersion();
-                    return true;
-                }
-            } catch (IllegalStateException e) {
-                MessageDialog.openError(shell, IDEWorkbenchMessages.IDEApplication_workspaceCannotBeSetTitle,
-                        IDEWorkbenchMessages.IDEApplication_workspaceCannotBeSetMessage);
-                return false;
-            }
-            
-            // by this point it has been determined that the workspace is
-            // already in use -- force the user to choose again
-            MessageDialog.openError(shell, IDEWorkbenchMessages.IDEApplication_workspaceInUseTitle,
-                    IDEWorkbenchMessages.IDEApplication_workspaceInUseMessage);
+            // Don't use File.toURL() since it adds a leading slash that Platform does not
+            // handle properly.  See bug 54081 for more details.  
+            String path = workspaceFolder.getAbsolutePath().replace(File.separatorChar, '/');
+            workspaceUrl = new URL("file", null, path); //$NON-NLS-1$
+        } catch (MalformedURLException e) {
+            Activator.unexpectedError(e);
+            return false;
         }
-    }
-    
-    /**
-     * Open a workspace selection dialog on the argument shell, populating the
-     * argument data with the user's selection. Perform first level validation
-     * on the selection by comparing the version information. This method does
-     * not examine the runtime state (e.g., is the workspace already locked?).
-     * 
-     * @param shell
-     * @param launchData
-     * @param force
-     *            setting to true makes the dialog open regardless of the
-     *            showDialog value
-     * @return An URL storing the selected workspace or null if the user has
-     *         canceled the launch operation.
-     */
-    private URL promptForWorkspace(Shell shell, ChooseWorkspaceData launchData, boolean force) {
-        URL url = null;
-        do {
-            // don't use the parent shell to make the dialog a top-level
-            // shell. See bug 84881.
-            new ChooseWorkspaceDialog(null, launchData, false, true).prompt(force);
-            String instancePath = launchData.getSelection();
-            if (instancePath == null) {
-                return null;
-            }
-            
-            // the dialog is not forced on the first iteration, but is on every
-            // subsequent one -- if there was an error then the user needs to be
-            // allowed to fix it
-            force = true;
-            
-            // 70576: don't accept empty input
-            if (instancePath.length() <= 0) {
-                MessageDialog.openError(shell, IDEWorkbenchMessages.IDEApplication_workspaceEmptyTitle,
-                        IDEWorkbenchMessages.IDEApplication_workspaceEmptyMessage);
-                continue;
-            }
-            
-            // create the workspace if it does not already exist
-            File workspace = new File(instancePath);
-            if (!workspace.exists()) {
-                workspace.mkdir();
-            }
-            
-            try {
-                // Don't use File.toURL() since it adds a leading slash that Platform does not
-                // handle properly.  See bug 54081 for more details.  
-                String path = workspace.getAbsolutePath().replace(File.separatorChar, '/');
-                url = new URL("file", null, path); //$NON-NLS-1$
-            } catch (MalformedURLException e) {
-                MessageDialog.openError(shell, IDEWorkbenchMessages.IDEApplication_workspaceInvalidTitle,
-                        IDEWorkbenchMessages.IDEApplication_workspaceInvalidMessage);
-                continue;
-            }
-        } while (!checkValidWorkspace(shell, url));
         
-        return url;
+        try {
+            // the operation will fail if the url is not a valid
+            // instance data area, so other checking is unneeded
+            if (instanceLoc.setURL(workspaceUrl, true)) {
+                writeWorkspaceVersion();
+                return true;
+            }
+        } catch (IllegalStateException e) {
+            MessageDialog.openError(shell, WORKSPACE_CANNOT_BE_CREATED, NLS.bind(
+                    "Cannot launch YourSway IDE because directory {0} cannot be created.", workspaceFolder));
+            return false;
+        }
+        
+        MessageDialog.openError(shell, "Workspace Unavailable", "Workspace in use or cannot be created.");
+        return false;
     }
     
     /**
@@ -307,8 +248,11 @@ public class YourSwayIDEApplication implements IApplication, IExecutableExtensio
         // At this point workspace has been detected to be from a version
         // other than the current ide version -- find out if the user wants
         // to use it anyhow.
-        String title = IDEWorkbenchMessages.IDEApplication_versionTitle;
-        String message = NLS.bind(IDEWorkbenchMessages.IDEApplication_versionMessage, url.getFile());
+        String title = "Different Workspace Version";
+        String message = NLS
+                .bind(
+                        "This workspace was written with a different version of the product and needs to be updated.\n\n{0}\n\nUpdating the workspace may make it incompatible with other versions of the product.\nPress OK to update the workspace and open it.  Press Cancel to select a different workspace.",
+                        url.getFile());
         
         MessageBox mbox = new MessageBox(shell, SWT.OK | SWT.CANCEL | SWT.ICON_WARNING
                 | SWT.APPLICATION_MODAL);
@@ -341,10 +285,7 @@ public class YourSwayIDEApplication implements IApplication, IExecutableExtensio
             
             return props.getProperty(WORKSPACE_VERSION_KEY);
         } catch (IOException e) {
-            IDEWorkbenchPlugin.log("Could not read version file", new Status( //$NON-NLS-1$
-                    IStatus.ERROR, IDEWorkbenchPlugin.IDE_WORKBENCH, IStatus.ERROR,
-                    e.getMessage() == null ? "" : e.getMessage(), //$NON-NLS-1$, 
-                    e));
+            Activator.reportException(e, NLS.bind("Could not read version file {0}", versionFile));
             return null;
         }
     }
@@ -372,8 +313,7 @@ public class YourSwayIDEApplication implements IApplication, IExecutableExtensio
             output = new FileOutputStream(versionFile);
             output.write(versionLine.getBytes("UTF-8")); //$NON-NLS-1$
         } catch (IOException e) {
-            IDEWorkbenchPlugin.log("Could not write version file", //$NON-NLS-1$
-                    StatusUtil.newStatus(IStatus.ERROR, e.getMessage(), e));
+            Activator.reportException(e, NLS.bind("Could not write version file {0}", versionFile));
         } finally {
             try {
                 if (output != null) {
