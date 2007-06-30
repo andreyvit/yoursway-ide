@@ -1,4 +1,4 @@
-package com.yoursway.rails.fucking.shit;
+package com.yoursway.ide.projects.commands;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -118,7 +118,7 @@ public class RailsSkeletonGenerator {
             tempDir = new Path(tempFile.getAbsolutePath()).removeFileExtension().toFile();
             File appDir = new File(tempDir, STAGING_APP_NAME);
             appDir.mkdirs();
-            RubyInstallation ruby = RubyInstallation.adapt(rails.getRuby());
+            RubyInstallation ruby = RubyInstallation.adapt(rails.getRawRuby());
             String scriptPath = RubyToolUtils.getScriptCopySuitableForRunning("new_rails_app.rb");
             final ArrayList<String> args = new ArrayList<String>();
             args.add(rails.getRailsGem().getVersion());

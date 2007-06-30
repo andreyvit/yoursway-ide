@@ -21,8 +21,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.Rails;
-import com.yoursway.rails.fucking.shit.RailsProvider;
-import com.yoursway.rails.fucking.shit.RailsSkeletonGenerator;
+import com.yoursway.rails.chooser.RailsProvider;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.search.RailsSearching;
@@ -46,7 +45,7 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                     project.create(description, subMonitor.newChild(20));
                     project.open(subMonitor.newChild(10));
                     
-                    Rails rails = RailsProvider.getCurrentRailsInterpreter();
+                    Rails rails = RailsProvider.getInstance().getChosenRailsInterpreter();
                     System.out.println("Rails " + rails.getVersionAsString() + " pathes:");
                     for (String path : rails.getPaths())
                         System.out.println("  - " + path);

@@ -25,7 +25,7 @@ public class ShowSearchResultAction implements IWorkbenchWindowActionDelegate {
         String railsInfo = "Rails installations:\n";
         
         for (Rails r : rails) {
-            railsInfo += "Rails " + r.getVersionAsString() + " (" + r.getRuby().getName() + ")\n";
+            railsInfo += "Rails " + r.getVersionAsString() + " (" + r.getRawRuby().getName() + ")\n";
             for (String s : r.getPaths()) {
                 railsInfo += "  [" + s + "]\n";
             }

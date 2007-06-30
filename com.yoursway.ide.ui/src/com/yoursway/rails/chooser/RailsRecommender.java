@@ -1,4 +1,4 @@
-package com.yoursway.rails.fucking.shit;
+package com.yoursway.rails.chooser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,20 +7,11 @@ import java.util.List;
 import com.yoursway.rails.Rails;
 import com.yoursway.rails.RailsRuntime;
 
-public class RailsProvider {
+public class RailsRecommender {
     
-    /**
-     * Returns the global "best" version of Rails. New projects and projects
-     * without configured specific Rails version should use the returned one.
-     * 
-     * <p>
-     * If there are several equal candidates, currenty chooses a random one to
-     * facilate testing.
-     * </p>
-     */
-    public static Rails getCurrentRailsInterpreter() {
+    public Rails chooseBestRailsVersion(List<Rails> allRails) {
         Rails bestRails = null;
-        for (Rails rails : RailsRuntime.getRails())
+        for (Rails rails : allRails)
             if (bestRails == null || bestRails.getVersion().compareTo(rails.getVersion()) < 0)
                 bestRails = rails;
         if (bestRails == null)

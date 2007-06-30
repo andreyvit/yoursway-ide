@@ -43,6 +43,14 @@ public class RubyInstallation {
         return new RubyInstallation(interpreterInstall);
     }
     
+    public String getVersion() {
+        return interpreterInstall.getName(); // TODO: get real Ruby version
+    }
+    
+    public File getLocation() {
+        return interpreterInstall.getInstallLocation();
+    }
+    
     public static class RubyScriptInvokationError extends Exception {
         
         private static final long serialVersionUID = 1L;

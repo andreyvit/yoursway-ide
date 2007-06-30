@@ -19,6 +19,18 @@ import com.yoursway.rails.search.RailsSearching;
  */
 public class Activator extends AbstractUIPlugin {
     
+    /**
+     * @see http://java.sun.com/j2se/1.4.2/docs/guide/lang/assert.html,
+     *      "Requiring that Assertions are Enabled"
+     */
+    static {
+        boolean assertsEnabled = false;
+        assert assertsEnabled = true; // Intentional side effect!!!
+        if (!assertsEnabled) {
+            throw new RuntimeException("Asserts must be enabled!!!");
+        }
+    }
+    
     public static final String PLUGIN_ID = "com.yoursway.ide.ui";
     
     public static boolean GENERAL_DEBUG = Boolean.parseBoolean(Platform

@@ -6,6 +6,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
+import com.yoursway.ruby.RubyInstallation;
 import com.yoursway.rubygems.IGem;
 
 public class Rails {
@@ -51,7 +52,12 @@ public class Rails {
         return paths;
     }
     
-    public IInterpreterInstall getRuby() {
+    public IInterpreterInstall getRawRuby() {
         return ruby;
     }
+    
+    public RubyInstallation getRuby() {
+        return RubyInstallation.adapt(ruby);
+    }
+    
 }

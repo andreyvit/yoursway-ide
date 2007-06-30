@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="com.yoursway.rails.chooser" name="Rails Chooser" schema="schema/com.yoursway.rails.chooser.exsd"/>
 
    <extension
          point="org.eclipse.ui.perspectives">
@@ -226,6 +227,13 @@
                 id="com.yoursway.ide.project.openRailsApplication"
                 label="Open Rails Application...">
           </command>
+          <separator
+                name="com.yoursway.ide.ui.separator1">
+          </separator>
+          <command
+                commandId="com.yoursway.rails.search.ChooseRailsCommand"
+                label="Choose Rails...">
+          </command>
        </menu>
     </menuContribution>
  </extension>
@@ -236,6 +244,17 @@
           id="com.yoursway.ide.project.createRailsApplication"
           name="Create Rails Application">
     </command>
+    <command
+          defaultHandler="com.yoursway.rails.chooser.commands.ChooseRailsHandler"
+          id="com.yoursway.rails.search.ChooseRailsCommand"
+          name="Choose Rails">
+    </command>
+ </extension>
+ <extension
+       point="com.yoursway.rails.chooser">
+    <chooser
+          class="com.yoursway.rails.chooser.ui.controller.GuiRailsChooser">
+    </chooser>
  </extension>
 
 </plugin>
