@@ -46,6 +46,9 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                     project.open(subMonitor.newChild(10));
                     
                     Rails rails = RailsProvider.getInstance().getChosenRailsInterpreter();
+                    if (rails == null)
+                        return Status.CANCEL_STATUS;
+                    
                     System.out.println("Rails " + rails.getVersionAsString() + " pathes:");
                     for (String path : rails.getPaths())
                         System.out.println("  - " + path);

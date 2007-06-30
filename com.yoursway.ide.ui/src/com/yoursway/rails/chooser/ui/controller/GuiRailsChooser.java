@@ -32,9 +32,10 @@ public class GuiRailsChooser implements IRailsChooser {
                 IChoice choice = dialog.getChoice();
                 if (choice instanceof LatestRailsChoice)
                     result = getRailsByDescription(((LatestRailsChoice) choice).getRails());
-                if (choice instanceof SpecificRailsChoice)
+                else if (choice instanceof SpecificRailsChoice)
                     result = getRailsByDescription(((SpecificRailsChoice) choice).getRails());
-                result = null;
+                else
+                    result = null;
             }
         }
     }
