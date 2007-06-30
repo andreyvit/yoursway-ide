@@ -61,7 +61,7 @@ public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListene
      */
     public void interpreterRemoved(IInterpreterInstall interpreter) {
         if (isRubyInterpreter(interpreter)) {
-            RailsRuntime.removeRails(interpreter);
+            RailsInstancesManager.removeRails(interpreter);
         }
     }
     

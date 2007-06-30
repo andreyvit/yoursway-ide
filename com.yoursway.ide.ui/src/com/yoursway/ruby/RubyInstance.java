@@ -19,28 +19,28 @@ import org.eclipse.dltk.ruby.core.RubyNature;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.utils.InterpreterRunnerUtil;
 
-public class RubyInstallation {
+public class RubyInstance {
     
     private final IInterpreterInstall interpreterInstall;
     
-    private RubyInstallation(IInterpreterInstall interpreterInstall) {
+    private RubyInstance(IInterpreterInstall interpreterInstall) {
         this.interpreterInstall = interpreterInstall;
     }
     
-    public static Collection<? extends RubyInstallation> getRubyInstallations() {
+    public static Collection<? extends RubyInstance> getRubyInstances() {
         IInterpreterInstallType[] rubyInterpreters = ScriptRuntime
                 .getInterpreterInstallTypes(RubyNature.NATURE_ID);
         assert rubyInterpreters.length == 1 : "Only one IInterpreterInstallType is expected for Ruby nature";
         
-        Collection<RubyInstallation> result = new ArrayList<RubyInstallation>();
+        Collection<RubyInstance> result = new ArrayList<RubyInstance>();
         for (IInterpreterInstall rubyInterpreter : rubyInterpreters[0].getInterpreterInstalls()) {
             result.add(adapt(rubyInterpreter));
         }
         return result;
     }
     
-    public static RubyInstallation adapt(IInterpreterInstall interpreterInstall) {
-        return new RubyInstallation(interpreterInstall);
+    public static RubyInstance adapt(IInterpreterInstall interpreterInstall) {
+        return new RubyInstance(interpreterInstall);
     }
     
     public String getVersion() {

@@ -6,17 +6,17 @@ import java.util.Set;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
-import com.yoursway.ruby.RubyInstallation;
+import com.yoursway.ruby.RubyInstance;
 import com.yoursway.rubygems.IGem;
 
-public class Rails {
+public class RailsInstance {
     private final Version version;
     private final IInterpreterInstall ruby;
     private final Set<String> paths;
     private final IGem[] gems;
     private IGem railsGem;
     
-    public Rails(IInterpreterInstall ruby, String version, IGem[] gems) {
+    public RailsInstance(IInterpreterInstall ruby, String version, IGem[] gems) {
         this.gems = gems;
         this.version = Version.fromDotDelimitedString(version);
         this.ruby = ruby;
@@ -56,8 +56,8 @@ public class Rails {
         return ruby;
     }
     
-    public RubyInstallation getRuby() {
-        return RubyInstallation.adapt(ruby);
+    public RubyInstance getRuby() {
+        return RubyInstance.adapt(ruby);
     }
     
 }

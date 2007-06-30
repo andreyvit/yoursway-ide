@@ -10,30 +10,30 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 
 import com.yoursway.utils.InterpreterRunnerUtil;
 
-public class RailsRuntime {
+public class RailsInstancesManager {
     
-    private static Map<String, Map<String, Rails>> rails = new HashMap<String, Map<String, Rails>>();
+    private static Map<String, Map<String, RailsInstance>> railsInstance = new HashMap<String, Map<String, RailsInstance>>();
     
-    public synchronized static List<Rails> getRails() {
-        ArrayList<Rails> railsList = new ArrayList<Rails>();
-        for (Map<String, Rails> rs : rails.values())
-            railsList.addAll(rs.values());
-        return railsList;
+    public synchronized static List<RailsInstance> getRailsInstance() {
+        ArrayList<RailsInstance> railsInstanceList = new ArrayList<RailsInstance>();
+        for (Map<String, RailsInstance> rs : railsInstance.values())
+            railsInstanceList.addAll(rs.values());
+        return railsInstanceList;
     }
     
-    public synchronized static void addRails(IInterpreterInstall ruby, String railsVersion,
-            Rails railsInstance) {
-        if (!rails.containsKey(ruby.getId()))
-            rails.put(ruby.getId(), new HashMap<String, Rails>());
+    public synchronized static void addRailsInstance(IInterpreterInstall ruby, String railsVersion,
+            RailsInstance railsInstanceInstance) {
+        if (!railsInstance.containsKey(ruby.getId()))
+            railsInstance.put(ruby.getId(), new HashMap<String, RailsInstance>());
         
         System.out.println("Adding/updating rails instance: " + ruby.getName() + " rails " + railsVersion);
         
-        rails.get(ruby.getId()).put(railsVersion, railsInstance);
+        railsInstance.get(ruby.getId()).put(railsVersion, railsInstanceInstance);
     }
     
     public synchronized static void removeRails(IInterpreterInstall ruby) {
         System.out.println("Removing all rails instances for " + ruby.getName());
-        rails.remove(ruby.getId());
+        railsInstance.remove(ruby.getId());
     }
     
     // FIXME: ugly

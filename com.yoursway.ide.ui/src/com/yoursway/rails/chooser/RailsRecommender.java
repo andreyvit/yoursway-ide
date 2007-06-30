@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.yoursway.rails.Rails;
-import com.yoursway.rails.RailsRuntime;
+import com.yoursway.rails.RailsInstance;
+import com.yoursway.rails.RailsInstancesManager;
 
 public class RailsRecommender {
     
-    public Rails chooseBestRailsVersion(List<Rails> allRails) {
-        Rails bestRails = null;
-        for (Rails rails : allRails)
-            if (bestRails == null || bestRails.getVersion().compareTo(rails.getVersion()) < 0)
-                bestRails = rails;
+    public RailsInstance chooseBestRailsInstanceVersion(List<RailsInstance> allRailsInstance) {
+        RailsInstance bestRails = null;
+        for (RailsInstance railsInstance : allRailsInstance)
+            if (bestRails == null || bestRails.getVersion().compareTo(railsInstance.getVersion()) < 0)
+                bestRails = railsInstance;
         if (bestRails == null)
             return null;
         
         // choose random Rails
-        List<Rails> candidates = new ArrayList<Rails>();
-        for (Rails rails : RailsRuntime.getRails())
-            if (bestRails.getVersion().equals(rails.getVersion()))
-                candidates.add(rails);
+        List<RailsInstance> candidates = new ArrayList<RailsInstance>();
+        for (RailsInstance railsInstance : RailsInstancesManager.getRailsInstance())
+            if (bestRails.getVersion().equals(railsInstance.getVersion()))
+                candidates.add(railsInstance);
         Collections.shuffle(candidates);
         return candidates.iterator().next();
     }

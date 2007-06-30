@@ -1,7 +1,7 @@
 package com.yoursway.rails.models.launch;
 
 import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.ruby.RubyInstallation;
+import com.yoursway.ruby.RubyInstance;
 
 public interface IProjectLaunching {
     
@@ -21,6 +21,6 @@ public interface IProjectLaunching {
     
     int getPortNumber() throws PortNumberNotAvailable;
     
-    RubyInstallation getRubyInstallationToRunTools();
+    RubyInstance getRubyInstanceToRunTools();
     
 }

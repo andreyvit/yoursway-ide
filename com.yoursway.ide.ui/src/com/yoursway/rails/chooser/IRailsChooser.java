@@ -1,9 +1,9 @@
 package com.yoursway.rails.chooser;
 
-import com.yoursway.rails.Rails;
+import com.yoursway.rails.RailsInstance;
 
 public interface IRailsChooser {
     
-    Rails choose();
+    RailsInstance choose();
     
 }

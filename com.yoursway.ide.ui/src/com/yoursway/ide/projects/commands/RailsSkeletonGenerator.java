@@ -17,12 +17,12 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.Rails;
+import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.Version;
-import com.yoursway.ruby.RubyInstallation;
+import com.yoursway.ruby.RubyInstance;
 import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.ruby.ToolExecutionResult;
-import com.yoursway.ruby.RubyInstallation.RubyScriptInvokationError;
+import com.yoursway.ruby.RubyInstance.RubyScriptInvokationError;
 import com.yoursway.utils.Streams;
 
 public class RailsSkeletonGenerator {
@@ -70,7 +70,7 @@ public class RailsSkeletonGenerator {
     
     /**
      * @param folder
-     * @param rails
+     * @param railsInstance
      * @param monitor
      *            the progress monitor to use for reporting progress to the
      *            user. It is the caller's responsibility to call done() on the
@@ -79,14 +79,14 @@ public class RailsSkeletonGenerator {
      *            be cancelled.
      * @throws CannotCreateSkeletonException
      */
-    public void putSkeletonInto(File folder, Rails rails, IProgressMonitor monitor)
+    public void putSkeletonInto(File folder, RailsInstance railsInstance, IProgressMonitor monitor)
             throws CannotCreateSkeletonException {
         SubMonitor submonitor = SubMonitor.convert(monitor, 100);
-        Entry entry = cache.get(rails.getVersion());
+        Entry entry = cache.get(railsInstance.getVersion());
         boolean needToCreate = !entry.exists();
         try {
             if (needToCreate)
-                createSkeletonAndStoreIntoCache(rails, entry, submonitor.newChild(80));
+                createSkeletonAndStoreIntoCache(railsInstance, entry, submonitor.newChild(80));
             submonitor.setWorkRemaining(20);
             entry.copyInto(folder, new ArrayList<File>());
             submonitor.worked(20);
@@ -96,7 +96,7 @@ public class RailsSkeletonGenerator {
     }
     
     /**
-     * @param rails
+     * @param railsInstance
      * @param entry
      * @param monitor
      *            the progress monitor to use for reporting progress to the
@@ -107,7 +107,7 @@ public class RailsSkeletonGenerator {
      * @throws IOException
      * @throws RubyScriptInvokationError
      */
-    private void createSkeletonAndStoreIntoCache(Rails rails, Entry entry, IProgressMonitor monitor)
+    private void createSkeletonAndStoreIntoCache(RailsInstance railsInstance, Entry entry, IProgressMonitor monitor)
             throws IOException, RubyScriptInvokationError {
         SubMonitor submonitor = SubMonitor.convert(monitor, 100);
         File tempFile = null;
@@ -118,15 +118,15 @@ public class RailsSkeletonGenerator {
             tempDir = new Path(tempFile.getAbsolutePath()).removeFileExtension().toFile();
             File appDir = new File(tempDir, STAGING_APP_NAME);
             appDir.mkdirs();
-            RubyInstallation ruby = RubyInstallation.adapt(rails.getRawRuby());
+            RubyInstance ruby = RubyInstance.adapt(railsInstance.getRawRuby());
             String scriptPath = RubyToolUtils.getScriptCopySuitableForRunning("new_rails_app.rb");
             final ArrayList<String> args = new ArrayList<String>();
-            args.add(rails.getRailsGem().getVersion());
+            args.add(railsInstance.getRailsGem().getVersion());
             args.add(appDir.getPath());
             ToolExecutionResult result = ruby.runRubyScript(scriptPath, args, submonitor.newChild(80));
             if (result.getExitCode() != 0)
                 // TODO: better error handling
-                throw new RubyInstallation.RubyScriptInvokationError("Non-zero exit code");
+                throw new RubyInstance.RubyScriptInvokationError("Non-zero exit code");
             entry.createFromFolder(appDir);
             submonitor.worked(20);
         } finally {

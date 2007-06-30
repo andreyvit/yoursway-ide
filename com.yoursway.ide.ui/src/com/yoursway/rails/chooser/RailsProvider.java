@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.Rails;
+import com.yoursway.rails.RailsInstance;
 
 public class RailsProvider {
     
@@ -15,7 +15,7 @@ public class RailsProvider {
     
     private boolean isChoosingBestRails = false;
     
-    private Rails chosenRails;
+    private RailsInstance chosenRailsInstance;
     
     private static final String CHOOSER_EP = "com.yoursway.rails.chooser";
     
@@ -33,8 +33,8 @@ public class RailsProvider {
      * @return the version of Rails chosen by the user, or <code>null</code>
      *         if none has been chosen.
      */
-    public synchronized Rails getChosenRailsInterpreter() {
-        if (chosenRails == null)
+    public synchronized RailsInstance getChosenRailsInstanceInterpreter() {
+        if (chosenRailsInstance == null)
             showRailsChooser();
         while (isChoosingBestRails)
             try {
@@ -42,19 +42,19 @@ public class RailsProvider {
             } catch (InterruptedException e) {
                 throw (AssertionFailedException) new AssertionFailedException("Cannot happen").initCause(e);
             }
-        return chosenRails;
+        return chosenRailsInstance;
     }
     
     public synchronized void showRailsChooser() {
         if (isChoosingBestRails)
             return;
         isChoosingBestRails = true;
-        chosenRails = null;
+        chosenRailsInstance = null;
         new Thread() {
             @Override
             public void run() {
                 try {
-                    chosenRails = getRailsChooser().choose();
+                    chosenRailsInstance = getRailsChooser().choose();
                 } finally {
                     synchronized (RailsProvider.this) {
                         isChoosingBestRails = false;

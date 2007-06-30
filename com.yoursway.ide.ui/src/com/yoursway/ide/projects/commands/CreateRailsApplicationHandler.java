@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.Rails;
+import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.chooser.RailsProvider;
 import com.yoursway.rails.search.RailsSearching;
 import com.yoursway.utils.ProjectUtils;
@@ -40,16 +40,16 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                     project.create(description, subMonitor.newChild(20));
                     project.open(subMonitor.newChild(10));
                     
-                    Rails rails = RailsProvider.getInstance().getChosenRailsInterpreter();
-                    if (rails == null)
+                    RailsInstance railsInstance = RailsProvider.getInstance().getChosenRailsInstanceInterpreter();
+                    if (railsInstance == null)
                         return Status.CANCEL_STATUS;
                     
-                    System.out.println("Rails " + rails.getVersionAsString() + " pathes:");
-                    for (String path : rails.getPaths())
+                    System.out.println("Rails " + railsInstance.getVersionAsString() + " pathes:");
+                    for (String path : railsInstance.getPaths())
                         System.out.println("  - " + path);
                     
                     RailsSkeletonGenerator.getInstance().putSkeletonInto(project.getLocation().toFile(),
-                            rails, subMonitor.newChild(20));
+                            railsInstance, subMonitor.newChild(20));
                     
                     ProjectUtils.openProjectInNewWindow(project);
                 } catch (Exception e) {

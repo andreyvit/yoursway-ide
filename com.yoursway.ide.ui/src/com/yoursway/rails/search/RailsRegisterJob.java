@@ -19,8 +19,8 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.Rails;
-import com.yoursway.rails.RailsRuntime;
+import com.yoursway.rails.RailsInstance;
+import com.yoursway.rails.RailsInstancesManager;
 import com.yoursway.rubygems.IGem;
 import com.yoursway.rubygems.LocalGems;
 import com.yoursway.utils.InterpreterRunnerUtil;
@@ -80,7 +80,7 @@ public class RailsRegisterJob extends Job {
                     + String.valueOf(InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess)));
             
             // FIXME: proper error handling
-            String errorMsg = RailsRuntime.checkFinishedProcess(launchProcess, getName());
+            String errorMsg = RailsInstancesManager.checkFinishedProcess(launchProcess, getName());
             if (errorMsg != null) {
                 System.out.println(getName() + " " + errorMsg);
                 return Status.OK_STATUS;
@@ -101,8 +101,8 @@ public class RailsRegisterJob extends Job {
             
             Set<String> paths = new HashSet<String>();
             
-            Rails rails = new Rails(rubyInterpreter, railsVersion, railsGemsInfo);
-            RailsRuntime.addRails(rubyInterpreter, railsVersion, rails);
+            RailsInstance railsInstance = new RailsInstance(rubyInterpreter, railsVersion, railsGemsInfo);
+            RailsInstancesManager.addRailsInstance(rubyInterpreter, railsVersion, railsInstance);
         } catch (Throwable t) {
             System.out.println(getName());
             t.printStackTrace(System.out);

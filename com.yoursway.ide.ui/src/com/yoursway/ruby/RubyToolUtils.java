@@ -11,21 +11,21 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.ruby.RubyInstallation.RubyScriptInvokationError;
+import com.yoursway.ruby.RubyInstance.RubyScriptInvokationError;
 
 public class RubyToolUtils {
     
     /**
      * Sends SIGINT to the specified process, asking it to shut down gracefully.
      */
-    public static void sendInterruptSignal(RubyInstallation ruby, int pid, IProgressMonitor monitor) {
+    public static void sendInterruptSignal(RubyInstance ruby, int pid, IProgressMonitor monitor) {
         sendSignal(ruby, "INT", pid, monitor);
     }
     
     /**
      * Sends SIGKILL to the specified process, effectively terminating it.
      */
-    public static void sendKillSignal(RubyInstallation ruby, int pid, IProgressMonitor monitor) {
+    public static void sendKillSignal(RubyInstance ruby, int pid, IProgressMonitor monitor) {
         sendSignal(ruby, "KILL", pid, monitor);
     }
     
@@ -46,7 +46,7 @@ public class RubyToolUtils {
      *            no progress should be reported and that the operation cannot
      *            be cancelled.
      */
-    public static void sendSignal(RubyInstallation ruby, String signalName, int pid, IProgressMonitor monitor) {
+    public static void sendSignal(RubyInstance ruby, String signalName, int pid, IProgressMonitor monitor) {
         String scriptPath = getScriptCopySuitableForRunning("kill.rb");
         String[] args = new String[] { "INT", "" + pid };
         try {

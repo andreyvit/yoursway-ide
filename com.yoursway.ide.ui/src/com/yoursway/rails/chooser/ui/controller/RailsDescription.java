@@ -1,17 +1,17 @@
 package com.yoursway.rails.chooser.ui.controller;
 
-import com.yoursway.rails.Rails;
+import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.chooser.ui.view.IRailsDescription;
 import com.yoursway.rails.chooser.ui.view.IRubyDescription;
 
 public class RailsDescription implements IRailsDescription {
     
     private final IRubyDescription ruby;
-    private final Rails rails;
+    private final RailsInstance railsInstance;
     
-    public RailsDescription(Rails rails) {
-        this.rails = rails;
-        this.ruby = new RubyDescription(rails.getRuby());
+    public RailsDescription(RailsInstance railsInstance) {
+        this.railsInstance = railsInstance;
+        this.ruby = new RubyDescription(railsInstance.getRuby());
     }
     
     public IRubyDescription getRuby() {
@@ -19,11 +19,11 @@ public class RailsDescription implements IRailsDescription {
     }
     
     public String getVersion() {
-        return rails.getVersionAsString();
+        return railsInstance.getVersionAsString();
     }
     
-    public Rails getRails() {
-        return rails;
+    public RailsInstance getRailsInstance() {
+        return railsInstance;
     }
     
 }

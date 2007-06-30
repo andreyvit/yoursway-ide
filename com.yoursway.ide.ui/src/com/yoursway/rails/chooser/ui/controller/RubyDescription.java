@@ -3,26 +3,26 @@ package com.yoursway.rails.chooser.ui.controller;
 import java.io.File;
 
 import com.yoursway.rails.chooser.ui.view.IRubyDescription;
-import com.yoursway.ruby.RubyInstallation;
+import com.yoursway.ruby.RubyInstance;
 
 public class RubyDescription implements IRubyDescription {
     
-    private final RubyInstallation rubyInstallation;
+    private final RubyInstance rubyInstance;
     
-    public RubyDescription(RubyInstallation rubyInstallation) {
-        this.rubyInstallation = rubyInstallation;
+    public RubyDescription(RubyInstance rubyInstance) {
+        this.rubyInstance = rubyInstance;
     }
     
     public String getVersion() {
-        return rubyInstallation.getVersion();
+        return rubyInstance.getVersion();
     }
     
     public File getLocation() {
-        return rubyInstallation.getLocation();
+        return rubyInstance.getLocation();
     }
     
-    public RubyInstallation getRubyInstallation() {
-        return rubyInstallation;
+    public RubyInstance getRubyInstance() {
+        return rubyInstance;
     }
     
 }

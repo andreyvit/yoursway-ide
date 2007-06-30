@@ -17,7 +17,7 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.RailsRuntime;
+import com.yoursway.rails.RailsInstancesManager;
 import com.yoursway.rubygems.LocalGems;
 import com.yoursway.utils.InterpreterRunnerUtil;
 
@@ -77,7 +77,7 @@ public class RailsSearchJob extends Job {
                     + String.valueOf(InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess)));
             
             // FIXME: proper error hadling
-            String errorMsg = RailsRuntime.checkFinishedProcess(launchProcess, getName());
+            String errorMsg = RailsInstancesManager.checkFinishedProcess(launchProcess, getName());
             if (errorMsg != null) {
                 System.out.println(getName() + " " + errorMsg);
                 return Status.OK_STATUS;

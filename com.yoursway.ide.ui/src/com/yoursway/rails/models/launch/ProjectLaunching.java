@@ -28,7 +28,7 @@ import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.ruby.RubyInstallation;
+import com.yoursway.ruby.RubyInstance;
 import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.utils.InterpreterRunnerUtil;
 import com.yoursway.utils.ServerUtils;
@@ -167,7 +167,7 @@ class ProjectLaunching implements IProjectLaunching {
         
         @Override
         protected IStatus run(IProgressMonitor monitor) {
-            final RubyInstallation ruby = getRubyInstallationToRunTools();
+            final RubyInstance ruby = getRubyInstanceToRunTools();
             if (pidToKill != 0) {
                 System.out.println("Sending SIGINT to process " + pidToKill + "...");
                 RubyToolUtils.sendInterruptSignal(ruby, pidToKill, null);
@@ -290,8 +290,8 @@ class ProjectLaunching implements IProjectLaunching {
         model.fireProjectStateChanged(this);
     }
     
-    public RubyInstallation getRubyInstallationToRunTools() {
-        Collection<? extends RubyInstallation> installations = RubyInstallation.getRubyInstallations();
+    public RubyInstance getRubyInstanceToRunTools() {
+        Collection<? extends RubyInstance> installations = RubyInstance.getRubyInstances();
         if (installations.isEmpty())
             return null;
         else
