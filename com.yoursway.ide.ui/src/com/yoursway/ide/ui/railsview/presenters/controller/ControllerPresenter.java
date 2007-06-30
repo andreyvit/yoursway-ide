@@ -17,7 +17,6 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.RenameContextAdapter;
 import com.yoursway.ide.ui.railsview.presenters.RenameMode;
-import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.models.controller.RailsController;
 import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.StringUtils;
@@ -26,15 +25,15 @@ public class ControllerPresenter extends AbstractPresenter {
     
     private final static class Context extends RenameContextAdapter {
         
-        private final IRailsController railsController;
+        private final RailsController railsController;
         
         public Context(IPresenterOwner presenterOwner, IContextMenuContext contextMenuContext,
-                IRailsController railsController) {
+                RailsController railsController) {
             super(presenterOwner, contextMenuContext);
             this.railsController = railsController;
         }
         
-        public IRailsController getRailsController() {
+        public RailsController getRailsController() {
             return railsController;
         }
         

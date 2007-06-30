@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.utils.TypedListenerList;
 
 public class RailsServersModel {
@@ -27,13 +27,13 @@ public class RailsServersModel {
         
     }
     
-    private final Map<IRailsProject, ProjectLaunching> projectToLaunching = new HashMap<IRailsProject, ProjectLaunching>();
+    private final Map<RailsProject, ProjectLaunching> projectToLaunching = new HashMap<RailsProject, ProjectLaunching>();
     
     public static RailsServersModel instance() {
         return SingletonHolder.instance;
     }
     
-    public synchronized IProjectLaunching get(IRailsProject railsProject) {
+    public synchronized IProjectLaunching get(RailsProject railsProject) {
         ProjectLaunching result = projectToLaunching.get(railsProject);
         if (result == null) {
             result = new ProjectLaunching(this, railsProject);

@@ -6,15 +6,8 @@ package com.yoursway.ide.ui.railsview.presenters.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
 import com.yoursway.ide.ui.railsview.RailsViewImages;
@@ -24,13 +17,14 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.IRenameContext;
 import com.yoursway.ide.ui.railsview.presenters.RenameContextAdapter;
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.StringUtils;
 
+@Deprecated
 public class NewModelPresenter extends AbstractPresenter {
     
-    private final IRailsProject railsProject;
+    private final RailsProject railsProject;
     
     private final class Context extends RenameContextAdapter {
         
@@ -55,24 +49,24 @@ public class NewModelPresenter extends AbstractPresenter {
             
             final String body = "\n" + "class " + className + " < ActiveRecord::Base\n" + "end\n";
             
-            final IFolder folder = railsProject.getModelsCollection().getModelsFolder();
-            
-            new Job("Creating model") {
-                
-                @Override
-                protected IStatus run(IProgressMonitor monitor) {
-                    final IFile file = createFile(body, folder, fileName + ".rb", "Model creation failed");
-                    if (file != null) {
-                        Display.getDefault().asyncExec(new Runnable() {
-                            public void run() {
-                                openEditor(file);
-                            }
-                        });
-                    }
-                    return Status.OK_STATUS;
-                }
-                
-            }.schedule();
+            //            final IFolder folder = railsProject.getModelsCollection().getModelsFolder();
+            //            
+            //            new Job("Creating model") {
+            //                
+            //                @Override
+            //                protected IStatus run(IProgressMonitor monitor) {
+            //                    final IFile file = createFile(body, folder, fileName + ".rb", "Model creation failed");
+            //                    if (file != null) {
+            //                        Display.getDefault().asyncExec(new Runnable() {
+            //                            public void run() {
+            //                                openEditor(file);
+            //                            }
+            //                        });
+            //                    }
+            //                    return Status.OK_STATUS;
+            //                }
+            //                
+            //            }.schedule();
         }
     }
     
@@ -97,7 +91,7 @@ public class NewModelPresenter extends AbstractPresenter {
         }
     }
     
-    public NewModelPresenter(IPresenterOwner owner, IRailsProject railsProject) {
+    public NewModelPresenter(IPresenterOwner owner, RailsProject railsProject) {
         super(owner);
         this.railsProject = railsProject;
     }

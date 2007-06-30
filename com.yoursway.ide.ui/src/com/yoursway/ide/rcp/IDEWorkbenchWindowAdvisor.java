@@ -44,7 +44,7 @@ import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.MarkerTransfer;
 import org.eclipse.ui.part.ResourceTransfer;
 
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.rails.windowmodel.RailsWindowModel;
 import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
 import com.yoursway.rails.windowmodel.RailsWindowModelProjectChange;
@@ -307,7 +307,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         //            }
         //        }
         
-        IRailsProject currentProject = RailsWindowModel.instance().getWindow(currentWindow).getRailsProject();
+        RailsProject currentProject = RailsWindowModel.instance().getWindow(currentWindow).getRailsProject();
         if (currentProject != null) {
             title = NLS.bind("{0} - {1}", currentProject.getProject().getName(), title);
         }

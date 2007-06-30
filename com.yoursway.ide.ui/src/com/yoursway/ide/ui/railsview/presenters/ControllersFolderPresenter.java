@@ -13,15 +13,19 @@ import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
-import com.yoursway.rails.model.IRailsControllersFolder;
 
 public class ControllersFolderPresenter extends AbstractPresenter {
     
-    private final IRailsControllersFolder controllersFolder;
+    //    private final IRailsControllersFolder controllersFolder;
     
-    public ControllersFolderPresenter(IPresenterOwner owner, IRailsControllersFolder controllersFolder) {
+    //    public ControllersFolderPresenter(IPresenterOwner owner, IRailsControllersFolder controllersFolder) {
+    //        super(owner);
+    //        //        this.controllersFolder = controllersFolder;
+    //    }
+    
+    public ControllersFolderPresenter(IPresenterOwner owner) {
         super(owner);
-        this.controllersFolder = controllersFolder;
+        // TODO Auto-generated constructor stub
     }
     
     public boolean canEditInPlace() {
@@ -29,7 +33,8 @@ public class ControllersFolderPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        return controllersFolder.getCorrespondingFolder().getProjectRelativePath().toString();
+        return null;
+        //        return controllersFolder.getCorrespondingFolder().getProjectRelativePath().toString();
     }
     
     public Object[] getChildren() {

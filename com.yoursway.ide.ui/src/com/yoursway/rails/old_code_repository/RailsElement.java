@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.internal;
+package com.yoursway.rails.old_code_repository;
 
 import org.eclipse.core.runtime.PlatformObject;
 

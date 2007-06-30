@@ -37,10 +37,6 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.ide.ui.advisor.FormLayoutFactory;
-import com.yoursway.rails.model.IRailsChangeListener;
-import com.yoursway.rails.model.IRailsProject;
-import com.yoursway.rails.model.RailsCore;
-import com.yoursway.rails.model.deltas.RailsChangeEvent;
 import com.yoursway.rails.models.controller.IControllersListener;
 import com.yoursway.rails.models.controller.RailsController;
 import com.yoursway.rails.models.controller.all.RailsControllersModel;
@@ -158,22 +154,16 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
     }
     
-    class ElementChangedListener implements IRailsChangeListener, IProjectsListener, IControllersListener {
+    class ElementChangedListener implements IProjectsListener, IControllersListener {
         
         public void install() {
-            RailsCore.instance().addChangeListener(this);
             RailsProjectsModel.getInstance().addListener(this);
             RailsControllersModel.getInstance().addListener(this);
         }
         
         public void uninstall() {
-            RailsCore.instance().removeChangeListener(this);
             RailsProjectsModel.getInstance().removeListener(this);
             RailsControllersModel.getInstance().removeListener(this);
-        }
-        
-        public void railsModelChanged(final RailsChangeEvent event) {
-            refreshEverything();
         }
         
         public void projectAdded(RailsProject railsProject) {
@@ -246,7 +236,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     public void handleActiveProjectChanged() {
-        IRailsProject project = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+        RailsProject project = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
                 .getRailsProject();
         projectTree.setVisibleProject(project);
         //        updateProjectChooser();
@@ -260,11 +250,6 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         //        } else {
         //            expander.setText(project.getProject().getName());
         //        }
-    }
-    
-    void handleElementChangedEvent(RailsChangeEvent event) {
-        refreshEverything();
-        //        updateProjectChooser();
     }
     
     private void refreshEverything() {
@@ -420,7 +405,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         disposeChildren(bottomComposite);
         
         RailsWindow w = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow());
-        IRailsProject railsProject = w.getRailsProject();
+        RailsProject railsProject = w.getRailsProject();
         
         if (railsProject != null) {
             IProjectLaunching launching = RailsServersModel.instance().get(railsProject);
@@ -463,7 +448,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         form.getBody().layout();
     }
     
-    private void createServerControls(IRailsProject railsProject, String markup) {
+    private void createServerControls(RailsProject railsProject, String markup) {
         FormText newWindowLabel = formToolkit.createFormText(bottomComposite, true);
         newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         newWindowLabel.setText(markup, true, false);
@@ -487,14 +472,14 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
     private void doStartServer() {
         RailsWindow w = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow());
-        IRailsProject railsProject = w.getRailsProject();
+        RailsProject railsProject = w.getRailsProject();
         IProjectLaunching projectLaunching = RailsServersModel.instance().get(railsProject);
         projectLaunching.startDefaultServer();
     }
     
     private void doStopServer() {
         RailsWindow w = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow());
-        IRailsProject railsProject = w.getRailsProject();
+        RailsProject railsProject = w.getRailsProject();
         IProjectLaunching projectLaunching = RailsServersModel.instance().get(railsProject);
         projectLaunching.stopServer();
     }
@@ -591,7 +576,6 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         action1 = new Action() {
             @Override
             public void run() {
-                RailsCore.instance().refresh();
                 refreshEverything();
             }
         };

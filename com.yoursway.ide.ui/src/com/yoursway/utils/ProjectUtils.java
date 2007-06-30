@@ -22,8 +22,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
 import com.yoursway.ide.rcp.YourSwayIDEApplication;
-import com.yoursway.rails.model.IRailsProject;
-import com.yoursway.rails.model.RailsCore;
+import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.models.project.RailsProjectsModel;
 import com.yoursway.rails.windowmodel.RailsWindowModel;
 
 public class ProjectUtils {
@@ -345,20 +345,12 @@ public class ProjectUtils {
         throw new FailedToConvertProjectBecauseBurWasTooLazyException();
     }
     
-    private static IRailsProject uglyHackFindRailsProject(IProject project) {
-        IRailsProject correspondingRailsProject = null;
-        for (IRailsProject railsProject : RailsCore.instance().getProjectsCollection().getRailsProjects()) {
-            if (railsProject.getProject().equals(project)) {
-                correspondingRailsProject = railsProject;
-                break;
-            }
-        }
-        return correspondingRailsProject;
-    }
-    
     public static void openProjectInNewWindow(IProject project) throws WorkbenchException {
-        IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(project);
-        RailsWindowModel.instance().getWindow(window).setRailsProject(uglyHackFindRailsProject(project));
+        RailsProject railsProject = RailsProjectsModel.getInstance().get(project);
+        if (railsProject != null) {
+            IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(project);
+            RailsWindowModel.instance().getWindow(window).setRailsProject(railsProject);
+        }
     }
     
 }

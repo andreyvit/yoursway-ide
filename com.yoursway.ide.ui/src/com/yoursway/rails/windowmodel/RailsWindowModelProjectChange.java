@@ -2,25 +2,25 @@ package com.yoursway.rails.windowmodel;
 
 import org.eclipse.ui.IWorkbenchWindow;
 
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 
 public class RailsWindowModelProjectChange extends RailsWindowModelChange {
     
-    private final IRailsProject oldMapping;
-    private final IRailsProject newMapping;
+    private final RailsProject oldMapping;
+    private final RailsProject newMapping;
     
-    public RailsWindowModelProjectChange(IWorkbenchWindow window, IRailsProject oldMapping,
-            IRailsProject newMapping) {
+    public RailsWindowModelProjectChange(IWorkbenchWindow window, RailsProject oldProject,
+            RailsProject newProject) {
         super(window);
-        this.oldMapping = oldMapping;
-        this.newMapping = newMapping;
+        this.oldMapping = oldProject;
+        this.newMapping = newProject;
     }
     
-    public IRailsProject getOldMapping() {
+    public RailsProject getOldMapping() {
         return oldMapping;
     }
     
-    public IRailsProject getNewMapping() {
+    public RailsProject getNewMapping() {
         return newMapping;
     }
     

@@ -1,6 +1,5 @@
-package com.yoursway.rails.model.internal;
+package com.yoursway.rails.old_code_repository;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,11 +10,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 
-import com.yoursway.rails.model.IProvidesRailsProject;
-import com.yoursway.rails.model.IRailsProject;
-import com.yoursway.rails.model.IRailsSchema;
-import com.yoursway.rails.model.IRailsTable;
-import com.yoursway.rails.model.internal.deltas.RailsProjectChangedDeltaBuilder;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.rails.utils.schemaparser.RubySchemaParser;
 import com.yoursway.rails.utils.schemaparser.SchemaInfo;
 import com.yoursway.rails.utils.schemaparser.TableInfo;
@@ -24,19 +19,16 @@ import com.yoursway.ruby.model.RubyFile;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class RailsSchema extends RailsElement implements IRailsSchema, IProvidesRailsProject {
+@Deprecated
+public class RailsSchema {
     
-    private final IRailsProject railsProject;
+    private RailsProject railsProject;
     
     private boolean isOpen = false;
     
     private final Map<String, RailsTable> tables = new HashMap<String, RailsTable>();
     
     private int schemaVersion = -1;
-    
-    public RailsSchema(IRailsProject railsProject) {
-        this.railsProject = railsProject;
-    }
     
     private void refresh() {
         isOpen = true;
@@ -66,20 +58,11 @@ public class RailsSchema extends RailsElement implements IRailsSchema, IProvides
         }
     }
     
-    public Collection<? extends IRailsTable> getItems() {
-        open();
-        return tables.values();
-    }
-    
     public boolean hasItems() {
         return true;
     }
     
-    public IRailsProject getRailsProject() {
-        return railsProject;
-    }
-    
-    public void reconcile(RailsProjectChangedDeltaBuilder db, IResourceDelta delta) {
+    public void reconcile(IResourceDelta delta) {
         IResourceDelta member = delta.findMember(new Path(RailsNamingConventions.DB_SCHEMA_RB));
         if (member != null)
             refresh();
@@ -97,11 +80,6 @@ public class RailsSchema extends RailsElement implements IRailsSchema, IProvides
     public void open() {
         if (!isOpen)
             refresh();
-    }
-    
-    public IRailsTable findByName(String name) {
-        open();
-        return tables.get(name);
     }
     
 }

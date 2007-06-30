@@ -2,13 +2,13 @@ package com.yoursway.rails.windowmodel;
 
 import org.eclipse.ui.IWorkbenchWindow;
 
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 
 public class RailsWindow {
     
     private final RailsWindowModel windowModel;
     
-    private IRailsProject activeProject;
+    private RailsProject activeProject;
     
     private INonModalMode activeMode;
     
@@ -23,12 +23,12 @@ public class RailsWindow {
         return window;
     }
     
-    public IRailsProject getRailsProject() {
+    public RailsProject getRailsProject() {
         return activeProject;
     }
     
-    public void setRailsProject(IRailsProject newProject) {
-        IRailsProject oldProject = activeProject;
+    public void setRailsProject(RailsProject newProject) {
+        RailsProject oldProject = activeProject;
         activeProject = newProject;
         windowModel.fire(new RailsWindowModelProjectChange(window, oldProject, newProject));
     }

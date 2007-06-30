@@ -1,11 +1,11 @@
 package com.yoursway.rails.models.launch;
 
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.ruby.RubyInstallation;
 
 public interface IProjectLaunching {
     
-    IRailsProject getRailsProject();
+    RailsProject getRailsProject();
     
     LaunchState getState();
     

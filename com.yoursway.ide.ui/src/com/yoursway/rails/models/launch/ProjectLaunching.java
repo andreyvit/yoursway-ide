@@ -27,7 +27,7 @@ import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 import com.yoursway.ruby.RubyInstallation;
 import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.utils.InterpreterRunnerUtil;
@@ -205,15 +205,15 @@ class ProjectLaunching implements IProjectLaunching {
             }
     }
     
-    private final IRailsProject railsProject;
+    private final RailsProject railsProject;
     protected ILaunch launch;
     
-    public ProjectLaunching(RailsServersModel railsServersModel, IRailsProject railsProject) {
+    public ProjectLaunching(RailsServersModel railsServersModel, RailsProject railsProject) {
         model = railsServersModel;
         this.railsProject = railsProject;
     }
     
-    public IRailsProject getRailsProject() {
+    public RailsProject getRailsProject() {
         return railsProject;
     }
     

@@ -45,4 +45,8 @@ public class RailsController {
         return fullClassName;
     }
     
+    public String getDisplayName() {
+        return RailsNamingConventions.joinNamespaces(getFullClassName());
+    }
+    
 }

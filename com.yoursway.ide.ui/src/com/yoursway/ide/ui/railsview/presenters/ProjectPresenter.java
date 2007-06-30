@@ -13,23 +13,18 @@ import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
-import com.yoursway.ide.ui.railsview.presenters.model.NewModelPresenter;
-import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.models.controller.RailsController;
 import com.yoursway.rails.models.controller.RailsControllers;
 import com.yoursway.rails.models.controller.all.RailsControllersModel;
 import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.rails.models.project.RailsProjectsModel;
 
 public class ProjectPresenter extends AbstractPresenter {
     
-    private final IRailsProject oldRailsProject;
     private final RailsProject railsProject;
     
-    public ProjectPresenter(IPresenterOwner owner, IRailsProject railsProject) {
+    public ProjectPresenter(IPresenterOwner owner, RailsProject railsProject) {
         super(owner);
-        this.oldRailsProject = railsProject;
-        this.railsProject = RailsProjectsModel.getInstance().get(railsProject.getProject());
+        this.railsProject = railsProject;
     }
     
     public boolean canEditInPlace() {
@@ -47,8 +42,8 @@ public class ProjectPresenter extends AbstractPresenter {
             children.add(new ControllerPresenter(getOwner(), railsController));
         }
         //        addControllers(oldRailsProject.getControllersCollection().getRootFolder(), children);
-        children.add(new NewModelPresenter(getOwner(), oldRailsProject));
-        children.addAll(oldRailsProject.getModelsCollection().getItems());
+        //        children.add(new NewModelPresenter(getOwner(), oldRailsProject));
+        //        children.addAll(oldRailsProject.getModelsCollection().getItems());
         return children.toArray();
     }
     

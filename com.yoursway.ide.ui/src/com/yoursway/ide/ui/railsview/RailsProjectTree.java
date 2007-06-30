@@ -30,7 +30,7 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterFactory;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presentation.PresentersBasedProvider;
-import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.models.project.RailsProject;
 
 public class RailsProjectTree implements IPresenterOwner {
     
@@ -42,7 +42,7 @@ public class RailsProjectTree implements IPresenterOwner {
     
     private final PublicMorozovTreeViewer viewer;
     
-    private IRailsProject currentRailsProject;
+    private RailsProject currentRailsProject;
     
     private final MenuManager contextMenuManager;
     
@@ -133,8 +133,8 @@ public class RailsProjectTree implements IPresenterOwner {
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
     
-    public void setVisibleProject(IRailsProject railsProject) {
-        currentRailsProject = railsProject;
+    public void setVisibleProject(RailsProject project) {
+        currentRailsProject = project;
         viewer.setInput(currentRailsProject);
     }
     
