@@ -13,7 +13,7 @@ public class RailsProvider {
     
     private static final RailsProvider INSTANCE = new RailsProvider();
     
-    private boolean isChoosingBestRails = true;
+    private boolean isChoosingBestRails = false;
     
     private Rails chosenRails;
     
