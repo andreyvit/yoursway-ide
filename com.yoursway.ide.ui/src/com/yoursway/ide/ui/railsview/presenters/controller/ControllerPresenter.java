@@ -18,6 +18,7 @@ import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.RenameContextAdapter;
 import com.yoursway.ide.ui.railsview.presenters.RenameMode;
 import com.yoursway.rails.model.IRailsController;
+import com.yoursway.rails.models.controller.RailsController;
 import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.StringUtils;
 
@@ -66,9 +67,9 @@ public class ControllerPresenter extends AbstractPresenter {
         }
     }
     
-    private final IRailsController railsController;
+    private final RailsController railsController;
     
-    public ControllerPresenter(IPresenterOwner owner, IRailsController railsController) {
+    public ControllerPresenter(IPresenterOwner owner, RailsController railsController) {
         super(owner);
         this.railsController = railsController;
     }
@@ -78,14 +79,14 @@ public class ControllerPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        String[] classNameComponents = railsController.getExpectedClassName();
+        String[] classNameComponents = railsController.getFullClassName();
         return "  " + RailsNamingConventions.joinNamespaces(classNameComponents);
     }
     
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
-        children.addAll(railsController.getActionsCollection().getActions());
-        children.addAll(railsController.getViewsCollection().getItems());
+        //        children.addAll(railsController.getActionsCollection().getActions());
+        //        children.addAll(railsController.getViewsCollection().getItems());
         return children.toArray();
     }
     
@@ -98,8 +99,9 @@ public class ControllerPresenter extends AbstractPresenter {
     }
     
     public boolean hasChildren() {
-        return railsController.getActionsCollection().hasItems()
-                || railsController.getViewsCollection().hasItems();
+        return false;
+        //        return railsController.getActionsCollection().hasItems()
+        //                || railsController.getViewsCollection().hasItems();
     }
     
     public void handleDoubleClick(IProvidesTreeItem context) {
@@ -107,7 +109,7 @@ public class ControllerPresenter extends AbstractPresenter {
     }
     
     public void fillContextMenu(final IContextMenuContext context) {
-        context.getMenuManager().add(new RenameAction(new Context(getOwner(), context, railsController)));
+        //        context.getMenuManager().add(new RenameAction(new Context(getOwner(), context, railsController)));
         context.getMenuManager().add(new DeleteFileAction(railsController.getFile()));
     }
 }

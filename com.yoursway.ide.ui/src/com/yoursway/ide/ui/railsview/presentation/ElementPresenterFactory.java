@@ -9,13 +9,13 @@ import com.yoursway.ide.ui.railsview.presenters.ViewPresenter;
 import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
 import com.yoursway.ide.ui.railsview.presenters.model.ModelPresenter;
 import com.yoursway.rails.model.IRailsAction;
-import com.yoursway.rails.model.IRailsController;
 import com.yoursway.rails.model.IRailsControllersFolder;
 import com.yoursway.rails.model.IRailsField;
 import com.yoursway.rails.model.IRailsModel;
 import com.yoursway.rails.model.IRailsPartial;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.IRailsView;
+import com.yoursway.rails.models.controller.RailsController;
 
 public class ElementPresenterFactory implements IPresenterFactory {
     
@@ -30,8 +30,8 @@ public class ElementPresenterFactory implements IPresenterFactory {
             return (IElementPresenter) element;
         if (element instanceof IRailsProject)
             return new ProjectPresenter(owner, (IRailsProject) element);
-        if (element instanceof IRailsController)
-            return new ControllerPresenter(owner, (IRailsController) element);
+        if (element instanceof RailsController)
+            return new ControllerPresenter(owner, (RailsController) element);
         if (element instanceof IRailsControllersFolder)
             return new ControllersFolderPresenter(owner, (IRailsControllersFolder) element);
         if (element instanceof IRailsAction)

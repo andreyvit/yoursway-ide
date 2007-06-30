@@ -24,9 +24,13 @@ public abstract class ResourceSwitch implements IResourceVisitor {
         throw new AssertionError("Unreachable code");
     }
     
-    protected abstract boolean visitRoot(IWorkspaceRoot resource);
+    protected boolean visitRoot(IWorkspaceRoot resource) {
+        throw new AssertionError("Unexpected type of resource: " + resource.getFullPath());
+    }
     
-    protected abstract boolean visitProject(IProject resource);
+    protected boolean visitProject(IProject resource) {
+        throw new AssertionError("Unexpected type of resource: " + resource.getFullPath());
+    }
     
     protected abstract boolean visitFolder(IFolder resource);
     

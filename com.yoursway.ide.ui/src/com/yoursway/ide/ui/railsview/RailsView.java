@@ -1,5 +1,6 @@
 package com.yoursway.ide.ui.railsview;
 
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ControlContribution;
@@ -40,10 +41,16 @@ import com.yoursway.rails.model.IRailsChangeListener;
 import com.yoursway.rails.model.IRailsProject;
 import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.model.deltas.RailsChangeEvent;
+import com.yoursway.rails.models.controller.IControllersListener;
+import com.yoursway.rails.models.controller.RailsController;
+import com.yoursway.rails.models.controller.all.RailsControllersModel;
 import com.yoursway.rails.models.launch.ILaunchingModelListener;
 import com.yoursway.rails.models.launch.IProjectLaunching;
 import com.yoursway.rails.models.launch.RailsServersModel;
 import com.yoursway.rails.models.launch.IProjectLaunching.PortNumberNotAvailable;
+import com.yoursway.rails.models.project.IProjectsListener;
+import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.models.project.RailsProjectsModel;
 import com.yoursway.rails.windowmodel.RailsWindow;
 import com.yoursway.rails.windowmodel.RailsWindowModel;
 import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
@@ -151,22 +158,44 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
     }
     
-    class ElementChangedListener implements IRailsChangeListener {
+    class ElementChangedListener implements IRailsChangeListener, IProjectsListener, IControllersListener {
         
         public void install() {
             RailsCore.instance().addChangeListener(this);
+            RailsProjectsModel.getInstance().addListener(this);
+            RailsControllersModel.getInstance().addListener(this);
         }
         
         public void uninstall() {
             RailsCore.instance().removeChangeListener(this);
+            RailsProjectsModel.getInstance().removeListener(this);
+            RailsControllersModel.getInstance().removeListener(this);
         }
         
         public void railsModelChanged(final RailsChangeEvent event) {
-            Display.getDefault().asyncExec(new Runnable() {
-                public void run() {
-                    handleElementChangedEvent(event);
-                }
-            });
+            refreshEverything();
+        }
+        
+        public void projectAdded(RailsProject railsProject) {
+            refreshEverything();
+        }
+        
+        public void projectRemoved(RailsProject railsProject) {
+            refreshEverything();
+        }
+        
+        public void reconcile(RailsProject railsProject, IResourceDelta resourceDelta) {
+        }
+        
+        public void controllerAdded(RailsController railsController) {
+            refreshEverything();
+        }
+        
+        public void controllerRemoved(RailsController railsController) {
+            refreshEverything();
+        }
+        
+        public void reconcile(RailsController railsController) {
         }
         
     }
@@ -234,8 +263,16 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     void handleElementChangedEvent(RailsChangeEvent event) {
-        projectTree.refresh();
+        refreshEverything();
         //        updateProjectChooser();
+    }
+    
+    private void refreshEverything() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                projectTree.refresh();
+            }
+        });
     }
     
     @Override
@@ -555,7 +592,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             @Override
             public void run() {
                 RailsCore.instance().refresh();
-                projectTree.refresh();
+                refreshEverything();
             }
         };
         action1.setText("Refresh");

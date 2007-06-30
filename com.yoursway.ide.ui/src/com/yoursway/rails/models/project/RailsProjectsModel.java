@@ -12,10 +12,22 @@ import com.yoursway.rails.models.project.internal.BroadcastingChangeVisitor;
 import com.yoursway.rails.models.project.internal.RailsProjectsIterator;
 import com.yoursway.rails.models.project.internal.Requestor;
 import com.yoursway.rails.models.rails.IRailsListener;
+import com.yoursway.rails.models.rails.Rails;
 
 public class RailsProjectsModel extends AbstractModel<IProjectsListener> implements IRailsListener {
     
     private Map<IProject, RailsProject> projects = new HashMap<IProject, RailsProject>();
+    
+    private static final RailsProjectsModel INSTANCE = new RailsProjectsModel();
+    
+    public static RailsProjectsModel getInstance() {
+        return INSTANCE;
+    }
+    
+    public RailsProjectsModel() {
+        Rails.getInstance().addListener(this);
+        rebuild();
+    }
     
     public Collection<RailsProject> getAll() {
         return projects.values();

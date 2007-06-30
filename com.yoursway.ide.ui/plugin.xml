@@ -234,6 +234,10 @@
                 commandId="com.yoursway.rails.search.ChooseRailsCommand"
                 label="Choose Rails...">
           </command>
+          <dynamic
+                class="com.yoursway.rails.projects.OpenRecentDynamicItem"
+                id="com.yoursway.ide.ui.dynamic1">
+          </dynamic>
        </menu>
     </menuContribution>
  </extension>

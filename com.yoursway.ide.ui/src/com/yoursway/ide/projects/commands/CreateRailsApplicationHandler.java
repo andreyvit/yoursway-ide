@@ -16,16 +16,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.Rails;
 import com.yoursway.rails.chooser.RailsProvider;
-import com.yoursway.rails.model.IRailsProject;
-import com.yoursway.rails.model.RailsCore;
 import com.yoursway.rails.search.RailsSearching;
-import com.yoursway.rails.windowmodel.RailsWindowModel;
 import com.yoursway.utils.ProjectUtils;
 
 public class CreateRailsApplicationHandler extends AbstractHandler {
@@ -56,9 +51,7 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                     RailsSkeletonGenerator.getInstance().putSkeletonInto(project.getLocation().toFile(),
                             rails, subMonitor.newChild(20));
                     
-                    IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(project);
-                    RailsWindowModel.instance().getWindow(window).setRailsProject(
-                            uglyHackFindRailsProject(project));
+                    ProjectUtils.openProjectInNewWindow(project);
                 } catch (Exception e) {
                     if (project.exists())
                         try {
@@ -73,18 +66,6 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                         monitor.done();
                 }
                 return Status.OK_STATUS;
-            }
-            
-            private IRailsProject uglyHackFindRailsProject(IProject project) {
-                IRailsProject correspondingRailsProject = null;
-                for (IRailsProject railsProject : RailsCore.instance().getProjectsCollection()
-                        .getRailsProjects()) {
-                    if (railsProject.getProject().equals(project)) {
-                        correspondingRailsProject = railsProject;
-                        break;
-                    }
-                }
-                return correspondingRailsProject;
             }
             
             private IProjectDescription createProjectDescription(IProject project, String projectName) {

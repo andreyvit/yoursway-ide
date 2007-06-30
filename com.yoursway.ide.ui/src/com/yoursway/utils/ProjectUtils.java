@@ -17,8 +17,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 import com.yoursway.ide.rcp.YourSwayIDEApplication;
+import com.yoursway.rails.model.IRailsProject;
+import com.yoursway.rails.model.RailsCore;
+import com.yoursway.rails.windowmodel.RailsWindowModel;
 
 public class ProjectUtils {
     private static final String[] RAILS_OBLIGATORY_DIRS = new String[] { "app", "config", "public" };
@@ -337,6 +343,22 @@ public class ProjectUtils {
             throws FailedToConvertProjectException {
         // TODO 4bur
         throw new FailedToConvertProjectBecauseBurWasTooLazyException();
+    }
+    
+    private static IRailsProject uglyHackFindRailsProject(IProject project) {
+        IRailsProject correspondingRailsProject = null;
+        for (IRailsProject railsProject : RailsCore.instance().getProjectsCollection().getRailsProjects()) {
+            if (railsProject.getProject().equals(project)) {
+                correspondingRailsProject = railsProject;
+                break;
+            }
+        }
+        return correspondingRailsProject;
+    }
+    
+    public static void openProjectInNewWindow(IProject project) throws WorkbenchException {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(project);
+        RailsWindowModel.instance().getWindow(window).setRailsProject(uglyHackFindRailsProject(project));
     }
     
 }

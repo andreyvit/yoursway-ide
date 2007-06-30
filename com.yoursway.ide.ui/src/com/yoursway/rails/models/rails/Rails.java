@@ -9,6 +9,12 @@ import com.yoursway.rails.models.AbstractModel;
 
 public class Rails extends AbstractModel<IRailsListener> implements IResourceChangeListener {
     
+    private static final Rails INSTANCE = new Rails();
+    
+    public static Rails getInstance() {
+        return INSTANCE;
+    }
+    
     public Rails() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }

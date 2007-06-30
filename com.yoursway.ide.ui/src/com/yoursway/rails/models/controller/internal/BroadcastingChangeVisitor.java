@@ -4,23 +4,23 @@
 package com.yoursway.rails.models.controller.internal;
 
 import com.yoursway.rails.models.ComparingUpdater;
-import com.yoursway.rails.models.project.IProjectsListener;
-import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.models.controller.IControllersListener;
+import com.yoursway.rails.models.controller.RailsController;
 
-public final class BroadcastingChangeVisitor implements ComparingUpdater.IVisitor<RailsProject> {
-    private final IProjectsListener[] listeners;
+public final class BroadcastingChangeVisitor implements ComparingUpdater.IVisitor<RailsController> {
+    private final IControllersListener[] listeners;
     
-    public BroadcastingChangeVisitor(IProjectsListener[] listeners) {
+    public BroadcastingChangeVisitor(IControllersListener[] listeners) {
         this.listeners = listeners;
     }
     
-    public void visitAdded(RailsProject value) {
-        for (IProjectsListener listener : listeners)
-            listener.projectAdded(value);
+    public void visitAdded(RailsController value) {
+        for (IControllersListener listener : listeners)
+            listener.controllerAdded(value);
     }
     
-    public void visitRemoved(RailsProject value) {
-        for (IProjectsListener listener : listeners)
-            listener.projectRemoved(value);
+    public void visitRemoved(RailsController value) {
+        for (IControllersListener listener : listeners)
+            listener.controllerRemoved(value);
     }
 }

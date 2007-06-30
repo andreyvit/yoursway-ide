@@ -5,15 +5,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.runtime.CoreException;
 
+import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.models.AbstractModel;
-import com.yoursway.rails.models.rails.IRailsListener;
+import com.yoursway.rails.models.controller.internal.BroadcastingChangeVisitor;
+import com.yoursway.rails.models.controller.internal.RailsControllersIterator;
+import com.yoursway.rails.models.controller.internal.Requestor;
+import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.utils.RailsNamingConventions;
 
-public class RailsControllers extends AbstractModel<IControllersListener> implements IRailsListener {
+public class RailsControllers extends AbstractModel<IControllersListener> {
     
-    private final Map<IFile, RailsController> items = new HashMap<IFile, RailsController>();
+    private Map<IFile, RailsController> items = new HashMap<IFile, RailsController>();
+    private final RailsProject railsProject;
+    
+    public RailsControllers(RailsProject railsProject) {
+        this.railsProject = railsProject;
+        rebuild();
+    }
+    
+    public RailsProject getRailsProject() {
+        return railsProject;
+    }
     
     public Collection<RailsController> getAll() {
         return items.values();
@@ -24,10 +41,10 @@ public class RailsControllers extends AbstractModel<IControllersListener> implem
     }
     
     public void rebuild() {
-        //        Requestor updater = new Requestor(items);
-        //        new RailsProjectsIterator(updater).build();
-        //        items = updater.getNewItems();
-        //        updater.visitChanges(new BroadcastingChangeVisitor(getListeners()));
+        Requestor updater = new Requestor(railsProject, items);
+        new RailsControllersIterator(railsProject, updater).build();
+        items = updater.getNewItems();
+        updater.visitChanges(new BroadcastingChangeVisitor(getListeners()));
     }
     
     @Override
@@ -35,16 +52,26 @@ public class RailsControllers extends AbstractModel<IControllersListener> implem
         return new IControllersListener[size];
     }
     
-    public void reconcile(IResourceDelta workspaceRD) {
+    public void reconcile(IResourceDelta projectRD) {
         rebuild();
-        IResourceDelta[] children = workspaceRD.getAffectedChildren(IResourceDelta.CHANGED);
-        for (IResourceDelta projectResourceDelta : children) {
-            IProject project = (IProject) projectResourceDelta.getResource();
-            RailsController railsProject = items.get(project);
-            if (railsProject == null)
-                continue; // not a Rails project
-                //            for (IControllersListener listener : getListeners())
-                //                listener.reconcile(railsProject, projectResourceDelta);
+        IResourceDelta controllersRD = projectRD.findMember(RailsNamingConventions.APP_CONTROLLERS_PATH);
+        try {
+            controllersRD.accept(new IResourceDeltaVisitor() {
+                
+                public boolean visit(IResourceDelta delta) throws CoreException {
+                    if (delta.getResource().getType() == IResource.FILE) {
+                        IFile file = (IFile) delta.getResource();
+                        RailsController railsController = items.get(file);
+                        if (railsController != null)
+                            for (IControllersListener listener : getListeners())
+                                listener.reconcile(railsController);
+                    }
+                    return true;
+                }
+                
+            });
+        } catch (CoreException e) {
+            Activator.unexpectedError(e);
         }
     }
 }
