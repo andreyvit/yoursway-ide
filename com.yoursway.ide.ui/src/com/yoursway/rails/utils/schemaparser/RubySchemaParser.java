@@ -1,6 +1,8 @@
 package com.yoursway.rails.utils.schemaparser;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 
 import com.yoursway.utils.HumaneASTVisitor;
 import com.yoursway.utils.RubyASTUtils;
@@ -21,14 +23,13 @@ public class RubySchemaParser extends HumaneASTVisitor {
     protected boolean enterCall(CallExpression node) {
         final String methodName = node.getName();
         if ("define".equals(methodName)) {
-            //FIXME: check what happened in DLTK
-            //            Statement arg = RubyASTUtils.getArgumentValue(node, 0);
-            //            if (arg instanceof RubyHashExpression) {
-            //                Statement versionValue = RubyASTUtils.findHashItemValue((RubyHashExpression) arg, "version");
-            //                Long version = RubyASTUtils.resolveConstantFixnumValue(versionValue);
-            //                if (version != null)
-            //                    schema.schemaVersion = version;
-            //            }
+            ASTNode arg = RubyASTUtils.getArgumentValue(node, 0);
+            if (arg instanceof RubyHashExpression) {
+                ASTNode versionValue = RubyASTUtils.findHashItemValue((RubyHashExpression) arg, "version");
+                Long version = RubyASTUtils.resolveConstantFixnumValue(versionValue);
+                if (version != null)
+                    schema.schemaVersion = version;
+            }
         } else if (currentTable == null && "create_table".equals(methodName)) {
             String name = RubyASTUtils.resolveConstantStringArgument(node, 0);
             if (name != null) {
