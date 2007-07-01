@@ -244,14 +244,15 @@
           </command>
        </menu>
        <menu
-             id="com.yoursway.ide.new"
-             label="New">
+             id="com.yoursway.ide.add"
+             label="Add">
           <command
-                commandId="com.yoursway.rails.CreateController"
-                label="Add Controller">
+                commandId="com.yoursway.rails.AddController"
+                label="Controller">
           </command>
           <command
-                commandId="com.yoursway.ide.AddModel">
+                commandId="com.yoursway.ide.AddModel"
+                label="Model">
           </command>
        </menu>
     </menuContribution>
@@ -274,12 +275,12 @@
           name="Preferences">
     </command>
     <command
-          defaultHandler="com.yoursway.ide.rails.controllers.CreateControllerHandler"
-          id="com.yoursway.rails.CreateController"
+          defaultHandler="com.yoursway.ide.rails.controllers.AddRailsControllerHandler"
+          id="com.yoursway.rails.AddController"
           name="Add Controller">
     </command>
     <command
-          defaultHandler="com.yoursway.ide.rails.models.CreateModelHandler"
+          defaultHandler="com.yoursway.ide.rails.models.AddRailsModelHandler"
           id="com.yoursway.ide.AddModel"
           name="Add Model">
     </command>

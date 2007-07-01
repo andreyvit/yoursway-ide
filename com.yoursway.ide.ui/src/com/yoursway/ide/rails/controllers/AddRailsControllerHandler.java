@@ -1,4 +1,4 @@
-package com.yoursway.ide.rails.models;
+package com.yoursway.ide.rails.controllers;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
@@ -12,13 +12,13 @@ import com.yoursway.utils.EditorUtils;
 import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.ResourceUtils;
 
-public class CreateModelHandler extends AbstractLinkedCreationHandler {
+public class AddRailsControllerHandler extends AbstractLinkedCreationHandler {
     
-    private static final String FAILURE_MESSAGE = "Model creation failed";
+    private static final String FAILURE_MESSAGE = "Controller creation failed";
     
-    private static final String JOB_NAME = "Creating model";
+    private static final String JOB_NAME = "Creating controller";
     
-    private static final String BODY = "\nclass YourModel < ActiveRecord::Base\nend\n";
+    private static final String BODY = "\nclass YourCoolController < ApplicationController\nend\n";
     
     @Override
     protected LinkedCreationDescriptor createLinkedCreationDescriptor(RailsProject activeRailsProject)
@@ -26,16 +26,17 @@ public class CreateModelHandler extends AbstractLinkedCreationHandler {
         final org.eclipse.core.resources.IFolder controllersFolder;
         try {
             controllersFolder = ResourceUtils.lookupOrCreateSubfolder(activeRailsProject.getProject(),
-                    RailsNamingConventions.APP_MODELS_PATH);
+                    RailsNamingConventions.APP_CONTROLLERS_PATH);
         } catch (CoreException e) {
-            throw new ExecutionException("Cannot create app/models", e);
+            throw new ExecutionException("Cannot create app/controllers", e);
         }
-        final String fileName = EditorUtils.chooseUniqueFileName(controllersFolder, "(new_model", ").rb");
+        final String fileName = EditorUtils
+                .chooseUniqueFileName(controllersFolder, "(new_controller", ").rb");
         return new LinkedCreationDescriptor(BODY, JOB_NAME, FAILURE_MESSAGE, controllersFolder, fileName) {
             
             @Override
             public AbstractSingleAreaLinkedMode createLinkedMode(HumaneRubyEditor editor) {
-                return new ModelCreationLinkedMode(editor);
+                return new ControllerCreationLinkedMode(editor);
             }
             
         };

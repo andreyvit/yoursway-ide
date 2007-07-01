@@ -1,7 +1,7 @@
 package com.yoursway.ide.ui.railsview.presentation;
 
+import com.yoursway.ide.ui.railsview.presenters.ControllerPresenter;
 import com.yoursway.ide.ui.railsview.presenters.ProjectPresenter;
-import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.projects.RailsProject;
 
