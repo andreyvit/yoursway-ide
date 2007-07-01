@@ -41,7 +41,7 @@ import com.yoursway.ide.windowing.RailsWindow;
 import com.yoursway.ide.windowing.RailsWindowModel;
 import com.yoursway.ide.windowing.RailsWindowModelListenerAdapter;
 import com.yoursway.ide.windowing.RailsWindowModelProjectChange;
-import com.yoursway.rails.core.controllers.IControllersListener;
+import com.yoursway.rails.core.controllers.IRailsControllersListener;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.controllers.RailsControllersCollection;
 import com.yoursway.rails.core.models.IModelsListener;
@@ -157,7 +157,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
     }
     
-    class ElementChangedListener implements IProjectsListener, IControllersListener, IModelsListener {
+    class ElementChangedListener implements IProjectsListener, IRailsControllersListener, IModelsListener {
         
         public void install() {
             RailsProjectsCollection.getInstance().addListener(this);

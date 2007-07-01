@@ -11,14 +11,14 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.core.controllers.internal.BroadcastingChangeVisitor;
+import com.yoursway.rails.core.controllers.internal.BroadcastingRailsControllersChangeVisitor;
 import com.yoursway.rails.core.controllers.internal.RailsControllersIterator;
 import com.yoursway.rails.core.controllers.internal.Requestor;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class PerProjectRailsControllersCollection extends AbstractModel<IControllersListener> {
+public class PerProjectRailsControllersCollection extends AbstractModel<IRailsControllersListener> {
     
     private Map<IFile, RailsController> items = new HashMap<IFile, RailsController>();
     private final RailsProject railsProject;
@@ -44,12 +44,12 @@ public class PerProjectRailsControllersCollection extends AbstractModel<IControl
         Requestor updater = new Requestor(railsProject, items);
         new RailsControllersIterator(railsProject, updater).build();
         items = updater.getNewItems();
-        updater.visitChanges(new BroadcastingChangeVisitor(getListeners()));
+        updater.visitChanges(new BroadcastingRailsControllersChangeVisitor(getListeners()));
     }
     
     @Override
-    protected IControllersListener[] makeListenersArray(int size) {
-        return new IControllersListener[size];
+    protected IRailsControllersListener[] makeListenersArray(int size) {
+        return new IRailsControllersListener[size];
     }
     
     public void reconcile(IResourceDelta projectRD) {
@@ -65,7 +65,7 @@ public class PerProjectRailsControllersCollection extends AbstractModel<IControl
                         IFile file = (IFile) delta.getResource();
                         RailsController railsController = items.get(file);
                         if (railsController != null)
-                            for (IControllersListener listener : getListeners())
+                            for (IRailsControllersListener listener : getListeners())
                                 listener.reconcile(railsController);
                     }
                     return true;

@@ -3,24 +3,24 @@
  */
 package com.yoursway.rails.core.controllers.internal;
 
-import com.yoursway.rails.core.controllers.IControllersListener;
+import com.yoursway.rails.core.controllers.IRailsControllersListener;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.internal.support.ComparingUpdater;
 
-public final class BroadcastingChangeVisitor implements ComparingUpdater.IVisitor<RailsController> {
-    private final IControllersListener[] listeners;
+public final class BroadcastingRailsControllersChangeVisitor implements ComparingUpdater.IVisitor<RailsController> {
+    private final IRailsControllersListener[] listeners;
     
-    public BroadcastingChangeVisitor(IControllersListener[] listeners) {
+    public BroadcastingRailsControllersChangeVisitor(IRailsControllersListener[] listeners) {
         this.listeners = listeners;
     }
     
     public void visitAdded(RailsController value) {
-        for (IControllersListener listener : listeners)
+        for (IRailsControllersListener listener : listeners)
             listener.controllerAdded(value);
     }
     
     public void visitRemoved(RailsController value) {
-        for (IControllersListener listener : listeners)
+        for (IRailsControllersListener listener : listeners)
             listener.controllerRemoved(value);
     }
 }

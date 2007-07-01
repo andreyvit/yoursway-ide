@@ -1,6 +1,6 @@
 package com.yoursway.rails.core.controllers;
 
-public interface IControllersListener {
+public interface IRailsControllersListener {
     
     void controllerAdded(RailsController railsController);
     

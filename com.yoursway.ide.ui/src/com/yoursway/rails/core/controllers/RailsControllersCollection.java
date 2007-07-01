@@ -11,8 +11,8 @@ import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
 
-public class RailsControllersCollection extends AbstractModel<IControllersListener> implements IProjectsListener,
-        IControllersListener {
+public class RailsControllersCollection extends AbstractModel<IRailsControllersListener> implements IProjectsListener,
+        IRailsControllersListener {
     
     private final Map<RailsProject, PerProjectRailsControllersCollection> localModels = new HashMap<RailsProject, PerProjectRailsControllersCollection>();
     
@@ -34,8 +34,8 @@ public class RailsControllersCollection extends AbstractModel<IControllersListen
     }
     
     @Override
-    protected IControllersListener[] makeListenersArray(int size) {
-        return new IControllersListener[size];
+    protected IRailsControllersListener[] makeListenersArray(int size) {
+        return new IRailsControllersListener[size];
     }
     
     public synchronized void projectAdded(RailsProject railsProject) {
@@ -63,17 +63,17 @@ public class RailsControllersCollection extends AbstractModel<IControllersListen
     }
     
     public void controllerAdded(RailsController railsController) {
-        for (IControllersListener listener : getListeners())
+        for (IRailsControllersListener listener : getListeners())
             listener.controllerAdded(railsController);
     }
     
     public void controllerRemoved(RailsController railsController) {
-        for (IControllersListener listener : getListeners())
+        for (IRailsControllersListener listener : getListeners())
             listener.controllerRemoved(railsController);
     }
     
     public void reconcile(RailsController railsController) {
-        for (IControllersListener listener : getListeners())
+        for (IRailsControllersListener listener : getListeners())
             listener.reconcile(railsController);
     }
     
