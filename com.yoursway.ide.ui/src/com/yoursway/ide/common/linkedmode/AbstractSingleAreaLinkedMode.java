@@ -1,9 +1,7 @@
-package com.yoursway.ide.ui.rubyeditor;
+package com.yoursway.ide.common.linkedmode;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -33,13 +31,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.ruby.model.RubyFile;
-import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.StringUtils;
+import com.yoursway.ide.ui.rubyeditor.HumaneRubyEditor;
 
-public class RenameLinkedMode {
-    
-    private class FocusEditingSupport implements IEditingSupport {
+public abstract class AbstractSingleAreaLinkedMode {
+    class FocusEditingSupport implements IEditingSupport {
         public boolean ownsFocusShell() {
             if (fInfoPopup == null)
                 return false;
@@ -48,7 +43,7 @@ public class RenameLinkedMode {
             //                return true;
             //            }
             
-            Shell editorShell = fEditor.getSite().getShell();
+            Shell editorShell = getEditor().getSite().getShell();
             Shell activeShell = editorShell.getDisplay().getActiveShell();
             if (editorShell == activeShell)
                 return true;
@@ -60,26 +55,13 @@ public class RenameLinkedMode {
         }
     }
     
-    private class EditorSynchronizer implements ILinkedModeListener {
+    class EditorSynchronizer implements ILinkedModeListener {
         public void left(LinkedModeModel model, int flags) {
             linkedModeLeft();
-            if ((flags & ILinkedModeListener.UPDATE_CARET) != 0) {
-                doRename(fShowPreview);
-            } else {
-                /////////
-                Display.getDefault().asyncExec(new Runnable() {
-                    
-                    public void run() {
-                        try {
-                            fEditor.getSourceModule().delete(true, null);
-                            fEditor.close(false);
-                        } catch (ModelException e) {
-                            Activator.unexpectedError(e);
-                        }
-                    }
-                    
-                });
-            }
+            if ((flags & ILinkedModeListener.UPDATE_CARET) != 0)
+                executeOperation();
+            else
+                rejectOperation();
         }
         
         public void resume(LinkedModeModel model, int flags) {
@@ -89,41 +71,48 @@ public class RenameLinkedMode {
         }
     }
     
-    private class ExitPolicy extends DeleteBlockingExitPolicy {
+    class ExitPolicy extends DeleteBlockingExitPolicy {
         public ExitPolicy(IDocument document) {
             super(document);
         }
         
         @Override
         public ExitFlags doExit(LinkedModeModel model, VerifyEvent event, int offset, int length) {
-            fShowPreview |= (event.stateMask & SWT.CTRL) != 0;
+            analyzeExitConditions(event);
             return super.doExit(model, event, offset, length);
         }
     }
     
-    private static RenameLinkedMode fgActiveLinkedMode;
+    protected void analyzeExitConditions(VerifyEvent event) {
+        //        controlPressed |= (event.stateMask & SWT.CTRL) != 0;
+    }
     
-    private final HumaneRubyEditor fEditor;
-    
-    private RenamePopup fInfoPopup;
-    
-    private boolean fOriginalSaved;
-    private Point fOriginalSelection;
-    private String fOriginalName;
-    
-    private LinkedPosition fNamePosition;
-    private LinkedModeModel fLinkedModeModel;
-    private LinkedPositionGroup fLinkedPositionGroup;
-    private final FocusEditingSupport fFocusEditingSupport;
-    private boolean fShowPreview;
-    
-    public RenameLinkedMode(HumaneRubyEditor editor) {
+    public AbstractSingleAreaLinkedMode(HumaneRubyEditor editor) {
         Assert.isNotNull(editor);
         fEditor = editor;
         fFocusEditingSupport = new FocusEditingSupport();
     }
     
-    public static RenameLinkedMode getActiveLinkedMode() {
+    protected abstract void acceptOperation(final String originalName, String newName) throws ModelException,
+            CoreException;
+    
+    protected abstract IRegion calculateRegionToSelect(final LinkedPosition namePosition,
+            final String nameText);
+    
+    protected abstract IRegion calculateLinkedRegion();
+    
+    private static AbstractSingleAreaLinkedMode fgActiveLinkedMode;
+    private final HumaneRubyEditor fEditor;
+    private CreationPopup fInfoPopup;
+    private boolean editorWasDirtyWhenEnteringMode;
+    private Point fOriginalSelection;
+    private String fOriginalName;
+    private LinkedPosition fNamePosition;
+    private LinkedModeModel fLinkedModeModel;
+    private LinkedPositionGroup fLinkedPositionGroup;
+    private final FocusEditingSupport fFocusEditingSupport;
+    
+    public static AbstractSingleAreaLinkedMode getActiveLinkedMode() {
         if (fgActiveLinkedMode != null) {
             ISourceViewer viewer = fgActiveLinkedMode.fEditor.getViewer();
             if (viewer != null) {
@@ -139,47 +128,42 @@ public class RenameLinkedMode {
     }
     
     public void start() {
-        fOriginalSaved = !fEditor.isDirty();
+        editorWasDirtyWhenEnteringMode = fEditor.isDirty();
         
         ISourceViewer viewer = fEditor.getViewer();
         IDocument document = viewer.getDocument();
         fOriginalSelection = viewer.getSelectedRange();
         
         try {
-            ModuleDeclaration module = RubyFile.parseModule(fEditor.getSourceModule());
-            TypeDeclaration[] types = module.getTypes();
-            if (types.length == 0)
+            IRegion nameRegion = calculateLinkedRegion();
+            if (nameRegion == null) {
+                rejectOperation();
                 return;
-            TypeDeclaration selectedNode = types[0];
-            int nameStart = selectedNode.getNameStart();
-            int nameEnd = selectedNode.getNameEnd();
-            
+            }
             fLinkedPositionGroup = new LinkedPositionGroup();
-            final int offset = nameStart;
-            final int length = nameEnd - offset;
-            fNamePosition = new LinkedPosition(viewer.getDocument(), offset, length,
-                    LinkedPositionGroup.NO_STOP);
+            fNamePosition = new LinkedPosition(viewer.getDocument(), nameRegion.getOffset(), nameRegion
+                    .getLength(), LinkedPositionGroup.NO_STOP);
             fLinkedPositionGroup.addPosition(fNamePosition);
             
-            fOriginalName = selectedNode.getName();
-            
-            int selectionLength = length;
-            if (fOriginalName.endsWith("Controller"))
-                selectionLength -= "Controller".length();
+            fOriginalName = fNamePosition.getContent();
+            IRegion selectionRegion = calculateRegionToSelect(new LinkedPosition(viewer.getDocument(),
+                    nameRegion.getOffset(), nameRegion.getLength(), LinkedPositionGroup.NO_STOP),
+                    fOriginalName);
             
             fLinkedModeModel = new LinkedModeModel();
             fLinkedModeModel.addGroup(fLinkedPositionGroup);
             fLinkedModeModel.forceInstall();
-            // TODO: enable when "Mark occurrences" in Ruby Editor is implemented
+            // TODO: uncomment this when "Mark occurrences" in Ruby Editor is implemented
             //            fLinkedModeModel.addLinkingListener(new EditorHighlightingSynchronizer(fEditor));
             fLinkedModeModel.addLinkingListener(new EditorSynchronizer());
             
             LinkedModeUI ui = new EditorLinkedModeUI(fLinkedModeModel, viewer);
-            ui.setExitPosition(viewer, offset, 0, Integer.MAX_VALUE);
+            ui.setExitPosition(viewer, new LinkedPosition(viewer.getDocument(), nameRegion.getOffset(),
+                    nameRegion.getLength(), LinkedPositionGroup.NO_STOP).getOffset(), 0, Integer.MAX_VALUE);
             ui.setExitPolicy(new ExitPolicy(document));
             ui.enter();
             
-            viewer.setSelectedRange(offset, selectionLength);
+            viewer.setSelectedRange(selectionRegion.getOffset(), selectionRegion.getLength());
             
             if (viewer instanceof IEditingSupportRegistry) {
                 IEditingSupportRegistry registry = (IEditingSupportRegistry) viewer;
@@ -195,39 +179,12 @@ public class RenameLinkedMode {
         }
     }
     
-    //	private void startAnimation() {
-    //		//TODO:
-    //		// - switch off if animations disabled 
-    //		// - show rectangle around target for 500ms after animation
-    //		Shell shell= fEditor.getSite().getShell();
-    //		StyledText textWidget= fEditor.getViewer().getTextWidget();
-    //		
-    //		// from popup:
-    //		Rectangle startRect= fPopup.getBounds();
-    //		
-    //		// from editor:
-    ////		Point startLoc= textWidget.getParent().toDisplay(textWidget.getLocation());
-    ////		Point startSize= textWidget.getSize();
-    ////		Rectangle startRect= new Rectangle(startLoc.x, startLoc.y, startSize.x, startSize.y);
-    //		
-    //		// from hell:
-    ////		Rectangle startRect= shell.getClientArea();
-    //		
-    //		Point caretLocation= textWidget.getLocationAtOffset(textWidget.getCaretOffset());
-    //		Point displayLocation= textWidget.toDisplay(caretLocation);
-    //		Rectangle targetRect= new Rectangle(displayLocation.x, displayLocation.y, 0, 0);
-    //		
-    //		RectangleAnimation anim= new RectangleAnimation(shell, startRect, targetRect);
-    //		anim.schedule();
-    //	}
-    
-    void doRename(boolean showPreview) {
+    protected void executeOperation() {
         cancel();
         
         Image image = null;
         Label label = null;
         
-        fShowPreview |= showPreview;
         try {
             ISourceViewer viewer = fEditor.getViewer();
             if (viewer instanceof SourceViewer) {
@@ -262,35 +219,22 @@ public class RenameLinkedMode {
             }
             
             String newName = fNamePosition.getContent();
-            if (fOriginalName.equals(newName))
-                return;
             
             /////////
             
-            String className = RailsNamingConventions.joinNamespaces(RailsNamingConventions
-                    .camelize(RailsNamingConventions.splitPath(newName)));
-            if (!className.endsWith("Controller"))
-                className += "Controller";
-            
-            final String fileName = StringUtils.join(RailsNamingConventions.underscore(RailsNamingConventions
-                    .splitNamespaces(className)), "/")
-                    + ".rb";
-            
-            // TODO FIXME handle names with "::"
-            
-            fEditor.getSourceModule().rename(fileName, false, null);
+            acceptOperation(fOriginalName, newName);
             
             /////////
             
-            Shell shell = fEditor.getSite().getShell();
             restoreFullSelection();
-            Display.getDefault().asyncExec(new Runnable() {
-                
-                public void run() {
-                    fEditor.doSave(null);
-                }
-                
-            });
+            if (!editorWasDirtyWhenEnteringMode)
+                Display.getDefault().asyncExec(new Runnable() {
+                    
+                    public void run() {
+                        fEditor.doSave(null);
+                    }
+                    
+                });
         } catch (CoreException ex) {
             Activator.unexpectedError(ex);
         } catch (BadLocationException e) {
@@ -324,7 +268,7 @@ public class RenameLinkedMode {
         }
     }
     
-    private void linkedModeLeft() {
+    protected void linkedModeLeft() {
         fgActiveLinkedMode = null;
         if (fInfoPopup != null) {
             fInfoPopup.close();
@@ -383,6 +327,25 @@ public class RenameLinkedMode {
         } catch (BadLocationException e) {
             return false;
         }
+    }
+    
+    protected void rejectOperation() {
+        Display.getDefault().asyncExec(new Runnable() {
+            
+            public void run() {
+                try {
+                    fEditor.getSourceModule().delete(true, null);
+                    fEditor.close(false);
+                } catch (ModelException e) {
+                    Activator.unexpectedError(e);
+                }
+            }
+            
+        });
+    }
+    
+    protected HumaneRubyEditor getEditor() {
+        return fEditor;
     }
     
 }

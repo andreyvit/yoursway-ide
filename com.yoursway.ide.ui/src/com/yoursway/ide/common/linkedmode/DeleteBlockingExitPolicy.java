@@ -1,4 +1,4 @@
-package com.yoursway.ide.ui.rubyeditor;
+package com.yoursway.ide.common.linkedmode;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.link.LinkedModeModel;

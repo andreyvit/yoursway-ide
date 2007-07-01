@@ -271,7 +271,7 @@
           name="Preferences">
     </command>
     <command
-          defaultHandler="com.yoursway.rails.controllers.commands.CreateControllerHandler"
+          defaultHandler="com.yoursway.ide.rails.controllers.CreateControllerHandler"
           id="com.yoursway.rails.CreateController"
           name="Add Controller">
     </command>

@@ -3,14 +3,19 @@ package com.yoursway.utils;
 public class StringUtils {
     
     public static String join(String[] name, String delimiter) {
+        return join(name, delimiter, 0, name.length);
+        
+    }
+    
+    public static String join(String[] name, String delimiter, int startIndex, int endIndex) {
         int totalLength = name.length * delimiter.length();
-        for (String string : name)
-            totalLength += string.length();
+        for (int i = startIndex; i < endIndex; i++)
+            totalLength += name[i].length();
         StringBuilder builder = new StringBuilder(totalLength);
-        for (String string : name) {
+        for (int i = startIndex; i < endIndex; i++) {
             if (builder.length() > 0)
                 builder.append(delimiter);
-            builder.append(string);
+            builder.append(name[i]);
         }
         return builder.toString();
     }

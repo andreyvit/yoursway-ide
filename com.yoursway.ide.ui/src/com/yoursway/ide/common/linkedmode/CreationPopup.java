@@ -1,4 +1,4 @@
-package com.yoursway.ide.ui.rubyeditor;
+package com.yoursway.ide.common.linkedmode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,14 +23,11 @@ import com.yoursway.ui.popup.table.InfoEntry;
 import com.yoursway.ui.popup.table.TableBasedPopup;
 
 /**
- * A sample popup that resembles the one JDT displays for in-place rename
- * refactoring.
- * 
  * @author Andrey Tarantsov
  */
-public class RenamePopup extends TableBasedPopup {
+public class CreationPopup extends TableBasedPopup {
     
-    public RenamePopup(IPopupHost popupOwner, Collection<? extends SnapPosition> snapPositions) {
+    public CreationPopup(IPopupHost popupOwner, Collection<? extends SnapPosition> snapPositions) {
         super(popupOwner, snapPositions, ParentShellActivation.ACTIVATE_PARENT_WHEN_POSSIBLE);
     }
     
