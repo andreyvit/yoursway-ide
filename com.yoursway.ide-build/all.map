@@ -7,6 +7,9 @@ feature@com.yoursway.ide.debug.feature=CVS,HEAD,:pserver:builder@dottedmag.net:/
 # our plugins
 
 plugin@com.yoursway.common.utilities=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@com.yoursway.common.utilities.osx=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@com.yoursway.common.utilities.win32=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+
 plugin@com.yoursway.ide.ui=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 plugin@org.jvyaml=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 
