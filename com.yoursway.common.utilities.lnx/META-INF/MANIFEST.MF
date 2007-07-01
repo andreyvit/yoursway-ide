@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Linux Fragment
+Bundle-SymbolicName: com.yoursway.common.utilities.lnx
+Bundle-Version: 1.0.0
+Bundle-Vendor: YourSway
+Fragment-Host: com.yoursway.common.utilities;bundle-version="1.0.0"
+Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86) (osgi.ws=gtk))
