@@ -13,9 +13,13 @@ import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
+import com.yoursway.ide.ui.railsview.presenters.model.ModelPresenter;
 import com.yoursway.rails.core.controllers.PerProjectRailsControllersCollection;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.controllers.RailsControllersCollection;
+import com.yoursway.rails.core.models.PerProjectRailsModelsCollection;
+import com.yoursway.rails.core.models.RailsModel;
+import com.yoursway.rails.core.models.RailsModelsCollection;
 import com.yoursway.rails.core.projects.RailsProject;
 
 public class ProjectPresenter extends AbstractPresenter {
@@ -37,9 +41,15 @@ public class ProjectPresenter extends AbstractPresenter {
     
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
-        PerProjectRailsControllersCollection perProjectRailsControllersCollection = RailsControllersCollection.getInstance().get(railsProject);
+        PerProjectRailsControllersCollection perProjectRailsControllersCollection = RailsControllersCollection
+                .getInstance().get(railsProject);
         for (RailsController railsController : perProjectRailsControllersCollection.getAll()) {
             children.add(new ControllerPresenter(getOwner(), railsController));
+        }
+        PerProjectRailsModelsCollection perProjectRailsModeslCollection = RailsModelsCollection.getInstance()
+                .get(railsProject);
+        for (RailsModel railsModel : perProjectRailsModeslCollection.getAll()) {
+            children.add(new ModelPresenter(getOwner(), railsModel));
         }
         //        addControllers(oldRailsProject.getControllersCollection().getRootFolder(), children);
         //        children.add(new NewModelPresenter(getOwner(), oldRailsProject));

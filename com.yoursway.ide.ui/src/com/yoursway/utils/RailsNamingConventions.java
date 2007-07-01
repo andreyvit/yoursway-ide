@@ -167,7 +167,11 @@ public class RailsNamingConventions {
     
     public static final String APP_CONTROLLERS = "app/controllers";
     
+    public static final String APP_MODELS = "app/models";
+    
     public static final Path APP_CONTROLLERS_PATH = new Path(APP_CONTROLLERS);
+    
+    public static final Path APP_MODELS_PATH = new Path(APP_MODELS);
     
     public static final IPath APP_PATH = new Path("app");
     

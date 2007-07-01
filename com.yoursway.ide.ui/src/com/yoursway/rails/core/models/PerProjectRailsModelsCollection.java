@@ -1,4 +1,4 @@
-package com.yoursway.rails.core.controllers;
+package com.yoursway.rails.core.models;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,18 +12,18 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.core.internal.support.AbstractModel;
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.core.controllers.internal.BroadcastingChangeVisitor;
-import com.yoursway.rails.core.controllers.internal.RailsControllersIterator;
-import com.yoursway.rails.core.controllers.internal.Requestor;
+import com.yoursway.rails.core.models.internal.BroadcastingRailsModelsChangeVisitor;
+import com.yoursway.rails.core.models.internal.RailsModelsIterator;
+import com.yoursway.rails.core.models.internal.RailsModelsRequestor;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
 
-public class PerProjectRailsControllersCollection extends AbstractModel<IControllersListener> {
+public class PerProjectRailsModelsCollection extends AbstractModel<IModelsListener> {
     
-    private Map<IFile, RailsController> items = new HashMap<IFile, RailsController>();
+    private Map<IFile, RailsModel> items = new HashMap<IFile, RailsModel>();
     private final RailsProject railsProject;
     
-    public PerProjectRailsControllersCollection(RailsProject railsProject) {
+    public PerProjectRailsModelsCollection(RailsProject railsProject) {
         this.railsProject = railsProject;
         rebuild();
     }
@@ -32,29 +32,29 @@ public class PerProjectRailsControllersCollection extends AbstractModel<IControl
         return railsProject;
     }
     
-    public Collection<RailsController> getAll() {
+    public Collection<RailsModel> getAll() {
         return items.values();
     }
     
-    public RailsController get(IFile project) {
+    public RailsModel get(IFile project) {
         return items.get(project);
     }
     
     public void rebuild() {
-        Requestor updater = new Requestor(railsProject, items);
-        new RailsControllersIterator(railsProject, updater).build();
+        RailsModelsRequestor updater = new RailsModelsRequestor(railsProject, items);
+        new RailsModelsIterator(railsProject, updater).build();
         items = updater.getNewItems();
-        updater.visitChanges(new BroadcastingChangeVisitor(getListeners()));
+        updater.visitChanges(new BroadcastingRailsModelsChangeVisitor(getListeners()));
     }
     
     @Override
-    protected IControllersListener[] makeListenersArray(int size) {
-        return new IControllersListener[size];
+    protected IModelsListener[] makeListenersArray(int size) {
+        return new IModelsListener[size];
     }
     
     public void reconcile(IResourceDelta projectRD) {
         rebuild();
-        IResourceDelta folderDelta = projectRD.findMember(RailsNamingConventions.APP_CONTROLLERS_PATH);
+        IResourceDelta folderDelta = projectRD.findMember(RailsNamingConventions.APP_MODELS_PATH);
         if (folderDelta == null)
             return;
         try {
@@ -63,10 +63,10 @@ public class PerProjectRailsControllersCollection extends AbstractModel<IControl
                 public boolean visit(IResourceDelta delta) throws CoreException {
                     if (delta.getResource().getType() == IResource.FILE) {
                         IFile file = (IFile) delta.getResource();
-                        RailsController railsController = items.get(file);
-                        if (railsController != null)
-                            for (IControllersListener listener : getListeners())
-                                listener.reconcile(railsController);
+                        RailsModel railsModel = items.get(file);
+                        if (railsModel != null)
+                            for (IModelsListener listener : getListeners())
+                                listener.modelContentChanged(railsModel);
                     }
                     return true;
                 }

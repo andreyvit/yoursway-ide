@@ -250,6 +250,9 @@
                 commandId="com.yoursway.rails.CreateController"
                 label="Add Controller">
           </command>
+          <command
+                commandId="com.yoursway.ide.AddModel">
+          </command>
        </menu>
     </menuContribution>
  </extension>
@@ -274,6 +277,11 @@
           defaultHandler="com.yoursway.ide.rails.controllers.CreateControllerHandler"
           id="com.yoursway.rails.CreateController"
           name="Add Controller">
+    </command>
+    <command
+          defaultHandler="com.yoursway.ide.rails.models.CreateModelHandler"
+          id="com.yoursway.ide.AddModel"
+          name="Add Model">
     </command>
  </extension>
  <extension

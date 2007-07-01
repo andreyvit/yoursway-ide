@@ -44,6 +44,9 @@ import com.yoursway.ide.windowing.RailsWindowModelProjectChange;
 import com.yoursway.rails.core.controllers.IControllersListener;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.controllers.RailsControllersCollection;
+import com.yoursway.rails.core.models.IModelsListener;
+import com.yoursway.rails.core.models.RailsModel;
+import com.yoursway.rails.core.models.RailsModelsCollection;
 import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
@@ -154,16 +157,18 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
     }
     
-    class ElementChangedListener implements IProjectsListener, IControllersListener {
+    class ElementChangedListener implements IProjectsListener, IControllersListener, IModelsListener {
         
         public void install() {
             RailsProjectsCollection.getInstance().addListener(this);
             RailsControllersCollection.getInstance().addListener(this);
+            RailsModelsCollection.getInstance().addListener(this);
         }
         
         public void uninstall() {
             RailsProjectsCollection.getInstance().removeListener(this);
             RailsControllersCollection.getInstance().removeListener(this);
+            RailsModelsCollection.getInstance().removeListener(this);
         }
         
         public void projectAdded(RailsProject railsProject) {
@@ -186,6 +191,17 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         }
         
         public void reconcile(RailsController railsController) {
+        }
+        
+        public void modelAdded(RailsModel railsModel) {
+            refreshEverything();
+        }
+        
+        public void modelContentChanged(RailsModel railsModel) {
+        }
+        
+        public void modelRemoved(RailsModel railsModel) {
+            refreshEverything();
         }
         
     }
@@ -490,7 +506,6 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         windowModelListener.uninstall();
         elementChangedListener.uninstall();
         serverModelListener.uninstall();
-        boldFont.dispose();
     }
     
     private void contributeToActionBars() {
