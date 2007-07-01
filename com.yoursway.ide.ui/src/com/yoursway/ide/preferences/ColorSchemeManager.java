@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -27,10 +27,10 @@ public class ColorSchemeManager {
     
     private static class Section {
         private final Class<?> constantsClass;
-        private final IPreferenceStore preferenceStore;
+        private final IPersistentPreferenceStore preferenceStore;
         private final String name;
         
-        public Section(String name, Class<?> constantsClass, IPreferenceStore preferenceStore) {
+        public Section(String name, Class<?> constantsClass, IPersistentPreferenceStore preferenceStore) {
             this.name = name;
             this.constantsClass = constantsClass;
             this.preferenceStore = preferenceStore;
@@ -42,6 +42,14 @@ public class ColorSchemeManager {
         
         public void applyPreference(String key, String value) {
             preferenceStore.setValue(key, value);
+        }
+        
+        public void save() {
+            try {
+                preferenceStore.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         
         public Map<String, String> retrievePreferences() {
@@ -93,6 +101,7 @@ public class ColorSchemeManager {
     
     private static ScopedPreferenceStore getPluginPreferenceStore(String pluginId) {
         return new ScopedPreferenceStore(new InstanceScope(), pluginId);
+        
     }
     
     public static ColorScheme getCurrentScheme() {
@@ -116,6 +125,8 @@ public class ColorSchemeManager {
             else
                 section.applyPreference(sectionAndKey[1], entry.getValue());
         }
+        for (Section section : sectionsMap.values())
+            section.save();
     }
     
     private static final Pattern COLOR_PATTERN = Pattern.compile("^\\d+,\\d+,\\d+$");
