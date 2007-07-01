@@ -13,10 +13,10 @@ import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
-import com.yoursway.rails.models.controller.RailsController;
-import com.yoursway.rails.models.controller.RailsControllers;
-import com.yoursway.rails.models.controller.all.RailsControllersModel;
-import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.core.controllers.PerProjectRailsControllersCollection;
+import com.yoursway.rails.core.controllers.RailsController;
+import com.yoursway.rails.core.controllers.RailsControllersCollection;
+import com.yoursway.rails.core.projects.RailsProject;
 
 public class ProjectPresenter extends AbstractPresenter {
     
@@ -37,8 +37,8 @@ public class ProjectPresenter extends AbstractPresenter {
     
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
-        RailsControllers railsControllers = RailsControllersModel.getInstance().get(railsProject);
-        for (RailsController railsController : railsControllers.getAll()) {
+        PerProjectRailsControllersCollection perProjectRailsControllersCollection = RailsControllersCollection.getInstance().get(railsProject);
+        for (RailsController railsController : perProjectRailsControllersCollection.getAll()) {
             children.add(new ControllerPresenter(getOwner(), railsController));
         }
         //        addControllers(oldRailsProject.getControllersCollection().getRootFolder(), children);

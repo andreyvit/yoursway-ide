@@ -13,8 +13,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import com.yoursway.ide.ui.rubyeditor.HumaneRubyEditor;
-import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.rails.windowmodel.RailsWindowModel;
+import com.yoursway.ide.windowing.RailsWindowModel;
+import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.EditorUtils;
 
 public abstract class AbstractLinkedCreationHandler extends AbstractHandler {

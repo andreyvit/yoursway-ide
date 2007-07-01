@@ -10,7 +10,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 
-import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.utils.schemaparser.RubySchemaParser;
 import com.yoursway.rails.utils.schemaparser.SchemaInfo;
 import com.yoursway.rails.utils.schemaparser.TableInfo;

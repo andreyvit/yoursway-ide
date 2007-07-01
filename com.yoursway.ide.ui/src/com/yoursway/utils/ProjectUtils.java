@@ -22,9 +22,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
 import com.yoursway.ide.rcp.YourSwayIDEApplication;
-import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.rails.models.project.RailsProjectsModel;
-import com.yoursway.rails.windowmodel.RailsWindowModel;
+import com.yoursway.ide.windowing.RailsWindowModel;
+import com.yoursway.rails.core.projects.RailsProject;
+import com.yoursway.rails.core.projects.RailsProjectsCollection;
 
 public class ProjectUtils {
     private static final String[] RAILS_OBLIGATORY_DIRS = new String[] { "app", "config", "public" };
@@ -346,7 +346,7 @@ public class ProjectUtils {
     }
     
     public static void openProjectInNewWindow(IProject project) throws WorkbenchException {
-        RailsProject railsProject = RailsProjectsModel.getInstance().get(project);
+        RailsProject railsProject = RailsProjectsCollection.getInstance().get(project);
         if (railsProject != null) {
             IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(project);
             RailsWindowModel.instance().getWindow(window).setRailsProject(railsProject);

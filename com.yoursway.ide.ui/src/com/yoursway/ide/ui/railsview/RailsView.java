@@ -37,20 +37,20 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.ide.ui.advisor.FormLayoutFactory;
-import com.yoursway.rails.models.controller.IControllersListener;
-import com.yoursway.rails.models.controller.RailsController;
-import com.yoursway.rails.models.controller.all.RailsControllersModel;
-import com.yoursway.rails.models.launch.ILaunchingModelListener;
-import com.yoursway.rails.models.launch.IProjectLaunching;
-import com.yoursway.rails.models.launch.RailsServersModel;
-import com.yoursway.rails.models.launch.IProjectLaunching.PortNumberNotAvailable;
-import com.yoursway.rails.models.project.IProjectsListener;
-import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.rails.models.project.RailsProjectsModel;
-import com.yoursway.rails.windowmodel.RailsWindow;
-import com.yoursway.rails.windowmodel.RailsWindowModel;
-import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
-import com.yoursway.rails.windowmodel.RailsWindowModelProjectChange;
+import com.yoursway.ide.windowing.RailsWindow;
+import com.yoursway.ide.windowing.RailsWindowModel;
+import com.yoursway.ide.windowing.RailsWindowModelListenerAdapter;
+import com.yoursway.ide.windowing.RailsWindowModelProjectChange;
+import com.yoursway.rails.core.controllers.IControllersListener;
+import com.yoursway.rails.core.controllers.RailsController;
+import com.yoursway.rails.core.controllers.RailsControllersCollection;
+import com.yoursway.rails.core.projects.IProjectsListener;
+import com.yoursway.rails.core.projects.RailsProject;
+import com.yoursway.rails.core.projects.RailsProjectsCollection;
+import com.yoursway.rails.launching.ILaunchingModelListener;
+import com.yoursway.rails.launching.IProjectLaunching;
+import com.yoursway.rails.launching.RailsServersModel;
+import com.yoursway.rails.launching.IProjectLaunching.PortNumberNotAvailable;
 
 public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
@@ -157,13 +157,13 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     class ElementChangedListener implements IProjectsListener, IControllersListener {
         
         public void install() {
-            RailsProjectsModel.getInstance().addListener(this);
-            RailsControllersModel.getInstance().addListener(this);
+            RailsProjectsCollection.getInstance().addListener(this);
+            RailsControllersCollection.getInstance().addListener(this);
         }
         
         public void uninstall() {
-            RailsProjectsModel.getInstance().removeListener(this);
-            RailsControllersModel.getInstance().removeListener(this);
+            RailsProjectsCollection.getInstance().removeListener(this);
+            RailsControllersCollection.getInstance().removeListener(this);
         }
         
         public void projectAdded(RailsProject railsProject) {

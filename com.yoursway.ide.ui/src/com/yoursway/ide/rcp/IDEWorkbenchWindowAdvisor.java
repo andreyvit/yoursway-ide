@@ -44,10 +44,10 @@ import org.eclipse.ui.part.EditorInputTransfer;
 import org.eclipse.ui.part.MarkerTransfer;
 import org.eclipse.ui.part.ResourceTransfer;
 
-import com.yoursway.rails.models.project.RailsProject;
-import com.yoursway.rails.windowmodel.RailsWindowModel;
-import com.yoursway.rails.windowmodel.RailsWindowModelListenerAdapter;
-import com.yoursway.rails.windowmodel.RailsWindowModelProjectChange;
+import com.yoursway.ide.windowing.RailsWindowModel;
+import com.yoursway.ide.windowing.RailsWindowModelListenerAdapter;
+import com.yoursway.ide.windowing.RailsWindowModelProjectChange;
+import com.yoursway.rails.core.projects.RailsProject;
 
 /**
  * Window-level advisor for the IDE.

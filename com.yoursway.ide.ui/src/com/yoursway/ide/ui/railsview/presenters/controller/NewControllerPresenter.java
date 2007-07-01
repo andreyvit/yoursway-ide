@@ -17,7 +17,7 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presenters.IRenameContext;
 import com.yoursway.ide.ui.railsview.presenters.RenameContextAdapter;
-import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.StringUtils;
 

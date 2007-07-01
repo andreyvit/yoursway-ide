@@ -20,7 +20,6 @@ import org.eclipse.osgi.util.NLS;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.chooser.RailsProvider;
-import com.yoursway.rails.search.RailsSearching;
 import com.yoursway.utils.ProjectUtils;
 
 public class CreateRailsApplicationHandler extends AbstractHandler {
@@ -40,7 +39,8 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                     project.create(description, subMonitor.newChild(20));
                     project.open(subMonitor.newChild(10));
                     
-                    RailsInstance railsInstance = RailsProvider.getInstance().getChosenRailsInstanceInterpreter();
+                    RailsInstance railsInstance = RailsProvider.getInstance()
+                            .getChosenRailsInstanceInterpreter();
                     if (railsInstance == null)
                         return Status.CANCEL_STATUS;
                     
@@ -76,13 +76,6 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                 File projectLocation = ProjectLocationPreference.getNewProjectLocation();
                 description.setLocationURI(new File(projectLocation, projectName).toURI());
                 return description;
-            }
-            
-            @Override
-            public boolean belongsTo(Object family) {
-                if (family == RailsSearching.NEEDS_RAILS_FAMILY)
-                    return true;
-                return super.belongsTo(family);
             }
             
         };

@@ -30,7 +30,7 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterFactory;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.ide.ui.railsview.presentation.PresentersBasedProvider;
-import com.yoursway.rails.models.project.RailsProject;
+import com.yoursway.rails.core.projects.RailsProject;
 
 public class RailsProjectTree implements IPresenterOwner {
     

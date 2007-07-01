@@ -12,7 +12,7 @@ import org.osgi.framework.BundleContext;
 
 import com.yoursway.ide.analysis.sample.ControllerNavigationProviderFactory;
 import com.yoursway.rails.RailsInfoRefreshRunner;
-import com.yoursway.rails.search.RailsSearching;
+import com.yoursway.rails.discovering.RubyAndRailsDiscovering;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -50,7 +50,7 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
         ControllerNavigationProviderFactory.initialize();
         
-        RailsSearching.initialize();
+        RubyAndRailsDiscovering.initialize();
         RailsInfoRefreshRunner.startListening();
     }
     

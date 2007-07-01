@@ -122,7 +122,7 @@
    <extension
          point="org.eclipse.debug.core.processFactories">
       <processFactory
-            class="com.yoursway.rails.models.launch.PublicMorozovProcessFactory"
+            class="com.yoursway.rails.launching.PublicMorozovProcessFactory"
             id="com.yoursway.ide.publicMorozovRuntimeProcessFactory">
       </processFactory>
    </extension>
@@ -235,7 +235,7 @@
                 label="Choose Rails...">
           </command>
           <dynamic
-                class="com.yoursway.rails.projects.OpenRecentDynamicItem"
+                class="com.yoursway.rails.projects.commands.OpenRecentDynamicItem"
                 id="com.yoursway.ide.ui.dynamic1">
           </dynamic>
           <command
