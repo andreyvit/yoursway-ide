@@ -5,7 +5,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 
-import com.yoursway.core.internal.support.AbstractModel;
+import com.yoursway.rails.core.internal.support.AbstractModel;
 
 public class RailsCore extends AbstractModel<IRailsCoreListener> implements IResourceChangeListener {
     

@@ -1,4 +1,4 @@
-package com.yoursway.core.internal.support;
+package com.yoursway.rails.core.internal.support;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -7,9 +7,9 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 
-import com.yoursway.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.IRailsCoreListener;
 import com.yoursway.rails.core.RailsCore;
+import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.internal.BroadcastingChangeVisitor;
 import com.yoursway.rails.core.projects.internal.RailsProjectsIterator;
 import com.yoursway.rails.core.projects.internal.Requestor;

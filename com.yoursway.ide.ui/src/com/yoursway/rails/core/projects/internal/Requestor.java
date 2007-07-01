@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 
-import com.yoursway.core.internal.support.ComparingUpdater;
+import com.yoursway.rails.core.internal.support.ComparingUpdater;
 import com.yoursway.rails.core.projects.RailsProject;
 
 public final class Requestor extends ComparingUpdater<IProject, RailsProject> implements

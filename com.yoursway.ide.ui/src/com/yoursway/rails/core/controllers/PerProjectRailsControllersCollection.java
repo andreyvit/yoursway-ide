@@ -10,11 +10,11 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.yoursway.core.internal.support.AbstractModel;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.core.controllers.internal.BroadcastingChangeVisitor;
 import com.yoursway.rails.core.controllers.internal.RailsControllersIterator;
 import com.yoursway.rails.core.controllers.internal.Requestor;
+import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
 

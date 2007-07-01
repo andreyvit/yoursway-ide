@@ -3,7 +3,7 @@
  */
 package com.yoursway.rails.core.projects.internal;
 
-import com.yoursway.core.internal.support.ComparingUpdater;
+import com.yoursway.rails.core.internal.support.ComparingUpdater;
 import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 
-import com.yoursway.core.internal.support.ComparingUpdater;
+import com.yoursway.rails.core.internal.support.ComparingUpdater;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.projects.RailsProject;
 

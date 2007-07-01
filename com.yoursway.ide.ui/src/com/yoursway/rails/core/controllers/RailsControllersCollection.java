@@ -6,7 +6,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Assert;
 
-import com.yoursway.core.internal.support.AbstractModel;
+import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
