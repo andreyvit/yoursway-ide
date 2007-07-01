@@ -238,6 +238,10 @@
                 class="com.yoursway.rails.projects.OpenRecentDynamicItem"
                 id="com.yoursway.ide.ui.dynamic1">
           </dynamic>
+          <command
+                commandId="com.yoursway.ide.ui.Preferences"
+                label="Preferences...">
+          </command>
        </menu>
     </menuContribution>
  </extension>
@@ -252,6 +256,11 @@
           defaultHandler="com.yoursway.rails.chooser.commands.ChooseRailsHandler"
           id="com.yoursway.rails.search.ChooseRailsCommand"
           name="Choose Rails">
+    </command>
+    <command
+          defaultHandler="com.yoursway.ide.preferences.commands.OpenPreferencesHandler"
+          id="com.yoursway.ide.ui.Preferences"
+          name="Preferences">
     </command>
  </extension>
  <extension
