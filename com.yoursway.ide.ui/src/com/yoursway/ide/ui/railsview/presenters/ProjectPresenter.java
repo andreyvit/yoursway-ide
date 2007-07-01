@@ -12,8 +12,6 @@ import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
-import com.yoursway.ide.ui.railsview.presenters.controller.ControllerPresenter;
-import com.yoursway.ide.ui.railsview.presenters.model.ModelPresenter;
 import com.yoursway.rails.core.controllers.PerProjectRailsControllersCollection;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.controllers.RailsControllersCollection;
