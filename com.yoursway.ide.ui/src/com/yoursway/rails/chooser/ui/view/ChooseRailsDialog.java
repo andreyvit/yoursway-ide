@@ -95,10 +95,11 @@ public class ChooseRailsDialog extends Dialog {
     
     private void createBottomLink(Composite container) {
         final Composite composite = new Composite(container, SWT.NONE);
-        composite.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true));
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         composite.setLayout(createOptionCompositeLayout());
         
         addRubyLink = new Link(composite, SWT.NONE);
+        addRubyLink.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         addRubyLink
                 .setText("You can <a href=\"aaa\">add your Ruby installation</a> if it wasn't found automatically.");
         addRubyLink.addSelectionListener(new SelectionAdapter() {
@@ -243,7 +244,8 @@ public class ChooseRailsDialog extends Dialog {
     
     @Override
     protected Point getInitialSize() {
-        return new Point(513, 309);
+        Point minSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        return new Point(513, minSize.y);
     }
     
     @Override

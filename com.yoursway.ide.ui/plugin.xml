@@ -243,6 +243,14 @@
                 label="Preferences...">
           </command>
        </menu>
+       <menu
+             id="com.yoursway.ide.new"
+             label="New">
+          <command
+                commandId="com.yoursway.rails.CreateController"
+                label="Add Controller">
+          </command>
+       </menu>
     </menuContribution>
  </extension>
  <extension
@@ -261,6 +269,11 @@
           defaultHandler="com.yoursway.ide.preferences.commands.OpenPreferencesHandler"
           id="com.yoursway.ide.ui.Preferences"
           name="Preferences">
+    </command>
+    <command
+          defaultHandler="com.yoursway.rails.controllers.commands.CreateControllerHandler"
+          id="com.yoursway.rails.CreateController"
+          name="Add Controller">
     </command>
  </extension>
  <extension

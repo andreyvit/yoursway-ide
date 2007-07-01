@@ -168,4 +168,47 @@ public class HumaneRubyEditor extends RubyEditor implements IAdvisingEditor {
         });
         advices = advicesCollection.toArray(new IAdvice[advicesCollection.size()]);
     }
+    
+    public void enterLinkedMode() {
+        //        ModuleDeclaration module = RubyFile.parseModule(getSourceModule());
+        //        TypeDeclaration[] types = module.getTypes();
+        //        if (types.length == 0)
+        //            return;
+        //        TypeDeclaration decl = types[0];
+        //        int nameStart = decl.getNameStart();
+        //        int nameEnd = decl.getNameEnd();
+        //        
+        //        LinkedPositionGroup group = new LinkedPositionGroup();
+        //        try {
+        //            final int offset = nameStart;
+        //            final int length = nameEnd - offset;
+        //            final ISourceViewer viewer = getSourceViewer();
+        //            group.addPosition(new LinkedPosition(viewer.getDocument(), offset, length,
+        //                    LinkedPositionGroup.NO_STOP));
+        //            
+        //            LinkedModeModel model = new LinkedModeModel();
+        //            model.addLinkingListener(new ILinkedModeListener() {
+        //                
+        //                public void left(LinkedModeModel model, int flags) {
+        //                }
+        //                
+        //                public void resume(LinkedModeModel model, int flags) {
+        //                }
+        //                
+        //                public void suspend(LinkedModeModel model) {
+        //                }
+        //                
+        //            });
+        //            model.addGroup(group);
+        //            model.forceInstall();
+        //            LinkedModeUI ui = new LinkedModeUI(model, viewer);
+        //            ui.setExitPosition(viewer, offset, 0, Integer.MAX_VALUE);
+        //            ui.enter();
+        //            viewer.setSelectedRange(offset, 0);
+        //        } catch (BadLocationException e) {
+        //            Activator.unexpectedError(e);
+        //        }
+        new RenameLinkedMode(this).start();
+    }
+    
 }
