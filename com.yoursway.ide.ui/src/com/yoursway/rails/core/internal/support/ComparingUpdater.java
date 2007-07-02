@@ -27,10 +27,14 @@ public abstract class ComparingUpdater<D, K, V> {
         V value = oldItems.get(key);
         if (value == null)
             value = create(data);
+        else
+            update(value, data);
         newItems.put(key, value);
     }
     
     protected abstract V create(D data);
+    
+    protected abstract void update(V value, D data);
     
     protected abstract K getKey(D data);
     
