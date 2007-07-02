@@ -11,7 +11,7 @@ import com.yoursway.rails.core.internal.support.ComparingUpdater;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.projects.RailsProject;
 
-public final class RailsModelsRequestor extends ComparingUpdater<IFile, RailsModel> implements
+public final class RailsModelsRequestor extends ComparingUpdater<IFile, IFile, RailsModel> implements
         IRailsModelsRequestor {
     
     private final RailsProject railsProject;
@@ -24,6 +24,11 @@ public final class RailsModelsRequestor extends ComparingUpdater<IFile, RailsMod
     @Override
     protected RailsModel create(IFile key) {
         return new RailsModel(railsProject, key);
+    }
+    
+    @Override
+    protected IFile getKey(IFile data) {
+        return data;
     }
     
 }

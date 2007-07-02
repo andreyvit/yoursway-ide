@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public abstract class ComparingUpdater<K, V> {
+public abstract class ComparingUpdater<D, K, V> {
     
     public interface IVisitor<V> {
         
@@ -22,14 +22,17 @@ public abstract class ComparingUpdater<K, V> {
         this.oldItems = oldItems;
     }
     
-    public void accept(K key) {
+    public void accept(D data) {
+        K key = getKey(data);
         V value = oldItems.get(key);
         if (value == null)
-            value = create(key);
+            value = create(data);
         newItems.put(key, value);
     }
     
-    protected abstract V create(K key);
+    protected abstract V create(D data);
+    
+    protected abstract K getKey(D data);
     
     public Map<K, V> getNewItems() {
         return newItems;
