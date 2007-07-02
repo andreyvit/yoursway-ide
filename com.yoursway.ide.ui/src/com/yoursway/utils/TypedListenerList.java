@@ -15,15 +15,16 @@ package com.yoursway.utils;
  * constructor.
  * </p>
  * <p>
+ * This class is typed version of org.eclipse.core.runtime.ListenerList
+ * </p>
+ * <p>
  * Use the <code>getListeners</code> method when notifying listeners. The
  * recommended code sequence for notifying all registered listeners of say,
  * <code>FooListener.eventHappened</code>, is:
  * 
  * <pre>
- * Object[] listeners = myListenerList.getListeners();
- * for (int i = 0; i &lt; listeners.length; ++i) {
- *     ((FooListener) listeners[i]).eventHappened(event);
- * }
+ * for (FooListener listener : myListenerList.getListeners())
+ *     listener.eventHappened(event);
  * </pre>
  * 
  * </p>
