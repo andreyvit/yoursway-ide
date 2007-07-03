@@ -13,7 +13,7 @@ public class RailsProvider {
     
     private static final RailsProvider INSTANCE = new RailsProvider();
     
-    private boolean isChoosingBestRails = false;
+    private boolean isChoosingRails = false;
     
     private RailsInstance chosenRailsInstance;
     
@@ -36,7 +36,7 @@ public class RailsProvider {
     public synchronized RailsInstance getChosenRailsInstanceInterpreter() {
         if (chosenRailsInstance == null)
             showRailsChooser();
-        while (isChoosingBestRails)
+        while (isChoosingRails)
             try {
                 this.wait();
             } catch (InterruptedException e) {
@@ -46,9 +46,9 @@ public class RailsProvider {
     }
     
     public synchronized void showRailsChooser() {
-        if (isChoosingBestRails)
+        if (isChoosingRails)
             return;
-        isChoosingBestRails = true;
+        isChoosingRails = true;
         new Thread() {
             @Override
             public void run() {
@@ -56,7 +56,7 @@ public class RailsProvider {
                     chosenRailsInstance = getRailsChooser().choose(chosenRailsInstance);
                 } finally {
                     synchronized (RailsProvider.this) {
-                        isChoosingBestRails = false;
+                        isChoosingRails = false;
                         RailsProvider.this.notifyAll();
                     }
                 }
