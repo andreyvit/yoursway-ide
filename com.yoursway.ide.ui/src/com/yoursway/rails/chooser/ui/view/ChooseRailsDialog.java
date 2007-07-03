@@ -43,6 +43,9 @@ public class ChooseRailsDialog extends Dialog {
     private IChoice choice;
     private SelectionListener selectionListener;
     
+    boolean useParametersToSetOnOpen = true;
+    private IRailsChooserParameters parametersToSetOnOpen;
+    
     public ChooseRailsDialog(Shell parentShell) {
         super(parentShell);
     }
@@ -63,6 +66,21 @@ public class ChooseRailsDialog extends Dialog {
         boldFont = JFaceResources.getFontRegistry().getBold("");
         
         return container;
+    }
+    
+    @Override
+    protected Control createContents(Composite parent) {
+        final Control result = super.createContents(parent);
+        fillParametersOnOpen();
+        return result;
+    }
+    
+    private synchronized void fillParametersOnOpen() {
+        useParametersToSetOnOpen = false;
+        if (parametersToSetOnOpen != null) {
+            setParametersInUiThread(parametersToSetOnOpen);
+            parametersToSetOnOpen = null;
+        }
     }
     
     private void createRadioGroup(Composite container) {
@@ -254,15 +272,18 @@ public class ChooseRailsDialog extends Dialog {
         newShell.setText("Choose Rails");
     }
     
-    public void setParameters(final IRailsChooserParameters parameters) {
+    public synchronized void setParameters(final IRailsChooserParameters parameters) {
         choice = null;
-        Display.getDefault().asyncExec(new Runnable() {
-            
-            public void run() {
-                setParametersInUiThread(parameters);
-            }
-            
-        });
+        if (useParametersToSetOnOpen)
+            parametersToSetOnOpen = parameters;
+        else
+            Display.getDefault().asyncExec(new Runnable() {
+                
+                public void run() {
+                    setParametersInUiThread(parameters);
+                }
+                
+            });
     }
     
     private void setParametersInUiThread(final IRailsChooserParameters parameters) {
@@ -326,7 +347,7 @@ public class ChooseRailsDialog extends Dialog {
                 latestRails.getRuby().getVersion(), latestRails.getRuby().getLocation().getParent() });
     }
     
-    private void updateChoice() {
+    private synchronized void updateChoice() {
         if (latestRailsButton.getSelection())
             choice = new LatestRailsChoice(parameters.getLatestRails());
         else if (specificRailsButton.getSelection()) {
@@ -347,17 +368,21 @@ public class ChooseRailsDialog extends Dialog {
             okButton.setText(choice.getOkButtonLabel());
             okButton.setEnabled(true);
         }
-        GridData data = new GridData(SWT.FILL, SWT.CENTER);
-        int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-        Point minSize = okButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-        data.widthHint = Math.max(widthHint, minSize.x);
-        okButton.setLayoutData(data);
+        //        GridData data = new GridData(SWT.FILL, SWT.CENTER);
+        //        int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+        //        Point minSize = okButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+        //        data.widthHint = Math.max(widthHint, minSize.x);
+        //        okButton.setLayoutData(data);
     }
     
     private boolean availability(Composite composite, Button button, boolean available) {
         if (!available && button.getSelection())
             button.setSelection(false);
-        composite.setVisible(available);
+        button.setEnabled(available);
+        composite.setEnabled(available);
+        for (Control child : composite.getChildren())
+            if (child != button)
+                child.setVisible(available);
         return available;
     }
     
