@@ -97,6 +97,10 @@ public class ChooseRailsDialog extends Dialog {
             
         };
         
+        Label label = new Label(container, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        label.setText("Which Rails installation would you like to use?");
+        
         final Group group = new Group(container, SWT.NONE);
         group.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         final GridLayout radioGroup = new GridLayout();
@@ -165,7 +169,7 @@ public class ChooseRailsDialog extends Dialog {
         final Label useLabel_1 = new Label(composite_3_1, SWT.NONE);
         useLabel_1.setText("into");
         
-        installRailsInto = new Combo(composite_3_1, SWT.NONE);
+        installRailsInto = new Combo(composite_3_1, SWT.READ_ONLY);
         final GridData gd_combo_2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
         installRailsInto.setLayoutData(gd_combo_2);
     }
@@ -195,7 +199,7 @@ public class ChooseRailsDialog extends Dialog {
         final Label useLabel = new Label(composite_3, SWT.NONE);
         useLabel.setText("Use");
         
-        specificRailsCombo = new Combo(composite_3, SWT.NONE);
+        specificRailsCombo = new Combo(composite_3, SWT.READ_ONLY);
         specificRailsCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
     }
     
