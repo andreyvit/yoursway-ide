@@ -44,6 +44,9 @@ import com.yoursway.ide.windowing.RailsWindowModelProjectChange;
 import com.yoursway.rails.core.controllers.IRailsControllersListener;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.controllers.RailsControllersCollection;
+import com.yoursway.rails.core.dbschema.DbTable;
+import com.yoursway.rails.core.dbschema.DbTablesCollection;
+import com.yoursway.rails.core.dbschema.IDbSchemaListener;
 import com.yoursway.rails.core.models.IModelsListener;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
@@ -157,18 +160,21 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         
     }
     
-    class ElementChangedListener implements IProjectsListener, IRailsControllersListener, IModelsListener {
+    class ElementChangedListener implements IProjectsListener, IRailsControllersListener, IModelsListener,
+            IDbSchemaListener {
         
         public void install() {
             RailsProjectsCollection.getInstance().addListener(this);
             RailsControllersCollection.getInstance().addListener(this);
             RailsModelsCollection.getInstance().addListener(this);
+            DbTablesCollection.getInstance().addListener(this);
         }
         
         public void uninstall() {
             RailsProjectsCollection.getInstance().removeListener(this);
             RailsControllersCollection.getInstance().removeListener(this);
             RailsModelsCollection.getInstance().removeListener(this);
+            DbTablesCollection.getInstance().removeListener(this);
         }
         
         public void projectAdded(RailsProject railsProject) {
@@ -201,6 +207,18 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         }
         
         public void modelRemoved(RailsModel railsModel) {
+            refreshEverything();
+        }
+        
+        public void tableAdded(DbTable dbTable) {
+            refreshEverything();
+        }
+        
+        public void tableChanged(DbTable dbTable) {
+            refreshEverything();
+        }
+        
+        public void tableRemoved(DbTable dbTable) {
             refreshEverything();
         }
         

@@ -13,6 +13,9 @@ import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
+import com.yoursway.rails.core.dbschema.DbTable;
+import com.yoursway.rails.core.dbschema.DbTablesCollection;
+import com.yoursway.rails.core.dbschema.PerProjectDbTablesCollection;
 import com.yoursway.rails.core.models.RailsModel;
 
 public class ModelPresenter extends AbstractPresenter {
@@ -29,14 +32,16 @@ public class ModelPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        return railsModel.getDisplayName();
+        return railsModel.getCombinedClassName();
     }
     
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
-        //        IRailsTable table = railsModel.getRailsProject().getSchema().findByName(railsModel.getTableName());
-        //        if (table != null)
-        //            children.addAll(table.getFields().getItems());
+        PerProjectDbTablesCollection tables = DbTablesCollection.getInstance().get(
+                railsModel.getRailsProject());
+        DbTable table = tables.get(railsModel.getTableName());
+        if (table != null)
+            children.addAll(table.getFields());
         return children.toArray();
     }
     

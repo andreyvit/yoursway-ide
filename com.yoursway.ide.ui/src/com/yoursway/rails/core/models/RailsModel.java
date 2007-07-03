@@ -43,8 +43,13 @@ public class RailsModel {
         return fullClassName;
     }
     
-    public String getDisplayName() {
+    public String getCombinedClassName() {
         return RailsNamingConventions.joinNamespaces(getFullClassName());
+    }
+    
+    public String getTableName() {
+        // TODO: how namespaced models are mapped into tables?
+        return RailsNamingConventions.tableize(railsProject.getInflector(), getCombinedClassName());
     }
     
 }
