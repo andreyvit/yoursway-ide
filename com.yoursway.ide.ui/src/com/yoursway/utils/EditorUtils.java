@@ -21,7 +21,7 @@ import org.eclipse.ui.ide.IDE;
 import com.yoursway.ide.ui.Activator;
 
 public class EditorUtils {
-
+    
     public static IEditorPart openEditor(IFile file) {
         try {
             return IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), file);
@@ -30,7 +30,7 @@ public class EditorUtils {
         }
         return null;
     }
-
+    
     public static IEditorPart openEditor(IModelElement element) {
         try {
             IEditorPart part = EditorUtility.openInEditor(element, true);
@@ -44,7 +44,7 @@ public class EditorUtils {
         }
         return null;
     }
-
+    
     public static IFile createFile(String body, IFolder folder, String fileNameWithPath,
             String userActionFailedMessage) {
         if (fileNameWithPath.contains("/")) {
@@ -81,7 +81,7 @@ public class EditorUtils {
         }
         return null;
     }
-
+    
     public static String chooseUniqueFileName(final org.eclipse.core.resources.IFolder folder,
             final String namePrefix, final String nameSuffix) {
         String fileName;
@@ -91,6 +91,7 @@ public class EditorUtils {
             String stringSuffix = (suffix == 1 ? "" : "_" + suffix);
             fileName = namePrefix + stringSuffix + nameSuffix;
             file = folder.getFile(fileName);
+            suffix++;
         } while (file.exists());
         return fileName;
     }

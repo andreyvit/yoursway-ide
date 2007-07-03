@@ -14,7 +14,7 @@ public class RubyDescription implements IRubyDescription {
     }
     
     public String getVersion() {
-        return rubyInstance.getVersion();
+        return rubyInstance.getVersionAsString();
     }
     
     public File getLocation() {

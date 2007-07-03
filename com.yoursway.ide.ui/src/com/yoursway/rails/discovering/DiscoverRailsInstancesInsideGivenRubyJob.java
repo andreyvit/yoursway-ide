@@ -20,6 +20,7 @@ import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.RailsInstancesManager;
 import com.yoursway.rubygems.LocalGems;
 import com.yoursway.utils.InterpreterRunnerUtil;
+import com.yoursway.utils.SystemUtilities;
 
 /**
  * Searches for all Rails instances in single Ruby installation, and triggers
@@ -44,17 +45,15 @@ public class DiscoverRailsInstancesInsideGivenRubyJob extends Job {
             SubMonitor progress = SubMonitor.convert(monitor);
             
             URL r = Activator.getDefault().getBundle().getEntry("scripts/simple_loader.rb");
-            String fileName = null;
+            File helperScript = null;
             try {
-                fileName = new File(FileLocator.toFileURL(r).getFile()).getAbsolutePath();
-                // without new File(...).getAbsolutePath() on windows it
-                // returns path /C:/Ruby/... which ruby.exe don't understand
+                helperScript = SystemUtilities.getFileSystemPathFromLocalURL(FileLocator.toFileURL(r));
             } catch (IOException e) {
                 // FIXME
                 return Status.CANCEL_STATUS;
             }
             
-            InterpreterConfig config = new InterpreterConfig(new File(fileName));
+            InterpreterConfig config = new InterpreterConfig(helperScript);
             config.addScriptArgs(new String[] { "rails" });
             
             ILaunch launch = null;

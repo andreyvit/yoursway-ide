@@ -1,10 +1,36 @@
+Index: src/org/eclipse/dltk/ruby/internal/core/codeassist/RubyCompletionEngine.java
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.core/src/org/eclipse/dltk/ruby/internal/core/codeassist/RubyCompletionEngine.java,v
+retrieving revision 1.68
+diff -u -r1.68 RubyCompletionEngine.java
+--- src/org/eclipse/dltk/ruby/internal/core/codeassist/RubyCompletionEngine.java	14 Jun 2007 12:13:03 -0000	1.68
++++ src/org/eclipse/dltk/ruby/internal/core/codeassist/RubyCompletionEngine.java	16 Jun 2007 23:11:56 -0000
+@@ -219,12 +219,12 @@
+ 
+ 	public void complete(ISourceModule module, int position, int i) {
+ 		this.currentModule = module;
+-		if (Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_BUILD).length > 0) {
+-			this.requestor.completionFailure(new DefaultProblem(null,
+-					"Please wait until building is ready...", 0, null,
+-					IStatus.WARNING, startPosition, endPosition, -1));
+-			return;
+-		}
++//		if (Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_BUILD).length > 0) {
++//			this.requestor.completionFailure(new DefaultProblem(null,
++//					"Please wait until building is ready...", 0, null,
++//					IStatus.WARNING, startPosition, endPosition, -1));
++//			return;
++//		}
+ 		if (!RubyPlugin.initialized) {
+ 			this.requestor.completionFailure(new DefaultProblem(null,
+ 					"Please wait while DLTK Ruby being initialized...", 0,
 Index: src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.core/src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java,v
-retrieving revision 1.31
-diff -u -r1.31 RubyModelUtils.java
---- src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	7 Jun 2007 13:54:23 -0000	1.31
-+++ src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	9 Jun 2007 16:40:37 -0000
+retrieving revision 1.32
+diff -u -r1.32 RubyModelUtils.java
+--- src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	15 Jun 2007 08:34:44 -0000	1.32
++++ src/org/eclipse/dltk/ruby/typeinference/RubyModelUtils.java	16 Jun 2007 23:11:56 -0000
 @@ -276,11 +276,11 @@
  					}
  				}

@@ -20,9 +20,9 @@ import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.Version;
 import com.yoursway.ruby.RubyInstance;
+import com.yoursway.ruby.RubyScriptInvokationError;
 import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.ruby.ToolExecutionResult;
-import com.yoursway.ruby.RubyInstance.RubyScriptInvokationError;
 import com.yoursway.utils.Streams;
 
 public class RailsSkeletonGenerator {
@@ -107,8 +107,8 @@ public class RailsSkeletonGenerator {
      * @throws IOException
      * @throws RubyScriptInvokationError
      */
-    private void createSkeletonAndStoreIntoCache(RailsInstance railsInstance, Entry entry, IProgressMonitor monitor)
-            throws IOException, RubyScriptInvokationError {
+    private void createSkeletonAndStoreIntoCache(RailsInstance railsInstance, Entry entry,
+            IProgressMonitor monitor) throws IOException, RubyScriptInvokationError {
         SubMonitor submonitor = SubMonitor.convert(monitor, 100);
         File tempFile = null;
         File tempDir = null;
@@ -118,7 +118,7 @@ public class RailsSkeletonGenerator {
             tempDir = new Path(tempFile.getAbsolutePath()).removeFileExtension().toFile();
             File appDir = new File(tempDir, STAGING_APP_NAME);
             appDir.mkdirs();
-            RubyInstance ruby = RubyInstance.adapt(railsInstance.getRawRuby());
+            RubyInstance ruby = railsInstance.getRuby();
             String scriptPath = RubyToolUtils.getScriptCopySuitableForRunning("new_rails_app.rb");
             final ArrayList<String> args = new ArrayList<String>();
             args.add(railsInstance.getRailsGem().getVersion());
@@ -126,7 +126,7 @@ public class RailsSkeletonGenerator {
             ToolExecutionResult result = ruby.runRubyScript(scriptPath, args, submonitor.newChild(80));
             if (result.getExitCode() != 0)
                 // TODO: better error handling
-                throw new RubyInstance.RubyScriptInvokationError("Non-zero exit code");
+                throw new RubyScriptInvokationError("Non-zero exit code");
             entry.createFromFolder(appDir);
             submonitor.worked(20);
         } finally {

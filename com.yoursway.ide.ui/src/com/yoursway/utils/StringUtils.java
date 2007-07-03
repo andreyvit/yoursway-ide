@@ -1,5 +1,7 @@
 package com.yoursway.utils;
 
+import java.util.Set;
+
 public class StringUtils {
     
     public static String join(String[] name, String delimiter) {
@@ -25,6 +27,18 @@ public class StringUtils {
             return string.substring(0, string.length() - suffix.length());
         else
             return string;
+    }
+    
+    public static String chooseUniqueString(String namePrefix, String nameSuffix, String numberPrefix,
+            Set<String> usedStrings) {
+        String name;
+        int suffix = 1;
+        do {
+            String stringSuffix = (suffix == 1 ? "" : numberPrefix + suffix);
+            name = namePrefix + stringSuffix + nameSuffix;
+            suffix++;
+        } while (usedStrings.contains(name));
+        return name;
     }
     
 }

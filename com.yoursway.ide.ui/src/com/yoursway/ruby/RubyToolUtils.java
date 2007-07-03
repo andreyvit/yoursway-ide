@@ -11,7 +11,6 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.ruby.RubyInstance.RubyScriptInvokationError;
 
 public class RubyToolUtils {
     

@@ -1,6 +1,9 @@
 package com.yoursway.utils;
 
 import java.io.File;
+import java.net.URL;
+
+import org.eclipse.core.runtime.Assert;
 
 import com.yoursway.common.rcp.name.MultiChoiceName;
 import com.yoursway.common.utilities.Activator;
@@ -48,4 +51,12 @@ public abstract class SystemUtilities {
     
     public abstract File getRCPWorkspaceStorageLocation(MultiChoiceName rcpName);
     
+    public static File getFileSystemPathFromLocalURL(URL url) {
+        Assert.isTrue("file".equals(url.getProtocol()));
+        return getInstance().doGetFileSystemPathFromLocalURL(url);
+    }
+    
+    protected File doGetFileSystemPathFromLocalURL(URL url) {
+        return new File(url.getPath());
+    }
 }

@@ -29,6 +29,7 @@ import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.ruby.RubyInstance;
+import com.yoursway.ruby.RubyInstanceCollection;
 import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.utils.InterpreterRunnerUtil;
 import com.yoursway.utils.ServerUtils;
@@ -291,7 +292,7 @@ class ProjectLaunching implements IProjectLaunching {
     }
     
     public RubyInstance getRubyInstanceToRunTools() {
-        Collection<? extends RubyInstance> installations = RubyInstance.getRubyInstances();
+        Collection<? extends RubyInstance> installations = RubyInstanceCollection.instance().getAll();
         if (installations.isEmpty())
             return null;
         else

@@ -150,6 +150,19 @@ public class Activator extends AbstractUIPlugin {
         getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, e));
     }
     
+    public static void expectedError(Throwable e) {
+        expectedError(e, null);
+    }
+    
+    public static void expectedError(Throwable e, String additionalMessage) {
+        if (LOG_EXCEPTIONS_TO_CONSOLE)
+            e.printStackTrace(System.err);
+        String message = e.getMessage();
+        if (additionalMessage != null)
+            message = additionalMessage + ": " + message;
+        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, e));
+    }
+    
     public static void unexpectedError(String message) {
         if (LOG_EXCEPTIONS_TO_CONSOLE)
             System.err.println(message);

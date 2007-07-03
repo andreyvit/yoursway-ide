@@ -3,8 +3,6 @@ package com.yoursway.rails.discovering;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -22,6 +20,7 @@ import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.RailsInstancesManager;
 import com.yoursway.ruby.RubyInstance;
+import com.yoursway.ruby.RubyInstanceCollection;
 import com.yoursway.rubygems.IGem;
 import com.yoursway.rubygems.LocalGems;
 import com.yoursway.utils.InterpreterRunnerUtil;
@@ -100,9 +99,7 @@ public class InspectRailsInstanceJob extends Job {
                 System.out.println("  " + railsGem.getName() + " " + railsGem.getVersion());
             }
             
-            Set<String> paths = new HashSet<String>();
-            
-            RubyInstance rubyInstance = RubyInstance.adapt(rubyInterpreter);
+            RubyInstance rubyInstance = RubyInstanceCollection.instance().get(rubyInterpreter);
             RailsInstance railsInstance = new RailsInstance(rubyInstance, railsVersion, railsGemsInfo);
             RailsInstancesManager.addRailsInstance(rubyInterpreter, railsVersion, railsInstance);
         } catch (Throwable t) {

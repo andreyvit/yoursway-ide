@@ -1,6 +1,8 @@
 package com.yoursway.rails.chooser.ui.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -81,8 +83,17 @@ public class GuiRailsChooser implements IRailsChooser {
     private void updateDialogInformation() {
         RailsChooserParameters parameters = new RailsChooserParameters();
         
-        parameters.setRailsVersionToInstall("1.2.3");
-        for (RubyInstance rubyInstance : RubyInstanceCollection.instance().getAll())
+        parameters.setRailsVersionToInstall("9.8.7");
+        ArrayList<RubyInstance> instances = new ArrayList<RubyInstance>(RubyInstanceCollection.instance()
+                .getAll());
+        Collections.sort(instances, new Comparator<RubyInstance>() {
+            
+            public int compare(RubyInstance o1, RubyInstance o2) {
+                return -o1.getVersion().compareTo(o2.getVersion());
+            }
+            
+        });
+        for (RubyInstance rubyInstance : instances)
             parameters.getRubyInstancesToInstallInto().add(new RubyDescription(rubyInstance));
         
         List<RailsInstance> railsInstances = new ArrayList<RailsInstance>(RailsInstancesManager

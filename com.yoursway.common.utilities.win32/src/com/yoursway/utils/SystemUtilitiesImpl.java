@@ -1,6 +1,7 @@
 package com.yoursway.utils;
 
 import java.io.File;
+import java.net.URL;
 
 import com.yoursway.common.rcp.name.MultiChoiceName;
 
@@ -18,4 +19,8 @@ public class SystemUtilitiesImpl extends SystemUtilities {
         return System.getProperty("user.home");
     }
     
+    protected File doGetFileSystemPathFromLocalURL(URL url) {
+        return new File(url.getPath()).getAbsoluteFile();
+    }
+
 }
