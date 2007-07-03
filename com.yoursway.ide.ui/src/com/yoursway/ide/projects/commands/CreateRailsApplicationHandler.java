@@ -7,6 +7,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +31,7 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
             
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-                SubMonitor subMonitor = SubMonitor.convert(monitor, 50);
+                SubMonitor subMonitor = SubMonitor.convert(monitor, 70);
                 String projectName = chooseProjectName();
                 IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
                 try {
@@ -50,6 +51,7 @@ public class CreateRailsApplicationHandler extends AbstractHandler {
                     
                     RailsSkeletonGenerator.getInstance().putSkeletonInto(project.getLocation().toFile(),
                             railsInstance, subMonitor.newChild(20));
+                    project.refreshLocal(IResource.DEPTH_INFINITE, subMonitor.newChild(20));
                     
                     ProjectUtils.openProjectInNewWindow(project);
                 } catch (Exception e) {
