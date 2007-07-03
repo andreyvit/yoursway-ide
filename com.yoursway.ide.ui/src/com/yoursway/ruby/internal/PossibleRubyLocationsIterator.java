@@ -79,6 +79,24 @@ public class PossibleRubyLocationsIterator {
         
     }
     
+    private static class InstantRailsAnalyzer extends AbstractFolderAnalyzer {
+        
+        @Override
+        public void analyzeFolder(File canonicalParent, Collection<File> files, Collection<File> subfolders,
+                IRubyRequestor requestor, IProgressMonitor monitor) {
+            SubMonitor progress = SubMonitor.convert(monitor, files.size());
+            for (File file : files) {
+                if ("instantrails.exe".equalsIgnoreCase(file.getName())) {
+                    File possibleRuby = new File(canonicalParent, "ruby\\bin\\ruby.exe");
+                    if (possibleRuby.isFile())
+                        requestor.rubyFound(file);
+                }
+                progress.worked(1);
+            }
+        }
+        
+    }
+    
     private static class RubyDiscoveryProcessor implements IRubyRequestor {
         
         private final LinkedList<SearchRoot> searchRoots;
@@ -187,14 +205,21 @@ public class PossibleRubyLocationsIterator {
     public void build(IProgressMonitor monitor) {
         Collection<SearchRoot> searchRoots = collectSearchRoots();
         try {
-            Collection<AbstractFolderAnalyzer> analyzers = new ArrayList<AbstractFolderAnalyzer>();
-            analyzers.add(new RubyFolderAnalyzer());
+            Collection<AbstractFolderAnalyzer> analyzers = collectAnalyzers();
             RubyDiscoveryProcessor processor = new RubyDiscoveryProcessor(searchRoots, analyzers, requestor);
             processor.execute(monitor);
         } finally {
             if (monitor != null)
                 monitor.done();
         }
+    }
+    
+    private Collection<AbstractFolderAnalyzer> collectAnalyzers() {
+        Collection<AbstractFolderAnalyzer> analyzers = new ArrayList<AbstractFolderAnalyzer>();
+        analyzers.add(new RubyFolderAnalyzer());
+        if (EnvTest.isWindowsOS())
+            analyzers.add(new InstantRailsAnalyzer());
+        return analyzers;
     }
     
     static int calculateTotalWork(Collection<SearchRoot> paths) {
@@ -213,6 +238,12 @@ public class PossibleRubyLocationsIterator {
             for (String root : hardCodedRoots)
                 paths.add(new SearchRoot(new File(root), 0));
             paths.add(new SearchRoot(new File(System.getProperty("user.home")), 1));
+        }
+        if (EnvTest.isWindowsOS()) {
+            String systemDrive = System.getenv("SystemDrive");
+            if (systemDrive == null)
+                systemDrive = "C:"; // Win9x?
+            paths.add(new SearchRoot(new File(systemDrive), 2));
         }
         return paths;
     }
