@@ -334,6 +334,7 @@ public class ChooseRailsDialog extends Dialog {
         this.parameters = parameters;
         fillLatestVersion();
         fillSpecificVersions();
+        fillInstallOptions();
         if (parameters.getRecommendedChoice() == RecommendedChoice.CHOOSE_MANUALLY)
             decorateRecommended(addRubyLink);
         else
@@ -342,11 +343,13 @@ public class ChooseRailsDialog extends Dialog {
     }
     
     private void fillLatestVersion() {
-        if (availability(latestRailsComposite, latestRailsButton, isLatestRailsAvailable())) {
-            final String recommendedText = "Recommended: Use latest Rails version found";
-            final String normalText = "Use latest Rails version found";
+        if (availability(latestRailsComposite, latestRailsButton, parameters.isLatestRailsAvailable())) {
+            final String recommendedText = "Recommended: Use best Rails version found";
+            final String normalText = "Use best Rails version found";
             recommendation(latestRailsButton, RecommendedChoice.LATEST_RAILS, recommendedText, normalText);
             latestRailsLabel.setText(formatRailsDescription(parameters.getLatestRails()));
+        } else {
+            latestRailsButton.setText("Use best Rails version found");
         }
     }
     
@@ -361,10 +364,6 @@ public class ChooseRailsDialog extends Dialog {
         }
     }
     
-    private boolean isLatestRailsAvailable() {
-        return parameters.getLatestRails() != null;
-    }
-    
     private void decorateRecommended(Control control) {
         control.setFont(boldFont);
     }
@@ -374,7 +373,7 @@ public class ChooseRailsDialog extends Dialog {
     }
     
     private void fillSpecificVersions() {
-        if (availability(specificRailsComposite, specificRailsButton, isSpecificRailsAvailable())) {
+        if (availability(specificRailsComposite, specificRailsButton, parameters.isSpecificRailsAvailable())) {
             List<String> items = new ArrayList<String>();
             for (IRailsDescription railsDescription : parameters.getSpecificRailsVersions())
                 items.add(formatRailsDescription(railsDescription));
@@ -383,8 +382,25 @@ public class ChooseRailsDialog extends Dialog {
         }
     }
     
-    private boolean isSpecificRailsAvailable() {
-        return !parameters.getSpecificRailsVersions().isEmpty();
+    private void fillInstallOptions() {
+        if (availability(installRailsComposite, installRailsButton, parameters.isInstallAvailable())) {
+            List<String> items = new ArrayList<String>();
+            for (IRubyDescription rubyDescription : parameters.getRubyInstancesToInstallInto())
+                items.add(formatRubyDescription(rubyDescription));
+            installRailsInto.setItems(items.toArray(new String[items.size()]));
+            installRailsInto.select(0);
+            String version = parameters.getRailsVersionToInstall();
+            final String recommendedText = NLS.bind("Recommended: Install latest Rails {0}", version);
+            final String normalText = NLS.bind("Install latest Rails {0}", version);
+            recommendation(installRailsButton, RecommendedChoice.INSTALL_RAILS, recommendedText, normalText);
+        } else {
+            installRailsButton.setText("Install latest Rails");
+        }
+    }
+    
+    private String formatRubyDescription(IRubyDescription rubyDescription) {
+        return NLS.bind("Ruby {0} in {1}", new Object[] { rubyDescription.getVersion(),
+                rubyDescription.getLocation().getParent() });
     }
     
     private String formatRailsDescription(IRailsDescription latestRails) {

@@ -18,6 +18,8 @@ import com.yoursway.rails.chooser.ui.view.IRailsDescription;
 import com.yoursway.rails.chooser.ui.view.LatestRailsChoice;
 import com.yoursway.rails.chooser.ui.view.RecommendedChoice;
 import com.yoursway.rails.chooser.ui.view.SpecificRailsChoice;
+import com.yoursway.ruby.RubyInstance;
+import com.yoursway.ruby.RubyInstanceCollection;
 
 public class GuiRailsChooser implements IRailsChooser {
     
@@ -78,7 +80,11 @@ public class GuiRailsChooser implements IRailsChooser {
     
     private void updateDialogInformation() {
         RailsChooserParameters parameters = new RailsChooserParameters();
-        RecommendedChoice recommendedChoice = RecommendedChoice.INSTALL_RAILS;
+        
+        parameters.setRailsVersionToInstall("1.2.3");
+        for (RubyInstance rubyInstance : RubyInstanceCollection.instance().getAll())
+            parameters.getRubyInstancesToInstallInto().add(new RubyDescription(rubyInstance));
+        
         List<RailsInstance> railsInstances = new ArrayList<RailsInstance>(RailsInstancesManager
                 .getRailsInstances());
         if (!railsInstances.isEmpty()) {
@@ -86,17 +92,25 @@ public class GuiRailsChooser implements IRailsChooser {
             railsRecommender.sortRailsFromBestToWorst(railsInstances);
             RailsInstance bestRailsInstance = railsInstances.get(0);
             parameters.setLatestRails(new RailsDescription(bestRailsInstance));
-            recommendedChoice = RecommendedChoice.LATEST_RAILS;
             for (RailsInstance item : railsInstances)
                 parameters.getSpecificRailsVersions().add(new RailsDescription(item));
         }
-        parameters.setRecommendedChoice(recommendedChoice);
+        parameters.setRecommendedChoice(determineChoiceToRecommend(parameters));
         parameters.setInitialChoice(previousChoice);
         synchronized (this) {
             if (dialog == null)
                 return;
             dialog.setParameters(parameters);
         }
+    }
+    
+    private RecommendedChoice determineChoiceToRecommend(RailsChooserParameters parameters) {
+        RecommendedChoice recommendedChoice = RecommendedChoice.CHOOSE_MANUALLY;
+        if (parameters.isInstallAvailable())
+            recommendedChoice = RecommendedChoice.INSTALL_RAILS;
+        if (parameters.isLatestRailsAvailable())
+            recommendedChoice = RecommendedChoice.LATEST_RAILS;
+        return recommendedChoice;
     }
     
     private RailsInstance getRailsInstanceByDescription(final IRailsDescription rails) {

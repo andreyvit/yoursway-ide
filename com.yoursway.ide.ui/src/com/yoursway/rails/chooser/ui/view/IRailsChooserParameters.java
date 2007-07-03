@@ -2,6 +2,8 @@ package com.yoursway.rails.chooser.ui.view;
 
 import java.util.List;
 
+import com.yoursway.rails.chooser.ui.controller.RubyDescription;
+
 public interface IRailsChooserParameters {
     
     IRailsDescription getLatestRails();
@@ -12,6 +14,14 @@ public interface IRailsChooserParameters {
     
     RecommendedChoice getRecommendedChoice();
     
-    public IChoice getInitialChoice();
+    IChoice getInitialChoice();
+    
+    List<RubyDescription> getRubyInstancesToInstallInto();
+    
+    boolean isLatestRailsAvailable();
+    
+    boolean isSpecificRailsAvailable();
+    
+    boolean isInstallAvailable();
     
 }

@@ -14,6 +14,8 @@ public class RailsChooserParameters implements IRailsChooserParameters {
     
     private final List<RailsDescription> specificRailsVersions = new ArrayList<RailsDescription>();
     
+    private final List<RubyDescription> rubyInstancesToInstallInto = new ArrayList<RubyDescription>();
+    
     private String railsVersionToInstall;
     
     private RecommendedChoice recommendedChoice;
@@ -54,6 +56,22 @@ public class RailsChooserParameters implements IRailsChooserParameters {
     
     public IChoice getInitialChoice() {
         return initialChoice;
+    }
+    
+    public List<RubyDescription> getRubyInstancesToInstallInto() {
+        return rubyInstancesToInstallInto;
+    }
+    
+    public boolean isSpecificRailsAvailable() {
+        return !getSpecificRailsVersions().isEmpty();
+    }
+    
+    public boolean isInstallAvailable() {
+        return getRailsVersionToInstall() != null && !getRubyInstancesToInstallInto().isEmpty();
+    }
+    
+    public boolean isLatestRailsAvailable() {
+        return getLatestRails() != null;
     }
     
 }
