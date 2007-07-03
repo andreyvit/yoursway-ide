@@ -75,6 +75,7 @@ public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListene
      */
     private static boolean isRubyInterpreter(IInterpreterInstall interpreter) {
         String natureId = interpreter.getInterpreterInstallType().getNatureId();
+        // XXX dirty hack: indexOf("Temp")
         return natureId != null && natureId.equals(RubyNature.NATURE_ID)
                 && interpreter.getId().indexOf("Temp") < 0;
     }
