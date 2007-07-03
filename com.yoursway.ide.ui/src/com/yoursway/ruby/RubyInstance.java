@@ -22,9 +22,11 @@ import com.yoursway.utils.InterpreterRunnerUtil;
 public class RubyInstance {
     
     private final IInterpreterInstall interpreterInstall;
+    private final File installLocation;
     
     private RubyInstance(IInterpreterInstall interpreterInstall) {
         this.interpreterInstall = interpreterInstall;
+        installLocation = interpreterInstall.getInstallLocation();
     }
     
     public static Collection<? extends RubyInstance> getRubyInstances() {
@@ -110,4 +112,34 @@ public class RubyInstance {
         String error = launchProcess.getStreamsProxy().getErrorStreamMonitor().getContents();
         return new ToolExecutionResult(exitCode, output, error);
     }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((installLocation == null) ? 0 : installLocation.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final RubyInstance other = (RubyInstance) obj;
+        if (installLocation == null) {
+            if (other.installLocation != null)
+                return false;
+        } else if (!installLocation.equals(other.installLocation))
+            return false;
+        return true;
+    }
+    
+    public IInterpreterInstall getRawDLTKInterpreterInstall() {
+        return interpreterInstall;
+    }
+    
 }

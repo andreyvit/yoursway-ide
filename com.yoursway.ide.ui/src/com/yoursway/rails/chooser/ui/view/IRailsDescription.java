@@ -6,4 +6,8 @@ public interface IRailsDescription {
     
     String getVersion();
     
+    public boolean equals(Object obj);
+    
+    public int hashCode();
+    
 }

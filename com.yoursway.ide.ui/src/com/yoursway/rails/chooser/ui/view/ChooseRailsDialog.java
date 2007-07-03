@@ -41,7 +41,8 @@ public class ChooseRailsDialog extends Dialog {
     private Font boldFont;
     private Font normalFont;
     private IChoice choice;
-    private SelectionListener selectionListener;
+    private SelectionListener buttonSelectionListener;
+    private SelectionListener otherSelectionListener;
     
     boolean useParametersToSetOnOpen = true;
     private IRailsChooserParameters parametersToSetOnOpen;
@@ -79,12 +80,31 @@ public class ChooseRailsDialog extends Dialog {
         useParametersToSetOnOpen = false;
         if (parametersToSetOnOpen != null) {
             setParametersInUiThread(parametersToSetOnOpen);
+            IChoice initialChoice = parametersToSetOnOpen.getInitialChoice();
+            if (initialChoice != null) {
+                setCurrentChoiceTo(initialChoice);
+            }
             parametersToSetOnOpen = null;
         }
     }
     
+    private void setCurrentChoiceTo(IChoice initialChoice) {
+        if (initialChoice instanceof LatestRailsChoice) {
+            selectButton(latestRailsButton);
+        } else if (initialChoice instanceof SpecificRailsChoice) {
+            SpecificRailsChoice choice = (SpecificRailsChoice) initialChoice;
+            IRailsDescription railsDescription = choice.getRails();
+            int index = parameters.getSpecificRailsVersions().indexOf(railsDescription);
+            if (index >= 0) {
+                selectButton(specificRailsButton);
+                specificRailsCombo.select(index);
+            }
+        }
+        updateChoice();
+    }
+    
     private void createRadioGroup(Composite container) {
-        selectionListener = new SelectionListener() {
+        buttonSelectionListener = new SelectionListener() {
             
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
@@ -93,6 +113,14 @@ public class ChooseRailsDialog extends Dialog {
             
             public void widgetSelected(SelectionEvent e) {
                 handleButtonSelected((Button) e.widget);
+            }
+            
+        };
+        otherSelectionListener = new SelectionAdapter() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                updateChoice();
             }
             
         };
@@ -128,7 +156,8 @@ public class ChooseRailsDialog extends Dialog {
             
             @Override
             public void widgetSelected(SelectionEvent e) {
-                
+                // TODO: ask for Ruby instance here and try to add it
+                updateChoice();
             }
             
         });
@@ -143,7 +172,7 @@ public class ChooseRailsDialog extends Dialog {
         final GridData gd_useEdgeButton = new GridData(SWT.FILL, SWT.CENTER, true, false);
         useEdgeButton.setLayoutData(gd_useEdgeButton);
         useEdgeButton.setText("Use edge Rails");
-        useEdgeButton.addSelectionListener(selectionListener);
+        useEdgeButton.addSelectionListener(buttonSelectionListener);
     }
     
     private void createInstallRailsOption(final Group group) {
@@ -158,7 +187,7 @@ public class ChooseRailsDialog extends Dialog {
         final GridData gd_installRailsButton = new GridData(SWT.FILL, SWT.CENTER, true, false);
         installRailsButton.setLayoutData(gd_installRailsButton);
         installRailsButton.setText("Install latest Rails 1.2.3");
-        installRailsButton.addSelectionListener(selectionListener);
+        installRailsButton.addSelectionListener(buttonSelectionListener);
         
         final Composite composite_3_1 = new Composite(installRailsComposite, SWT.NONE);
         final GridData gd_composite_3_1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -172,6 +201,7 @@ public class ChooseRailsDialog extends Dialog {
         installRailsInto = new Combo(composite_3_1, SWT.READ_ONLY);
         final GridData gd_combo_2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
         installRailsInto.setLayoutData(gd_combo_2);
+        installRailsInto.addSelectionListener(otherSelectionListener);
     }
     
     private void createSpecificRailsOption(final Group group) {
@@ -184,7 +214,7 @@ public class ChooseRailsDialog extends Dialog {
         final GridData gd_chooseRailsButton = new GridData(SWT.FILL, SWT.CENTER, true, false);
         specificRailsButton.setLayoutData(gd_chooseRailsButton);
         specificRailsButton.setText("Choose another Rails version");
-        specificRailsButton.addSelectionListener(selectionListener);
+        specificRailsButton.addSelectionListener(buttonSelectionListener);
         
         final Composite composite_3 = new Composite(specificRailsComposite, SWT.NONE);
         final GridData gd_composite_3 = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -201,6 +231,7 @@ public class ChooseRailsDialog extends Dialog {
         
         specificRailsCombo = new Combo(composite_3, SWT.READ_ONLY);
         specificRailsCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        specificRailsCombo.addSelectionListener(otherSelectionListener);
     }
     
     private void createLatestRailsOption(final Group group) {
@@ -213,7 +244,7 @@ public class ChooseRailsDialog extends Dialog {
         final GridData gd_useLatestButton = new GridData(SWT.FILL, SWT.CENTER, true, false);
         latestRailsButton.setLayoutData(gd_useLatestButton);
         latestRailsButton.setText("Recommended: Use latest Rails found");
-        latestRailsButton.addSelectionListener(selectionListener);
+        latestRailsButton.addSelectionListener(buttonSelectionListener);
         
         latestRailsLabel = new Label(latestRailsComposite, SWT.NONE);
         final GridData gd_rails123UsingLabel = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -223,11 +254,20 @@ public class ChooseRailsDialog extends Dialog {
     }
     
     protected void handleButtonSelected(Button selectedButton) {
+        deselectOtherButtons(selectedButton);
+        updateChoice();
+    }
+    
+    private void selectButton(Button button) {
+        button.setSelection(true);
+        deselectOtherButtons(button);
+    }
+    
+    private void deselectOtherButtons(Button selectedButton) {
         Button[] buttons = new Button[] { latestRailsButton, specificRailsButton, installRailsButton };
         for (Button button : buttons)
             if (button != selectedButton && button.getSelection())
                 button.setSelection(false);
-        updateChoice();
     }
     
     private GridLayout createOptionCompositeLayout() {
@@ -339,6 +379,7 @@ public class ChooseRailsDialog extends Dialog {
             for (IRailsDescription railsDescription : parameters.getSpecificRailsVersions())
                 items.add(formatRailsDescription(railsDescription));
             specificRailsCombo.setItems(items.toArray(new String[items.size()]));
+            specificRailsCombo.select(0);
         }
     }
     

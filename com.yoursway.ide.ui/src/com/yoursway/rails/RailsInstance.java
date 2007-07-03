@@ -11,12 +11,12 @@ import com.yoursway.rubygems.IGem;
 
 public class RailsInstance {
     private final Version version;
-    private final IInterpreterInstall ruby;
+    private final RubyInstance ruby;
     private final Set<String> paths;
     private final IGem[] gems;
     private IGem railsGem;
     
-    public RailsInstance(IInterpreterInstall ruby, String version, IGem[] gems) {
+    public RailsInstance(RubyInstance ruby, String version, IGem[] gems) {
         this.gems = gems;
         this.version = Version.fromDotDelimitedString(version);
         this.ruby = ruby;
@@ -53,11 +53,42 @@ public class RailsInstance {
     }
     
     public IInterpreterInstall getRawRuby() {
-        return ruby;
+        return ruby.getRawDLTKInterpreterInstall();
     }
     
     public RubyInstance getRuby() {
-        return RubyInstance.adapt(ruby);
+        return ruby;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ruby == null) ? 0 : ruby.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final RailsInstance other = (RailsInstance) obj;
+        if (ruby == null) {
+            if (other.ruby != null)
+                return false;
+        } else if (!ruby.equals(other.ruby))
+            return false;
+        if (version == null) {
+            if (other.version != null)
+                return false;
+        } else if (!version.equals(other.version))
+            return false;
+        return true;
     }
     
 }

@@ -8,4 +8,8 @@ public interface IRubyDescription {
     
     File getLocation();
     
+    public boolean equals(Object obj);
+    
+    public int hashCode();
+    
 }

@@ -49,12 +49,11 @@ public class RailsProvider {
         if (isChoosingBestRails)
             return;
         isChoosingBestRails = true;
-        chosenRailsInstance = null;
         new Thread() {
             @Override
             public void run() {
                 try {
-                    chosenRailsInstance = getRailsChooser().choose();
+                    chosenRailsInstance = getRailsChooser().choose(chosenRailsInstance);
                 } finally {
                     synchronized (RailsProvider.this) {
                         isChoosingBestRails = false;

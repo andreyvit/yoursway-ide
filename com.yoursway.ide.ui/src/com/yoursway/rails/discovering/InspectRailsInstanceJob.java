@@ -21,6 +21,7 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.RailsInstancesManager;
+import com.yoursway.ruby.RubyInstance;
 import com.yoursway.rubygems.IGem;
 import com.yoursway.rubygems.LocalGems;
 import com.yoursway.utils.InterpreterRunnerUtil;
@@ -101,7 +102,8 @@ public class InspectRailsInstanceJob extends Job {
             
             Set<String> paths = new HashSet<String>();
             
-            RailsInstance railsInstance = new RailsInstance(rubyInterpreter, railsVersion, railsGemsInfo);
+            RubyInstance rubyInstance = RubyInstance.adapt(rubyInterpreter);
+            RailsInstance railsInstance = new RailsInstance(rubyInstance, railsVersion, railsGemsInfo);
             RailsInstancesManager.addRailsInstance(rubyInterpreter, railsVersion, railsInstance);
         } catch (Throwable t) {
             System.out.println(getName());

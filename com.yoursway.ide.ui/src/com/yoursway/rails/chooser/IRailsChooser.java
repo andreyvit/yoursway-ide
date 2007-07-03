@@ -4,6 +4,6 @@ import com.yoursway.rails.RailsInstance;
 
 public interface IRailsChooser {
     
-    RailsInstance choose();
+    RailsInstance choose(RailsInstance previousChoice);
     
 }

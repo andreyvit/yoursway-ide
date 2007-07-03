@@ -25,4 +25,29 @@ public class RubyDescription implements IRubyDescription {
         return rubyInstance;
     }
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((rubyInstance == null) ? 0 : rubyInstance.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final RubyDescription other = (RubyDescription) obj;
+        if (rubyInstance == null) {
+            if (other.rubyInstance != null)
+                return false;
+        } else if (!rubyInstance.equals(other.rubyInstance))
+            return false;
+        return true;
+    }
+    
 }
