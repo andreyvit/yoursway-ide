@@ -1,5 +1,6 @@
 package com.yoursway.rails.chooser.ui.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -78,15 +79,17 @@ public class GuiRailsChooser implements IRailsChooser {
     private void updateDialogInformation() {
         RailsChooserParameters parameters = new RailsChooserParameters();
         RecommendedChoice recommendedChoice = RecommendedChoice.INSTALL_RAILS;
-        List<RailsInstance> railsInstance = RailsInstancesManager.getRailsInstance();
-        if (!railsInstance.isEmpty()) {
+        List<RailsInstance> railsInstances = new ArrayList<RailsInstance>(RailsInstancesManager
+                .getRailsInstances());
+        if (!railsInstances.isEmpty()) {
             RailsRecommender railsRecommender = new RailsRecommender();
-            RailsInstance bestRailsInstance = railsRecommender.chooseBestRailsInstanceVersion(railsInstance);
+            railsRecommender.sortRailsFromBestToWorst(railsInstances);
+            RailsInstance bestRailsInstance = railsInstances.get(0);
             parameters.setLatestRails(new RailsDescription(bestRailsInstance));
             recommendedChoice = RecommendedChoice.LATEST_RAILS;
+            for (RailsInstance item : railsInstances)
+                parameters.getSpecificRailsVersions().add(new RailsDescription(item));
         }
-        for (RailsInstance item : railsInstance)
-            parameters.getSpecificRailsVersions().add(new RailsDescription(item));
         parameters.setRecommendedChoice(recommendedChoice);
         parameters.setInitialChoice(previousChoice);
         synchronized (this) {

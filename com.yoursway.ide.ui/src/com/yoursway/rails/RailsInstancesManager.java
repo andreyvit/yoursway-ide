@@ -14,7 +14,7 @@ public class RailsInstancesManager {
     
     private static Map<String, Map<String, RailsInstance>> railsInstance = new HashMap<String, Map<String, RailsInstance>>();
     
-    public synchronized static List<RailsInstance> getRailsInstance() {
+    public synchronized static List<RailsInstance> getRailsInstances() {
         ArrayList<RailsInstance> railsInstanceList = new ArrayList<RailsInstance>();
         for (Map<String, RailsInstance> rs : railsInstance.values())
             railsInstanceList.addAll(rs.values());
