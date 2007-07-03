@@ -240,6 +240,7 @@ public class PossibleRubyLocationsIterator {
             paths.add(new SearchRoot(new File(System.getProperty("user.home")), 1));
         }
         if (EnvTest.isWindowsOS()) {
+            // TODO: maybe look on every non-removable drive?
             String systemDrive = System.getenv("SystemDrive");
             if (systemDrive == null)
                 systemDrive = "C:"; // Win9x?
