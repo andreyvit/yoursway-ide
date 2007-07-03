@@ -6,6 +6,7 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
+import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 import org.eclipse.dltk.ruby.ast.RubyHashPairExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
@@ -64,8 +65,13 @@ public class RubyASTUtils {
     @SuppressWarnings("unchecked")
     public static ASTNode getArgumentValue(CallExpression callExpression, int argIndex) {
         List<ASTNode> expressions = callExpression.getArgs().getChilds();
-        if (expressions.size() > argIndex)
-            return expressions.get(argIndex);
+        if (expressions.size() > argIndex) {
+            ASTNode arg = expressions.get(argIndex);
+            if (arg instanceof RubyCallArgument)
+                return ((RubyCallArgument) arg).getValue();
+            else
+                return arg;
+        }
         return null;
     }
     
