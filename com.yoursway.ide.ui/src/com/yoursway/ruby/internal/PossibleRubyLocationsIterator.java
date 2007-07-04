@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -65,10 +66,13 @@ public class PossibleRubyLocationsIterator {
     
     private static class RubyFolderAnalyzer extends AbstractFolderAnalyzer {
         
-        private final String executableName;
+        private final static Pattern unixRubyExecutableRegex = Pattern.compile("^ruby[-._0-9]*$");
+        private final static Pattern windowsRubyExecutableRegex = Pattern.compile("^ruby[-._0-9]*\\.exe$");
+        
+        private final Pattern executableRegex;
         
         public RubyFolderAnalyzer() {
-            executableName = (EnvTest.isWindowsOS() ? "ruby.exe" : "ruby");
+            executableRegex = (EnvTest.isWindowsOS() ? windowsRubyExecutableRegex : unixRubyExecutableRegex);
         }
         
         @Override
@@ -76,7 +80,7 @@ public class PossibleRubyLocationsIterator {
                 IRubyRequestor requestor, IProgressMonitor monitor) {
             SubMonitor progress = SubMonitor.convert(monitor, files.size());
             for (File file : files) {
-                if (executableName.equalsIgnoreCase(file.getName()))
+                if (executableRegex.matcher(file.getName()).matches())
                     requestor.rubyFound(file);
                 progress.worked(1);
             }
