@@ -94,7 +94,7 @@ public class PossibleRubyLocationsIterator {
                 if ("instantrails.exe".equalsIgnoreCase(file.getName())) {
                     File possibleRuby = new File(canonicalParent, "ruby\\bin\\ruby.exe");
                     if (possibleRuby.isFile())
-                        requestor.rubyFound(file);
+                        requestor.rubyFound(possibleRuby);
                 }
                 progress.worked(1);
             }
