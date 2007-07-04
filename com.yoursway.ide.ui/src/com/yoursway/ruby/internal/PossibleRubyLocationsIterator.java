@@ -102,6 +102,20 @@ public class PossibleRubyLocationsIterator {
         
     }
     
+    private static class PackagedRubyAnalyzer extends AbstractFolderAnalyzer {
+        
+        @Override
+        public void analyzeFolder(File canonicalParent, Collection<File> files, Collection<File> subfolders,
+                IRubyRequestor requestor, IProgressMonitor monitor) {
+            SubMonitor progress = SubMonitor.convert(monitor, 1);
+            File possibleRuby = new File(canonicalParent, "bin\\ruby.exe");
+            if (possibleRuby.isFile())
+                requestor.rubyFound(possibleRuby);
+            progress.worked(1);
+        }
+        
+    }
+    
     private static class RubyDiscoveryProcessor implements IRubyRequestor {
         
         private final LinkedList<SearchRoot> searchRoots;
@@ -222,8 +236,10 @@ public class PossibleRubyLocationsIterator {
     private Collection<AbstractFolderAnalyzer> collectAnalyzers() {
         Collection<AbstractFolderAnalyzer> analyzers = new ArrayList<AbstractFolderAnalyzer>();
         analyzers.add(new RubyFolderAnalyzer());
-        if (EnvTest.isWindowsOS())
+        if (EnvTest.isWindowsOS()) {
             analyzers.add(new InstantRailsAnalyzer());
+            analyzers.add(new PackagedRubyAnalyzer());
+        }
         return analyzers;
     }
     
