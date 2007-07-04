@@ -41,6 +41,11 @@ public class PossibleRubyLocationsIterator {
             return 10 + 20 * recursionDepth * recursionDepth;
         }
         
+        @Override
+        public String toString() {
+            return path.toString();
+        }
+        
     }
     
     private interface IRubyRequestor {
