@@ -5,6 +5,9 @@ package com.yoursway.ide.ui.railsview.presenters;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
@@ -19,6 +22,8 @@ import com.yoursway.rails.core.models.PerProjectRailsModelsCollection;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
 import com.yoursway.rails.core.projects.RailsProject;
+import com.yoursway.utils.SegmentedName;
+import com.yoursway.utils.collections.MultiMap;
 
 public class ProjectPresenter extends AbstractPresenter {
     
@@ -39,20 +44,42 @@ public class ProjectPresenter extends AbstractPresenter {
     
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
-        PerProjectRailsControllersCollection perProjectRailsControllersCollection = RailsControllersCollection
-                .instance().get(railsProject);
-        for (RailsController railsController : perProjectRailsControllersCollection.getAll()) {
-            children.add(new ControllerPresenter(getOwner(), railsController));
-        }
-        PerProjectRailsModelsCollection perProjectRailsModeslCollection = RailsModelsCollection.instance()
-                .get(railsProject);
-        for (RailsModel railsModel : perProjectRailsModeslCollection.getAll()) {
-            children.add(new ModelPresenter(getOwner(), railsModel));
-        }
+        addControllers(children);
+        addModels(children);
+        
         //        addControllers(oldRailsProject.getControllersCollection().getRootFolder(), children);
         //        children.add(new NewModelPresenter(getOwner(), oldRailsProject));
         //        children.addAll(oldRailsProject.getModelsCollection().getItems());
         return children.toArray();
+    }
+    
+    private void addModels(Collection<Object> children) {
+        PerProjectRailsModelsCollection perProjectRailsModeslCollection = RailsModelsCollection.instance()
+                .get(railsProject);
+        MultiMap<SegmentedName, RailsModel> packages = new MultiMap<SegmentedName, RailsModel>();
+        for (RailsModel railsModel : perProjectRailsModeslCollection.getAll())
+            packages.put(railsModel.getNamespace(), railsModel);
+        for (Map.Entry<SegmentedName, Collection<RailsModel>> entry : packages.entrySet()) {
+            children.add(new ModelPackagePresenter(getOwner(), entry.getKey(), entry.getValue()));
+            List<RailsModel> list = new ArrayList<RailsModel>(entry.getValue());
+            Collections.sort(list, new RailsModelsComparator());
+            children.addAll(list);
+        }
+    }
+    
+    private void addControllers(Collection<Object> children) {
+        PerProjectRailsControllersCollection perProjectRailsControllersCollection = RailsControllersCollection
+                .instance().get(railsProject);
+        MultiMap<SegmentedName, RailsController> packages = new MultiMap<SegmentedName, RailsController>();
+        for (RailsController railsController : perProjectRailsControllersCollection.getAll())
+            packages.put(railsController.getNamespace(), railsController);
+        
+        for (Map.Entry<SegmentedName, Collection<RailsController>> entry : packages.entrySet()) {
+            children.add(new ControllerPackagePresenter(getOwner(), entry.getKey(), entry.getValue()));
+            List<RailsController> list = new ArrayList<RailsController>(entry.getValue());
+            Collections.sort(list, new RailsControllersComparator());
+            children.addAll(list);
+        }
     }
     
     //    private void addControllers(IRailsControllersFolder folder, Collection<Object> children) {

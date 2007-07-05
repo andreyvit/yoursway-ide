@@ -34,6 +34,10 @@ public class RailsNamingConventions {
     
     public static final Path TEST_FUNCTIONAL_PATH = new Path(TEST_UNIT);
     
+    public static final String DB_MIGRATIONS = "db/migrate";
+    
+    public static final Path DB_MIGRATIONS_PATH = new Path(DB_MIGRATIONS);
+    
     private static final int IS_START = -1;
     
     private static final int IS_NONE = 0;
@@ -80,6 +84,10 @@ public class RailsNamingConventions {
             }
         }
         return result.toString();
+    }
+    
+    public static SegmentedName camelize(SegmentedName name) {
+        return new SegmentedName(camelize(name.getSegments()));
     }
     
     public static String[] camelize(String[] lowerCaseAndUnderscoredWords) {
@@ -151,6 +159,10 @@ public class RailsNamingConventions {
     
     public static String[] splitPath(String name) {
         return name.split("/");
+    }
+    
+    public static String joinNamespaces(SegmentedName name) {
+        return joinNamespaces(name.getSegments());
     }
     
     public static String joinNamespaces(String[] name) {

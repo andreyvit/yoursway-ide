@@ -15,6 +15,7 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.utils.RailsNamingConventions;
+import com.yoursway.utils.SegmentedName;
 
 public class ControllerPresenter extends AbstractPresenter {
     
@@ -30,8 +31,9 @@ public class ControllerPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        String[] classNameComponents = railsController.getFullClassName();
-        return "  " + RailsNamingConventions.joinNamespaces(classNameComponents);
+        SegmentedName classNameComponents = railsController.getFullClassName();
+        return RailsNamingConventions.joinNamespaces(classNameComponents);
+        //        return railsController.getFullClassName().getTrailingSegment();
     }
     
     public Object[] getChildren() {

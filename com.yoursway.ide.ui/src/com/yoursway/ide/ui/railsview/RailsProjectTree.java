@@ -5,6 +5,8 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -13,10 +15,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -72,6 +82,7 @@ public class RailsProjectTree implements IPresenterOwner {
                 handleDoubleClick(event);
             }
         });
+        viewer.setAutoExpandLevel(2);
         
         tree.addKeyListener(new KeyListener() {
             
@@ -84,6 +95,69 @@ public class RailsProjectTree implements IPresenterOwner {
             }
             
         });
+        
+        tree.addListener(SWT.MeasureItem, new Listener() {
+            public void handleEvent(Event event) {
+                TreeItem item = (TreeItem) event.item;
+                Object data = item.getData();
+                infoProvider.measureItem(item, data, event);
+            }
+        });
+        tree.addListener(SWT.EraseItem, new Listener() {
+            public void handleEvent(Event event) {
+                TreeItem item = (TreeItem) event.item;
+                Object data = item.getData();
+                infoProvider.eraseItem(item, data, event);
+            }
+        });
+        tree.addListener(SWT.PaintItem, new Listener() {
+            public void handleEvent(Event event) {
+                TreeItem item = (TreeItem) event.item;
+                Object data = item.getData();
+                infoProvider.paintItem(item, data, event);
+            }
+        });
+        LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
+        viewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { transfer },
+                new DragSourceListener() {
+                    
+                    public void dragFinished(DragSourceEvent event) {
+                    }
+                    
+                    public void dragSetData(DragSourceEvent event) {
+                    }
+                    
+                    public void dragStart(DragSourceEvent event) {
+                        LocalSelectionTransfer.getTransfer().setSelection(viewer.getSelection());
+                    }
+                    
+                });
+        viewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { transfer },
+                new DropTargetListener() {
+                    
+                    public void dragEnter(DropTargetEvent event) {
+                    }
+                    
+                    public void dragLeave(DropTargetEvent event) {
+                    }
+                    
+                    public void dragOperationChanged(DropTargetEvent event) {
+                    }
+                    
+                    public void dragOver(DropTargetEvent event) {
+                    }
+                    
+                    public void drop(DropTargetEvent event) {
+                    }
+                    
+                    public void dropAccept(DropTargetEvent event) {
+                        
+                        ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
+                        MessageDialog.openInformation(null, "Medved", "Preved! " + selection + "\n"
+                                + event.widget + "\n" + event.item.getData());
+                    }
+                    
+                });
     }
     
     protected void handleDoubleClick(DoubleClickEvent event) {

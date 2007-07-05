@@ -597,26 +597,26 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             
             @Override
             protected Control createControl(Composite parent) {
-                Composite controls = new Composite(parent, SWT.NONE);
+                //                Composite controls = new Composite(parent, SWT.NONE);
+                //                
+                //                final GridLayout gridLayout = new GridLayout(3, false);
+                //                gridLayout.marginTop = 0;
+                //                gridLayout.marginHeight = 0;
+                //                gridLayout.horizontalSpacing = 8;
+                //                controls.setLayout(gridLayout);
                 
-                final GridLayout gridLayout = new GridLayout(3, false);
-                gridLayout.marginTop = 0;
-                gridLayout.marginHeight = 0;
-                gridLayout.horizontalSpacing = 8;
-                controls.setLayout(gridLayout);
+                //                addSubmenu(controls, "New", KeyStroke.getInstance(SWT.COMMAND, 'N').format(), new String[] {
+                //                        "New Project", "Import Existing Project", "-", "New Controller" });
+                //                
+                //                addSubmenu(controls, "CVS", KeyStroke.getInstance(SWT.CTRL, 'C').format(), new String[] {
+                //                        "Check Out Project From CVS", "-", "Update Project", "Update selected_controller.rb",
+                //                        "-", "Commit All Changes", "Commit Changes in selected_controller.rb", "-",
+                //                        "More CVS Options >" });
                 
-                addSubmenu(controls, "New", KeyStroke.getInstance(SWT.COMMAND, 'N').format(), new String[] {
-                        "New Project", "Import Existing Project", "-", "New Controller" });
-                
-                addSubmenu(controls, "CVS", KeyStroke.getInstance(SWT.CTRL, 'C').format(), new String[] {
-                        "Check Out Project From CVS", "-", "Update Project", "Update selected_controller.rb",
-                        "-", "Commit All Changes", "Commit Changes in selected_controller.rb", "-",
-                        "More CVS Options >" });
-                
-                Text search = new Text(controls, SWT.SEARCH);
+                Text search = new Text(parent, SWT.SEARCH);
                 search.setText("Live search...");
                 
-                return controls;
+                return search;
             }
             
             private void addSubmenu(Composite parent, final String label, final String shortcut,

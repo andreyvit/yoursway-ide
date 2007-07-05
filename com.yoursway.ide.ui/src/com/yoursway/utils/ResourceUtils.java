@@ -3,6 +3,7 @@ package com.yoursway.utils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -36,6 +37,12 @@ public class ResourceUtils {
         }
         Assert.isTrue(currentDelta.getKind() == IResourceDelta.CHANGED);
         return true;
+    }
+    
+    public static boolean isNotFoundOrOutOfSync(CoreException e) {
+        int code = e.getStatus().getCode();
+        return code == IResourceStatus.NOT_FOUND_LOCAL || code == IResourceStatus.NO_LOCATION_LOCAL
+                || code == IResourceStatus.OUT_OF_SYNC_LOCAL;
     }
     
 }

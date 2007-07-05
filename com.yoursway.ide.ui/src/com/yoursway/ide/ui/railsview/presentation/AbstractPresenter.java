@@ -22,6 +22,7 @@ import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -162,6 +163,18 @@ public abstract class AbstractPresenter implements IElementPresenter {
             System.out.println("Context.setValue() - modelElement is " + modelElement.getClass());
         }
         return null;
+    }
+    
+    public void measureItem(TreeItem item, Object element, Event event) {
+        //        Rectangle bounds = item.getBounds();
+        //        event.width = bounds.width;
+        //        event.height = bounds.height;
+    }
+    
+    public void eraseItem(TreeItem item, Object element, Event event) {
+    }
+    
+    public void paintItem(TreeItem item, Object element, Event event) {
     }
     
 }

@@ -4,13 +4,14 @@ import org.eclipse.core.resources.IFile;
 
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.PathUtils;
+import com.yoursway.utils.SegmentedName;
 import com.yoursway.utils.RailsNamingConventions;
 
 public class RailsController {
     
     private final IFile file;
-    private final String[] pathComponents;
-    private final String[] fullClassName;
+    private final SegmentedName pathComponents;
+    private final SegmentedName fullClassName;
     private final RailsProject railsProject;
     
     public RailsController(RailsProject railsProject, IFile file) {
@@ -22,11 +23,16 @@ public class RailsController {
         this.railsProject = railsProject;
         this.file = file;
         
-        pathComponents = PathUtils.determinePathComponents(file.getProject().getFolder(
-                RailsNamingConventions.APP_CONTROLLERS), file);
-        fullClassName = RailsNamingConventions.camelize(pathComponents);
-        if (fullClassName.length == 1 && fullClassName[0].equals("Application"))
-            fullClassName[0] = "ApplicationController";
+        pathComponents = new SegmentedName(PathUtils.determinePathComponents(file.getProject().getFolder(
+                RailsNamingConventions.APP_CONTROLLERS), file));
+        fullClassName = calculateClassName(pathComponents);
+    }
+    
+    private static SegmentedName calculateClassName(final SegmentedName pathComponents) {
+        SegmentedName fullClassName = RailsNamingConventions.camelize(pathComponents);
+        if (fullClassName.equalsSingleSegment("Application"))
+            fullClassName = fullClassName.replaceTrailingSegment("ApplicationController");
+        return fullClassName;
     }
     
     public RailsProject getRailsProject() {
@@ -37,16 +43,20 @@ public class RailsController {
         return file;
     }
     
-    public String[] getPathComponents() {
+    public SegmentedName getPathComponents() {
         return pathComponents;
     }
     
-    public String[] getFullClassName() {
+    public SegmentedName getFullClassName() {
         return fullClassName;
     }
     
     public String getDisplayName() {
         return RailsNamingConventions.joinNamespaces(getFullClassName());
+    }
+    
+    public SegmentedName getNamespace() {
+        return getFullClassName().removeTrailingSegment();
     }
     
 }
