@@ -346,7 +346,7 @@ public class ProjectUtils {
     }
     
     public static void openProjectInNewWindow(IProject project) throws WorkbenchException {
-        RailsProject railsProject = RailsProjectsCollection.getInstance().get(project);
+        RailsProject railsProject = RailsProjectsCollection.instance().get(project);
         if (railsProject != null) {
             IWorkbenchWindow window = PlatformUI.getWorkbench().openWorkbenchWindow(project);
             RailsWindowModel.instance().getWindow(window).setRailsProject(railsProject);

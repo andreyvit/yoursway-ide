@@ -40,11 +40,11 @@ public class ProjectPresenter extends AbstractPresenter {
     public Object[] getChildren() {
         Collection<Object> children = new ArrayList<Object>();
         PerProjectRailsControllersCollection perProjectRailsControllersCollection = RailsControllersCollection
-                .getInstance().get(railsProject);
+                .instance().get(railsProject);
         for (RailsController railsController : perProjectRailsControllersCollection.getAll()) {
             children.add(new ControllerPresenter(getOwner(), railsController));
         }
-        PerProjectRailsModelsCollection perProjectRailsModeslCollection = RailsModelsCollection.getInstance()
+        PerProjectRailsModelsCollection perProjectRailsModeslCollection = RailsModelsCollection.instance()
                 .get(railsProject);
         for (RailsModel railsModel : perProjectRailsModeslCollection.getAll()) {
             children.add(new ModelPresenter(getOwner(), railsModel));

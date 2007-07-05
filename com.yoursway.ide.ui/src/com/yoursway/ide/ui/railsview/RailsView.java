@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -47,12 +46,18 @@ import com.yoursway.rails.core.controllers.RailsControllersCollection;
 import com.yoursway.rails.core.dbschema.DbTable;
 import com.yoursway.rails.core.dbschema.DbTablesCollection;
 import com.yoursway.rails.core.dbschema.IDbSchemaListener;
+import com.yoursway.rails.core.fixtures.IRailsFixturesListener;
+import com.yoursway.rails.core.fixtures.RailsFixture;
+import com.yoursway.rails.core.fixtures.RailsFixturesCollection;
 import com.yoursway.rails.core.models.IModelsListener;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
 import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
+import com.yoursway.rails.core.tests.IRailsTestsListener;
+import com.yoursway.rails.core.tests.RailsTest;
+import com.yoursway.rails.core.tests.RailsTestsCollection;
 import com.yoursway.rails.launching.ILaunchingModelListener;
 import com.yoursway.rails.launching.IProjectLaunching;
 import com.yoursway.rails.launching.RailsServersModel;
@@ -161,19 +166,23 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     class ElementChangedListener implements IProjectsListener, IRailsControllersListener, IModelsListener,
-            IDbSchemaListener {
+            IDbSchemaListener, IRailsFixturesListener, IRailsTestsListener {
         
         public void install() {
-            RailsProjectsCollection.getInstance().addListener(this);
-            RailsControllersCollection.getInstance().addListener(this);
-            RailsModelsCollection.getInstance().addListener(this);
+            RailsProjectsCollection.instance().addListener(this);
+            RailsControllersCollection.instance().addListener(this);
+            RailsModelsCollection.instance().addListener(this);
+            RailsFixturesCollection.instance().addListener(this);
+            RailsTestsCollection.instance().addListener(this);
             DbTablesCollection.getInstance().addListener(this);
         }
         
         public void uninstall() {
-            RailsProjectsCollection.getInstance().removeListener(this);
-            RailsControllersCollection.getInstance().removeListener(this);
-            RailsModelsCollection.getInstance().removeListener(this);
+            RailsProjectsCollection.instance().removeListener(this);
+            RailsControllersCollection.instance().removeListener(this);
+            RailsModelsCollection.instance().removeListener(this);
+            RailsFixturesCollection.instance().removeListener(this);
+            RailsTestsCollection.instance().removeListener(this);
             DbTablesCollection.getInstance().removeListener(this);
         }
         
@@ -222,6 +231,30 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             refreshEverything();
         }
         
+        public void fixtureAdded(RailsFixture railsFixture) {
+            refreshEverything();
+        }
+        
+        public void fixtureRemoved(RailsFixture railsFixture) {
+            refreshEverything();
+        }
+        
+        public void reconcile(RailsFixture railsFixture) {
+            refreshEverything();
+        }
+        
+        public void reconcile(RailsTest railsTest) {
+            refreshEverything();
+        }
+        
+        public void testAdded(RailsTest railsTest) {
+            refreshEverything();
+        }
+        
+        public void testRemoved(RailsTest railsTest) {
+            refreshEverything();
+        }
+        
     }
     
     class ServerModelListener implements ILaunchingModelListener {
@@ -246,7 +279,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
     private final ElementChangedListener elementChangedListener = new ElementChangedListener();
     private final WindowModelListener windowModelListener = new WindowModelListener();
-    private Font boldFont;
+    //    private Font boldFont;
     //    private List<IRailsProject> chooserProjects;
     
     //    private ExpandableComposite expander;

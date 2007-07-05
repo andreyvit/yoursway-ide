@@ -17,7 +17,7 @@ public class RailsModelsCollection extends AbstractModel<IModelsListener> implem
     private final Map<RailsProject, PerProjectRailsModelsCollection> localModels = new HashMap<RailsProject, PerProjectRailsModelsCollection>();
     
     public RailsModelsCollection() {
-        final RailsProjectsCollection projectsModel = RailsProjectsCollection.getInstance();
+        final RailsProjectsCollection projectsModel = RailsProjectsCollection.instance();
         projectsModel.addListener(this);
         for (RailsProject railsProject : projectsModel.getAll())
             projectAdded(railsProject);
@@ -25,7 +25,7 @@ public class RailsModelsCollection extends AbstractModel<IModelsListener> implem
     
     private static final RailsModelsCollection INSTANCE = new RailsModelsCollection();
     
-    public static RailsModelsCollection getInstance() {
+    public static RailsModelsCollection instance() {
         return INSTANCE;
     }
     

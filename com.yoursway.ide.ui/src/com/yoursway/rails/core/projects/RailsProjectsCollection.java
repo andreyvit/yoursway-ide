@@ -20,7 +20,7 @@ public class RailsProjectsCollection extends AbstractModel<IProjectsListener> im
     
     private static final RailsProjectsCollection INSTANCE = new RailsProjectsCollection();
     
-    public static RailsProjectsCollection getInstance() {
+    public static RailsProjectsCollection instance() {
         return INSTANCE;
     }
     

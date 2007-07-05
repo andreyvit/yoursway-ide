@@ -1,4 +1,4 @@
-package com.yoursway.rails.core.dbschema;
+package com.yoursway.rails.core.tests;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,70 +11,70 @@ import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
 
-public class DbTablesCollection extends AbstractModel<IDbSchemaListener> implements IProjectsListener,
-        IDbSchemaListener {
+public class RailsTestsCollection extends AbstractModel<IRailsTestsListener> implements IProjectsListener,
+        IRailsTestsListener {
     
-    private final Map<RailsProject, PerProjectDbTablesCollection> localModels = new HashMap<RailsProject, PerProjectDbTablesCollection>();
+    private final Map<RailsProject, PerProjectRailsTestsCollection> localModels = new HashMap<RailsProject, PerProjectRailsTestsCollection>();
     
-    public DbTablesCollection() {
+    public RailsTestsCollection() {
         final RailsProjectsCollection projectsModel = RailsProjectsCollection.instance();
         projectsModel.addListener(this);
         for (RailsProject railsProject : projectsModel.getAll())
             projectAdded(railsProject);
     }
     
-    private static final DbTablesCollection INSTANCE = new DbTablesCollection();
+    private static final RailsTestsCollection INSTANCE = new RailsTestsCollection();
     
-    public static DbTablesCollection getInstance() {
+    public static RailsTestsCollection instance() {
         return INSTANCE;
     }
     
-    public synchronized PerProjectDbTablesCollection get(RailsProject project) {
+    public synchronized PerProjectRailsTestsCollection get(RailsProject project) {
         return localModels.get(project);
     }
     
     @Override
-    protected IDbSchemaListener[] makeListenersArray(int size) {
-        return new IDbSchemaListener[size];
+    protected IRailsTestsListener[] makeListenersArray(int size) {
+        return new IRailsTestsListener[size];
     }
     
     public synchronized void projectAdded(RailsProject railsProject) {
         Assert.isTrue(!localModels.containsKey(railsProject));
-        PerProjectDbTablesCollection localModel = new PerProjectDbTablesCollection(railsProject);
+        PerProjectRailsTestsCollection localModel = new PerProjectRailsTestsCollection(railsProject);
         add(localModel);
     }
     
-    private void add(PerProjectDbTablesCollection localModel) {
+    private void add(PerProjectRailsTestsCollection localModel) {
         localModels.put(localModel.getRailsProject(), localModel);
         localModel.addListener(this);
     }
     
     public synchronized void projectRemoved(RailsProject railsProject) {
         Assert.isTrue(localModels.containsKey(railsProject));
-        PerProjectDbTablesCollection oldModel = localModels.remove(railsProject);
+        PerProjectRailsTestsCollection oldModel = localModels.remove(railsProject);
         oldModel.removeListener(this);
     }
     
     public void reconcile(RailsProject railsProject, IResourceDelta projectDelta) {
-        PerProjectDbTablesCollection localModel = get(railsProject);
+        PerProjectRailsTestsCollection localModel = get(railsProject);
         Assert.isTrue(localModel != null);
         assert localModel != null;
         localModel.reconcile(projectDelta);
     }
     
-    public void tableAdded(DbTable dbTable) {
-        for (IDbSchemaListener listener : getListeners())
-            listener.tableAdded(dbTable);
+    public void testAdded(RailsTest railsTest) {
+        for (IRailsTestsListener listener : getListeners())
+            listener.testAdded(railsTest);
     }
     
-    public void tableChanged(DbTable dbTable) {
-        for (IDbSchemaListener listener : getListeners())
-            listener.tableChanged(dbTable);
+    public void testRemoved(RailsTest railsTest) {
+        for (IRailsTestsListener listener : getListeners())
+            listener.testRemoved(railsTest);
     }
     
-    public void tableRemoved(DbTable dbTable) {
-        for (IDbSchemaListener listener : getListeners())
-            listener.tableRemoved(dbTable);
+    public void reconcile(RailsTest railsTest) {
+        for (IRailsTestsListener listener : getListeners())
+            listener.reconcile(railsTest);
     }
     
 }

@@ -11,13 +11,13 @@ import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
 
-public class RailsControllersCollection extends AbstractModel<IRailsControllersListener> implements IProjectsListener,
-        IRailsControllersListener {
+public class RailsControllersCollection extends AbstractModel<IRailsControllersListener> implements
+        IProjectsListener, IRailsControllersListener {
     
     private final Map<RailsProject, PerProjectRailsControllersCollection> localModels = new HashMap<RailsProject, PerProjectRailsControllersCollection>();
     
     public RailsControllersCollection() {
-        final RailsProjectsCollection projectsModel = RailsProjectsCollection.getInstance();
+        final RailsProjectsCollection projectsModel = RailsProjectsCollection.instance();
         projectsModel.addListener(this);
         for (RailsProject railsProject : projectsModel.getAll())
             projectAdded(railsProject);
@@ -25,7 +25,7 @@ public class RailsControllersCollection extends AbstractModel<IRailsControllersL
     
     private static final RailsControllersCollection INSTANCE = new RailsControllersCollection();
     
-    public static RailsControllersCollection getInstance() {
+    public static RailsControllersCollection instance() {
         return INSTANCE;
     }
     
@@ -40,7 +40,8 @@ public class RailsControllersCollection extends AbstractModel<IRailsControllersL
     
     public synchronized void projectAdded(RailsProject railsProject) {
         Assert.isTrue(!localModels.containsKey(railsProject));
-        PerProjectRailsControllersCollection localModel = new PerProjectRailsControllersCollection(railsProject);
+        PerProjectRailsControllersCollection localModel = new PerProjectRailsControllersCollection(
+                railsProject);
         add(localModel);
     }
     

@@ -51,4 +51,8 @@ public class RailsFileUtils {
         return "rb".equals(file.getFileExtension());
     }
     
+    public static boolean isYamlFile(IFile file) {
+        return "yml".equals(file.getFileExtension());
+    }
+    
 }

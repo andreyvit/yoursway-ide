@@ -1,6 +1,12 @@
 package com.yoursway.utils;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+
+import com.yoursway.rails.core.projects.RailsProject;
+import com.yoursway.rails.core.projects.RailsProjectsCollection;
 
 public class RailsNamingConventions {
     
@@ -23,6 +29,10 @@ public class RailsNamingConventions {
     public static final String TEST_UNIT = "test/unit";
     
     public static final Path TEST_UNIT_PATH = new Path(TEST_UNIT);
+    
+    public static final String TEST_FUNCTIONAL = "test/functional";
+    
+    public static final Path TEST_FUNCTIONAL_PATH = new Path(TEST_UNIT);
     
     private static final int IS_START = -1;
     
@@ -244,6 +254,7 @@ public class RailsNamingConventions {
         
         return inflect;
     }
+    
     //    # A singleton instance of this class is yielded by Inflector.inflections, which can then be used to specify additional
     //    # inflection rules. Examples:
     //    #
@@ -319,5 +330,20 @@ public class RailsNamingConventions {
     //
     //    extend self
     //
+    
+    public static IFile getModelFileByFixture(IFile fixtureFile) {
+        IProject project = fixtureFile.getProject();
+        RailsProject railsProject = RailsProjectsCollection.instance().get(project);
+        String[] pathComponents = PathUtils.determinePathComponents(fixtureFile.getProject().getFolder(
+                RailsNamingConventions.TEST_FIXTURES), fixtureFile);
+        pathComponents[pathComponents.length - 1] = railsProject.getInflector().singularize(
+                pathComponents[pathComponents.length - 1]);
+        IPath modelFilePath = fixtureFile.getProject().getFolder(RailsNamingConventions.APP_MODELS)
+                .getFullPath();
+        for (String s : pathComponents) {
+            modelFilePath.append(s);
+        }
+        return PathUtils.getFile(project, modelFilePath);
+    }
     
 }
