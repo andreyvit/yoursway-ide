@@ -5,6 +5,22 @@ import org.eclipse.core.runtime.Path;
 
 public class RailsNamingConventions {
     
+    public static final String DB_SCHEMA_RB = "db/schema.rb";
+    
+    public static final Path DB_SCHEMA_RB_PATH = new Path(DB_SCHEMA_RB);
+    
+    public static final String APP_CONTROLLERS = "app/controllers";
+    
+    public static final String APP_MODELS = "app/models";
+    
+    public static final Path APP_CONTROLLERS_PATH = new Path(APP_CONTROLLERS);
+    
+    public static final Path APP_MODELS_PATH = new Path(APP_MODELS);
+    
+    public static final IPath APP_PATH = new Path("app");
+    
+    public static final IPath CONTROLLERS_PATH = new Path("controllers");
+    
     private static final int IS_START = -1;
     
     private static final int IS_NONE = 0;
@@ -162,22 +178,6 @@ public class RailsNamingConventions {
     public static String foreignKey(String className, boolean separateIdWithUnderscore) {
         return underscore(demodulize(className)) + (separateIdWithUnderscore ? "_id" : "id");
     }
-    
-    public static final String DB_SCHEMA_RB = "db/schema.rb";
-    
-    public static final Path DB_SCHEMA_RB_PATH = new Path(DB_SCHEMA_RB);
-    
-    public static final String APP_CONTROLLERS = "app/controllers";
-    
-    public static final String APP_MODELS = "app/models";
-    
-    public static final Path APP_CONTROLLERS_PATH = new Path(APP_CONTROLLERS);
-    
-    public static final Path APP_MODELS_PATH = new Path(APP_MODELS);
-    
-    public static final IPath APP_PATH = new Path("app");
-    
-    public static final IPath CONTROLLERS_PATH = new Path("controllers");
     
     public static Inflector createInitializedInflector() {
         Inflector inflect = new Inflector();
