@@ -82,7 +82,6 @@ public class RailsProjectTree implements IPresenterOwner {
                 handleDoubleClick(event);
             }
         });
-        viewer.setAutoExpandLevel(2);
         
         tree.addKeyListener(new KeyListener() {
             
