@@ -1,6 +1,5 @@
 package com.yoursway.utils;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 public class RailsNamingConventions {
@@ -11,15 +10,19 @@ public class RailsNamingConventions {
     
     public static final String APP_CONTROLLERS = "app/controllers";
     
-    public static final String APP_MODELS = "app/models";
-    
     public static final Path APP_CONTROLLERS_PATH = new Path(APP_CONTROLLERS);
+    
+    public static final String APP_MODELS = "app/models";
     
     public static final Path APP_MODELS_PATH = new Path(APP_MODELS);
     
-    public static final IPath APP_PATH = new Path("app");
+    public static final String TEST_FIXTURES = "test/fixtures";
     
-    public static final IPath CONTROLLERS_PATH = new Path("controllers");
+    public static final Path TEST_FIXTURES_PATH = new Path(TEST_FIXTURES);
+    
+    public static final String TEST_UNIT = "test/unit";
+    
+    public static final Path TEST_UNIT_PATH = new Path(TEST_UNIT);
     
     private static final int IS_START = -1;
     
