@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Collections Plug-in
 Bundle-SymbolicName: org.apache.commons.collections
 Bundle-Version: 3.2.0
-Bundle-ClassPath: commons-collections-3.2.jar
 Export-Package: org.apache.commons.collections,
  org.apache.commons.collections.bag,
  org.apache.commons.collections.bidimap,
