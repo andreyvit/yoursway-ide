@@ -56,6 +56,14 @@ public abstract class SystemUtilities {
         return getInstance().doGetFileSystemPathFromLocalURL(url);
     }
     
+    public File getProgramFilesLocation() {
+        throw new UnsupportedOperationException("Does not make sense for this platform");
+    }
+    
+    public boolean isOkayToTreatAsRuby(File file) {
+        return true;
+    }
+    
     protected File doGetFileSystemPathFromLocalURL(URL url) {
         return new File(url.getPath());
     }

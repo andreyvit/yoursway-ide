@@ -12,9 +12,11 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osgi.util.NLS;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.utils.EnvTest;
+import com.yoursway.utils.SystemUtilities;
 
 public class PossibleRubyLocationsIterator {
     
@@ -140,6 +142,9 @@ public class PossibleRubyLocationsIterator {
         
         public void execute(IProgressMonitor monitor) {
             SubMonitor progress = SubMonitor.convert(monitor);
+            System.out.println("RubyDiscoveryProcessor created for roots:");
+            for (SearchRoot root : searchRoots)
+                System.out.println("  " + root);
             while (!searchRoots.isEmpty()) {
                 progress.setWorkRemaining(totalWork - doneWork);
                 try {
@@ -159,6 +164,7 @@ public class PossibleRubyLocationsIterator {
             if (visitedFolders.contains(canonicalParent))
                 return;
             visitedFolders.add(canonicalParent);
+            long startTime = System.currentTimeMillis();
             
             File[] children = canonicalParent.listFiles();
             if (children == null) {
@@ -177,6 +183,9 @@ public class PossibleRubyLocationsIterator {
             progress.setWorkRemaining(folderWeight * subfolders.size() + files.size());
             analyzeWithAnalyzers(canonicalParent, children, files, subfolders, progress
                     .newChild(files.size()));
+            long endTime = System.currentTimeMillis();
+            System.out.println(NLS.bind("Searching Ruby in {0} took {1} ms", canonicalParent, endTime
+                    - startTime));
             if (recursionDepth > 0)
                 for (File subfolder : subfolders)
                     analyzeFolder(subfolder, recursionDepth - 1, progress.newChild(folderWeight));
@@ -215,8 +224,13 @@ public class PossibleRubyLocationsIterator {
         }
         
         public void rubyFound(File pathToExecutable) {
-            System.out.println("Found possible Ruby at " + pathToExecutable);
-            requestor.accept(pathToExecutable);
+            if (!SystemUtilities.getInstance().isOkayToTreatAsRuby(pathToExecutable)) {
+                System.out.println("Rejected (due to system-specific test) possible Ruby at "
+                        + pathToExecutable);
+            } else {
+                System.out.println("Found possible Ruby at " + pathToExecutable);
+                requestor.accept(pathToExecutable);
+            }
         }
         
     }
@@ -269,7 +283,7 @@ public class PossibleRubyLocationsIterator {
             String systemDrive = System.getenv("SystemDrive");
             if (systemDrive == null)
                 systemDrive = "C:"; // Win9x?
-            paths.add(new SearchRoot(new File(systemDrive), 2));
+            paths.add(new SearchRoot(new File(systemDrive, "\\").getAbsoluteFile(), 2));
         }
         return paths;
     }
