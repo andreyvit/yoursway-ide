@@ -1,16 +1,16 @@
 package com.yoursway.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IProjectFragment;
-import org.eclipse.dltk.core.IScriptFolder;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.ui.IEditorPart;
@@ -61,25 +61,18 @@ public class EditorUtils {
             folder = folderToCreate;
             fileNameWithPath = path.lastSegment();
         }
-        IModelElement modelElement = DLTKCore.create(folder);
-        if (modelElement instanceof IProjectFragment) {
-            IProjectFragment projectFragment = (IProjectFragment) modelElement;
-            modelElement = projectFragment.getScriptFolder("");
+        IFile file = folder.getFile(fileNameWithPath);
+        try {
+            file.create(new ByteArrayInputStream(body.getBytes(ResourcesPlugin.getWorkspace().getRoot()
+                    .getDefaultCharset())), true, new NullProgressMonitor());
+        } catch (UnsupportedEncodingException e) {
+            Activator.unexpectedError(e);
+            return null;
+        } catch (CoreException e) {
+            Activator.reportException(e, userActionFailedMessage);
+            return null;
         }
-        if (modelElement instanceof IScriptFolder) {
-            IScriptFolder scriptFolder = (IScriptFolder) modelElement;
-            try {
-                ISourceModule sourceModule = scriptFolder.createSourceModule(fileNameWithPath, body, true,
-                        new NullProgressMonitor());
-                IFile newFile = (IFile) sourceModule.getCorrespondingResource();
-                return newFile;
-            } catch (ModelException e) {
-                Activator.reportException(e, userActionFailedMessage);
-            }
-        } else {
-            System.out.println("Context.setValue() - modelElement is " + modelElement.getClass());
-        }
-        return null;
+        return file;
     }
     
     public static String chooseUniqueFileName(final org.eclipse.core.resources.IFolder folder,
