@@ -11,15 +11,38 @@ import org.eclipse.core.runtime.Path;
 
 public class ResourceUtils {
     
-    public static IFolder lookupOrCreateSubfolder(final IContainer container, final Path path)
-            throws CoreException {
+    /**
+     * Returns the given subfolder of the given container, creating it if
+     * necessary. The container must already exist.
+     * 
+     * @param container
+     * @param path
+     * @return the given subfolder
+     * @throws CoreException
+     *             if the creation failed.
+     */
+    public static IFolder lookupOrCreateSubfolder(IContainer container, IPath path) throws CoreException {
         final org.eclipse.core.resources.IFolder controllersFolder;
         controllersFolder = container.getFolder(path);
-        if (!controllersFolder.exists())
+        if (!controllersFolder.exists()) {
+            if (path.segmentCount() > 1)
+                lookupOrCreateSubfolder(container, path.removeLastSegments(1));
             controllersFolder.create(true, true, null);
+        }
         return controllersFolder;
     }
     
+    /**
+     * Checks if the given delta contains any changes affecting the given child
+     * (or grandchild) of the resouce represented by the delta.
+     * 
+     * @param delta
+     * @param filePath
+     *            a path relative to the <code>delta</code>
+     * @return <code>true</code> if the resource at the given path has
+     *         changed, or any of its parents were added or removed;
+     *         <code>false</code> otherwise.
+     */
     public static boolean changedInDelta(IResourceDelta delta, IPath filePath) {
         Assert.isNotNull(delta);
         Assert.isNotNull(filePath);
