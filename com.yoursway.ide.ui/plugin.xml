@@ -227,7 +227,7 @@
                 mnemonic="a">
           </command>
           <command
-                commandId="com.yoursway.ide.project.createRailsApplication"
+                commandId="com.yoursway.ide.project.openRailsApplication"
                 id="com.yoursway.ide.project.openRailsApplication"
                 label="Open Rails Application...">
           </command>
@@ -239,7 +239,7 @@
                 label="Choose Rails...">
           </command>
           <dynamic
-                class="com.yoursway.rails.projects.commands.OpenRecentDynamicItem"
+                class="com.yoursway.ide.projects.commands.OpenRecentDynamicItem"
                 id="com.yoursway.ide.ui.dynamic1">
           </dynamic>
           <command
@@ -271,6 +271,11 @@
           defaultHandler="com.yoursway.ide.projects.commands.CreateRailsApplicationHandler"
           id="com.yoursway.ide.project.createRailsApplication"
           name="Create Rails Application">
+    </command>
+    <command
+          defaultHandler="com.yoursway.ide.projects.commands.OpenRailsApplicationHandler"
+          id="com.yoursway.ide.project.openRailsApplication"
+          name="Open Rails Application">
     </command>
     <command
           defaultHandler="com.yoursway.rails.chooser.commands.ChooseRailsHandler"

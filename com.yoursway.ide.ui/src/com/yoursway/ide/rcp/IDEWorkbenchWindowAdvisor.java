@@ -1,7 +1,10 @@
 package com.yoursway.ide.rcp;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProduct;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
@@ -20,6 +23,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -48,6 +52,7 @@ import com.yoursway.ide.windowing.RailsWindowModel;
 import com.yoursway.ide.windowing.RailsWindowModelListenerAdapter;
 import com.yoursway.ide.windowing.RailsWindowModelProjectChange;
 import com.yoursway.rails.core.projects.RailsProject;
+import com.yoursway.rails.core.projects.RailsProjectsCollection;
 
 /**
  * Window-level advisor for the IDE.
@@ -288,25 +293,6 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             title = ""; //$NON-NLS-1$
         }
         
-        //        if (currentPage != null) {
-        //            if (activeEditor != null) {
-        //                lastEditorTitle = activeEditor.getTitleToolTip();
-        //                title = NLS.bind(IDEWorkbenchMessages.WorkbenchWindow_shellTitle, lastEditorTitle, title);
-        //            }
-        //            IPerspectiveDescriptor persp = currentPage.getPerspective();
-        //            String label = ""; //$NON-NLS-1$
-        //            if (persp != null) {
-        //                label = persp.getLabel();
-        //            }
-        //            IAdaptable input = currentPage.getInput();
-        //            if (input != null && !input.equals(wbAdvisor.getDefaultPageInput())) {
-        //                label = currentPage.getLabel();
-        //            }
-        //            if (label != null && !label.equals("")) { //$NON-NLS-1$ 
-        //                title = NLS.bind(IDEWorkbenchMessages.WorkbenchWindow_shellTitle, label, title);
-        //            }
-        //        }
-        
         RailsProject currentProject = RailsWindowModel.instance().getWindow(currentWindow).getRailsProject();
         if (currentProject != null) {
             title = NLS.bind("{0} - {1}", currentProject.getProject().getName(), title);
@@ -414,6 +400,31 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         ToolBar toolBar = toolBarManager.createControl(composite);
         toolBar.setBackground(bgCol);
         return composite;
+    }
+    
+    @Override
+    public IStatus saveState(IMemento memento) {
+        final IStatus status = super.saveState(memento);
+        IWorkbenchWindow window = getWindowConfigurer().getWindow();
+        RailsProject activeProject = RailsWindowModel.instance().getWindow(window).getRailsProject();
+        if (activeProject != null)
+            memento.putString("yoursway.active.project", activeProject.getProject().getName());
+        return status;
+    }
+    
+    @Override
+    public IStatus restoreState(IMemento memento) {
+        final IStatus status = super.restoreState(memento);
+        String activeProjectName = memento.getString("yoursway.active.project");
+        if (activeProjectName != null) {
+            IProject activeProject = ResourcesPlugin.getWorkspace().getRoot().getProject(activeProjectName);
+            if (activeProject.exists()) {
+                RailsProject activeRailsProject = RailsProjectsCollection.instance().get(activeProject);
+                IWorkbenchWindow window = getWindowConfigurer().getWindow();
+                RailsWindowModel.instance().getWindow(window).setRailsProject(activeRailsProject);
+            }
+        }
+        return status;
     }
     
 }

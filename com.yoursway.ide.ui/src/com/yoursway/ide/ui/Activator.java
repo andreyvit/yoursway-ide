@@ -11,8 +11,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.yoursway.ide.analysis.sample.ControllerNavigationProviderFactory;
-import com.yoursway.rails.RailsInfoRefreshRunner;
-import com.yoursway.rails.discovering.RubyAndRailsDiscovering;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -49,9 +47,6 @@ public class Activator extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         ControllerNavigationProviderFactory.initialize();
-        
-        RubyAndRailsDiscovering.initialize();
-        RailsInfoRefreshRunner.startListening();
     }
     
     @Override

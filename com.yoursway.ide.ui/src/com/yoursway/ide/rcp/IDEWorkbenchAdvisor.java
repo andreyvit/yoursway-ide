@@ -61,6 +61,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
+import com.yoursway.ide.ui.YourSwayIDE;
 import com.yoursway.ide.ui.perspectives.RailsPerspective;
 
 /**
@@ -228,6 +229,8 @@ public class IDEWorkbenchAdvisor extends WorkbenchAdvisor {
             
             initializeSettingsChangeListener();
             Display.getCurrent().addListener(SWT.Settings, settingsChangeListener);
+            
+            YourSwayIDE.finishLoading();
         } finally {// Resume background jobs after we startup
             Platform.getJobManager().resume();
         }
@@ -410,9 +413,9 @@ public class IDEWorkbenchAdvisor extends WorkbenchAdvisor {
     }
     
     /**
-     * Returns the map of ver${workspace_loc}/../runtime-dltksioned feature ids ->
-     * info object for all installed features. The format of the versioned
-     * feature id (the key of the map) is featureId + ":" + versionId.
+     * Returns the map of versioned feature ids -> info object for all installed
+     * features. The format of the versioned feature id (the key of the map) is
+     * featureId + ":" + versionId.
      * 
      * @return map of versioned feature ids -> info object (key type:
      *         <code>String</code>, value type: <code>AboutInfo</code>)

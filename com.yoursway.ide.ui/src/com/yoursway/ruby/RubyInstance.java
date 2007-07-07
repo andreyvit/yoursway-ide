@@ -34,7 +34,7 @@ public class RubyInstance {
     }
     
     public File getLocation() {
-        return installWrapper.getLocation();
+        return installLocation;
     }
     
     /**

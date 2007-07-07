@@ -3,6 +3,7 @@ package com.yoursway.rails;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
@@ -17,9 +18,14 @@ public class RailsInstance {
     private IGem railsGem;
     
     public RailsInstance(RubyInstance ruby, String version, IGem[] gems) {
+        Assert.isNotNull(ruby);
+        Assert.isNotNull(version);
+        Assert.isNotNull(gems);
+        
         this.gems = gems;
         this.version = Version.fromDotDelimitedString(version);
         this.ruby = ruby;
+        
         paths = new HashSet<String>();
         for (IGem gem : gems)
             for (String requirePath : gem.getRequirePaths()) {
