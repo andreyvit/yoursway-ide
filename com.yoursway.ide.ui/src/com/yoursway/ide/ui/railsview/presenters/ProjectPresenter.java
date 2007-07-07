@@ -18,6 +18,7 @@ import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.rails.core.controllers.PerProjectRailsControllersCollection;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.controllers.RailsControllersCollection;
+import com.yoursway.rails.core.migrations.RailsMigrationsCollection;
 import com.yoursway.rails.core.models.PerProjectRailsModelsCollection;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
@@ -46,7 +47,8 @@ public class ProjectPresenter extends AbstractPresenter {
         Collection<Object> children = new ArrayList<Object>();
         addControllers(children);
         addModels(children);
-        
+        children.add(new MigrationsCollectionPresenter(getOwner(), RailsMigrationsCollection.instance().get(
+                railsProject)));
         //        addControllers(oldRailsProject.getControllersCollection().getRootFolder(), children);
         //        children.add(new NewModelPresenter(getOwner(), oldRailsProject));
         //        children.addAll(oldRailsProject.getModelsCollection().getItems());

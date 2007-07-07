@@ -4,7 +4,7 @@ public interface IRailsMigrationsListener {
     
     void migrationAdded(RailsMigration railsMigration);
     
-    void migrationRemove(RailsMigration railsMigration);
+    void migrationRemoved(RailsMigration railsMigration);
     
     void migrationContentChanged(RailsMigration railsMigration);
     

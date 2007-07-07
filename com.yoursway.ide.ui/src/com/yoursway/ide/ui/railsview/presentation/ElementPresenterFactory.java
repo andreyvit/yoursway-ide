@@ -2,10 +2,12 @@ package com.yoursway.ide.ui.railsview.presentation;
 
 import com.yoursway.ide.ui.railsview.presenters.ControllerPresenter;
 import com.yoursway.ide.ui.railsview.presenters.FieldPresenter;
+import com.yoursway.ide.ui.railsview.presenters.MigrationPresenter;
 import com.yoursway.ide.ui.railsview.presenters.ModelPresenter;
 import com.yoursway.ide.ui.railsview.presenters.ProjectPresenter;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.dbschema.DbField;
+import com.yoursway.rails.core.migrations.RailsMigration;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.projects.RailsProject;
 
@@ -34,6 +36,8 @@ public class ElementPresenterFactory implements IPresenterFactory {
         //            return new PartialPresenter(owner, (IRailsPartial) element);
         if (element instanceof RailsModel)
             return new ModelPresenter(owner, (RailsModel) element);
+        if (element instanceof RailsMigration)
+            return new MigrationPresenter(owner, (RailsMigration) element);
         if (element instanceof DbField)
             return new FieldPresenter(owner, (DbField) element);
         throw new AssertionError("Unknown tree item type " + element.getClass().getName() + " found.");

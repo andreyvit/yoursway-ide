@@ -99,21 +99,24 @@ public class RailsProjectTree implements IPresenterOwner {
             public void handleEvent(Event event) {
                 TreeItem item = (TreeItem) event.item;
                 Object data = item.getData();
-                infoProvider.measureItem(item, data, event);
+                if (data != null)
+                    infoProvider.measureItem(item, data, event);
             }
         });
         tree.addListener(SWT.EraseItem, new Listener() {
             public void handleEvent(Event event) {
                 TreeItem item = (TreeItem) event.item;
                 Object data = item.getData();
-                infoProvider.eraseItem(item, data, event);
+                if (data != null)
+                    infoProvider.eraseItem(item, data, event);
             }
         });
         tree.addListener(SWT.PaintItem, new Listener() {
             public void handleEvent(Event event) {
                 TreeItem item = (TreeItem) event.item;
                 Object data = item.getData();
-                infoProvider.paintItem(item, data, event);
+                if (data != null)
+                    infoProvider.paintItem(item, data, event);
             }
         });
         LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();

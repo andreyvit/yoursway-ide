@@ -258,6 +258,10 @@
                 commandId="com.yoursway.ide.AddModel"
                 label="Model">
           </command>
+          <command
+                commandId="com.yoursway.ide.AddMigration"
+                label="Migration">
+          </command>
        </menu>
     </menuContribution>
  </extension>
@@ -287,6 +291,11 @@
           defaultHandler="com.yoursway.ide.rails.models.AddRailsModelHandler"
           id="com.yoursway.ide.AddModel"
           name="Add Model">
+    </command>
+    <command
+          defaultHandler="com.yoursway.ide.rails.migrations.AddRailsMigrationHandler"
+          id="com.yoursway.ide.AddMigration"
+          name="Add Migration">
     </command>
  </extension>
  <extension

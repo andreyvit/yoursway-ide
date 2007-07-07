@@ -49,6 +49,9 @@ import com.yoursway.rails.core.dbschema.IDbSchemaListener;
 import com.yoursway.rails.core.fixtures.IRailsFixturesListener;
 import com.yoursway.rails.core.fixtures.RailsFixture;
 import com.yoursway.rails.core.fixtures.RailsFixturesCollection;
+import com.yoursway.rails.core.migrations.IRailsMigrationsListener;
+import com.yoursway.rails.core.migrations.RailsMigration;
+import com.yoursway.rails.core.migrations.RailsMigrationsCollection;
 import com.yoursway.rails.core.models.IModelsListener;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
@@ -166,7 +169,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     class ElementChangedListener implements IProjectsListener, IRailsControllersListener, IModelsListener,
-            IDbSchemaListener, IRailsFixturesListener, IRailsTestsListener {
+            IDbSchemaListener, IRailsMigrationsListener, IRailsFixturesListener, IRailsTestsListener {
         
         public void install() {
             RailsProjectsCollection.instance().addListener(this);
@@ -175,6 +178,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             RailsFixturesCollection.instance().addListener(this);
             RailsTestsCollection.instance().addListener(this);
             DbTablesCollection.getInstance().addListener(this);
+            RailsMigrationsCollection.instance().addListener(this);
         }
         
         public void uninstall() {
@@ -184,6 +188,7 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             RailsFixturesCollection.instance().removeListener(this);
             RailsTestsCollection.instance().removeListener(this);
             DbTablesCollection.getInstance().removeListener(this);
+            RailsMigrationsCollection.instance().removeListener(this);
         }
         
         public void projectAdded(RailsProject railsProject) {
@@ -252,6 +257,18 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         }
         
         public void testRemoved(RailsTest railsTest) {
+            refreshEverything();
+        }
+        
+        public void migrationAdded(RailsMigration railsMigration) {
+            refreshEverything();
+        }
+        
+        public void migrationContentChanged(RailsMigration railsMigration) {
+            refreshEverything();
+        }
+        
+        public void migrationRemoved(RailsMigration railsMigration) {
             refreshEverything();
         }
         

@@ -3,6 +3,7 @@ package com.yoursway.rails.core.migrations;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 
+import com.yoursway.rails.core.migrations.internal.RailsMigrationInfo;
 import com.yoursway.rails.core.projects.RailsProject;
 
 public class RailsMigration {
@@ -11,24 +12,18 @@ public class RailsMigration {
     
     private final IFile file;
     
-    private Integer ordinal;
+    private final Integer ordinal;
     
-    private String expectedClassName;
+    private final String expectedClassName;
     
-    public RailsMigration(RailsProject railsProject, IFile file) {
+    public RailsMigration(RailsProject railsProject, RailsMigrationInfo data) {
         Assert.isNotNull(railsProject);
-        Assert.isNotNull(file);
+        Assert.isNotNull(data);
         
         this.railsProject = railsProject;
-        this.file = file;
-        
-        //        String fileName = file.getName();
-        //        final Matcher matcher = NAME_PATTERN.matcher(fileName);
-        //        if (matcher.find()) {
-        //            ordinal = Integer.parseInt(matcher.group(1));
-        //            String pureName = matcher.group(2);
-        //            expectedClassName = RailsNamingConventions.camelize(pureName);
-        //        }
+        file = data.getFile();
+        ordinal = data.getOrdinal();
+        expectedClassName = data.getExpectedClassName();
     }
     
     public RailsProject getRailsProject() {

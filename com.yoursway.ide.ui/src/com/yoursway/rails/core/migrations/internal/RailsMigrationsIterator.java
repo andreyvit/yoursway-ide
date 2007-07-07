@@ -47,7 +47,7 @@ public class RailsMigrationsIterator {
                 
                 @Override
                 protected boolean visitFolder(IFolder resource) {
-                    return false;
+                    return true;
                 }
                 
             });
