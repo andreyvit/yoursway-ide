@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,14 +16,27 @@ import com.yoursway.ide.common.mru.internal.MruListContents;
 import com.yoursway.ide.common.mru.internal.MruListEntry;
 import com.yoursway.ide.ui.Activator;
 
-public class MostRecentlyUsedList<E extends MruListEntry> {
+/**
+ * Manages a persistent "most recently used" list.
+ * 
+ * For serialization purposes uses the class loader used to load
+ * <code>this.getClass()</code>, so declared abstract to remind clients to
+ * make a derived class.
+ * 
+ * @author Andrey Tarantsov
+ * 
+ * @param <E>
+ *            a type of list entries — a class derived from
+ *            <code>MruListEntry</code>
+ */
+public abstract class MostRecentlyUsedList<E extends MruListEntry> {
     
     private MruListContents<E> contents;
     
     private final File storageFile;
     
     public MostRecentlyUsedList(String id) {
-        storageFile = new File(Activator.getDefault().getStateLocation().toFile(), "mru-" + id);
+        storageFile = new File(Activator.getDefault().getStateLocation().toFile(), "mru-" + id + ".xml");
     }
     
     public synchronized List<E> getEntries() {
@@ -37,9 +49,10 @@ public class MostRecentlyUsedList<E extends MruListEntry> {
         E entry = lookupEntry(usedEntry);
         if (entry == null)
             entry = usedEntry;
-        else
+        else {
             contents.getEntries().remove(entry);
-        entry.setLastUse(Calendar.getInstance().getTime());
+            entry.setLastUseToNow();
+        }
         contents.getEntries().add(0, usedEntry);
         save();
     }

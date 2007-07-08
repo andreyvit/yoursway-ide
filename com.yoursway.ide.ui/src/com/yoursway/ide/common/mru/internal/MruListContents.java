@@ -6,6 +6,8 @@ import java.util.List;
 
 public class MruListContents<E> implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private List<E> entries;
     
     public MruListContents() {
