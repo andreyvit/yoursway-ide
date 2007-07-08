@@ -201,6 +201,7 @@ public class IDEWorkbenchAdvisor extends WorkbenchAdvisor {
         
         // Suspend background jobs while we startup
         Platform.getJobManager().suspend();
+        YourSwayIDE.beforeLoading();
         
         //
         // FIXME: this code suddenly stopped working. Temporarily disabled.

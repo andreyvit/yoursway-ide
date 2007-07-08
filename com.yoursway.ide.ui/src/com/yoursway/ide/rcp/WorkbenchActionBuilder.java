@@ -436,9 +436,10 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
     protected void fillMenuBar(IMenuManager menuBar) {
         menuBar.add(createFileMenu());
         menuBar.add(createEditMenu());
-        //        menuBar.add(createNavigateMenu());
-        //        menuBar.add(createProjectMenu());
+        menuBar.add(new GroupMarker("leftside"));
+        menuBar.add(createNavigateMenu());
         menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        //        menuBar.add(createProjectMenu());
         menuBar.add(createWindowMenu());
         menuBar.add(createHelpMenu());
     }
@@ -450,30 +451,30 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
         MenuManager menu = new MenuManager(IDEWorkbenchMessages.Workbench_file,
                 IWorkbenchActionConstants.M_FILE);
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-        {
-            // create the New submenu, using the same id for it as the New action
-            String newText = IDEWorkbenchMessages.Workbench_new;
-            String newId = ActionFactory.NEW.getId();
-            MenuManager newMenu = new MenuManager(newText, newId) {
-                @Override
-                public String getMenuText() {
-                    String result = super.getMenuText();
-                    if (newQuickMenu == null) {
-                        return result;
-                    }
-                    String shortCut = newQuickMenu.getShortCutString();
-                    if (shortCut == null) {
-                        return result;
-                    }
-                    return result + "\t" + shortCut; //$NON-NLS-1$
-                }
-            };
-            newMenu.add(new Separator(newId));
-            this.newWizardMenu = new NewWizardMenu(getWindow());
-            newMenu.add(this.newWizardMenu);
-            newMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-            menu.add(newMenu);
-        }
+        //        {
+        //            // create the New submenu, using the same id for it as the New action
+        //            String newText = IDEWorkbenchMessages.Workbench_new;
+        //            String newId = ActionFactory.NEW.getId();
+        //            MenuManager newMenu = new MenuManager(newText, newId) {
+        //                @Override
+        //                public String getMenuText() {
+        //                    String result = super.getMenuText();
+        //                    if (newQuickMenu == null) {
+        //                        return result;
+        //                    }
+        //                    String shortCut = newQuickMenu.getShortCutString();
+        //                    if (shortCut == null) {
+        //                        return result;
+        //                    }
+        //                    return result + "\t" + shortCut; //$NON-NLS-1$
+        //                }
+        //            };
+        //            newMenu.add(new Separator(newId));
+        //            this.newWizardMenu = new NewWizardMenu(getWindow());
+        //            newMenu.add(this.newWizardMenu);
+        //            newMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        //            menu.add(newMenu);
+        //        }
         
         menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
         menu.add(new Separator());
@@ -487,29 +488,29 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
         menu.add(saveAsAction);
         menu.add(saveAllAction);
         menu.add(revertAction);
-        menu.add(new Separator());
-        menu.add(moveAction);
-        menu.add(renameAction);
-        menu.add(refreshAction);
+        //        menu.add(new Separator());
+        //        menu.add(moveAction);
+        //        menu.add(renameAction);
+        //        menu.add(refreshAction);
         
         menu.add(new GroupMarker(IWorkbenchActionConstants.SAVE_EXT));
         menu.add(new Separator());
         menu.add(printAction);
         menu.add(new GroupMarker(IWorkbenchActionConstants.PRINT_EXT));
         menu.add(new Separator());
-        menu.add(openWorkspaceAction);
+        //        menu.add(openWorkspaceAction);
         menu.add(new GroupMarker(IWorkbenchActionConstants.OPEN_EXT));
-        menu.add(new Separator());
-        menu.add(importResourcesAction);
-        menu.add(exportResourcesAction);
+        //        menu.add(new Separator());
+        //        menu.add(importResourcesAction);
+        //        menu.add(exportResourcesAction);
         menu.add(new GroupMarker(IWorkbenchActionConstants.IMPORT_EXT));
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         
-        menu.add(new Separator());
-        menu.add(propertiesAction);
+        //        menu.add(new Separator());
+        //        menu.add(propertiesAction);
         
-        menu.add(ContributionItemFactory.REOPEN_EDITORS.create(getWindow()));
-        menu.add(new GroupMarker(IWorkbenchActionConstants.MRU));
+        //        menu.add(ContributionItemFactory.REOPEN_EDITORS.create(getWindow()));
+        //        menu.add(new GroupMarker(IWorkbenchActionConstants.MRU));
         menu.add(new Separator());
         
         // If we're on OS X we shouldn't show this command in the File menu. It
@@ -551,8 +552,8 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
         menu.add(new GroupMarker(IWorkbenchActionConstants.FIND_EXT));
         menu.add(new Separator());
         
-        menu.add(addBookmarkAction);
-        menu.add(addTaskAction);
+        //        menu.add(addBookmarkAction);
+        //        menu.add(addTaskAction);
         menu.add(new GroupMarker(IWorkbenchActionConstants.ADD_EXT));
         
         menu.add(new GroupMarker(IWorkbenchActionConstants.EDIT_END));
@@ -567,15 +568,15 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
         MenuManager menu = new MenuManager(IDEWorkbenchMessages.Workbench_navigate,
                 IWorkbenchActionConstants.M_NAVIGATE);
         menu.add(new GroupMarker(IWorkbenchActionConstants.NAV_START));
-        menu.add(goIntoAction);
+        //        menu.add(goIntoAction);
         
-        MenuManager goToSubMenu = new MenuManager(IDEWorkbenchMessages.Workbench_goTo,
-                IWorkbenchActionConstants.GO_TO);
-        menu.add(goToSubMenu);
-        goToSubMenu.add(backAction);
-        goToSubMenu.add(forwardAction);
-        goToSubMenu.add(upAction);
-        goToSubMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        //        MenuManager goToSubMenu = new MenuManager(IDEWorkbenchMessages.Workbench_goTo,
+        //                IWorkbenchActionConstants.GO_TO);
+        //        menu.add(goToSubMenu);
+        //        goToSubMenu.add(backAction);
+        //        goToSubMenu.add(forwardAction);
+        //        goToSubMenu.add(upAction);
+        //        goToSubMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         
         menu.add(new Separator(IWorkbenchActionConstants.OPEN_EXT));
         for (int i = 2; i < 5; ++i) {
@@ -657,7 +658,24 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
         menu.add(new Separator());
         addPerspectiveActions(menu);
         menu.add(new Separator());
-        addKeyboardShortcuts(menu);
+        //        addKeyboardShortcuts(menu);
+        //        menu.add(showPartPaneMenuAction);
+        menu.add(showViewMenuAction);
+        menu.add(quickAccessAction);
+        menu.add(new Separator());
+        menu.add(maximizePartAction);
+        //        menu.add(minimizePartAction);
+        menu.add(new Separator());
+        menu.add(activateEditorAction);
+        menu.add(nextEditorAction);
+        menu.add(prevEditorAction);
+        menu.add(switchToEditorAction);
+        menu.add(new Separator());
+        menu.add(nextPartAction);
+        menu.add(prevPartAction);
+        //        menu.add(new Separator());
+        //        menu.add(nextPerspectiveAction);
+        //        menu.add(prevPerspectiveAction);
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         
         // See the comment for quit in createFileMenu
@@ -673,26 +691,26 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
      * Adds the perspective actions to the specified menu.
      */
     private void addPerspectiveActions(MenuManager menu) {
-        {
-            String openText = IDEWorkbenchMessages.Workbench_openPerspective;
-            MenuManager changePerspMenuMgr = new MenuManager(openText, "openPerspective"); //$NON-NLS-1$
-            IContributionItem changePerspMenuItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
-                    .create(getWindow());
-            changePerspMenuMgr.add(changePerspMenuItem);
-            menu.add(changePerspMenuMgr);
-        }
+        //        {
+        //            String openText = IDEWorkbenchMessages.Workbench_openPerspective;
+        //            MenuManager changePerspMenuMgr = new MenuManager(openText, "openPerspective"); //$NON-NLS-1$
+        //            IContributionItem changePerspMenuItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
+        //                    .create(getWindow());
+        //            changePerspMenuMgr.add(changePerspMenuItem);
+        //            menu.add(changePerspMenuMgr);
+        //        }
         {
             MenuManager showViewMenuMgr = new MenuManager(IDEWorkbenchMessages.Workbench_showView, "showView"); //$NON-NLS-1$
             IContributionItem showViewMenu = ContributionItemFactory.VIEWS_SHORTLIST.create(getWindow());
             showViewMenuMgr.add(showViewMenu);
             menu.add(showViewMenuMgr);
         }
-        menu.add(new Separator());
-        menu.add(editActionSetAction);
-        menu.add(savePerspectiveAction);
-        menu.add(resetPerspectiveAction);
-        menu.add(closePerspAction);
-        menu.add(closeAllPerspsAction);
+        //        menu.add(new Separator());
+        //        menu.add(editActionSetAction);
+        //        menu.add(savePerspectiveAction);
+        //        menu.add(resetPerspectiveAction);
+        //        menu.add(closePerspAction);
+        //        menu.add(closeAllPerspsAction);
     }
     
     /**
@@ -738,11 +756,11 @@ public final class WorkbenchActionBuilder extends ActionBarAdvisor {
                 IWorkbenchActionConstants.M_HELP);
         addSeparatorOrGroupMarker(menu, "group.intro"); //$NON-NLS-1$
         // See if a welcome or intro page is specified
-        if (introAction != null) {
-            menu.add(introAction);
-        } else if (quickStartAction != null) {
-            menu.add(quickStartAction);
-        }
+        //        if (introAction != null) {
+        //            menu.add(introAction);
+        //        } else if (quickStartAction != null) {
+        //            menu.add(quickStartAction);
+        //        }
         menu.add(new GroupMarker("group.intro.ext")); //$NON-NLS-1$
         addSeparatorOrGroupMarker(menu, "group.main"); //$NON-NLS-1$
         menu.add(helpContentsAction);
