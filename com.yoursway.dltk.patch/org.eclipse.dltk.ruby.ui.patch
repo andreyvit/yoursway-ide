@@ -1,3 +1,33 @@
+#P org.eclipse.dltk.ruby.ui
+Index: META-INF/MANIFEST.MF
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
+retrieving revision 1.12
+diff -u -r1.12 MANIFEST.MF
+--- META-INF/MANIFEST.MF	10 Jul 2007 07:53:10 -0000	1.12
++++ META-INF/MANIFEST.MF	12 Jul 2007 17:43:37 -0000
+@@ -23,12 +23,21 @@
+  org.eclipse.dltk.debug
+ Eclipse-LazyStart: true
+ Export-Package: org.eclipse.dltk.ruby.internal.ui,
++ org.eclipse.dltk.ruby.internal.ui.actions,
++ org.eclipse.dltk.ruby.internal.ui.docs,
++ org.eclipse.dltk.ruby.internal.ui.documentation,
+  org.eclipse.dltk.ruby.internal.ui.editor,
++ org.eclipse.dltk.ruby.internal.ui.formatting,
++ org.eclipse.dltk.ruby.internal.ui.infoviews,
+  org.eclipse.dltk.ruby.internal.ui.preferences,
++ org.eclipse.dltk.ruby.internal.ui.search,
++ org.eclipse.dltk.ruby.internal.ui.templates,
+  org.eclipse.dltk.ruby.internal.ui.text,
+  org.eclipse.dltk.ruby.internal.ui.text.completion,
+  org.eclipse.dltk.ruby.internal.ui.text.folding,
+  org.eclipse.dltk.ruby.internal.ui.text.rules,
+  org.eclipse.dltk.ruby.internal.ui.text.syntax,
++ org.eclipse.dltk.ruby.internal.ui.typehierarchy,
++ org.eclipse.dltk.ruby.internal.ui.wizards,
+  org.eclipse.dltk.ruby.ui.preferences
+ Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java,v
@@ -117,34 +147,6 @@ diff -u -r1.31 plugin.xml
           extensions="rb"
           icon="$nl$/icons/obj16/ruby_obj.gif"
           id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
-Index: META-INF/MANIFEST.MF
-===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
-retrieving revision 1.9
-diff -u -r1.9 MANIFEST.MF
---- META-INF/MANIFEST.MF	30 May 2007 12:53:24 -0000	1.9
-+++ META-INF/MANIFEST.MF	9 Jun 2007 16:39:39 -0000
-@@ -25,12 +25,19 @@
-  org.eclipse.ui.console
- Eclipse-LazyStart: true
- Export-Package: org.eclipse.dltk.ruby.internal.ui,
-+ org.eclipse.dltk.ruby.internal.ui.actions,
-+ org.eclipse.dltk.ruby.internal.ui.docs,
-+ org.eclipse.dltk.ruby.internal.ui.documentation,
-  org.eclipse.dltk.ruby.internal.ui.editor,
-+ org.eclipse.dltk.ruby.internal.ui.infoviews,
-  org.eclipse.dltk.ruby.internal.ui.preferences,
-+ org.eclipse.dltk.ruby.internal.ui.search,
-+ org.eclipse.dltk.ruby.internal.ui.templates,
-  org.eclipse.dltk.ruby.internal.ui.text,
-  org.eclipse.dltk.ruby.internal.ui.text.completion,
-  org.eclipse.dltk.ruby.internal.ui.text.folding,
-  org.eclipse.dltk.ruby.internal.ui.text.rules,
-  org.eclipse.dltk.ruby.internal.ui.text.syntax,
-+ org.eclipse.dltk.ruby.internal.ui.typehierarchy,
-+ org.eclipse.dltk.ruby.internal.ui.wizards,
-  org.eclipse.dltk.ruby.ui.preferences
--
 Index: src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
 ===================================================================
 RCS file: src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
