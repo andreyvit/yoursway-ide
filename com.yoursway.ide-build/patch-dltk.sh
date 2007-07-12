@@ -11,7 +11,10 @@ DESTDIR=$2
   echo "Checking $plugin"
   if [ -f "$PATCHDIR/$plugin.patch" ]; then
     echo "Patch found. Patching."
-    (cd "$DESTDIR/$plugin"; patch -p0 < $PATCHDIR/$plugin.patch) || exit 1
+    (cd "$DESTDIR/$plugin"; patch -p0 < $PATCHDIR/$plugin.patch) || PATCH_BROKE=1
   fi
 done
 
+if [ -n "$PATCH_BROKE" ]; then
+  exit 1
+fi
