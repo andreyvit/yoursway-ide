@@ -1,42 +1,14 @@
+### Eclipse Workspace Patch 1.0
 #P org.eclipse.dltk.ruby.ui
-Index: META-INF/MANIFEST.MF
-===================================================================
-RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
-retrieving revision 1.12
-diff -u -r1.12 MANIFEST.MF
---- META-INF/MANIFEST.MF	10 Jul 2007 07:53:10 -0000	1.12
-+++ META-INF/MANIFEST.MF	12 Jul 2007 17:43:37 -0000
-@@ -23,12 +23,21 @@
-  org.eclipse.dltk.debug
- Eclipse-LazyStart: true
- Export-Package: org.eclipse.dltk.ruby.internal.ui,
-+ org.eclipse.dltk.ruby.internal.ui.actions,
-+ org.eclipse.dltk.ruby.internal.ui.docs,
-+ org.eclipse.dltk.ruby.internal.ui.documentation,
-  org.eclipse.dltk.ruby.internal.ui.editor,
-+ org.eclipse.dltk.ruby.internal.ui.formatting,
-+ org.eclipse.dltk.ruby.internal.ui.infoviews,
-  org.eclipse.dltk.ruby.internal.ui.preferences,
-+ org.eclipse.dltk.ruby.internal.ui.search,
-+ org.eclipse.dltk.ruby.internal.ui.templates,
-  org.eclipse.dltk.ruby.internal.ui.text,
-  org.eclipse.dltk.ruby.internal.ui.text.completion,
-  org.eclipse.dltk.ruby.internal.ui.text.folding,
-  org.eclipse.dltk.ruby.internal.ui.text.rules,
-  org.eclipse.dltk.ruby.internal.ui.text.syntax,
-+ org.eclipse.dltk.ruby.internal.ui.typehierarchy,
-+ org.eclipse.dltk.ruby.internal.ui.wizards,
-  org.eclipse.dltk.ruby.ui.preferences
- Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Index: src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java,v
-retrieving revision 1.8
-diff -u -r1.8 RubyPartitionScanner.java
---- src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java	8 Jun 2007 17:54:45 -0000	1.8
-+++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java	9 Jun 2007 16:39:40 -0000
-@@ -21,7 +21,7 @@
- import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
+retrieving revision 1.9
+diff -u -r1.9 RubyPartitionScanner.java
+--- src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java	18 Jun 2007 12:23:55 -0000	1.9
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyPartitionScanner.java	12 Jul 2007 18:12:30 -0000
+@@ -22,7 +22,7 @@
+ import org.eclipse.jface.text.rules.SingleLineRule;
  import org.eclipse.jface.text.rules.Token;
  
 -public class RubyPartitionScanner extends RuleBasedPartitionScanner {
@@ -44,7 +16,7 @@ diff -u -r1.8 RubyPartitionScanner.java
  
  	private Token string;
  	private Token comment;
-@@ -67,10 +67,6 @@
+@@ -68,10 +68,6 @@
  		return fOffset;		
  	}
  
@@ -61,7 +33,7 @@ RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.rub
 retrieving revision 1.2
 diff -u -r1.2 RubyCodeScanner.java
 --- src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java	2 May 2007 15:04:28 -0000	1.2
-+++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java	9 Jun 2007 16:39:40 -0000
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyCodeScanner.java	12 Jul 2007 18:12:30 -0000
 @@ -12,7 +12,9 @@
  import java.util.ArrayList;
  import java.util.List;
@@ -101,7 +73,7 @@ RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.rub
 retrieving revision 1.2
 diff -u -r1.2 RubySlashRegexpRule.java
 --- src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java	2 May 2007 15:04:28 -0000	1.2
-+++ src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java	9 Jun 2007 16:39:40 -0000
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubySlashRegexpRule.java	12 Jul 2007 18:12:30 -0000
 @@ -23,7 +23,7 @@
  	}
  
@@ -117,7 +89,7 @@ RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.rub
 retrieving revision 1.2
 diff -u -r1.2 RubyColorConstants.java
 --- src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java	2 May 2007 15:04:28 -0000	1.2
-+++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java	9 Jun 2007 16:39:40 -0000
++++ src/org/eclipse/dltk/ruby/internal/ui/text/RubyColorConstants.java	12 Jul 2007 18:12:30 -0000
 @@ -64,4 +64,12 @@
  	public static final String RUBY_PREDEFINED_VARIABLE = RUBY_VARIABLE + ".predefined"; //$NON-NLS-1$
  	
@@ -134,11 +106,11 @@ diff -u -r1.2 RubyColorConstants.java
 Index: plugin.xml
 ===================================================================
 RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/plugin.xml,v
-retrieving revision 1.31
-diff -u -r1.31 plugin.xml
---- plugin.xml	9 Jun 2007 07:08:23 -0000	1.31
-+++ plugin.xml	9 Jun 2007 16:39:39 -0000
-@@ -62,7 +62,7 @@
+retrieving revision 1.35
+diff -u -r1.35 plugin.xml
+--- plugin.xml	26 Jun 2007 05:53:12 -0000	1.35
++++ plugin.xml	12 Jul 2007 18:12:30 -0000
+@@ -61,7 +61,7 @@
  	  <editor
           class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
           contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
@@ -147,6 +119,35 @@ diff -u -r1.31 plugin.xml
           extensions="rb"
           icon="$nl$/icons/obj16/ruby_obj.gif"
           id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
+Index: META-INF/MANIFEST.MF
+===================================================================
+RCS file: /cvsroot/technology/org.eclipse.dltk/ruby/plugins/org.eclipse.dltk.ruby.ui/META-INF/MANIFEST.MF,v
+retrieving revision 1.12
+diff -u -r1.12 MANIFEST.MF
+--- META-INF/MANIFEST.MF	10 Jul 2007 07:53:10 -0000	1.12
++++ META-INF/MANIFEST.MF	12 Jul 2007 18:12:30 -0000
+@@ -23,12 +23,21 @@
+  org.eclipse.dltk.debug
+ Eclipse-LazyStart: true
+ Export-Package: org.eclipse.dltk.ruby.internal.ui,
++ org.eclipse.dltk.ruby.internal.ui.actions,
++ org.eclipse.dltk.ruby.internal.ui.docs,
++ org.eclipse.dltk.ruby.internal.ui.documentation,
+  org.eclipse.dltk.ruby.internal.ui.editor,
++ org.eclipse.dltk.ruby.internal.ui.formatting,
++ org.eclipse.dltk.ruby.internal.ui.infoviews,
+  org.eclipse.dltk.ruby.internal.ui.preferences,
++ org.eclipse.dltk.ruby.internal.ui.search,
++ org.eclipse.dltk.ruby.internal.ui.templates,
+  org.eclipse.dltk.ruby.internal.ui.text,
+  org.eclipse.dltk.ruby.internal.ui.text.completion,
+  org.eclipse.dltk.ruby.internal.ui.text.folding,
+  org.eclipse.dltk.ruby.internal.ui.text.rules,
+  org.eclipse.dltk.ruby.internal.ui.text.syntax,
++ org.eclipse.dltk.ruby.internal.ui.typehierarchy,
++ org.eclipse.dltk.ruby.internal.ui.wizards,
+  org.eclipse.dltk.ruby.ui.preferences
+ Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Index: src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
 ===================================================================
 RCS file: src/org/eclipse/dltk/ruby/internal/ui/text/ICodeScannerWithContextLookups.java
