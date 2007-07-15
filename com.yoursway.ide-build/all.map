@@ -1,20 +1,20 @@
 # product
 
-plugin@com.yoursway.ide-product=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@com.yoursway.ide-product=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 
 # features
 
-feature@com.yoursway.ide.feature=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide-feature
-feature@com.yoursway.ide.debug.feature=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide.debug-feature
+feature@com.yoursway.ide.feature=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide-feature
+feature@com.yoursway.ide.debug.feature=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,com.yoursway.ide.debug-feature
 
 # our plugins
 
-plugin@com.yoursway.common.utilities=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-fragment@com.yoursway.common.utilities.osx=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-fragment@com.yoursway.common.utilities.win32=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-fragment@com.yoursway.common.utilities.lnx=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-plugin@com.yoursway.ide.ui=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
-plugin@org.jvyaml=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@com.yoursway.common.utilities=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+fragment@com.yoursway.common.utilities.osx=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+fragment@com.yoursway.common.utilities.win32=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+fragment@com.yoursway.common.utilities.lnx=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@com.yoursway.ide.ui=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@org.jvyaml=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 
 # requisites
 
@@ -39,5 +39,5 @@ plugin@org.eclipse.dltk.ruby.launching=COPY,/home/ftp/dltk/repository/org.eclips
 plugin@org.eclipse.dltk.ruby.debug.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 
-plugin@com.yoursway.dltk.patch=CVS,HEAD,:pserver:builder@dottedmag.net:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
+plugin@com.yoursway.dltk.patch=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 
