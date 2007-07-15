@@ -38,6 +38,8 @@ plugin@org.eclipse.dltk.ruby.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/
 plugin@org.eclipse.dltk.ruby.launching=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.debug.ui=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 plugin@org.eclipse.dltk.ruby.debug=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.ruby.basicdebugger=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
+plugin@org.eclipse.dltk.ruby.activestatedebugger=COPY,/home/ftp/dltk/repository/org.eclipse.dltk/ruby/plugins
 
 plugin@com.yoursway.dltk.patch=CVS,HEAD,:pserver:builder@cvs.dev.yoursway.com:/opt/cvs/yoursway,eep%ief0aiJ4yoo,
 
