@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: YourSway IDE UI
-Bundle-SymbolicName: com.yoursway.ide.ui; singleton:=true
+Bundle-SymbolicName: com.yoursway.ide.ui;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: com.yoursway.ide.ui.Activator
 Bundle-Vendor: YourSway
@@ -36,7 +36,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.core,
  org.eclipse.dltk.debug,
  org.eclipse.dltk.debug.ui,
- org.eclipse.dltk.ruby,
  org.eclipse.dltk.ruby.core,
  org.eclipse.dltk.ruby.debug,
  org.eclipse.dltk.ruby.debug.ui,
@@ -46,7 +45,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.jvyaml,
  org.eclipse.wst.javascript.core,
  org.eclipse.wst.javascript.ui,
- org.eclipse.ui.workbench.texteditor
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.core.databinding,
+ org.eclipse.jface.databinding,
+ org.eclipse.core.databinding.beans
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.ide.analysis.model,
  com.yoursway.ide.analysis.sample,
