@@ -12,7 +12,7 @@ public class ER {
     private static boolean LOG_EXCEPTIONS_TO_CONSOLE = Boolean.parseBoolean(Platform
             .getDebugOption("com.yoursway.common.utilities/logExceptionsToConsole"));
     
-    private void log(Throwable e, String additionalMessage) {
+    private static void log(Throwable e, String additionalMessage) {
         if (LOG_EXCEPTIONS_TO_CONSOLE)
             e.printStackTrace(System.err);
         String message = e.getMessage();
@@ -21,19 +21,19 @@ public class ER {
         Activator.getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, e));
     }
     
-    public void unexpected(Throwable e) {
+    public static void unexpected(Throwable e) {
         unexpected(e, null);
     }
     
-    public void unexpected(Throwable e, String additionalMessage) {
+    public static void unexpected(Throwable e, String additionalMessage) {
         log(e, additionalMessage);
     }
     
-    public void expected(Throwable e) {
+    public static void expected(Throwable e) {
         expected(e, null);
     }
     
-    public void expected(Throwable e, String additionalMessage) {
+    public static void expected(Throwable e, String additionalMessage) {
         log(e, additionalMessage);
     }
     
