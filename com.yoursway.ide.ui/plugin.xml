@@ -190,6 +190,13 @@
 			<contentTypeBinding
 				contentTypeId="com.yoursway.erbhtml" />
 		</editor>
+  <editor
+        class="com.yoursway.ide.projects.editor.ProjectEditor"
+        default="true"
+        icon="icons/ruby_editor.gif"
+        id="com.yoursway.ide.RailsProjectEditor"
+        name="YourSway Rails Project Editor">
+  </editor>
 	</extension>
 	
 	<extension point="org.eclipse.core.filebuffers.documentCreation">
@@ -246,6 +253,9 @@
                 commandId="com.yoursway.ide.ui.Preferences"
                 label="Preferences...">
           </command>
+          <command
+                commandId="com.yoursway.ide.ShowProjectEditor">
+          </command>
        </menu>
        <menu
              id="com.yoursway.ide.add"
@@ -301,6 +311,11 @@
           defaultHandler="com.yoursway.ide.rails.migrations.AddRailsMigrationHandler"
           id="com.yoursway.ide.AddMigration"
           name="Add Migration">
+    </command>
+    <command
+          defaultHandler="com.yoursway.ide.projects.editor.ShowProjectEditorHandler"
+          id="com.yoursway.ide.ShowProjectEditor"
+          name="Show Project Editor">
     </command>
  </extension>
  <extension
