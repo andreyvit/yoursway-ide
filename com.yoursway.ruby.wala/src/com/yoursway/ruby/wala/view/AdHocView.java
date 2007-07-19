@@ -132,11 +132,11 @@ public class AdHocView extends ViewPart {
         CG = builder.makeCallGraph(builder.getOptions());
 
         // this seems to be for Java only, and does not work
-        ZeroOneCFABuilderFactory zof = new ZeroOneCFABuilderFactory();
-        CallGraphBuilder builder2 = zof.make(options, classHierarchy, scope, true);
-        CG = builder2.makeCallGraph(options);
+//        ZeroOneCFABuilderFactory zof = new ZeroOneCFABuilderFactory();
+//        CallGraphBuilder builder2 = zof.make(options, classHierarchy, scope, true);
+//        CG = builder2.makeCallGraph(options);
         
-//        dumpCG(builder, CG);
+        dumpCG(builder, CG);
         
         final IClassHierarchy ch = CG.getClassHierarchy();
         IClass rootClass = ch.getRootClass();
