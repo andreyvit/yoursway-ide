@@ -13,6 +13,8 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -31,6 +33,7 @@ import com.ibm.wala.analysis.typeInference.TypeInference;
 import com.ibm.wala.cast.ipa.callgraph.CAstAnalysisScope;
 import com.ibm.wala.cast.ipa.callgraph.StandardFunctionTargetSelector;
 import com.ibm.wala.cast.ir.ssa.AstIRFactory;
+import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.SourceFileModule;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
@@ -143,9 +146,16 @@ public class AdHocView extends ViewPart {
         
         putline("Graph built!");
         putline("Max number is " + CG.getMaxNumber());
-        Collection<CGNode> entrypointNodes = CG.getEntrypointNodes();
-        for (CGNode node : entrypointNodes) {
-            putline("EP node - method " + node.getIR().getMethod());
+        for (CGNode node : CG) {
+            putline("Method " + node.getMethod().getReference());
+            for (Iterator<CallSiteReference> iter = node.iterateCallSites(); iter.hasNext(); ) {
+                CallSiteReference ref = iter.next();
+                putline("  Calls " + ref.getDeclaredTarget());
+                Set<CGNode> possibleTargets = CG.getPossibleTargets(node, ref);
+                for (CGNode target : possibleTargets) {
+                    putline("    Possible target: " + target.getMethod());
+                }
+            }
         }
         putline("EOF");
     }
