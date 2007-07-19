@@ -36,9 +36,11 @@ import com.ibm.wala.cast.ir.ssa.AstIRFactory;
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.SourceFileModule;
+import com.ibm.wala.client.impl.ZeroOneCFABuilderFactory;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.callgraph.CallGraphBuilder;
 import com.ibm.wala.ipa.callgraph.Entrypoint;
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
@@ -124,11 +126,19 @@ public class AdHocView extends ViewPart {
         options.setUseConstantSpecificKeys(true);
         options.setUseStacksForLexicalScoping(true);
         options.getSSAOptions().setPreserveNames(true);
-        JSCFABuilder builder = new JSZeroXCFABuilder(classHierarchy, options, null, null, null, ZeroXInstanceKeys.ALLOCATIONS);
-        CallGraph CG = builder.makeCallGraph(builder.getOptions());
-        dumpCG(builder, CG);
+        CallGraph CG;
         
-        final IClassHierarchy ch = builder.getClassHierarchy();
+        JSCFABuilder builder = new JSZeroXCFABuilder(classHierarchy, options, null, null, null, ZeroXInstanceKeys.ALLOCATIONS);
+        CG = builder.makeCallGraph(builder.getOptions());
+
+        // this seems to be for Java only, and does not work
+        ZeroOneCFABuilderFactory zof = new ZeroOneCFABuilderFactory();
+        CallGraphBuilder builder2 = zof.make(options, classHierarchy, scope, true);
+        CG = builder2.makeCallGraph(options);
+        
+//        dumpCG(builder, CG);
+        
+        final IClassHierarchy ch = CG.getClassHierarchy();
         IClass rootClass = ch.getRootClass();
         putline("Root class: " + rootClass);
         Collection<IClass> subclasses = ch.getImmediateSubclasses(rootClass);
@@ -147,10 +157,10 @@ public class AdHocView extends ViewPart {
         putline("Graph built!");
         putline("Max number is " + CG.getMaxNumber());
         for (CGNode node : CG) {
-            putline("Method " + node.getMethod().getReference());
+            putline("Method " + node.getMethod().getSignature());
             for (Iterator<CallSiteReference> iter = node.iterateCallSites(); iter.hasNext(); ) {
                 CallSiteReference ref = iter.next();
-                putline("  Calls " + ref.getDeclaredTarget());
+                putline("  Calls " + ref.getDeclaredTarget().getSignature());
                 Set<CGNode> possibleTargets = CG.getPossibleTargets(node, ref);
                 for (CGNode target : possibleTargets) {
                     putline("    Possible target: " + target.getMethod());
