@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.yoursway.lrucache0;
+package com.yoursway.lrucache;
 
 import java.util.Enumeration;
 import java.util.Iterator;

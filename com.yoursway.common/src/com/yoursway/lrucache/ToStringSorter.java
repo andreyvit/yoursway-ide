@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.yoursway.lrucache0;
+package com.yoursway.lrucache;
 
 /**
  * The SortOperation takes a collection of objects and returns a sorted

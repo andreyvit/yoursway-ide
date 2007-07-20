@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.yoursway.lrucache0;
+package com.yoursway.lrucache;
 
 import java.text.NumberFormat;
 import java.util.Enumeration;

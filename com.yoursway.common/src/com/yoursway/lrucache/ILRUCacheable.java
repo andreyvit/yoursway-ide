@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.yoursway.lrucache0;
+package com.yoursway.lrucache;
 
 /**
  * Types implementing this interface can occupy a variable amount of space
