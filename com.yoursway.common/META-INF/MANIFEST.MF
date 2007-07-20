@@ -8,4 +8,4 @@ Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.common,
- com.yoursway.lrucache0
+ com.yoursway.lrucache
