@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common Plug-in
+Bundle-SymbolicName: com.yoursway.common
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.common.internal.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-LazyStart: true
+Export-Package: com.yoursway.common,
+ com.yoursway.lrucache
