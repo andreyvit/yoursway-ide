@@ -2,9 +2,9 @@ package com.yoursway.ide.projects.commands;
 
 import java.util.Iterator;
 
-import com.yoursway.utils.ChainedIterator;
-import com.yoursway.utils.RandomStringIterable;
-import com.yoursway.utils.StringTupleIterable;
+import com.yoursway.common.ChainedIterator;
+import com.yoursway.common.RandomStringIterable;
+import com.yoursway.common.StringTupleIterable;
 
 public class ProjectNamingUtils {
     

@@ -6,9 +6,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 
+import com.yoursway.common.TypedListenerList;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.TypedListenerList;
 
 public class RailsServersModel {
     

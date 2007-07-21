@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tracker;
 import org.eclipse.ui.services.IDisposable;
 
-import com.yoursway.utils.TypedListenerList;
+import com.yoursway.common.TypedListenerList;
 
 /**
  * A non-modal popup shell manager. The created shell does not have a titlebar

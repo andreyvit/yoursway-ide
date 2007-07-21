@@ -1,6 +1,6 @@
 package com.yoursway.rails.core.internal.support;
 
-import com.yoursway.utils.TypedListenerList;
+import com.yoursway.common.TypedListenerList;
 
 public abstract class AbstractModel<Listener> {
     

@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IResourceDelta;
 
+import com.yoursway.common.resources.ResourceUtils;
 import com.yoursway.rails.core.dbschema.internal.BroadcastingDbTablesChangeVisitor;
 import com.yoursway.rails.core.dbschema.internal.DbSchemaIterator;
 import com.yoursway.rails.core.dbschema.internal.DbTablesRequestor;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.ResourceUtils;
 
 public class PerProjectDbTablesCollection extends AbstractModel<IDbSchemaListener> {
     

@@ -2,7 +2,7 @@ package com.yoursway.rails;
 
 import java.util.regex.Pattern;
 
-import com.yoursway.utils.Strings;
+import com.yoursway.common.Strings;
 
 /**
  * Holds a version number. Currently is a stub implementation that uses "natural

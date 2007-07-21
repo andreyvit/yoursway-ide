@@ -9,11 +9,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 
+import com.yoursway.common.resources.ResourceSwitch;
+import com.yoursway.common.resources.ResourceUtils;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.ResourceSwitch;
-import com.yoursway.utils.ResourceUtils;
 
 public class RailsMigrationsIterator {
     

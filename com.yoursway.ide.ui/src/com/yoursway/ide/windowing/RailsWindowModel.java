@@ -9,9 +9,9 @@ import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import com.yoursway.common.TypedListenerList;
 import com.yoursway.ide.projects.YourSwayProjects;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.TypedListenerList;
 
 public class RailsWindowModel {
     

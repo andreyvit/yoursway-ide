@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import com.yoursway.common.SegmentedName;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
@@ -23,7 +24,6 @@ import com.yoursway.rails.core.models.PerProjectRailsModelsCollection;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.SegmentedName;
 import com.yoursway.utils.collections.MultiMap;
 
 public class ProjectPresenter extends AbstractPresenter {

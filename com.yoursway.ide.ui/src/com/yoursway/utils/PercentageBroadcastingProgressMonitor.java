@@ -2,6 +2,8 @@ package com.yoursway.utils;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.yoursway.common.TypedListenerList;
+
 public class PercentageBroadcastingProgressMonitor implements IProgressMonitor {
     
     private boolean done;

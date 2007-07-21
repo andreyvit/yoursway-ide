@@ -16,10 +16,10 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterConfig;
 
+import com.yoursway.common.StringUtils;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.discovering.RubyAndRailsDiscovering;
 import com.yoursway.utils.InterpreterRunnerUtil;
-import com.yoursway.utils.StringUtils;
 
 public class RubyInstallWrapper {
     

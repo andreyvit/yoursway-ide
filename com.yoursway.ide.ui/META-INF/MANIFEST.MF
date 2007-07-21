@@ -41,14 +41,16 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.ruby.debug.ui,
  org.eclipse.dltk.ruby.launching,
  org.eclipse.dltk.ruby.ui,
- com.yoursway.common.utilities,
+ com.yoursway.common.rcp,
  org.jvyaml,
  org.eclipse.wst.javascript.core,
  org.eclipse.wst.javascript.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.core.databinding,
  org.eclipse.jface.databinding,
- org.eclipse.core.databinding.beans
+ org.eclipse.core.databinding.beans,
+ com.yoursway.common.resources,
+ com.yoursway.common
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.ide.analysis.model,
  com.yoursway.ide.analysis.sample,

@@ -14,11 +14,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.link.LinkedPosition;
 
+import com.yoursway.common.StringUtils;
 import com.yoursway.ide.common.linkedmode.AbstractSingleAreaLinkedMode;
 import com.yoursway.ide.ui.rubyeditor.HumaneRubyEditor;
 import com.yoursway.ruby.model.RubyFile;
 import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.StringUtils;
 
 public class ModelCreationLinkedMode extends AbstractSingleAreaLinkedMode {
     

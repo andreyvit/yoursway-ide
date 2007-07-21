@@ -2,10 +2,10 @@ package com.yoursway.rails.core.models;
 
 import org.eclipse.core.resources.IFile;
 
+import com.yoursway.common.SegmentedName;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.SegmentedName;
 
 public class RailsModel {
     

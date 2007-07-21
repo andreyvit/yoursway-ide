@@ -17,6 +17,8 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
 
+import com.yoursway.common.StringListBuilder;
+
 /**
  * Utility class wrapping {@link AbstractInterpreterRunner} with convenience
  * functions.

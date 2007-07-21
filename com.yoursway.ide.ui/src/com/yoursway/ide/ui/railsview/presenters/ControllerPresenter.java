@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import com.yoursway.common.SegmentedName;
 import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.presentation.AbstractPresenter;
 import com.yoursway.ide.ui.railsview.presentation.IContextMenuContext;
@@ -15,7 +16,6 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.presentation.IProvidesTreeItem;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.SegmentedName;
 
 public class ControllerPresenter extends AbstractPresenter {
     

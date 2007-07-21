@@ -15,10 +15,10 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.services.IDisposable;
 
+import com.yoursway.common.TypedListenerList;
 import com.yoursway.ide.images.YourSwayIDEImages;
 import com.yoursway.ui.popup.IPopupLifecycleListener;
 import com.yoursway.ui.popup.SnappableYellowPopup;
-import com.yoursway.utils.TypedListenerList;
 
 /**
  * Emulates an Eclipse-style view menu on the given popup. Contains a set of

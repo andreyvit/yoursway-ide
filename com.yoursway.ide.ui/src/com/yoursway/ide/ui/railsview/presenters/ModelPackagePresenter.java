@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import org.eclipse.osgi.util.NLS;
 
+import com.yoursway.common.SegmentedName;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.utils.RailsNamingConventions;
-import com.yoursway.utils.SegmentedName;
 
 public class ModelPackagePresenter extends AbstractPackagePresenter {
     

@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
+import com.yoursway.common.TypedListenerList;
 import com.yoursway.rails.Version;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.ruby.internal.IPossibleRubyLocationsRequestor;
 import com.yoursway.ruby.internal.PossibleRubyLocationsIterator;
 import com.yoursway.ruby.internal.RubyInstanceValidationResult;
 import com.yoursway.ruby.internal.RubyInstanceValidator;
-import com.yoursway.utils.TypedListenerList;
 
 public class RubyInstanceCollection extends AbstractModel<IRubyInstancesListener> {
     
