@@ -65,10 +65,53 @@ public class ResourceUtils {
         return true;
     }
     
+    /**
+     * Checks if the given delta contains any changes affecting the given child
+     * (or grandchild) of the resouce represented by the delta.
+     * 
+     * @param delta
+     * @param filePath
+     *            a path relative to the <code>delta</code>
+     * @return <code>true</code> if the resource at the given path has
+     *         changed, or any of its parents were added or removed;
+     *         <code>false</code> otherwise.
+     */
+    public static void interpretDelta(IResourceDelta delta, IPath filePath, IConcreteResourceChangeVisitor visitor) {
+        Assert.isNotNull(delta);
+        Assert.isNotNull(filePath);
+        Assert.isNotNull(visitor);
+        
+        final int segmentCount = filePath.segmentCount();
+        Assert.isTrue(segmentCount > 0);
+        IResourceDelta currentDelta = delta;
+        for (int i = 0; i < segmentCount; i++) {
+            String segment = filePath.segment(i);
+            currentDelta = currentDelta.findMember(new Path(segment));
+            if (currentDelta == null)
+                return;
+            switch(currentDelta.getKind()) {
+            case IResourceDelta.ADDED:
+                visitor.resourceMightHaveBeenAdded();
+                return;
+            case IResourceDelta.REMOVED:
+                visitor.resourceRemovedIfExisted();
+                return;
+            }
+        }
+        Assert.isTrue(currentDelta.getKind() == IResourceDelta.CHANGED);
+        visitor.resourceChanged(currentDelta);
+    }
+    
     public static boolean isNotFoundOrOutOfSync(CoreException e) {
-        int code = e.getStatus().getCode();
-        return code == IResourceStatus.NOT_FOUND_LOCAL || code == IResourceStatus.NO_LOCATION_LOCAL
-                || code == IResourceStatus.OUT_OF_SYNC_LOCAL;
+        return isNotFound(e) || isOutOfSync(e);
+    }
+    
+    public static boolean isNotFound(CoreException e) {
+        return e.getStatus().getCode() == IResourceStatus.RESOURCE_NOT_FOUND;
+    }
+
+    public static boolean isOutOfSync(CoreException e) {
+        return e.getStatus().getCode() == IResourceStatus.OUT_OF_SYNC_LOCAL;
     }
     
 }
