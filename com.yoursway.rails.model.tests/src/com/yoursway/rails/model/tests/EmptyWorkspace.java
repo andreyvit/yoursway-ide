@@ -21,7 +21,7 @@ public final class EmptyWorkspace extends AbstractRailsProjectsTestCase {
         project = ResourcesPlugin.getWorkspace().getRoot().getProject("foo");
         addSetChangeListener();
     }
-    
+
     @Test
     public void notifiesAboutAddingProject() throws Exception {
         context.checking(new Expectations() {{

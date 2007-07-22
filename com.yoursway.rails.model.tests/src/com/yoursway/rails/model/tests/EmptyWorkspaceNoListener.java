@@ -23,7 +23,7 @@ public final class EmptyWorkspaceNoListener extends AbstractRailsProjectsTestCas
     public void isEmptyInitially() {
         assertContents();
     }
-    
+
     @Test
     public void hasOneProjectAfterCreatingFirstProject() throws Exception {
         create(project);

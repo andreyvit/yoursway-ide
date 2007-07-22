@@ -7,7 +7,7 @@ import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yoursway.databinding.resources.tests.SetChangeEventMatcher;
+import com.yoursway.tests.commons.SetChangeEventMatcher;
 
 public final class FilledContainer extends AbstractShallowChildrenTests {
     

@@ -1,11 +1,11 @@
 package com.yoursway.tests.commons;
 
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TestFriendlyLockBasedRealm extends LockBasedRealm {
     
-    private Queue<Runnable> asyncRunnables = new LinkedList<Runnable>();
+    private Queue<Runnable> asyncRunnables = new ConcurrentLinkedQueue<Runnable>();
     
     @Override
     public void asyncExec(Runnable runnable) {
@@ -13,7 +13,8 @@ public class TestFriendlyLockBasedRealm extends LockBasedRealm {
     }
     
     public void runAsyncTasks() {
-        for (Runnable runnable : asyncRunnables)
+        Runnable runnable;
+        while ((runnable = asyncRunnables.poll()) != null)
             syncExec(runnable);
     }
     

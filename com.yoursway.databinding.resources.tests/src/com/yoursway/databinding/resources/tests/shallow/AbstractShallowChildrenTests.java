@@ -5,50 +5,28 @@ import static org.junit.Assert.assertArrayEquals;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.ISetChangeListener;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
+import org.junit.Before;
 
 import com.yoursway.databinding.resources.ResourceObservables;
-import com.yoursway.databinding.resources.tests.ProjectTests;
+import com.yoursway.tests.commons.AbstractObservableSetTestCase;
 
-public abstract class AbstractShallowChildrenTests extends ProjectTests {
+public abstract class AbstractShallowChildrenTests extends AbstractObservableSetTestCase<IResource> {
     
-    protected IObservableSet observable;
-    protected ISetChangeListener listener;
+    protected IProject project;
     
-    @After
-    public void cleanupContainerObservingTest() {
-        if (listener != null && observable != null)
-            observable.removeSetChangeListener(listener);
+    @Before
+    public void setupProject() throws CoreException {
+        project = ResourcesPlugin.getWorkspace().getRoot().getProject("foo");
+        create(project);
     }
     
     protected void observe(IContainer folder) {
         observable = ResourceObservables.observeChildren(realm, folder);
-    }
-    
-    protected void addSetChangeListener() {
-        listener = context.mock(ISetChangeListener.class);
-        observable.addSetChangeListener(listener);
-    }
-    
-    protected void assertContents(final IResource... resources) {
-        realm.syncExec(new Runnable() {
-            
-            public void run() {
-                assertArrayEquals(resources, observable.toArray());
-            }
-            
-        });
-    }
-    
-    protected void forceRead() {
-        realm.syncExec(new Runnable() {
-            
-            public void run() {
-                observable.toArray();
-            }
-            
-        });
     }
     
 }
