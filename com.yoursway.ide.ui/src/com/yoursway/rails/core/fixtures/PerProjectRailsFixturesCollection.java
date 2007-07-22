@@ -11,12 +11,12 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.fixtures.internal.BroadcastingRailsFixturesChangeVisitor;
 import com.yoursway.rails.core.fixtures.internal.RailsFixturesIterator;
 import com.yoursway.rails.core.fixtures.internal.Requestor;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class PerProjectRailsFixturesCollection extends AbstractModel<IRailsFixturesListener> {
     

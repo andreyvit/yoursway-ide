@@ -8,9 +8,9 @@ import com.yoursway.ide.common.creation.AbstractLinkedCreationHandler;
 import com.yoursway.ide.common.creation.LinkedCreationDescriptor;
 import com.yoursway.ide.common.linkedmode.AbstractSingleAreaLinkedMode;
 import com.yoursway.ide.ui.rubyeditor.HumaneRubyEditor;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.utils.EditorUtils;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class AddRailsControllerHandler extends AbstractLinkedCreationHandler {
     

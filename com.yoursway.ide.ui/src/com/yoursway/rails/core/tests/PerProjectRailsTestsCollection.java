@@ -12,12 +12,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.tests.internal.BroadcastingRailsTestsChangeVisitor;
 import com.yoursway.rails.core.tests.internal.RailsTestsIterator;
 import com.yoursway.rails.core.tests.internal.Requestor;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class PerProjectRailsTestsCollection extends AbstractModel<IRailsTestsListener> {
     

@@ -17,8 +17,8 @@ import org.eclipse.jface.text.link.LinkedPosition;
 import com.yoursway.common.StringUtils;
 import com.yoursway.ide.common.linkedmode.AbstractSingleAreaLinkedMode;
 import com.yoursway.ide.ui.rubyeditor.HumaneRubyEditor;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.ruby.model.RubyFile;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class ControllerCreationLinkedMode extends AbstractSingleAreaLinkedMode {
     

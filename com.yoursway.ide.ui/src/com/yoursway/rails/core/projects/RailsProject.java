@@ -3,8 +3,8 @@ package com.yoursway.rails.core.projects;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 
-import com.yoursway.utils.Inflector;
-import com.yoursway.utils.RailsNamingConventions;
+import com.yoursway.rails.commons.Inflector;
+import com.yoursway.rails.commons.RailsNamingConventions;
 
 public class RailsProject {
     

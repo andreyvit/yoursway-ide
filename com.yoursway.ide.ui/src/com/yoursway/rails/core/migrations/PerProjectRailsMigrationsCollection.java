@@ -13,12 +13,12 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.common.resources.ResourceUtils;
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.migrations.internal.RailsMigrationsBroadcastingChangeVisitor;
 import com.yoursway.rails.core.migrations.internal.RailsMigrationsIterator;
 import com.yoursway.rails.core.migrations.internal.RailsMigrationsRequestor;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class PerProjectRailsMigrationsCollection extends AbstractModel<IRailsMigrationsListener> {
     

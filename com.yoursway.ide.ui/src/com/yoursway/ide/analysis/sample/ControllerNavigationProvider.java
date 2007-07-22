@@ -38,8 +38,8 @@ import com.yoursway.ide.analysis.model.IAdvice;
 import com.yoursway.ide.analysis.model.IAdviceProvider;
 import com.yoursway.ide.analysis.model.IAdviceProviderListener;
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.utils.PathUtils;
-import com.yoursway.utils.RailsNamingConventions;
 import com.yoursway.utils.RubyASTUtils;
 import com.yoursway.utils.RubyModelUtils2;
 

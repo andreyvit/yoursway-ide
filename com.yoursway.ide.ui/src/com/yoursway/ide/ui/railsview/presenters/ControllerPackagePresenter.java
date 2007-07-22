@@ -6,8 +6,8 @@ import org.eclipse.osgi.util.NLS;
 
 import com.yoursway.common.SegmentedName;
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.controllers.RailsController;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class ControllerPackagePresenter extends AbstractPackagePresenter {
     

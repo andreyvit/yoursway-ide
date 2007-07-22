@@ -5,7 +5,7 @@ import org.eclipse.core.resources.IFile;
 import com.yoursway.rails.core.models.RailsModel;
 import com.yoursway.rails.core.models.RailsModelsCollection;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.RailsNamingConventions;
+import com.yoursway.utils.RailsFixtureUtils;
 
 public class RailsFixture {
     
@@ -32,7 +32,7 @@ public class RailsFixture {
     }
     
     public RailsModel getModel() {
-        IFile modelFile = RailsNamingConventions.getModelFileByFixture(file);
+        IFile modelFile = RailsFixtureUtils.getModelFileByFixture(file);
         return RailsModelsCollection.instance().get(railsProject).get(modelFile);
     }
     

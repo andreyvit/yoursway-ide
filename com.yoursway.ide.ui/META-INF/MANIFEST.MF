@@ -50,7 +50,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.databinding,
  org.eclipse.core.databinding.beans,
  com.yoursway.common.resources,
- com.yoursway.common
+ com.yoursway.common,
+ com.yoursway.rails.commons
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.ide.analysis.model,
  com.yoursway.ide.analysis.sample,

@@ -8,6 +8,7 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.commons.RailsNamingConventions;
 
 public class RailsFileUtils {
     

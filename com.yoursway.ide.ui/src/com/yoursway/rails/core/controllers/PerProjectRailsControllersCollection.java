@@ -11,12 +11,12 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.ide.ui.Activator;
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.controllers.internal.BroadcastingRailsControllersChangeVisitor;
 import com.yoursway.rails.core.controllers.internal.RailsControllersIterator;
 import com.yoursway.rails.core.controllers.internal.Requestor;
 import com.yoursway.rails.core.internal.support.AbstractModel;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class PerProjectRailsControllersCollection extends AbstractModel<IRailsControllersListener> {
     

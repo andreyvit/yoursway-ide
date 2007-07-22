@@ -4,13 +4,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 
+import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.utils.schemaparser.RubySchemaParser;
 import com.yoursway.rails.utils.schemaparser.SchemaInfo;
 import com.yoursway.rails.utils.schemaparser.TableInfo;
 import com.yoursway.ruby.model.RubyFactory;
 import com.yoursway.ruby.model.RubyFile;
-import com.yoursway.utils.RailsNamingConventions;
 
 public class DbSchemaIterator {
     
