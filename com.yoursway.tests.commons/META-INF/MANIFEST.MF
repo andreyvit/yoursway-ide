@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Commons Plug-in
+Bundle-SymbolicName: com.yoursway.tests.commons
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.tests.commons.internal.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.junit4,
+ org.jmock,
+ org.eclipse.core.databinding
+Eclipse-LazyStart: true
+Export-Package: com.yoursway.tests.commons
