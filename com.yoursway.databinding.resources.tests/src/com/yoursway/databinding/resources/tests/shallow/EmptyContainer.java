@@ -21,7 +21,7 @@ public final class EmptyContainer extends AbstractShallowChildrenTests {
     @Before
     public void setUp() throws CoreException {
         folder = project.getFolder("bar");
-        folder.create(true, true, null);
+        create(folder);
         file = folder.getFile("foo");
         observe(folder);
         addSetChangeListener();
@@ -53,7 +53,6 @@ public final class EmptyContainer extends AbstractShallowChildrenTests {
         sync.waitState(1);
         forceRead();
         realm.runAsyncTasks();
-        context.assertIsSatisfied();
         
         expectFileAdded();
         sync.setState(2);
