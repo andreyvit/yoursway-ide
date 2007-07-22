@@ -1,4 +1,4 @@
-package com.yoursway.utils;
+package com.yoursway.common.resources;
 
 import java.util.ArrayList;
 import java.util.Collection;
