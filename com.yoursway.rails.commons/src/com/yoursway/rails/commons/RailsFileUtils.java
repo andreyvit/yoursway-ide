@@ -1,4 +1,4 @@
-package com.yoursway.utils;
+package com.yoursway.rails.commons;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
@@ -7,8 +7,8 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
-import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.commons.RailsNamingConventions;
+import com.yoursway.common.resources.PathUtils;
+import com.yoursway.error_reporting.ER;
 
 public class RailsFileUtils {
     
@@ -42,7 +42,7 @@ public class RailsFileUtils {
                     }
                 }
             } catch (ModelException e) {
-                Activator.log(e);
+                ER.unexpected(e);
             }
         }
         return null;

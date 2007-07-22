@@ -1,20 +1,26 @@
 package com.yoursway.rails.model;
 
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 
 import com.yoursway.rails.commons.Inflector;
 import com.yoursway.rails.commons.RailsNamingConventions;
+import com.yoursway.rails.model.internal.ControllersObservableSet;
 
 public class RailsProject {
     
     private final IProject project;
     private final Inflector inflector;
     
-    public RailsProject(IProject project) {
+    private ControllersObservableSet controllers;
+    
+    public RailsProject(Realm realm, IProject project) {
         Assert.isLegal(project != null);
         this.project = project;
         inflector = RailsNamingConventions.createInitializedInflector();
+        controllers = new ControllersObservableSet(realm, this);
     }
     
     public IProject getProject() {
@@ -23,6 +29,10 @@ public class RailsProject {
     
     public Inflector getInflector() {
         return inflector;
+    }
+    
+    public IObservableSet getControllers() {
+        return controllers;
     }
     
 }

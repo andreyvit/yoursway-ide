@@ -33,13 +33,13 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.swt.graphics.GC;
 
+import com.yoursway.common.resources.PathUtils;
 import com.yoursway.ide.analysis.model.AdvicesChangeEvent;
 import com.yoursway.ide.analysis.model.IAdvice;
 import com.yoursway.ide.analysis.model.IAdviceProvider;
 import com.yoursway.ide.analysis.model.IAdviceProviderListener;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.commons.RailsNamingConventions;
-import com.yoursway.utils.PathUtils;
 import com.yoursway.utils.RubyASTUtils;
 import com.yoursway.utils.RubyModelUtils2;
 

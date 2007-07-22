@@ -1,20 +1,19 @@
-package com.yoursway.rails.core.models;
+package com.yoursway.rails.model;
 
 import org.eclipse.core.resources.IFile;
 
 import com.yoursway.common.SegmentedName;
 import com.yoursway.common.resources.PathUtils;
 import com.yoursway.rails.commons.RailsNamingConventions;
-import com.yoursway.rails.core.projects.RailsProject;
 
-public class RailsModel {
+public class RailsController {
     
     private final IFile file;
     private final SegmentedName pathComponents;
     private final SegmentedName fullClassName;
     private final RailsProject railsProject;
     
-    public RailsModel(RailsProject railsProject, IFile file) {
+    public RailsController(RailsProject railsProject, IFile file) {
         if (railsProject == null)
             throw new IllegalArgumentException();
         if (file == null)
@@ -24,8 +23,15 @@ public class RailsModel {
         this.file = file;
         
         pathComponents = new SegmentedName(PathUtils.determinePathComponents(file.getProject().getFolder(
-                RailsNamingConventions.APP_MODELS), file));
-        fullClassName = RailsNamingConventions.camelize(pathComponents);
+                RailsNamingConventions.APP_CONTROLLERS), file));
+        fullClassName = calculateClassName(pathComponents);
+    }
+    
+    private static SegmentedName calculateClassName(final SegmentedName pathComponents) {
+        SegmentedName fullClassName = RailsNamingConventions.camelize(pathComponents);
+        if (fullClassName.equalsSingleSegment("Application"))
+            fullClassName = fullClassName.replaceTrailingSegment("ApplicationController");
+        return fullClassName;
     }
     
     public RailsProject getRailsProject() {
@@ -44,17 +50,12 @@ public class RailsModel {
         return fullClassName;
     }
     
-    public String getCombinedClassName() {
+    public String getDisplayName() {
         return RailsNamingConventions.joinNamespaces(getFullClassName());
     }
     
-    public String getTableName() {
-        // TODO: how namespaced models are mapped into tables?
-        return RailsNamingConventions.tableize(railsProject.getInflector(), getCombinedClassName());
-    }
-    
     public SegmentedName getNamespace() {
-        return fullClassName.removeTrailingSegment();
+        return getFullClassName().removeTrailingSegment();
     }
     
 }

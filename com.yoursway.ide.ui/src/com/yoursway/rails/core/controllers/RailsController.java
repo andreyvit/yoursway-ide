@@ -3,9 +3,9 @@ package com.yoursway.rails.core.controllers;
 import org.eclipse.core.resources.IFile;
 
 import com.yoursway.common.SegmentedName;
+import com.yoursway.common.resources.PathUtils;
 import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.projects.RailsProject;
-import com.yoursway.utils.PathUtils;
 
 public class RailsController {
     

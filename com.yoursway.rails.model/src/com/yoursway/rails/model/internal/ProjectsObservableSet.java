@@ -18,7 +18,7 @@ public class ProjectsObservableSet extends MappedObservableSet<IProject, RailsPr
         // FIXME check if this is a Rails project or not
 //        if (!project.getFolder("app").exists())
 //            return null;
-        return new RailsProject(project);
+        return new RailsProject(getRealm(), project);
     }
     
 }

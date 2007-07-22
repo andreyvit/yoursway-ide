@@ -6,6 +6,10 @@ Bundle-Version: 1.0.0
 Bundle-Activator: com.yoursway.rails.commons.internal.Activator
 Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.core.runtime,
- com.yoursway.common
+ com.yoursway.common,
+ org.eclipse.dltk.core,
+ org.eclipse.core.resources,
+ com.yoursway.common.resources,
+ com.yoursway.common.rcp
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.rails.commons

@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
+import com.yoursway.common.resources.PathUtils;
 import com.yoursway.rails.commons.RailsNamingConventions;
 import com.yoursway.rails.core.projects.RailsProject;
 import com.yoursway.rails.core.projects.RailsProjectsCollection;
