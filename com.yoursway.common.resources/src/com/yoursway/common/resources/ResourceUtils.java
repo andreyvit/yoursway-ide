@@ -82,7 +82,6 @@ public class ResourceUtils {
         Assert.isNotNull(visitor);
         
         final int segmentCount = filePath.segmentCount();
-        Assert.isTrue(segmentCount > 0);
         IResourceDelta currentDelta = delta;
         for (int i = 0; i < segmentCount; i++) {
             String segment = filePath.segment(i);
