@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.tests;
+package com.yoursway.rails.model.tests.projects;
 
 import static org.junit.Assert.assertEquals;
 
