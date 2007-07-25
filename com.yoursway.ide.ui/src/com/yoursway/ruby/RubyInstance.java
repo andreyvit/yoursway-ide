@@ -50,7 +50,7 @@ public class RubyInstance {
      * @return
      * @throws RubyScriptInvokationError
      */
-    public ToolExecutionResult runRubyScript(String fileName, List<String> arguments, IProgressMonitor monitor)
+    public ProcessResult runRubyScript(String fileName, List<String> arguments, IProgressMonitor monitor)
             throws RubyScriptInvokationError {
         return installWrapper.runRubyScript(fileName, arguments, monitor);
     }

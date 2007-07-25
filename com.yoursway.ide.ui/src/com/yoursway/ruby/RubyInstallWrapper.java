@@ -84,7 +84,7 @@ public class RubyInstallWrapper {
      * @return
      * @throws RubyScriptInvokationError
      */
-    public ToolExecutionResult runRubyScript(String fileName, List<String> arguments, IProgressMonitor monitor)
+    public ProcessResult runRubyScript(String fileName, List<String> arguments, IProgressMonitor monitor)
             throws RubyScriptInvokationError {
         SubMonitor progress = SubMonitor.convert(monitor);
         InterpreterConfig config = createInterpreterConfig(fileName, arguments);
@@ -127,7 +127,7 @@ public class RubyInstallWrapper {
      *            finished ILaunch
      * @return launch result
      */
-    private ToolExecutionResult getLaunchResult(ILaunch launch) {
+    private ProcessResult getLaunchResult(ILaunch launch) {
         IProcess[] launchProcesses = launch.getProcesses();
         assert launchProcesses.length == 1 : "Ruby script launch is expected to have single process";
         
@@ -136,7 +136,7 @@ public class RubyInstallWrapper {
         final int exitCode = InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess);
         String output = launchProcess.getStreamsProxy().getOutputStreamMonitor().getContents();
         String error = launchProcess.getStreamsProxy().getErrorStreamMonitor().getContents();
-        return new ToolExecutionResult(exitCode, output, error);
+        return new ProcessResult(exitCode, output, error);
     }
     
     /**

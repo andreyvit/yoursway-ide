@@ -11,7 +11,7 @@ import com.yoursway.rails.Version;
 import com.yoursway.ruby.RubyInstallWrapper;
 import com.yoursway.ruby.RubyScriptInvokationError;
 import com.yoursway.ruby.RubyToolUtils;
-import com.yoursway.ruby.ToolExecutionResult;
+import com.yoursway.ruby.ProcessResult;
 
 public class RubyInstanceValidator {
     
@@ -22,7 +22,7 @@ public class RubyInstanceValidator {
         try {
             String script = RubyToolUtils.getScriptCopySuitableForRunning("ruby_version.rb");
             try {
-                ToolExecutionResult result = rubyInstance.runRubyScript(script, new ArrayList<String>(),
+                ProcessResult result = rubyInstance.runRubyScript(script, new ArrayList<String>(),
                         monitor);
                 if (result.getExitCode() == 0) {
                     String versionString = result.getOutputData().trim();

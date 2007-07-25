@@ -22,7 +22,7 @@ import com.yoursway.rails.Version;
 import com.yoursway.ruby.RubyInstance;
 import com.yoursway.ruby.RubyScriptInvokationError;
 import com.yoursway.ruby.RubyToolUtils;
-import com.yoursway.ruby.ToolExecutionResult;
+import com.yoursway.ruby.ProcessResult;
 import com.yoursway.utils.Streams;
 
 public class RailsSkeletonGenerator {
@@ -123,7 +123,7 @@ public class RailsSkeletonGenerator {
             final ArrayList<String> args = new ArrayList<String>();
             args.add(railsInstance.getRailsGem().getVersion());
             args.add(appDir.getPath());
-            ToolExecutionResult result = ruby.runRubyScript(scriptPath, args, submonitor.newChild(80));
+            ProcessResult result = ruby.runRubyScript(scriptPath, args, submonitor.newChild(80));
             if (result.getExitCode() != 0)
                 // TODO: better error handling
                 throw new RubyScriptInvokationError("Non-zero exit code");
