@@ -150,7 +150,9 @@ public class RubyInstallWrapper {
      * @return created InterpreterConfig
      */
     private InterpreterConfig createInterpreterConfig(String fileName, List<String> arguments) {
-        InterpreterConfig config = new InterpreterConfig(new File(fileName));
+        File file = new File(fileName);
+        InterpreterConfig config = new InterpreterConfig(file);
+        config.setWorkingDirectory(file.getParentFile());
         config.addScriptArgs(arguments.toArray(new String[arguments.size()]));
         config.addEnvVars(System.getenv());
         return config;
