@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
 import com.yoursway.rails.Version;
@@ -52,6 +53,18 @@ public class RubyInstance {
     public ToolExecutionResult runRubyScript(String fileName, List<String> arguments, IProgressMonitor monitor)
             throws RubyScriptInvokationError {
         return installWrapper.runRubyScript(fileName, arguments, monitor);
+    }
+    
+    /**
+     * Starts Ruby script, returning the ILaunch.
+     * 
+     * @param fileName
+     * @param arguments
+     * @return
+     * @throws RubyScriptInvokationError
+     */
+    public ILaunch startRubyScript(String fileName, List<String> arguments) throws RubyScriptInvokationError {
+        return installWrapper.startRubyScript(fileName, arguments);
     }
     
     public IInterpreterInstall getRawDLTKInterpreterInstall() {

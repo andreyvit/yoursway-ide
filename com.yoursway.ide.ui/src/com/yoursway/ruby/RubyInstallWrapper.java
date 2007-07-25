@@ -87,9 +87,7 @@ public class RubyInstallWrapper {
     public ToolExecutionResult runRubyScript(String fileName, List<String> arguments, IProgressMonitor monitor)
             throws RubyScriptInvokationError {
         SubMonitor progress = SubMonitor.convert(monitor);
-        InterpreterConfig config = new InterpreterConfig(new File(fileName));
-        config.addScriptArgs(arguments.toArray(new String[arguments.size()]));
-        config.addEnvVars(System.getenv());
+        InterpreterConfig config = createInterpreterConfig(fileName, arguments);
         ILaunch launch = null;
         try {
             launch = InterpreterRunnerUtil.run(interpreterInstall, config, progress
@@ -99,6 +97,37 @@ public class RubyInstallWrapper {
             throw new RubyScriptInvokationError(e);
         }
         
+        return getLaunchResult(launch);
+    }
+    
+    /**
+     * Starts given Ruby script and returns launch immediately.
+     * 
+     * @param fileName
+     *            Ruby script to start
+     * @param arguments
+     *            arguments for Ruby script
+     * @return running launch
+     * @throws RubyScriptInvokationError
+     */
+    public ILaunch startRubyScript(String fileName, List<String> arguments) throws RubyScriptInvokationError {
+        InterpreterConfig config = createInterpreterConfig(fileName, arguments);
+        try {
+            return InterpreterRunnerUtil.start(interpreterInstall, config);
+        } catch (CoreException e) {
+            Activator.reportException(e, "Starting a tool");
+            throw new RubyScriptInvokationError(e);
+        }
+    }
+    
+    /**
+     * Extracts launch result from the finished ILaunch.
+     * 
+     * @param launch
+     *            finished ILaunch
+     * @return launch result
+     */
+    private ToolExecutionResult getLaunchResult(ILaunch launch) {
         IProcess[] launchProcesses = launch.getProcesses();
         assert launchProcesses.length == 1 : "Ruby script launch is expected to have single process";
         
@@ -108,6 +137,23 @@ public class RubyInstallWrapper {
         String output = launchProcess.getStreamsProxy().getOutputStreamMonitor().getContents();
         String error = launchProcess.getStreamsProxy().getErrorStreamMonitor().getContents();
         return new ToolExecutionResult(exitCode, output, error);
+    }
+    
+    /**
+     * Generates InterpreterConfig for the DebugPlugin from the given Ruby
+     * script filename and command arguments.
+     * 
+     * @param fileName
+     *            script filename
+     * @param arguments
+     *            command arguments
+     * @return created InterpreterConfig
+     */
+    private InterpreterConfig createInterpreterConfig(String fileName, List<String> arguments) {
+        InterpreterConfig config = new InterpreterConfig(new File(fileName));
+        config.addScriptArgs(arguments.toArray(new String[arguments.size()]));
+        config.addEnvVars(System.getenv());
+        return config;
     }
     
     public IInterpreterInstall getRawDLTKInterpreterInstall() {

@@ -47,10 +47,7 @@ public final class InterpreterRunnerUtil {
         
         SubMonitor progress = SubMonitor.convert(monitor);
         
-        final ILaunch launch = new Launch(null, ILaunchManager.RUN_MODE, null);
-        
-        IInterpreterRunner runner = install.getInterpreterRunner(ILaunchManager.RUN_MODE);
-        runner.run(config, launch, null);
+        final ILaunch launch = start(install, config);
         
         /*
          * This loop is the workaround. ILaunch does not provide event
@@ -75,6 +72,22 @@ public final class InterpreterRunnerUtil {
             } catch (InterruptedException e) {
             }
         
+        return launch;
+    }
+    
+    /**
+     * Starts the specified interpreter in specified configuration.
+     * 
+     * @param install
+     * @param config
+     * @return
+     * @throws CoreException
+     */
+    public static ILaunch start(IInterpreterInstall install, InterpreterConfig config) throws CoreException {
+        final ILaunch launch = new Launch(null, ILaunchManager.RUN_MODE, null);
+        
+        IInterpreterRunner runner = install.getInterpreterRunner(ILaunchManager.RUN_MODE);
+        runner.run(config, launch, null);
         return launch;
     }
     
