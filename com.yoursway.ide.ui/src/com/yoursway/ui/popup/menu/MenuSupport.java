@@ -33,14 +33,7 @@ public class MenuSupport implements IPopupLifecycleListener {
     public boolean isMenuCurrentlyShown = false;
     Image menuImage;
     
-    private final TypedListenerList<IPopupMenuListener> menuListeners = new TypedListenerList<IPopupMenuListener>() {
-        
-        @Override
-        protected IPopupMenuListener[] makeArray(int size) {
-            return new IPopupMenuListener[size];
-        }
-        
-    };
+    private final TypedListenerList<IPopupMenuListener> menuListeners = new TypedListenerList<IPopupMenuListener>();
     
     public IDisposable addMenuListener(final IPopupMenuListener listener) {
         menuListeners.add(listener);
@@ -89,8 +82,7 @@ public class MenuSupport implements IPopupLifecycleListener {
     }
     
     private void addMenuItems(IMenuManager manager) {
-        IPopupMenuListener[] listeners = menuListeners.getListeners();
-        for (IPopupMenuListener listener : listeners)
+        for (IPopupMenuListener listener : menuListeners)
             listener.fillContextMenu(manager);
     }
     

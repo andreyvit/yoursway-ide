@@ -14,14 +14,7 @@ public class PercentageBroadcastingProgressMonitor implements IProgressMonitor {
     
     private double currWork;
     
-    private final TypedListenerList<PercentageProgressListener> listeners = new TypedListenerList<PercentageProgressListener>() {
-        
-        @Override
-        protected PercentageProgressListener[] makeArray(int size) {
-            return new PercentageProgressListener[size];
-        }
-        
-    };
+    private final TypedListenerList<PercentageProgressListener> listeners = new TypedListenerList<PercentageProgressListener>();
     
     public PercentageBroadcastingProgressMonitor withListener(PercentageProgressListener listener) {
         addListener(listener);
@@ -41,7 +34,7 @@ public class PercentageBroadcastingProgressMonitor implements IProgressMonitor {
         currWork = totalWork;
         this.done = true;
         started();
-        for (PercentageProgressListener listener : listeners.getListeners())
+        for (PercentageProgressListener listener : listeners)
             listener.completed(canceled);
     }
     
@@ -62,7 +55,7 @@ public class PercentageBroadcastingProgressMonitor implements IProgressMonitor {
             currWork = totalWork;
         else if (currWork < 0)
             currWork = 0;
-        for (PercentageProgressListener listener : listeners.getListeners())
+        for (PercentageProgressListener listener : listeners)
             listener.percentageUpdated(getPercentage());
     }
     
@@ -96,7 +89,7 @@ public class PercentageBroadcastingProgressMonitor implements IProgressMonitor {
         if (started)
             return;
         started = true;
-        for (PercentageProgressListener listener : listeners.getListeners())
+        for (PercentageProgressListener listener : listeners)
             listener.started();
     }
     

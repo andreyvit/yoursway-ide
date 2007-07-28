@@ -21,7 +21,8 @@ import com.yoursway.rails.chooser.ui.view.LatestRailsChoice;
 import com.yoursway.rails.chooser.ui.view.RecommendedChoice;
 import com.yoursway.rails.chooser.ui.view.SpecificRailsChoice;
 import com.yoursway.ruby.RubyInstance;
-import com.yoursway.ruby.RubyInstanceCollection;
+import com.yoursway.ruby.internal.RubyInstanceCollection;
+import com.yoursway.ruby.internal.RubyInstanceImpl;
 
 public class GuiRailsChooser implements IRailsChooser {
     
@@ -84,11 +85,11 @@ public class GuiRailsChooser implements IRailsChooser {
         RailsChooserParameters parameters = new RailsChooserParameters();
         
         parameters.setRailsVersionToInstall("9.8.7");
-        ArrayList<RubyInstance> instances = new ArrayList<RubyInstance>(RubyInstanceCollection.instance()
+        ArrayList<RubyInstanceImpl> instances = new ArrayList<RubyInstanceImpl>(RubyInstanceCollection.instance()
                 .getAll());
-        Collections.sort(instances, new Comparator<RubyInstance>() {
+        Collections.sort(instances, new Comparator<RubyInstanceImpl>() {
             
-            public int compare(RubyInstance o1, RubyInstance o2) {
+            public int compare(RubyInstanceImpl o1, RubyInstanceImpl o2) {
                 return -o1.getVersion().compareTo(o2.getVersion());
             }
             

@@ -12,14 +12,7 @@ import com.yoursway.rails.core.projects.RailsProject;
 
 public class RailsServersModel {
     
-    private final TypedListenerList<ILaunchingModelListener> listeners = new TypedListenerList<ILaunchingModelListener>() {
-        
-        @Override
-        protected ILaunchingModelListener[] makeArray(int size) {
-            return new ILaunchingModelListener[size];
-        }
-        
-    };
+    private final TypedListenerList<ILaunchingModelListener> listeners = new TypedListenerList<ILaunchingModelListener>();
     
     private static final class SingletonHolder {
         
@@ -51,7 +44,7 @@ public class RailsServersModel {
     }
     
     void fireProjectStateChanged(final IProjectLaunching launching) {
-        for (final ILaunchingModelListener listener : listeners.getListeners()) {
+        for (final ILaunchingModelListener listener : listeners) {
             SafeRunner.run(new ISafeRunnable() {
                 
                 public void handleException(Throwable exception) {
