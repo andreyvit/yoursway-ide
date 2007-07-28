@@ -49,32 +49,11 @@ public abstract class SnappableYellowPopup {
     private SnapPosition snapPosition;
     private final IPopupHost popupOwner;
     
-    private final TypedListenerList<IPopupLifecycleListener> lifecycleListeners = new TypedListenerList<IPopupLifecycleListener>() {
-        
-        @Override
-        protected IPopupLifecycleListener[] makeArray(int size) {
-            return new IPopupLifecycleListener[size];
-        }
-        
-    };
+    private final TypedListenerList<IPopupLifecycleListener> lifecycleListeners = new TypedListenerList<IPopupLifecycleListener>();
     
-    private final TypedListenerList<IPopupSnappingListener> snappingListeners = new TypedListenerList<IPopupSnappingListener>() {
-        
-        @Override
-        protected IPopupSnappingListener[] makeArray(int size) {
-            return new IPopupSnappingListener[size];
-        }
-        
-    };
+    private final TypedListenerList<IPopupSnappingListener> snappingListeners = new TypedListenerList<IPopupSnappingListener>();
     
-    private final TypedListenerList<IPopupVoter> voters = new TypedListenerList<IPopupVoter>() {
-        
-        @Override
-        protected IPopupVoter[] makeArray(int size) {
-            return new IPopupVoter[size];
-        }
-        
-    };
+    private final TypedListenerList<IPopupVoter> voters = new TypedListenerList<IPopupVoter>();
     private final Collection<SnapPosition> snapPositions;
     private final ParentShellActivation parentShellActivationPolicy;
     private Shell popup;
@@ -219,7 +198,7 @@ public abstract class SnappableYellowPopup {
                 popup.close();
             }
             popup = null;
-            for (IPopupLifecycleListener listener : lifecycleListeners.getListeners())
+            for (IPopupLifecycleListener listener : lifecycleListeners)
                 listener.popupClosed();
             dispose();
         }
@@ -286,7 +265,7 @@ public abstract class SnappableYellowPopup {
         
         popup.setVisible(true);
         
-        for (IPopupLifecycleListener listener : lifecycleListeners.getListeners())
+        for (IPopupLifecycleListener listener : lifecycleListeners)
             listener.popupOpened();
     }
     
@@ -294,7 +273,7 @@ public abstract class SnappableYellowPopup {
         snapPosition = newSnapPosition;
         if (isOpen())
             updatePopupLocation();
-        for (IPopupSnappingListener listener : snappingListeners.getListeners())
+        for (IPopupSnappingListener listener : snappingListeners)
             listener.popupSnapped(this, newSnapPosition);
     }
     
@@ -326,8 +305,7 @@ public abstract class SnappableYellowPopup {
     
     public void revote() {
         final PopupPoll poll = createPoll();
-        IPopupVoter[] listeners = voters.getListeners();
-        for (IPopupVoter voter : listeners) {
+        for (IPopupVoter voter : voters) {
             voter.participate(poll);
         }
         // To hit less bugs that are quite common in SWT
