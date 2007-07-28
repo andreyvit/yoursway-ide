@@ -8,10 +8,10 @@ import com.yoursway.rails.core.tests.IRailsTestsListener;
 import com.yoursway.rails.core.tests.RailsTest;
 
 public final class BroadcastingRailsTestsChangeVisitor implements ComparingUpdater.IVisitor<RailsTest> {
-    private final IRailsTestsListener[] listeners;
+    private final Iterable<IRailsTestsListener> listeners;
     
-    public BroadcastingRailsTestsChangeVisitor(IRailsTestsListener[] listeners) {
-        this.listeners = listeners;
+    public BroadcastingRailsTestsChangeVisitor(Iterable<IRailsTestsListener> iterable) {
+        this.listeners = iterable;
     }
     
     public void visitAdded(RailsTest value) {

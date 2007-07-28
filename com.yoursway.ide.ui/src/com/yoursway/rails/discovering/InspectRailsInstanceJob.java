@@ -3,27 +3,23 @@ package com.yoursway.rails.discovering;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.dltk.launching.InterpreterConfig;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.RailsInstance;
 import com.yoursway.rails.RailsInstancesManager;
+import com.yoursway.ruby.ProcessResult;
 import com.yoursway.ruby.RubyInstance;
-import com.yoursway.ruby.RubyInstanceCollection;
 import com.yoursway.rubygems.IGem;
 import com.yoursway.rubygems.LocalGems;
-import com.yoursway.utils.InterpreterRunnerUtil;
 
 /**
  * Inspects the given Rails instance and adds it to the registry of Rails
@@ -32,12 +28,12 @@ import com.yoursway.utils.InterpreterRunnerUtil;
  * FIXME: move most of the code to the separate class.
  */
 public class InspectRailsInstanceJob extends Job {
-    private final IInterpreterInstall rubyInterpreter;
+    private final RubyInstance ruby;
     private final String railsVersion;
     
-    InspectRailsInstanceJob(IInterpreterInstall rubyInterpreter, String railsVersion) {
-        super("Registering Rails " + railsVersion + " for " + rubyInterpreter.getName());
-        this.rubyInterpreter = rubyInterpreter;
+    InspectRailsInstanceJob(RubyInstance ruby, String railsVersion) {
+        super("Registering Rails " + railsVersion + " for " + ruby.toString());
+        this.ruby = ruby;
         this.railsVersion = railsVersion;
     }
     
@@ -57,52 +53,22 @@ public class InspectRailsInstanceJob extends Job {
                 return Status.CANCEL_STATUS;
             }
             
-            InterpreterConfig config = new InterpreterConfig(new File(fileName));
-            config.addScriptArgs(new String[] { "rails", railsVersion });
+            List<String> args = new ArrayList<String>();
+            args.add("rails");
+            args.add(railsVersion);
+            ProcessResult res = ruby.runRubyScript(fileName, args, progress);
             
-            ILaunch launch = null;
-            try {
-                launch = InterpreterRunnerUtil.run(rubyInterpreter, config, progress
-                        .newChild(IProgressMonitor.UNKNOWN));
-            } catch (CoreException c) {
-                // FIXME
-            }
-            
-            if (launch == null)
-                return Status.CANCEL_STATUS;
-            
-            IProcess[] launchProcesses = launch.getProcesses();
-            assert launchProcesses.length == 1 : "Ruby script launch is expected to have single process";
-            
-            IProcess launchProcess = launchProcesses[0];
-            
-            System.out.println(getName() + " exit value: "
-                    + String.valueOf(InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess)));
-            
-            // FIXME: proper error handling
-            String errorMsg = RailsInstancesManager.checkFinishedProcess(launchProcess, getName());
-            if (errorMsg != null) {
-                System.out.println(getName() + " " + errorMsg);
+            // FIXME
+            if (res.getExitCode() != 0) {
+                System.err.println("Error: " + String.valueOf(res.getExitCode()));
                 return Status.OK_STATUS;
             }
             
-            if (InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess) != 0)
-                return Status.OK_STATUS;
-            
-            String railsInfo = launchProcess.getStreamsProxy().getOutputStreamMonitor().getContents();
-            System.out.println(getName() + " " + railsInfo);
-            
-            IGem[] railsGemsInfo = LocalGems.parseGemsInfo(railsInfo);
-            
-            System.out.println(getName());
-            for (IGem railsGem : railsGemsInfo) {
-                System.out.println("  " + railsGem.getName() + " " + railsGem.getVersion());
-            }
-            
-            RubyInstance rubyInstance = RubyInstanceCollection.instance().get(rubyInterpreter);
-            RailsInstance railsInstance = new RailsInstance(rubyInstance, railsVersion, railsGemsInfo);
-            RailsInstancesManager.addRailsInstance(rubyInterpreter, railsVersion, railsInstance);
+            IGem[] railsGemsInfo = LocalGems.parseGemsInfo(res.getOutputData());
+            RailsInstance railsInstance = new RailsInstance(ruby, railsVersion, railsGemsInfo);
+            RailsInstancesManager.addRailsInstance(ruby, railsVersion, railsInstance);
         } catch (Throwable t) {
+            // FIXME
             System.out.println(getName());
             t.printStackTrace(System.out);
         }

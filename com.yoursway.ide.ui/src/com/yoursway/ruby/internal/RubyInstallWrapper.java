@@ -1,4 +1,4 @@
-package com.yoursway.ruby;
+package com.yoursway.ruby.internal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,15 +15,18 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterConfig;
+import org.eclipse.dltk.launching.ScriptRuntime;
+import org.eclipse.dltk.ruby.core.RubyNature;
 
 import com.yoursway.common.StringUtils;
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.discovering.RubyAndRailsDiscovering;
+import com.yoursway.ruby.ProcessResult;
+import com.yoursway.ruby.RubyScriptInvokationError;
 import com.yoursway.utils.InterpreterRunnerUtil;
 
 public class RubyInstallWrapper {
     
-    public static final String AMBIG_NAME_NUMBER_DELIMITER = " #";
+    private static final String AMBIG_NAME_NUMBER_DELIMITER = " #";
     
     private final IInterpreterInstall interpreterInstall;
     
@@ -35,8 +38,16 @@ public class RubyInstallWrapper {
         return interpreterInstall.getId();
     }
     
+    private static IInterpreterInstallType getRubyInstallType() {
+        IInterpreterInstallType[] rubyInterpreterTypes = ScriptRuntime
+                .getInterpreterInstallTypes(RubyNature.NATURE_ID);
+        assert rubyInterpreterTypes.length == 1 : "Only one IInterpreterInstallType is expected for Ruby nature";
+        IInterpreterInstallType rubyInstallType = rubyInterpreterTypes[0];
+        return rubyInstallType;
+    }
+    
     public static Collection<? extends RubyInstallWrapper> getAll() {
-        IInterpreterInstallType rubyInstallType = RubyAndRailsDiscovering.getRubyInstallType();
+        IInterpreterInstallType rubyInstallType = getRubyInstallType();
         
         Collection<RubyInstallWrapper> result = new ArrayList<RubyInstallWrapper>();
         for (IInterpreterInstall rubyInterpreter : rubyInstallType.getInterpreterInstalls()) {
@@ -46,7 +57,7 @@ public class RubyInstallWrapper {
     }
     
     public static RubyInstallWrapper create(File location, String name) {
-        IInterpreterInstallType rubyInstallType = RubyAndRailsDiscovering.getRubyInstallType();
+        IInterpreterInstallType rubyInstallType = getRubyInstallType();
         Set<String> usedIds = collectAllUsedIds(rubyInstallType);
         String uniqueId = StringUtils.chooseUniqueString(name, "", AMBIG_NAME_NUMBER_DELIMITER, usedIds);
         IInterpreterInstall install = rubyInstallType.createInterpreterInstall(uniqueId);
@@ -64,7 +75,7 @@ public class RubyInstallWrapper {
     }
     
     public void destroy() {
-        IInterpreterInstallType rubyInstallType = RubyAndRailsDiscovering.getRubyInstallType();
+        IInterpreterInstallType rubyInstallType = getRubyInstallType();
         rubyInstallType.disposeInterpreterInstall(interpreterInstall.getId());
     }
     
@@ -186,5 +197,4 @@ public class RubyInstallWrapper {
             return false;
         return true;
     }
-    
 }

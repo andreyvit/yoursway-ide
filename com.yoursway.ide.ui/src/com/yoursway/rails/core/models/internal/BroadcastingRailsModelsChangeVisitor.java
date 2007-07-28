@@ -8,10 +8,10 @@ import com.yoursway.rails.core.models.IModelsListener;
 import com.yoursway.rails.core.models.RailsModel;
 
 public final class BroadcastingRailsModelsChangeVisitor implements ComparingUpdater.IVisitor<RailsModel> {
-    private final IModelsListener[] listeners;
+    private final Iterable<IModelsListener> listeners;
     
-    public BroadcastingRailsModelsChangeVisitor(IModelsListener[] listeners) {
-        this.listeners = listeners;
+    public BroadcastingRailsModelsChangeVisitor(Iterable<IModelsListener> iterable) {
+        this.listeners = iterable;
     }
     
     public void visitAdded(RailsModel value) {

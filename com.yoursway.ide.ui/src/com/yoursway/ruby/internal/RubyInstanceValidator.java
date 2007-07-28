@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.Version;
-import com.yoursway.ruby.RubyInstallWrapper;
 import com.yoursway.ruby.RubyScriptInvokationError;
 import com.yoursway.ruby.RubyToolUtils;
 import com.yoursway.ruby.ProcessResult;

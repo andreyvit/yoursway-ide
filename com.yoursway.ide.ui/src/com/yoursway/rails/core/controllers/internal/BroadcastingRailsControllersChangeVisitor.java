@@ -7,10 +7,11 @@ import com.yoursway.rails.core.controllers.IRailsControllersListener;
 import com.yoursway.rails.core.controllers.RailsController;
 import com.yoursway.rails.core.internal.support.ComparingUpdater;
 
-public final class BroadcastingRailsControllersChangeVisitor implements ComparingUpdater.IVisitor<RailsController> {
-    private final IRailsControllersListener[] listeners;
+public final class BroadcastingRailsControllersChangeVisitor implements
+        ComparingUpdater.IVisitor<RailsController> {
+    private final Iterable<IRailsControllersListener> listeners;
     
-    public BroadcastingRailsControllersChangeVisitor(IRailsControllersListener[] listeners) {
+    public BroadcastingRailsControllersChangeVisitor(Iterable<IRailsControllersListener> listeners) {
         this.listeners = listeners;
     }
     

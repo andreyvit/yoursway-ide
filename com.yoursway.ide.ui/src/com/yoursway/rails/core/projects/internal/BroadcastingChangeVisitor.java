@@ -8,9 +8,9 @@ import com.yoursway.rails.core.projects.IProjectsListener;
 import com.yoursway.rails.core.projects.RailsProject;
 
 public final class BroadcastingChangeVisitor implements ComparingUpdater.IVisitor<RailsProject> {
-    private final IProjectsListener[] listeners;
+    private final Iterable<IProjectsListener> listeners;
     
-    public BroadcastingChangeVisitor(IProjectsListener[] listeners) {
+    public BroadcastingChangeVisitor(Iterable<IProjectsListener> listeners) {
         this.listeners = listeners;
     }
     

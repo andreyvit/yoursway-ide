@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.yoursway.ruby;
 
 public class RubyScriptInvokationError extends Exception {

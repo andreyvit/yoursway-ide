@@ -1,26 +1,28 @@
 package com.yoursway.rails;
 
 import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.dltk.launching.IInterpreterInstallChangedListener;
-import org.eclipse.dltk.launching.PropertyChangeEvent;
-import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
 import com.yoursway.rails.discovering.RubyAndRailsDiscovering;
+import com.yoursway.ruby.RubyInstance;
+import com.yoursway.ruby.RubyInstanceCollectionChangedListener;
+import com.yoursway.ruby.internal.RubyInstanceCollection;
+import com.yoursway.ruby.internal.RubyInstanceImpl;
 
 /**
  * Object of this class listens for the changes in installed RREs and runs Rails
  * search on modified ones.
  */
-public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListener {
+public class RailsInfoRefreshRunner implements RubyInstanceCollectionChangedListener {
     
     /**
-     * Starts the listening to the 'interpreters changed' event in
-     * {@link ScriptRuntime}.
+     * FIXME: make singleton?
+     * 
+     * Starts listening to the 'Ruby instances changed' events in
+     * RubyInstanceCollection.
      */
     public static void startListening() {
-        RailsInfoRefreshRunner searchRunner = new RailsInfoRefreshRunner();
-        ScriptRuntime.addInterpreterInstallChangedListener(searchRunner);
+        new RailsInfoRefreshRunner();
     }
     
     /**
@@ -28,46 +30,12 @@ public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListene
      * by the {@link #startListening()}.
      */
     private RailsInfoRefreshRunner() {
+        RubyInstanceCollection.instance().addRubyInstanceCollectionChangedListener(this);
     }
     
+    // FIXME: move to proper place
     /**
-     * Changing default interpreter install does not affect Rails installations.
-     */
-    public void defaultInterpreterInstallChanged(IInterpreterInstall previous, IInterpreterInstall current) {
-    }
-    
-    /**
-     * Adding new Ruby interpreter triggers the Rails search.
-     */
-    public void interpreterAdded(IInterpreterInstall interpreter) {
-        if (isRubyInterpreter(interpreter)) {
-            RubyAndRailsDiscovering.runSearchRails(interpreter);
-        }
-    }
-    
-    /**
-     * Changing the existing Ruby interpreter triggers the Rails search.
-     */
-    public void interpreterChanged(PropertyChangeEvent event) {
-        IInterpreterInstall interpreter = (IInterpreterInstall) event.getSource();
-        if (isRubyInterpreter(interpreter)) {
-            RubyAndRailsDiscovering.runSearchRails(interpreter);
-        }
-    }
-    
-    /**
-     * Removing the existing Ruby interpreter removes associated Rails
-     * instances.
-     */
-    public void interpreterRemoved(IInterpreterInstall interpreter) {
-        if (isRubyInterpreter(interpreter)) {
-            RailsInstancesManager.removeRails(interpreter);
-        }
-    }
-    
-    /**
-     * Checks whether the given {@link IInterpreterInstall} denotes Ruby
-     * interpreter.
+     * Checks whether the given {@link RubyInstanceImpl} denotes Ruby interpreter.
      * 
      * @param interpreter
      *            interpreter to check
@@ -78,5 +46,13 @@ public class RailsInfoRefreshRunner implements IInterpreterInstallChangedListene
         // XXX dirty hack: indexOf("Temp")
         return natureId != null && natureId.equals(RubyNature.NATURE_ID)
                 && interpreter.getId().indexOf("Temp") < 0;
+    }
+    
+    public void rubyInstanceAdded(RubyInstance ruby) {
+        RubyAndRailsDiscovering.runSearchRails(ruby);
+    }
+    
+    public void rubyInstanceRemoved(RubyInstance ruby) {
+        RailsInstancesManager.removeRails(ruby);
     }
 }

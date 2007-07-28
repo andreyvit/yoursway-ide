@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.dltk.launching.IInterpreterInstall;
 
+import com.yoursway.ruby.RubyInstance;
 import com.yoursway.utils.InterpreterRunnerUtil;
 
 public class RailsInstancesManager {
     
-    private static Map<String, Map<String, RailsInstance>> railsInstance = new HashMap<String, Map<String, RailsInstance>>();
+    private static Map<RubyInstance, Map<String, RailsInstance>> railsInstance = new HashMap<RubyInstance, Map<String, RailsInstance>>();
     
     public synchronized static List<RailsInstance> getRailsInstances() {
         ArrayList<RailsInstance> railsInstanceList = new ArrayList<RailsInstance>();
@@ -21,19 +21,19 @@ public class RailsInstancesManager {
         return railsInstanceList;
     }
     
-    public synchronized static void addRailsInstance(IInterpreterInstall ruby, String railsVersion,
+    public synchronized static void addRailsInstance(RubyInstance ruby, String railsVersion,
             RailsInstance railsInstanceInstance) {
-        if (!railsInstance.containsKey(ruby.getId()))
-            railsInstance.put(ruby.getId(), new HashMap<String, RailsInstance>());
+        if (!railsInstance.containsKey(ruby))
+            railsInstance.put(ruby, new HashMap<String, RailsInstance>());
         
-        System.out.println("Adding/updating rails instance: " + ruby.getName() + " rails " + railsVersion);
+        System.out.println("Adding/updating rails instance: " + ruby.toString() + " rails " + railsVersion);
         
-        railsInstance.get(ruby.getId()).put(railsVersion, railsInstanceInstance);
+        railsInstance.get(ruby).put(railsVersion, railsInstanceInstance);
     }
     
-    public synchronized static void removeRails(IInterpreterInstall ruby) {
-        System.out.println("Removing all rails instances for " + ruby.getName());
-        railsInstance.remove(ruby.getId());
+    public synchronized static void removeRails(RubyInstance ruby) {
+        System.out.println("Removing all rails instances for " + ruby.toString());
+        railsInstance.remove(ruby);
     }
     
     // FIXME: ugly

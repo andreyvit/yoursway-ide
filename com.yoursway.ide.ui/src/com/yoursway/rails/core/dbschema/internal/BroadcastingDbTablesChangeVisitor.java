@@ -3,14 +3,14 @@
  */
 package com.yoursway.rails.core.dbschema.internal;
 
-import com.yoursway.rails.core.dbschema.IDbSchemaListener;
 import com.yoursway.rails.core.dbschema.DbTable;
+import com.yoursway.rails.core.dbschema.IDbSchemaListener;
 import com.yoursway.rails.core.internal.support.ComparingUpdater;
 
 public final class BroadcastingDbTablesChangeVisitor implements ComparingUpdater.IVisitor<DbTable> {
-    private final IDbSchemaListener[] listeners;
+    private final Iterable<IDbSchemaListener> listeners;
     
-    public BroadcastingDbTablesChangeVisitor(IDbSchemaListener[] listeners) {
+    public BroadcastingDbTablesChangeVisitor(Iterable<IDbSchemaListener> listeners) {
         this.listeners = listeners;
     }
     

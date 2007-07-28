@@ -6,10 +6,10 @@ import com.yoursway.rails.core.migrations.RailsMigration;
 
 public class RailsMigrationsBroadcastingChangeVisitor implements ComparingUpdater.IVisitor<RailsMigration> {
     
-    private final IRailsMigrationsListener[] listeners;
+    private final Iterable<IRailsMigrationsListener> listeners;
     
-    public RailsMigrationsBroadcastingChangeVisitor(IRailsMigrationsListener[] listeners) {
-        this.listeners = listeners;
+    public RailsMigrationsBroadcastingChangeVisitor(Iterable<IRailsMigrationsListener> iterable) {
+        this.listeners = iterable;
     }
     
     public void visitAdded(RailsMigration value) {

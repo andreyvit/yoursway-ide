@@ -3,23 +3,20 @@ package com.yoursway.rails.discovering;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.dltk.launching.InterpreterConfig;
 
 import com.yoursway.ide.ui.Activator;
-import com.yoursway.rails.RailsInstancesManager;
+import com.yoursway.ruby.ProcessResult;
+import com.yoursway.ruby.RubyInstance;
 import com.yoursway.rubygems.LocalGems;
-import com.yoursway.utils.InterpreterRunnerUtil;
 import com.yoursway.utils.SystemUtilities;
 
 /**
@@ -32,11 +29,11 @@ import com.yoursway.utils.SystemUtilities;
  * exit code 0 instead of 3.
  */
 public class DiscoverRailsInstancesInsideGivenRubyJob extends Job {
-    private final IInterpreterInstall rubyInterpreter;
+    private final RubyInstance ruby;
     
-    DiscoverRailsInstancesInsideGivenRubyJob(IInterpreterInstall rubyInterpreter) {
-        super("Searching Rails in " + rubyInterpreter.getName());
-        this.rubyInterpreter = rubyInterpreter;
+    DiscoverRailsInstancesInsideGivenRubyJob(RubyInstance rubyInterpreter) {
+        super("Searching Rails in " + rubyInterpreter.toString());
+        this.ruby = rubyInterpreter;
     }
     
     @Override
@@ -53,48 +50,20 @@ public class DiscoverRailsInstancesInsideGivenRubyJob extends Job {
                 return Status.CANCEL_STATUS;
             }
             
-            InterpreterConfig config = new InterpreterConfig(helperScript);
-            config.addScriptArgs(new String[] { "rails" });
+            List<String> args = new ArrayList<String>();
+            args.add("rails");
+            ProcessResult res = ruby.runRubyScript(helperScript.getAbsolutePath(), args, progress);
             
-            ILaunch launch = null;
-            try {
-                launch = InterpreterRunnerUtil.run(rubyInterpreter, config, progress
-                        .newChild(IProgressMonitor.UNKNOWN));
-            } catch (CoreException c) {
-                // FIXME
-            }
-            
-            if (launch == null)
-                return Status.CANCEL_STATUS;
-            
-            IProcess[] launchProcesses = launch.getProcesses();
-            assert launchProcesses.length == 1 : "Ruby script launch is expected to have single process";
-            
-            IProcess launchProcess = launchProcesses[0];
-            
-            System.out.println(getName() + " exit value: "
-                    + String.valueOf(InterpreterRunnerUtil.getFinishedProcessExitValue(launchProcess)));
-            
-            // FIXME: proper error hadling
-            String errorMsg = RailsInstancesManager.checkFinishedProcess(launchProcess, getName());
-            if (errorMsg != null) {
-                System.out.println(getName() + " " + errorMsg);
+            if (res.getExitCode() != 0) {
+                //FIXME
+                System.err.println("Exit code:" + String.valueOf(res.getExitCode()) + "\n");
                 return Status.OK_STATUS;
             }
             
-            String gemsInfo = launchProcess.getStreamsProxy().getOutputStreamMonitor().getContents();
-            System.out.println(getName() + " " + gemsInfo);
-            
-            String[] installedRailsGemsVersions = LocalGems.parseGemVersions(gemsInfo);
-            
-            System.out.println(getName());
-            for (String installedRailsGemVersion : installedRailsGemsVersions)
-                System.out.println(installedRailsGemVersion);
-            
-            for (String installedRailsGemVersion : installedRailsGemsVersions)
-                new InspectRailsInstanceJob(rubyInterpreter, installedRailsGemVersion).schedule();
-            
+            for (String railsGemVersion : LocalGems.parseGemVersions(res.getOutputData()))
+                new InspectRailsInstanceJob(ruby, railsGemVersion).schedule();
         } catch (Throwable t) {
+            // FIXME
             System.out.println(getName());
             t.printStackTrace(System.out);
         }

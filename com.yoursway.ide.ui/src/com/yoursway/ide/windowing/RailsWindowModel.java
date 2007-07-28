@@ -19,14 +19,7 @@ public class RailsWindowModel {
     
     private final Map<IWorkbenchWindow, RailsWindow> mapping = new HashMap<IWorkbenchWindow, RailsWindow>();
     
-    private final TypedListenerList<IRailsWindowModelListener> listeners = new TypedListenerList<IRailsWindowModelListener>() {
-        
-        @Override
-        protected IRailsWindowModelListener[] makeArray(int size) {
-            return new IRailsWindowModelListener[size];
-        }
-        
-    };
+    private final TypedListenerList<IRailsWindowModelListener> listeners = new TypedListenerList<IRailsWindowModelListener>();
     
     public static RailsWindowModel instance() {
         return INSTANCE;
@@ -92,8 +85,7 @@ public class RailsWindowModel {
     }
     
     void fire(RailsWindowModelChange event) {
-        IRailsWindowModelListener[] array = listeners.getListeners();
-        for (IRailsWindowModelListener listener : array) {
+        for (IRailsWindowModelListener listener : listeners) {
             event.sendTo(listener);
         }
     }

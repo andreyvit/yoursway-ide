@@ -8,9 +8,9 @@ import com.yoursway.rails.core.fixtures.RailsFixture;
 import com.yoursway.rails.core.internal.support.ComparingUpdater;
 
 public final class BroadcastingRailsFixturesChangeVisitor implements ComparingUpdater.IVisitor<RailsFixture> {
-    private final IRailsFixturesListener[] listeners;
+    private final Iterable<IRailsFixturesListener> listeners;
     
-    public BroadcastingRailsFixturesChangeVisitor(IRailsFixturesListener[] listeners) {
+    public BroadcastingRailsFixturesChangeVisitor(Iterable<IRailsFixturesListener> listeners) {
         this.listeners = listeners;
     }
     

@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.launching.IInterpreterInstall;
 
 import com.yoursway.ruby.RubyInstance;
 import com.yoursway.rubygems.IGem;
@@ -56,10 +55,6 @@ public class RailsInstance {
     
     public Set<String> getPaths() {
         return paths;
-    }
-    
-    public IInterpreterInstall getRawRuby() {
-        return ruby.getRawDLTKInterpreterInstall();
     }
     
     public RubyInstance getRuby() {
