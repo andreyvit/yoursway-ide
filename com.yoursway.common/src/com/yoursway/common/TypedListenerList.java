@@ -1,5 +1,10 @@
 package com.yoursway.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * This class is a thread safe list that is designed for storing lists of
  * listeners. The implementation is optimized for minimal memory footprint,
@@ -8,6 +13,9 @@ package com.yoursway.common;
  * fast. Readers are given access to the underlying array data structure for
  * reading, with the trust that they will not modify the underlying array.
  * <p>
+ * <b>dottedmag</b>: underlying implementation changed to ArrayList, so this
+ * might be a bit slower now.
+ * <p>
  * <a name="same">A listener list handles the <i>same</i> listener being added
  * multiple times, and tolerates removal of listeners that are the same as other
  * listeners in the list. For this purpose, listeners can be compared with each
@@ -15,26 +23,21 @@ package com.yoursway.common;
  * constructor.
  * </p>
  * <p>
- * This class is typed version of org.eclipse.core.runtime.ListenerList
+ * This class is typed and modified version of
+ * org.eclipse.core.runtime.ListenerList
  * </p>
  * <p>
- * Use the <code>getListeners</code> method when notifying listeners. The
- * recommended code sequence for notifying all registered listeners of say,
+ * The recommended code sequence for notifying all registered listeners of say,
  * <code>FooListener.eventHappened</code>, is:
  * 
  * <pre>
- * for (FooListener listener : myListenerList.getListeners())
+ * for (FooListener listener : myListenerList)
  *     listener.eventHappened(event);
  * </pre>
  * 
  * </p>
- * <p>
- * This class can be used without OSGi running.
- * </p>
- * 
- * @since org.eclipse.equinox.common 3.2
  */
-public abstract class TypedListenerList<T> {
+public final class TypedListenerList<T> implements Iterable<T> {
     
     /**
      * Mode constant (value 0) indicating that listeners should be considered
@@ -59,7 +62,7 @@ public abstract class TypedListenerList<T> {
      * size capacity the first time a listener is added. Maintains invariant:
      * listeners != null
      */
-    private volatile T[] listeners = makeArray(0);
+    private volatile List<T> listeners = Collections.emptyList();
     
     /**
      * Creates a listener list in which listeners are compared using equality.
@@ -67,8 +70,6 @@ public abstract class TypedListenerList<T> {
     public TypedListenerList() {
         this(EQUALITY);
     }
-    
-    protected abstract T[] makeArray(int size);
     
     /**
      * Creates a listener list using the provided comparison mode.
@@ -96,18 +97,16 @@ public abstract class TypedListenerList<T> {
         if (listener == null)
             throw new IllegalArgumentException();
         // check for duplicates 
-        final int oldSize = listeners.length;
-        for (int i = 0; i < oldSize; ++i) {
-            T listener2 = listeners[i];
-            if (identity ? listener == listener2 : listener.equals(listener2))
+        for (T existingListener : listeners) {
+            if (identity ? listener == existingListener : listener.equals(existingListener))
                 return;
         }
-        // Thread safety: create new array to avoid affecting concurrent readers
-        T[] newListeners = makeArray(oldSize + 1);
-        System.arraycopy(listeners, 0, newListeners, 0, oldSize);
-        newListeners[oldSize] = listener;
+        ArrayList<T> newListeners = new ArrayList<T>(listeners.size() + 1);
+        Collections.copy(newListeners, listeners);
+        newListeners.set(listeners.size(), listener);
+        
         //atomic assignment
-        this.listeners = newListeners;
+        listeners = newListeners;
     }
     
     /**
@@ -121,8 +120,8 @@ public abstract class TypedListenerList<T> {
      * 
      * @return the list of registered listeners
      */
-    public T[] getListeners() {
-        return listeners;
+    public Iterator<T> iterator() {
+        return listeners.iterator();
     }
     
     /**
@@ -132,7 +131,7 @@ public abstract class TypedListenerList<T> {
      *         <code>false</code> otherwise
      */
     public boolean isEmpty() {
-        return listeners.length == 0;
+        return listeners.isEmpty();
     }
     
     /**
@@ -147,19 +146,20 @@ public abstract class TypedListenerList<T> {
         // or removing listeners concurrently. This does not block concurrent readers.
         if (listener == null)
             throw new IllegalArgumentException();
-        int oldSize = listeners.length;
-        for (int i = 0; i < oldSize; ++i) {
-            T listener2 = listeners[i];
-            if (identity ? listener == listener2 : listener.equals(listener2)) {
-                if (oldSize == 1) {
-                    listeners = makeArray(0);
+        
+        for (T existingListener : listeners) {
+            if (identity ? listener == existingListener : listener.equals(existingListener)) {
+                // Optimization.
+                if (listeners.size() == 1) {
+                    listeners = Collections.emptyList();
                 } else {
-                    // Thread safety: create new array to avoid affecting concurrent readers
-                    T[] newListeners = makeArray(oldSize - 1);
-                    System.arraycopy(listeners, 0, newListeners, 0, i);
-                    System.arraycopy(listeners, i + 1, newListeners, i, oldSize - i - 1);
-                    //atomic assignment to field
-                    this.listeners = newListeners;
+                    ArrayList<T> newListeners = new ArrayList<T>(listeners.size());
+                    Collections.copy(newListeners, listeners);
+                    // We can remove existingListener even if we compare objects'
+                    // identity because we just got it from the collection
+                    newListeners.remove(existingListener);
+                    // atomic assignment
+                    listeners = newListeners;
                 }
                 return;
             }
@@ -172,13 +172,13 @@ public abstract class TypedListenerList<T> {
      * @return the number of registered listeners
      */
     public int size() {
-        return listeners.length;
+        return listeners.size();
     }
     
     /**
      * Removes all listeners from this list.
      */
     public synchronized void clear() {
-        listeners = makeArray(0);
+        listeners = Collections.emptyList();
     }
 }
