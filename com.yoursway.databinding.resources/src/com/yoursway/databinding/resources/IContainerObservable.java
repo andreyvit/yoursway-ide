@@ -4,6 +4,6 @@ import org.eclipse.core.resources.IContainer;
 
 public interface IContainerObservable {
     
-    IContainer getContainer();
+//    IContainer getContainer();
     
 }
