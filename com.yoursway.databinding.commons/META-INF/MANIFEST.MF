@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Commons Plug-in
+Bundle-SymbolicName: com.yoursway.databinding.commons
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.databinding.commons.internal.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.databinding
+Eclipse-LazyStart: true
+Export-Package: com.yoursway.databinding.commons
