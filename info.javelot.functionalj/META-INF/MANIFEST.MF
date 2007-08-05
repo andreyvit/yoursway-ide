@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Functionalj Plug-in
+Bundle-SymbolicName: info.javelot.functionalj
+Bundle-Version: 0.8.0
+Bundle-ClassPath: functionalj-0.8-jdk15.jar
+Export-Package: info.javelot.functionalj,
+ info.javelot.functionalj.reflect,
+ info.javelot.functionalj.reflect.element,
+ info.javelot.functionalj.reflect.function,
+ info.javelot.functionalj.reflect.helper,
+ info.javelot.functionalj.reflect.helper.impl,
+ info.javelot.functionalj.reflect.impl,
+ info.javelot.functionalj.tuple,
+ info.javelot.functionalj.util

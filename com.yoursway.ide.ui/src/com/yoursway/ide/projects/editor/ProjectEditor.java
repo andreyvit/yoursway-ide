@@ -49,9 +49,9 @@ public class ProjectEditor extends FormEditor {
             }
             
         };
-        IdentityModel identityModel = new IdentityModel(projectNameObservable, projectLocationObservable);
+        ViewModel viewModel = new ViewModel(projectNameObservable, projectLocationObservable);
         try {
-            addPage(new FirstPage(this, identityModel));
+            addPage(new FirstPage(this, viewModel));
         } catch (PartInitException e) {
             Activator.unexpectedError(e);
         }

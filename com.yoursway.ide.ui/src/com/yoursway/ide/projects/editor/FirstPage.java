@@ -14,11 +14,11 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 
 public class FirstPage extends ProjectEditorPage {
     
-    private final IdentityModel identityModel;
+    private final ViewModel viewModel;
     
-    public FirstPage(FormEditor editor, IdentityModel identityModel) {
+    public FirstPage(FormEditor editor, ViewModel viewModel) {
         super(editor, "first", "General");
-        this.identityModel = identityModel;
+        this.viewModel = viewModel;
     }
     
     @Override
@@ -31,7 +31,7 @@ public class FirstPage extends ProjectEditorPage {
         Composite body = form.getBody();
         body.setLayout(FormLayoutFactory.createFormTableWrapLayout(true, 2));
         
-        final IdentitySection leftSection = new IdentitySection(identityModel, form.getBody(), toolkit,
+        final IdentitySection leftSection = new IdentitySection(viewModel, form.getBody(), toolkit,
                 managedForm.getMessageManager(), SWT.NONE);
         leftSection.getSection().setLayoutData(
                 new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB, 1, 1));

@@ -11,6 +11,10 @@ public class RailsNamingConventions {
     
     public static final Path DB_SCHEMA_RB_PATH = new Path(DB_SCHEMA_RB);
     
+    public static final String APP = "app";
+    
+    public static final Path APP_PATH = new Path(APP);
+    
     public static final String APP_CONTROLLERS = "app/controllers";
     
     public static final Path APP_CONTROLLERS_PATH = new Path(APP_CONTROLLERS);

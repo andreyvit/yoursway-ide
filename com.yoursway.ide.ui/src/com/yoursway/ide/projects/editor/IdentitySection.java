@@ -43,11 +43,11 @@ public class IdentitySection extends ManagedFormSection {
         }
     }
     
-    private final IdentityModel model;
+    private final ViewModel model;
     private DataBindingContext bindingContext;
     private final boolean USE_SAVE_BUTTONS;
     
-    public IdentitySection(IdentityModel model, Composite parent, FormToolkit toolkit,
+    public IdentitySection(ViewModel model, Composite parent, FormToolkit toolkit,
             IMessageManager messageManager, int style) {
         super(parent, toolkit, style, messageManager, true);
         this.model = model;
@@ -165,7 +165,7 @@ public class IdentitySection extends ManagedFormSection {
     }
     
     private UpdateValueStrategy createModelUpdatePolicy() {
-        return new UpdateValueStrategy(UpdateValueStrategy.POLICY_CONVERT);
+        return new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
     }
     
     private void hookValidationVisuals(final Binding binding, final Control control) {

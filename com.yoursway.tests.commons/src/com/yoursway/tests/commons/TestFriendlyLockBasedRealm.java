@@ -3,7 +3,9 @@ package com.yoursway.tests.commons;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TestFriendlyLockBasedRealm extends LockBasedRealm {
+import com.yoursway.databinding.commons.YourSwayRealm;
+
+public class TestFriendlyLockBasedRealm extends YourSwayRealm {
     
     private Queue<Runnable> asyncRunnables = new ConcurrentLinkedQueue<Runnable>();
     

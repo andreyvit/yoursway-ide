@@ -2,12 +2,12 @@ package com.yoursway.ide.projects.editor;
 
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 
-public class IdentityModel {
+public class ViewModel {
     
     private final IObservableValue projectName;
     private final IObservableValue projectLocation;
     
-    public IdentityModel(IObservableValue projectName, IObservableValue projectLocation) {
+    public ViewModel(IObservableValue projectName, IObservableValue projectLocation) {
         this.projectName = projectName;
         this.projectLocation = projectLocation;
     }
