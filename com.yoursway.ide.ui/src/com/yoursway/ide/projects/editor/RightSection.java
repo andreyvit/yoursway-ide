@@ -8,6 +8,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+import com.yoursway.ide.projects.editor.aux.ExtendedFormToolkit;
+import com.yoursway.ide.projects.editor.aux.FormLayoutFactory;
+import com.yoursway.ide.projects.editor.aux.ManagedFormSection;
+
 public class RightSection extends ManagedFormSection {
     
     public RightSection(Composite parent, FormToolkit toolkit, IMessageManager messageManager, int style) {

@@ -1,4 +1,4 @@
-package com.yoursway.ide.projects.editor;
+package com.yoursway.ide.projects.editor.aux;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;

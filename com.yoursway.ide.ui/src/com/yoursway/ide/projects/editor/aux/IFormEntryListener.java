@@ -1,4 +1,4 @@
-package com.yoursway.ide.projects.editor;
+package com.yoursway.ide.projects.editor.aux;
 
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 

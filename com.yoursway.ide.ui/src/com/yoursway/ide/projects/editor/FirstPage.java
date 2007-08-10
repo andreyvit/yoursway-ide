@@ -12,6 +12,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+import com.yoursway.ide.projects.editor.aux.FormLayoutFactory;
+import com.yoursway.ide.projects.editor.aux.GridDataBuilder;
+import com.yoursway.ide.projects.editor.aux.GridLayoutBuilder;
+import com.yoursway.ide.projects.editor.aux.ManagedFormSection;
+
 public class FirstPage extends ProjectEditorPage {
     
     private final ViewModel viewModel;

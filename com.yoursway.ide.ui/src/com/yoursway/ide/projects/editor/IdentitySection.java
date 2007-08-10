@@ -27,6 +27,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+import com.yoursway.ide.projects.editor.aux.ExtendedFormToolkit;
+import com.yoursway.ide.projects.editor.aux.FormLayoutFactory;
+import com.yoursway.ide.projects.editor.aux.ManagedFormSection;
+
 public class IdentitySection extends ManagedFormSection {
     
     private final class ProjectNameValidator implements IValidator {
