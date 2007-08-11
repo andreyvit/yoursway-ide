@@ -3,48 +3,23 @@ package com.yoursway.ide.projects.editor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.IMessageManager;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.swt.widgets.Control;
 
+import com.yoursway.ide.projects.editor.aux.AbstractSection;
 import com.yoursway.ide.projects.editor.aux.ExtendedFormToolkit;
 import com.yoursway.ide.projects.editor.aux.FormLayoutFactory;
-import com.yoursway.ide.projects.editor.aux.ManagedFormSection;
 
-public class RightSection extends ManagedFormSection {
+public class RightSection extends AbstractSection {
     
-    public RightSection(Composite parent, FormToolkit toolkit, IMessageManager messageManager, int style) {
-        super(parent, toolkit, style, messageManager, true);
-        final Section section = getSection();
-        
-        section.setText("Something useful");
-        section.setDescription("I dunno what should be here...");
-        
-        createClient(section, new ExtendedFormToolkit(toolkit));
+    public RightSection(Composite parent, ExtendedFormToolkit toolkit) {
+        super(toolkit.createSectionTitleBar(parent, "Something useful", "I dunno what should be here..."));
+        getSection().setClient(createClient(getSection(), toolkit));
     }
     
-    private void createClient(Section section, ExtendedFormToolkit toolkit) {
-        section.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
-        TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
-        section.setLayoutData(data);
-        
-        Composite client = toolkit.createComposite(section);
+    private Control createClient(Composite parent, ExtendedFormToolkit toolkit) {
+        Composite client = toolkit.createComposite(parent);
         client.setLayout(FormLayoutFactory.createSectionClientTableWrapLayout(false, 3));
-        section.setClient(client);
-        
-        //        Realm realm = SWTObservables.getRealm(section.getDisplay());
-        //        bindingContext = new DataBindingContext(realm);
-        
-        //        Label entryLabel = toolkit.createEntryLabel(client, "Project name:");
-        //        entryLabel.setLayoutData(new TableWrapData(TableWrapData.LEFT, TableWrapData.MIDDLE));
-        //        
-        //        final Text entryText = toolkit.createText(client, null);
-        //        entryText.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.MIDDLE, 1, 1));
-        //        
-        //        final Button saveButton = toolkit.createButton(client, "Save", SWT.PUSH);
-        //        saveButton.setLayoutData(new TableWrapData(TableWrapData.FILL, TableWrapData.MIDDLE, 1, 1));
-        
+        return client;
     }
     
     protected int mapSeverity(int severity) {

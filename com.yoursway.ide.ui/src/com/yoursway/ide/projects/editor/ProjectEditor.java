@@ -3,6 +3,7 @@ package com.yoursway.ide.projects.editor;
 import org.eclipse.core.databinding.observable.value.AbstractObservableValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -29,7 +30,7 @@ public class ProjectEditor extends FormEditor {
             
             @Override
             protected void doSetValue(Object value) {
-                super.doSetValue(value);
+                MessageDialog.openInformation(null, "Change", "New value: " + value);
             }
             
             public Object getValueType() {
@@ -42,6 +43,11 @@ public class ProjectEditor extends FormEditor {
             @Override
             protected Object doGetValue() {
                 return railsProject.getProject().getLocation().removeLastSegments(1).toString();
+            }
+            
+            @Override
+            protected void doSetValue(Object value) {
+                //                super.doSetValue(value);
             }
             
             public Object getValueType() {
