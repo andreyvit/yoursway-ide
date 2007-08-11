@@ -102,8 +102,8 @@ public final class TypedListenerList<T> implements Iterable<T> {
                 return;
         }
         ArrayList<T> newListeners = new ArrayList<T>(listeners.size() + 1);
-        Collections.copy(newListeners, listeners);
-        newListeners.set(listeners.size(), listener);
+        newListeners.addAll(listeners);
+        newListeners.add(listener);
         
         //atomic assignment
         listeners = newListeners;
