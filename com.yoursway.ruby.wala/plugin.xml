@@ -11,5 +11,16 @@
             name="WALA">
       </view>
    </extension>
+   <extension
+         id="testapp"
+         name="Ruby WALA Test Application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            thread="main"
+            visible="true">
+         <run
+               class="com.yoursway.ruby.wala.TestApplication">
+         </run></application>
+   </extension>
 
 </plugin>

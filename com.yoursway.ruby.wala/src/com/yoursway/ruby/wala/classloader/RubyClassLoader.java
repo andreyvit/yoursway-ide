@@ -31,7 +31,7 @@ import com.ibm.wala.util.Atom;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.debug.Assertions;
-import com.yoursway.ruby.wala.RubyAstTranslator;
+import com.yoursway.ruby.wala.RubyCAst2IRTranslator;
 import com.yoursway.ruby.wala.RubyTypes;
 import com.yoursway.ruby.wala.ScriptEntity;
 
@@ -183,7 +183,7 @@ public class RubyClassLoader implements IClassLoader {
     
     public void init(Set<Module> modules) throws IOException {
         System.out.println(Arrays.toString(modules.toArray()));
-        RubyAstTranslator translator = new RubyAstTranslator(this);
+        RubyCAst2IRTranslator translator = new RubyCAst2IRTranslator(this);
         CAstImpl a = new CAstImpl();
         ScriptEntity se = new ScriptEntity("foo", a.makeNode(CAstNode.BLOCK_STMT));
         translator.translate(se, "myscript.rb");
