@@ -1,17 +1,15 @@
 package com.yoursway.rails.utils.schemaparser;
 
 import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 
-import com.yoursway.rails.commons.HumaneASTVisitor;
+import com.yoursway.rails.commons.RubyAstTraverser;
+import com.yoursway.rails.commons.RubyAstVisitor;
 import com.yoursway.utils.RubyASTUtils;
 
-public class RubySchemaParser extends HumaneASTVisitor {
-    
-    private TableInfo currentTable;
-    
-    private int tableDefinitionLevel = -1;
+public class RubySchemaParser {
     
     private final SchemaInfo schema = new SchemaInfo();
     
@@ -19,42 +17,62 @@ public class RubySchemaParser extends HumaneASTVisitor {
         return schema;
     }
     
-    @Override
-    protected boolean enterCall(CallExpression node) {
-        final String methodName = node.getName();
-        if ("define".equals(methodName)) {
-            ASTNode arg = RubyASTUtils.getArgumentValue(node, 0);
-            if (arg instanceof RubyHashExpression) {
-                ASTNode versionValue = RubyASTUtils.findHashItemValue((RubyHashExpression) arg, "version");
-                Long version = RubyASTUtils.resolveConstantFixnumValue(versionValue);
-                if (version != null)
-                    schema.schemaVersion = version;
+    class RootContext extends RubyAstVisitor {
+        
+        @Override
+        protected RubyAstVisitor enterCall(CallExpression node) {
+            String methodName = node.getName();
+            if ("define".equals(methodName)) {
+                ASTNode arg = RubyASTUtils.getArgumentValue(node, 0);
+                if (arg instanceof RubyHashExpression) {
+                    ASTNode versionValue = RubyASTUtils
+                            .findHashItemValue((RubyHashExpression) arg, "version");
+                    Long version = RubyASTUtils.resolveConstantFixnumValue(versionValue);
+                    if (version != null)
+                        schema.schemaVersion = version;
+                }
+            } else if ("create_table".equals(methodName)) {
+                String name = RubyASTUtils.resolveConstantStringArgument(node, 0);
+                if (name != null) {
+                    TableInfo info = new TableInfo(name);
+                    schema.tables.add(info);
+                    return new TableContext(info);
+                }
             }
-        } else if (currentTable == null && "create_table".equals(methodName)) {
-            String name = RubyASTUtils.resolveConstantStringArgument(node, 0);
-            if (name != null) {
-                currentTable = new TableInfo(name);
-                tableDefinitionLevel = getNestingLevel();
-                schema.tables.add(currentTable);
-            }
-        } else if (currentTable != null && "column".equals(methodName)) {
-            String name = RubyASTUtils.resolveConstantStringArgument(node, 0);
-            String type = RubyASTUtils.resolveConstantStringArgument(node, 1);
-            if (name != null) {
-                FieldInfo field = new FieldInfo();
-                field.name = name;
-                field.type = type;
-                currentTable.fields.add(field);
-            }
+            return this;
         }
-        return true;
+        
     }
     
-    @Override
-    protected void nestedLevelDropped(int newLevel) {
-        if (newLevel < tableDefinitionLevel) {
-            tableDefinitionLevel = -1;
-            currentTable = null;
+    class TableContext extends RubyAstVisitor {
+        
+        private final TableInfo currentTable;
+        
+        public TableContext(TableInfo currentTable) {
+            this.currentTable = currentTable;
         }
+        
+        @Override
+        protected RubyAstVisitor enterCall(CallExpression node) {
+            final String methodName = node.getName();
+            if ("column".equals(methodName)) {
+                String name = RubyASTUtils.resolveConstantStringArgument(node, 0);
+                String type = RubyASTUtils.resolveConstantStringArgument(node, 1);
+                if (name != null) {
+                    FieldInfo field = new FieldInfo();
+                    field.name = name;
+                    field.type = type;
+                    currentTable.fields.add(field);
+                }
+            }
+            return null;
+        }
+        
     }
+    
+    public void traverse(ModuleDeclaration module) {
+        RubyAstTraverser traverser = new RubyAstTraverser();
+        traverser.traverse(module, new RootContext());
+    }
+    
 }

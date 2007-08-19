@@ -1,7 +1,6 @@
 package com.yoursway.rails.commons;
 
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
@@ -12,48 +11,31 @@ import org.eclipse.dltk.ruby.ast.RubySingletonMethodDeclaration;
  * <ol>
  * <li>Contains typed enter/leave methods for every intersting node types
  * (please add additional methods when more node types are needed).</li>
- * <li>Leave method is not called when enter method returns <code>false</code>.</li>
- * <li>Node nesting level is tracked, so that it's easy to tell when certain
- * constructs are closed by monitoring the nesting level.</li>
+ * <li>Enter methods return a visitor that will be used to visit the children,
+ * or <code>null</code> to skip visiting children.
+ * <li>Leave method is not called when enter method returns <code>null</code>.</li>
  * <li>Enter/leave methods do not throw checked exceptions.</li>
  * </ol>
  * 
+ * <p>
+ * {@link RubyAstTraverser} should be used to traverse DLTK AST nodes using this
+ * visitor.
+ * </p>
+ * 
  * @author Andrey Tarantsov
  */
-public class HumaneASTVisitor {
+public class RubyAstVisitor {
     
     private int nestingLevel = 0;
     
-    private final ASTVisitor adapter = new ASTVisitor() {
-        
-        private int ignoreEnds = 0;
-        
-        @Override
-        public void endvisitGeneral(ASTNode node) {
-            if (ignoreEnds > 0)
-                --ignoreEnds;
-            else
-                switchLeave(node);
-        }
-        
-        @Override
-        public boolean visitGeneral(ASTNode node) {
-            boolean result = switchEnter(node);
-            if (!result)
-                ignoreEnds++;
-            return result;
-        }
-        
-    };
-    
-    protected boolean enterNode(ASTNode node) {
-        return true;
+    protected RubyAstVisitor enterNode(ASTNode node) {
+        return this;
     }
     
     protected void leaveNode(ASTNode node) {
     }
     
-    protected boolean enterMethodDeclaration(MethodDeclaration node) {
+    protected RubyAstVisitor enterMethodDeclaration(MethodDeclaration node) {
         return enterNode(node);
     }
     
@@ -61,7 +43,7 @@ public class HumaneASTVisitor {
         leaveNode(node);
     }
     
-    protected boolean enterSingletonMethodDeclaration(RubySingletonMethodDeclaration node) {
+    protected RubyAstVisitor enterSingletonMethodDeclaration(RubySingletonMethodDeclaration node) {
         return enterNode(node);
     }
     
@@ -69,7 +51,7 @@ public class HumaneASTVisitor {
         leaveNode(node);
     }
     
-    protected boolean enterCall(CallExpression node) {
+    protected RubyAstVisitor enterCall(CallExpression node) {
         return enterNode(node);
     }
     
@@ -77,7 +59,7 @@ public class HumaneASTVisitor {
         leaveNode(node);
     }
     
-    protected boolean enterModuleDeclaration(ModuleDeclaration node) {
+    protected RubyAstVisitor enterModuleDeclaration(ModuleDeclaration node) {
         return enterNode(node);
     }
     
@@ -86,7 +68,7 @@ public class HumaneASTVisitor {
     }
     
     // copy this and the next method to support a new node
-    protected boolean enter(MethodDeclaration node) {
+    protected RubyAstVisitor enter(MethodDeclaration node) {
         return enterNode(node);
     }
     
@@ -94,7 +76,7 @@ public class HumaneASTVisitor {
         leaveNode(node);
     }
     
-    protected boolean enterUnknown(ASTNode node) {
+    protected RubyAstVisitor enterUnknown(ASTNode node) {
         return enterNode(node);
     }
     
@@ -109,7 +91,7 @@ public class HumaneASTVisitor {
         return nestingLevel;
     }
     
-    public final boolean switchEnter(ASTNode node) {
+    public final RubyAstVisitor switchEnter(ASTNode node) {
         ++nestingLevel;
         if (node instanceof RubySingletonMethodDeclaration)
             return enterSingletonMethodDeclaration((RubySingletonMethodDeclaration) node);
@@ -125,7 +107,7 @@ public class HumaneASTVisitor {
         else
             return enterUnknown(node);
     }
-
+    
     public final void switchLeave(ASTNode node) {
         nestedLevelDropped(--nestingLevel);
         if (node instanceof RubySingletonMethodDeclaration)
@@ -143,17 +125,4 @@ public class HumaneASTVisitor {
             leaveUnknown(node);
     }
     
-    public final ASTVisitor getAdapter() {
-        return adapter;
-    }
-    
-    public void traverse(ASTNode node) {
-        try {
-            node.traverse(adapter);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
