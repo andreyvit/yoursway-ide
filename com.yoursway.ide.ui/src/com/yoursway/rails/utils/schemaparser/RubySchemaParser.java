@@ -4,7 +4,7 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 
-import com.yoursway.utils.HumaneASTVisitor;
+import com.yoursway.rails.commons.HumaneASTVisitor;
 import com.yoursway.utils.RubyASTUtils;
 
 public class RubySchemaParser extends HumaneASTVisitor {
