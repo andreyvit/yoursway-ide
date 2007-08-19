@@ -15,6 +15,10 @@ import com.ibm.wala.cast.tree.CAstSourcePositionMap;
 import com.ibm.wala.cast.tree.CAstType;
 import com.ibm.wala.util.debug.Assertions;
 
+/**
+ * This class is not used..
+ * @author Andrey Tarantsov
+ */
 public final class CompilationUnitEntity implements CAstEntity {
     private final String fName;
     

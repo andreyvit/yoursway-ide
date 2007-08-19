@@ -23,6 +23,7 @@ import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.classLoader.Language;
 import com.ibm.wala.classLoader.Module;
+import com.ibm.wala.classLoader.ModuleEntry;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.types.ClassLoaderReference;
@@ -33,12 +34,14 @@ import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.Atom;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
+import com.ibm.wala.util.collections.Iterator2Collection;
 import com.ibm.wala.util.debug.Assertions;
-import com.yoursway.ruby.wala.FunctionEntity;
 import com.yoursway.ruby.wala.RubyCAst2IRTranslator;
 import com.yoursway.ruby.wala.RubyCallSiteReference;
 import com.yoursway.ruby.wala.RubyTypes;
-import com.yoursway.ruby.wala.ScriptEntity;
+import com.yoursway.ruby.wala.entities.FunctionEntity;
+import com.yoursway.ruby.wala.entities.ScriptEntity;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator;
 
 public class RubyClassLoader implements IClassLoader {
     
@@ -190,19 +193,30 @@ public class RubyClassLoader implements IClassLoader {
         System.out.println(Arrays.toString(modules.toArray()));
         RubyCAst2IRTranslator translator = new RubyCAst2IRTranslator(this);
         CAstImpl a = new CAstImpl();
-        Map<CAstNode, Set<CAstEntity>> subs = HashMapFactory.make();
-        FunctionEntity fe = new FunctionEntity("test", a.makeNode(CAstNode.BLOCK_STMT));
-        Set<CAstEntity> l = new HashSet<CAstEntity>();
-        l.add(fe);
-        subs.put(null, l);
-        ScriptEntity se = new ScriptEntity("foo", a.makeNode(CAstNode.BLOCK_STMT,
-                a.makeNode(CAstNode.FUNCTION_STMT, a.makeConstant(fe)),
-                a.makeNode(CAstNode.CALL, a.makeNode(CAstNode.VAR, a.makeConstant("test")),
-                        a.makeConstant("do"))), subs);
+        
+        for (Module module : modules) {
+            for (ModuleEntry entry : Iterator2Collection.toCollection(module.getEntries())) {
+                String name = entry.getName();
+                System.out.println("Processing " + name + "...");
+                DltkAstToCommonAstTranslator atranslator = new DltkAstToCommonAstTranslator(a, entry, name);
+                CAstEntity entity = atranslator.translate();
+                translator.translate(entity, name);
+            }
+        }
+        
+//        Map<CAstNode, Set<CAstEntity>> subs = HashMapFactory.make();
+//        FunctionEntity fe = new FunctionEntity("test", a.makeNode(CAstNode.BLOCK_STMT));
+//        Set<CAstEntity> l = new HashSet<CAstEntity>();
+//        l.add(fe);
+//        subs.put(null, l);
+//        ScriptEntity se = new ScriptEntity("foo", a.makeNode(CAstNode.BLOCK_STMT,
+//                a.makeNode(CAstNode.FUNCTION_STMT, a.makeConstant(fe)),
+//                a.makeNode(CAstNode.CALL, a.makeNode(CAstNode.VAR, a.makeConstant("test")),
+//                        a.makeConstant("do"))), subs);
         //
 //        wc.cfg().map(c, result);
 
-        translator.translate(se, "myscript.rb");
+//        translator.translate(se, "myscript.rb");
     }
     
     public void removeAll(Collection<IClass> toRemove) {

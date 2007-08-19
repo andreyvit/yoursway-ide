@@ -1,7 +1,5 @@
-package com.yoursway.ruby.wala;
+package com.yoursway.ruby.wala.translator;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,18 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.ruby.internal.parser.JRubySourceParser;
-import org.jruby.parser.DefaultRubyParser;
-import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.FunctionNode;
 import org.mozilla.javascript.Node;
-import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ScriptOrFnNode;
 import org.mozilla.javascript.Token;
-import org.mozilla.javascript.tools.ToolErrorReporter;
 
-import com.ibm.wala.cast.tree.CAst;
 import com.ibm.wala.cast.tree.CAstControlFlowMap;
 import com.ibm.wala.cast.tree.CAstEntity;
 import com.ibm.wala.cast.tree.CAstNode;
@@ -34,31 +25,24 @@ import com.ibm.wala.cast.tree.impl.CAstOperator;
 import com.ibm.wala.cast.tree.impl.CAstSourcePositionRecorder;
 import com.ibm.wala.cast.tree.impl.CAstSymbolImpl;
 import com.ibm.wala.cast.tree.impl.LineNumberPosition;
-import com.ibm.wala.classLoader.ModuleEntry;
 import com.ibm.wala.classLoader.SourceFileModule;
 import com.ibm.wala.classLoader.SourceURLModule;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.debug.Assertions;
-import com.ibm.wala.util.debug.Trace;
-import com.ibm.wala.util.io.Streams;
-import com.yoursway.rails.commons.RubyAstTraverser;
-import com.yoursway.rails.commons.RubyAstVisitor;
+import com.yoursway.ruby.wala.entities.ScriptOrFuncEntity;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.BaseCollectingContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.CatchBlockContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.DelegatingContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.ExpressionContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.FunctionContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.LoopContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.ScriptContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.TryBlockContext;
+import com.yoursway.ruby.wala.translator.DltkAstToCommonAstTranslator.WalkContext;
 
-/**
- * Produces a WALA common AST (CAst) from a DLTK AST. (Also temporarily produces
- * a DLTK AST from file source using {@link JRubySourceParser}. As soon as this
- * work will be integrated into the IDE should switch to obtaining a cached AST
- * from DLTK, and probably not in this class.)
- * 
- * NOTE NOTE NOTE: all real code is at the end of file, the remaining code is
- * from JavaScript impl.
- * 
- * @author Andrey Tarantsov
- */
-public class DltkAstToCommonAstTranslator {
-    
-    private final boolean DEBUG = true;
+public class DltkAstToCommon_JsCodeStorage {
+   private final boolean DEBUG = true;
     
     private interface WalkContext {
         
@@ -488,41 +472,7 @@ public class DltkAstToCommonAstTranslator {
     // code is fishy.   This should be cleaned up and the unchecked suppressWarnings
     // should be removed.
     private CAstEntity walkEntity(final ScriptOrFnNode n, WalkContext context) {
-        final FunctionContext child = (n instanceof FunctionNode) ? new FunctionContext(context,
-                (FunctionNode) n) : new ScriptContext(context, n, n.getSourceName());
-        
-        CAstNode[] stmts = gatherChildren(n, child);
-        
-        // add initializers, if any
-        if (!child.initializers.isEmpty()) {
-            CAstNode[] newStmts = new CAstNode[stmts.length + 1];
-            
-            newStmts[0] = Ast.makeNode(CAstNode.BLOCK_STMT, child.initializers
-                    .toArray(new CAstNode[child.initializers.size()]));
-            
-            for (int i = 0; i < stmts.length; i++)
-                newStmts[i + 1] = stmts[i];
-            
-            stmts = newStmts;
-        }
-        
-        final CAstNode ast = Ast.makeNode(CAstNode.BLOCK_STMT, stmts);
-        final CAstControlFlowMap map = child.cfg();
-        final CAstSourcePositionMap pos = child.pos();
-        
-        final Map<CAstNode, Collection<CAstEntity>> subs = HashMapFactory.make();
-        for (Iterator<CAstNode> keys = child.getScopedEntities().keySet().iterator(); keys.hasNext();) {
-            CAstNode k = keys.next();
-            Object v = child.getScopedEntities().get(k);
-            if (v instanceof Collection)
-                subs.put(k, (Set<CAstEntity>) v);
-            else {
-                Set<CAstEntity> s = (Set<CAstEntity>) Collections.singleton((CAstEntity) v);
-                subs.put(k, s);
-            }
-        }
-        
-        return new ScriptOrFuncEntity(subs, ast, n, pos, map);
+        // converted
     }
     
     // TODO: SJF ... i put unchecked to make the generics compile; but this
@@ -622,25 +572,7 @@ public class DltkAstToCommonAstTranslator {
         switch (NT) {
         
         case Token.FUNCTION: {
-            int fnIndex = n.getExistingIntProp(Node.FUNCTION_PROP);
-            FunctionNode fn = context.top().getFunctionNode(fnIndex);
-            
-            CAstEntity fne = walkEntity(fn, context);
-            
-            if (context.expressionContext()) {
-                CAstNode fun = Ast.makeNode(CAstNode.FUNCTION_EXPR, Ast.makeConstant(fne));
-                
-                context.addScopedEntity(fun, fne);
-                
-                return fun;
-                
-            } else {
-                context.addInitializer(Ast.makeNode(CAstNode.FUNCTION_STMT, Ast.makeConstant(fne)));
-                
-                context.addScopedEntity(null, fne);
-                
-                return Ast.makeNode(CAstNode.EMPTY);
-            }
+            // converted
         }
             
         case Token.CATCH_SCOPE: {
@@ -1183,9 +1115,10 @@ public class DltkAstToCommonAstTranslator {
             
             CAstNode rcvr = walkNodes(receiver, context);
             
-            return Ast.makeNode(CAstNode.ASSIGN_POST_OP, Ast.makeNode(CAstNode.OBJECT_REF, rcvr, walkNodes(
-                    elt, context)), walkNodes(op.getFirstChild().getNext(), context), translateOpcode(op
-                    .getType()));
+            return null;
+//            return Ast.makeNode(CAstNode.ASSIGN_POST_OP, Ast.makeNode(CAstNode.OBJECT_REF, rcvr, walkNodes(
+//                    elt, context)), walkNodes(op.getFirstChild().getNext(), context), translateOpcode(op
+//                    .getType()));
         }
             
         case Token.THROW: {
@@ -1216,48 +1149,4 @@ public class DltkAstToCommonAstTranslator {
         }
     }
     
-    static class RootState extends RubyAstVisitor {
-        
-        @Override
-        protected RubyAstVisitor enterModuleDeclaration(ModuleDeclaration node) {
-            return null;
-        }
-        
-        public CAstEntity getEntity() {
-            return null;
-        }
-        
-    }
-    
-    public CAstEntity translate() throws java.io.IOException {
-        if (DEBUG)
-            Trace.println("translating " + scriptName + " with Rhino");
-        
-        final InputStream inputStream = sourceModule.getInputStream();
-        byte[] inputData = Streams.inputStream2ByteArray(inputStream);
-        String inputString = new String(inputData, "utf-8");
-        JRubySourceParser parser = new JRubySourceParser();
-        ModuleDeclaration module = parser.parse(inputString);
-        
-        RubyAstTraverser traverser = new RubyAstTraverser();
-        RootState state = new RootState();
-        traverser.traverse(module, state);
-        return state.getEntity();
-    }
-    
-    private final CAst Ast;
-    
-    final String scriptName;
-    
-    private final ModuleEntry sourceModule;
-    
-    int anonymousCounter = 0;
-    
-    // private int receiverCounter = 0;
-    
-    public DltkAstToCommonAstTranslator(CAst Ast, ModuleEntry M, String scriptName) {
-        this.Ast = Ast;
-        this.scriptName = scriptName;
-        this.sourceModule = M;
-    }
 }

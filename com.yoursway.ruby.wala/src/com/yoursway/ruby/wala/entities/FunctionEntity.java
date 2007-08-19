@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.yoursway.ruby.wala;
+package com.yoursway.ruby.wala.entities;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -15,10 +16,7 @@ import com.ibm.wala.cast.tree.CAstNode;
 import com.ibm.wala.cast.tree.CAstNodeTypeMap;
 import com.ibm.wala.cast.tree.CAstSourcePositionMap;
 import com.ibm.wala.cast.tree.CAstType;
-import com.ibm.wala.cast.tree.impl.CAstControlFlowRecorder;
-import com.ibm.wala.cast.tree.impl.CAstSourcePositionRecorder;
 import com.ibm.wala.util.collections.EmptyIterator;
-import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.debug.Assertions;
 
 /**
@@ -31,15 +29,19 @@ public final class FunctionEntity implements CAstEntity {
     private final String[] arguments;
     private final String name;
     private final CAstNode ast;
-    private final Map<CAstNode, Collection<CAstEntity>> subs = HashMapFactory.make();
-    private CAstSourcePositionRecorder astSourcePositionRecorder = new CAstSourcePositionRecorder();
-    private CAstControlFlowRecorder astControlFlowRecorder = new CAstControlFlowRecorder(
-            astSourcePositionRecorder);
     
-    public FunctionEntity(String name, CAstNode ast) {
+    private final Map<CAstNode, Collection<CAstEntity>> subentities;
+    private CAstSourcePositionMap sourcePositionMap;
+    private CAstControlFlowMap controlFlowMap;
+    
+    public FunctionEntity(String name, CAstNode ast, Map<CAstNode, Set<CAstEntity>> subentities,
+            CAstSourcePositionMap sourcePositionMap, CAstControlFlowMap controlFlowMap) {
         this.name = name;
         this.ast = ast;
-        arguments = new String[0];
+        this.sourcePositionMap = sourcePositionMap;
+        this.controlFlowMap = controlFlowMap;
+        this.subentities = new HashMap<CAstNode, Collection<CAstEntity>>(subentities);
+        arguments = new String[0]; // FIXME: initialize with args from AST node
     }
     
     public String toString() {
@@ -71,27 +73,27 @@ public final class FunctionEntity implements CAstEntity {
         return arguments.length;
     }
     
-    public Map<CAstNode, Collection<CAstEntity>> getAllScopedEntities() {
-        return Collections.unmodifiableMap(subs);
-    }
-    
-    public Iterator getScopedEntities(CAstNode construct) {
-        if (subs.containsKey(construct))
-            return ((Set) subs.get(construct)).iterator();
-        else
-            return EmptyIterator.instance();
-    }
-    
     public CAstNode getAST() {
         return ast;
     }
     
+    public Map<CAstNode, Collection<CAstEntity>> getAllScopedEntities() {
+        return Collections.unmodifiableMap(subentities);
+    }
+    
+    public Iterator<CAstEntity> getScopedEntities(CAstNode construct) {
+        if (subentities.containsKey(construct))
+            return ((Set<CAstEntity>) subentities.get(construct)).iterator();
+        else
+            return EmptyIterator.instance();
+    }
+    
     public CAstControlFlowMap getControlFlow() {
-        return astControlFlowRecorder;
+        return controlFlowMap;
     }
     
     public CAstSourcePositionMap getSourceMap() {
-        return astSourcePositionRecorder;
+        return sourcePositionMap;
     }
     
     public CAstSourcePositionMap.Position getPosition() {
