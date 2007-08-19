@@ -113,7 +113,7 @@ public class RubyCAst2IRTranslator extends AstTranslator {
         
         // FIXME: missing receiver (was a first arg)
         context.cfg().addInstruction(
-                new SSAInvokeInstruction(result, arguments, exception, new RubyCallSiteReference(ref, context
+                new RubyInvoke(result, arguments, exception, new RubyCallSiteReference(ref, context
                         .cfg().getCurrentInstruction())));
         
         context.cfg().addPreNode(call, context.getUnwindState());
@@ -132,7 +132,7 @@ public class RubyCAst2IRTranslator extends AstTranslator {
                 + type));
         
         context.cfg().addInstruction(
-                new SSANewInstruction(result, NewSiteReference.make(context.cfg().getCurrentInstruction(),
+                new RubyNewInstruction(result, NewSiteReference.make(context.cfg().getCurrentInstruction(),
                         typeRef)));
     }
     
@@ -141,7 +141,7 @@ public class RubyCAst2IRTranslator extends AstTranslator {
         int tmp = doGlobalRead(context, "Function");
         // FIXME: first arg was tmp
         context.cfg().addInstruction(
-                new SSAInvokeInstruction(result, new int[] { nm }, exception, new RubyCallSiteReference(
+                new RubyInvoke(result, new int[] { nm }, exception, new RubyCallSiteReference(
                         RubyMethods.ctorReference, context.cfg().getCurrentInstruction())));
     }
     

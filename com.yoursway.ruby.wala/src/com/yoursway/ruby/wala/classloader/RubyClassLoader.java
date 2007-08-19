@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import com.ibm.wala.cast.loader.AstMethod.DebuggingInformation;
 import com.ibm.wala.cast.loader.AstMethod.LexicalInformation;
+import com.ibm.wala.cast.tree.CAstEntity;
 import com.ibm.wala.cast.tree.CAstNode;
 import com.ibm.wala.cast.tree.CAstQualifier;
 import com.ibm.wala.cast.tree.CAstSourcePositionMap;
@@ -24,6 +26,7 @@ import com.ibm.wala.classLoader.Module;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.types.TypeReference;
@@ -31,7 +34,9 @@ import com.ibm.wala.util.Atom;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.HashSetFactory;
 import com.ibm.wala.util.debug.Assertions;
+import com.yoursway.ruby.wala.FunctionEntity;
 import com.yoursway.ruby.wala.RubyCAst2IRTranslator;
+import com.yoursway.ruby.wala.RubyCallSiteReference;
 import com.yoursway.ruby.wala.RubyTypes;
 import com.yoursway.ruby.wala.ScriptEntity;
 
@@ -185,7 +190,18 @@ public class RubyClassLoader implements IClassLoader {
         System.out.println(Arrays.toString(modules.toArray()));
         RubyCAst2IRTranslator translator = new RubyCAst2IRTranslator(this);
         CAstImpl a = new CAstImpl();
-        ScriptEntity se = new ScriptEntity("foo", a.makeNode(CAstNode.BLOCK_STMT));
+        Map<CAstNode, Set<CAstEntity>> subs = HashMapFactory.make();
+        FunctionEntity fe = new FunctionEntity("test", a.makeNode(CAstNode.BLOCK_STMT));
+        Set<CAstEntity> l = new HashSet<CAstEntity>();
+        l.add(fe);
+        subs.put(null, l);
+        ScriptEntity se = new ScriptEntity("foo", a.makeNode(CAstNode.BLOCK_STMT,
+                a.makeNode(CAstNode.FUNCTION_STMT, a.makeConstant(fe)),
+                a.makeNode(CAstNode.CALL, a.makeNode(CAstNode.VAR, a.makeConstant("test")),
+                        a.makeConstant("do"))), subs);
+        //
+//        wc.cfg().map(c, result);
+
         translator.translate(se, "myscript.rb");
     }
     

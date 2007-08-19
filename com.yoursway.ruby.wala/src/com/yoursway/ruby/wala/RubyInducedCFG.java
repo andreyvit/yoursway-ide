@@ -5,6 +5,11 @@ import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.Context;
 import com.ibm.wala.ssa.SSAInstruction;
 
+/**
+ * A call flow graph that knows how to deal with Ruby-specific SSA instructions.
+ * 
+ * @author Andrey Tarantsov
+ */
 public class RubyInducedCFG extends AstInducedCFG {
     
     public RubyInducedCFG(SSAInstruction[] instructions, IMethod method, Context context) {

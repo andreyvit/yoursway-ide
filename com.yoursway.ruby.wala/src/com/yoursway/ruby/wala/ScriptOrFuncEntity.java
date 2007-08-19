@@ -5,10 +5,12 @@ package com.yoursway.ruby.wala;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.mozilla.javascript.FunctionNode;
+import org.mozilla.javascript.ScriptOrFnNode;
 
 import com.ibm.wala.cast.tree.CAstControlFlowMap;
 import com.ibm.wala.cast.tree.CAstEntity;
@@ -16,29 +18,61 @@ import com.ibm.wala.cast.tree.CAstNode;
 import com.ibm.wala.cast.tree.CAstNodeTypeMap;
 import com.ibm.wala.cast.tree.CAstSourcePositionMap;
 import com.ibm.wala.cast.tree.CAstType;
-import com.ibm.wala.cast.tree.impl.CAstControlFlowRecorder;
-import com.ibm.wala.cast.tree.impl.CAstSourcePositionRecorder;
 import com.ibm.wala.util.collections.EmptyIterator;
 import com.ibm.wala.util.debug.Assertions;
 
-public final class ScriptEntity implements CAstEntity {
+/**
+ * This class is for comparison purposes only and will be deleted soon.
+ * 
+ * @author Andrey Tarantsov
+ */
+final class ScriptOrFuncEntity implements CAstEntity {
+    private final Map<CAstNode, Collection<CAstEntity>> subs;
+    private final CAstNode ast;
+    private final ScriptOrFnNode n;
+    private final CAstSourcePositionMap pos;
+    private final CAstControlFlowMap map;
     private final String[] arguments;
     private final String name;
-    private final CAstNode ast;
-    private final Map<CAstNode, Collection<CAstEntity>> subs;
-    private CAstSourcePositionRecorder astSourcePositionRecorder = new CAstSourcePositionRecorder();
-    private CAstControlFlowRecorder astControlFlowRecorder = new CAstControlFlowRecorder(
-            astSourcePositionRecorder);
     
-    public ScriptEntity(String name, CAstNode ast, Map<CAstNode, Set<CAstEntity>> subs) {
-        this.name = name;
+    // constructor of inner class
+    
+    ScriptOrFuncEntity(Map<CAstNode, Collection<CAstEntity>> subs, CAstNode ast, ScriptOrFnNode n,
+            CAstSourcePositionMap pos, CAstControlFlowMap map) {
+        this.subs = subs;
         this.ast = ast;
-        this.subs = new HashMap<CAstNode, Collection<CAstEntity>>(subs);
-        arguments = new String[0];
+        this.n = n;
+        this.pos = pos;
+        this.map = map;
+        
+        if (n instanceof FunctionNode) {
+            String x = ((FunctionNode) n).getFunctionName();
+            if (x == null || "".equals(x)) {
+                name = dltkAstToCommonAstTranslator.scriptName + "_anonymous_"
+                        + dltkAstToCommonAstTranslator.anonymousCounter++;
+            } else {
+                name = x;
+            }
+        } else {
+            name = n.getSourceName();
+        }
+        
+        if (n instanceof FunctionNode) {
+            FunctionNode f = (FunctionNode) n;
+            int i = 0;
+            arguments = new String[f.getParamCount() + 2];
+            arguments[i++] = name;
+            arguments[i++] = "this";
+            for (int j = 0; j < f.getParamCount(); j++) {
+                arguments[i++] = f.getParamOrVarName(j);
+            }
+        } else {
+            arguments = new String[0];
+        }
     }
     
     public String toString() {
-        return "<Ruby script " + getName() + ">";
+        return "<JS function " + getName() + ">";
     }
     
     public String getName() {
@@ -51,7 +85,10 @@ public final class ScriptEntity implements CAstEntity {
     }
     
     public int getKind() {
-        return CAstEntity.SCRIPT_ENTITY;
+        if (n instanceof FunctionNode)
+            return CAstEntity.FUNCTION_ENTITY;
+        else
+            return CAstEntity.SCRIPT_ENTITY;
     }
     
     public String[] getArgumentNames() {
@@ -70,9 +107,9 @@ public final class ScriptEntity implements CAstEntity {
         return Collections.unmodifiableMap(subs);
     }
     
-    public Iterator<CAstEntity> getScopedEntities(CAstNode construct) {
+    public Iterator getScopedEntities(CAstNode construct) {
         if (subs.containsKey(construct))
-            return ((Set<CAstEntity>) subs.get(construct)).iterator();
+            return ((Set) subs.get(construct)).iterator();
         else
             return EmptyIterator.instance();
     }
@@ -82,11 +119,11 @@ public final class ScriptEntity implements CAstEntity {
     }
     
     public CAstControlFlowMap getControlFlow() {
-        return astControlFlowRecorder;
+        return map;
     }
     
     public CAstSourcePositionMap getSourceMap() {
-        return astSourcePositionRecorder;
+        return pos;
     }
     
     public CAstSourcePositionMap.Position getPosition() {

@@ -21,6 +21,12 @@ import com.ibm.wala.util.collections.EmptyIterator;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.debug.Assertions;
 
+/**
+ * Used to represent a JavaScript function, until it has been adapted for Ruby.
+ * Now probably represents a method, but no one is sure. ;)
+ * 
+ * @author Andrey Tarantsov
+ */
 public final class FunctionEntity implements CAstEntity {
     private final String[] arguments;
     private final String name;
