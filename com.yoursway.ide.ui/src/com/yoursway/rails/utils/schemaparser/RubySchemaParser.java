@@ -7,6 +7,7 @@ import org.eclipse.dltk.ruby.ast.RubyHashExpression;
 
 import com.yoursway.rails.commons.RubyAstTraverser;
 import com.yoursway.rails.commons.RubyAstVisitor;
+import com.yoursway.rails.commons.RubyRootAstVisitor;
 import com.yoursway.utils.RubyASTUtils;
 
 public class RubySchemaParser {
@@ -17,10 +18,10 @@ public class RubySchemaParser {
         return schema;
     }
     
-    class RootContext extends RubyAstVisitor {
+    class RootContext extends RubyRootAstVisitor {
         
         @Override
-        protected RubyAstVisitor enterCall(CallExpression node) {
+        protected RubyAstVisitor<?> enterCall(CallExpression node) {
             String methodName = node.getName();
             if ("define".equals(methodName)) {
                 ASTNode arg = RubyASTUtils.getArgumentValue(node, 0);
@@ -36,7 +37,7 @@ public class RubySchemaParser {
                 if (name != null) {
                     TableInfo info = new TableInfo(name);
                     schema.tables.add(info);
-                    return new TableContext(info);
+                    return new TableContext(this, info);
                 }
             }
             return this;
@@ -44,16 +45,17 @@ public class RubySchemaParser {
         
     }
     
-    class TableContext extends RubyAstVisitor {
+    class TableContext extends RubyAstVisitor<ASTNode> {
         
         private final TableInfo currentTable;
         
-        public TableContext(TableInfo currentTable) {
+        public TableContext(RubyAstVisitor<?> parentVisitor, TableInfo currentTable) {
+            super(parentVisitor);
             this.currentTable = currentTable;
         }
         
         @Override
-        protected RubyAstVisitor enterCall(CallExpression node) {
+        protected RubyAstVisitor<?> enterCall(CallExpression node) {
             final String methodName = node.getName();
             if ("column".equals(methodName)) {
                 String name = RubyASTUtils.resolveConstantStringArgument(node, 0);

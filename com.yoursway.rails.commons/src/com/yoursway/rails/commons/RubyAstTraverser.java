@@ -2,6 +2,7 @@ package com.yoursway.rails.commons;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 
@@ -50,20 +51,26 @@ public final class RubyAstTraverser {
      * successful completion of this method the object is also left in an
      * unchanged state.)
      * 
+     * This method must be called with a newly created visitor that does not
+     * have a parent (i.e. <code>null</code> was passed into the constructor).
+     * 
      * @param node
      *            a node to traverse.
      * @param rootVisitor
      *            a visitor that will visit the given node.
      */
     public void traverse(ASTNode node, RubyAstVisitor rootVisitor) {
+        Assert.isNotNull(node);
+        Assert.isNotNull(rootVisitor);
+        Assert.isTrue(rootVisitor.getParentVisitor() == null);
         try {
-            int waterLevel = visitors.size();
-            visitors.add(rootVisitor);
+            RubyAstVisitor outerVisitor = currentVisitor;
+            currentVisitor = rootVisitor;
             try {
                 node.traverse(adapter);
+                rootVisitor.leaveNode(null);
             } finally {
-                while (visitors.size() > waterLevel)
-                    visitors.remove(visitors.size() - 1);
+                currentVisitor = outerVisitor;
             }
         } catch (RuntimeException e) {
             throw e;
@@ -72,20 +79,19 @@ public final class RubyAstTraverser {
         }
     }
     
-    private final ArrayList<RubyAstVisitor> visitors = new ArrayList<RubyAstVisitor>();
+    private RubyAstVisitor currentVisitor;
     
     private boolean enter(ASTNode node) {
-        RubyAstVisitor currentVisitor = visitors.get(visitors.size() - 1);
         RubyAstVisitor childrenVisitor = currentVisitor.switchEnter(node);
         if (childrenVisitor == null)
             return false;
-        visitors.add(childrenVisitor);
+        childrenVisitor.$verify(currentVisitor, node);
+        currentVisitor = childrenVisitor;
         return true;
     }
     
     private void leave(ASTNode node) {
-        RubyAstVisitor currentVisitor = visitors.remove(visitors.size() - 1);
-        currentVisitor.switchLeave(node);
+        currentVisitor = currentVisitor.leaveNode(node);
     }
     
 }
