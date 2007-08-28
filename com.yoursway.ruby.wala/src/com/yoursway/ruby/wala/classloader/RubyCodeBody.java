@@ -32,4 +32,16 @@ class RubyCodeBody extends AstFunctionClass {
         this.functionBody = codeBody;
         return codeBody;
     }
+    
+    @Override
+    public String toString() {
+        if (functionBody == null)
+            System.out.println("Function body not set for " + getName());
+        if (functionBody.getReference() == null)
+            System.out.println("Function body ref is null for " + getName());
+        if (functionBody.getReference().getDeclaringClass() == null)
+            System.out.println("Function body ref declaring class for " + getName());
+        return super.toString();
+    }
+    
 }

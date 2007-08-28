@@ -16,6 +16,7 @@ import com.ibm.wala.cast.tree.impl.CAstControlFlowRecorder;
 import com.ibm.wala.cast.tree.impl.CAstSourcePositionRecorder;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.yoursway.rails.commons.RubyAstVisitor;
+import com.yoursway.ruby.wala.entities.FunctionEntity;
 
 abstract class AbstractCodeContainerState<T extends ASTNode> extends AbstractState<T> {
     
@@ -44,4 +45,14 @@ abstract class AbstractCodeContainerState<T extends ASTNode> extends AbstractSta
         initializers.add(node);
     }
     
+    @Override
+    protected void addScopedEntity(CAstNode scope, FunctionEntity entity) {
+        HashSet<CAstEntity> set = scopedEntities.get(scope);
+        if (set == null) {
+            set = new HashSet<CAstEntity>();
+            scopedEntities.put(scope, set);
+        }
+        set.add(entity);
+    }
+
 }

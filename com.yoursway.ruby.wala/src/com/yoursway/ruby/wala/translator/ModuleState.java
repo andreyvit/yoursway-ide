@@ -6,6 +6,7 @@ package com.yoursway.ruby.wala.translator;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 
 import com.ibm.wala.cast.tree.CAstEntity;
@@ -19,6 +20,11 @@ class ModuleState extends AbstractModuleOrFuncState<ModuleDeclaration> {
         super(parentVisitor);
     }
     
+    @Override
+    protected RubyAstVisitor<?> enterMethodDeclaration(MethodDeclaration node) {
+        return new MethodState(this);
+    }
+
     protected void createEntity(Map<CAstNode, Set<CAstEntity>> subs, CAstNode ast) {
         getParentVisitor().addChildEntity(new ScriptEntity("test", ast, subs, pos(), cfg()));
     }

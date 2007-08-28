@@ -47,11 +47,6 @@ abstract class AbstractState<T extends ASTNode> extends RubyAstVisitor<T> {
     }
     
     @Override
-    protected RubyAstVisitor<?> enterMethodDeclaration(MethodDeclaration node) {
-        return new MethodState(this);
-    }
-    
-    @Override
     public AbstractState<?> getParentVisitor() {
         return (AbstractState<?>) super.getParentVisitor();
     }
