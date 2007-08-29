@@ -23,14 +23,10 @@ import com.ibm.wala.types.TypeReference;
 
 public class UtilCG extends com.ibm.wala.cast.ipa.callgraph.Util {
 
-  private static JavaScriptTranslatorFactory translatorFactory = new JavaScriptTranslatorFactory.CAstRhinoFactory();
+  private static JavaScriptTranslatorFactory jsTranslatorFactory = new JavaScriptTranslatorFactory.CAstRhinoFactory();
 
-  public static void setTranslatorFactory(JavaScriptTranslatorFactory translatorFactory) {
-    UtilCG.translatorFactory = translatorFactory;
-  }
-
-  public static JavaScriptTranslatorFactory getTranslatorFactory() {
-    return translatorFactory;
+  public static JavaScriptTranslatorFactory getJavaScriptTranslatorFactory() {
+    return jsTranslatorFactory;
   }
 
   public static AnalysisOptions makeOptions(AnalysisScope scope, boolean keepIRs, IClassHierarchy cha, Iterable<Entrypoint> roots) {
@@ -49,7 +45,7 @@ public class UtilCG extends com.ibm.wala.cast.ipa.callgraph.Util {
   }
 
   public static JavaScriptLoaderFactory makeLoaders() {
-    return new JavaScriptLoaderFactory(translatorFactory);
+    return new JavaScriptLoaderFactory(jsTranslatorFactory);
   }
 
   public static AnalysisScope makeScope(String[] files, JavaScriptLoaderFactory loaders) throws IOException {

@@ -5,6 +5,7 @@ package com.yoursway.ruby.wala.translator;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
+import org.eclipse.dltk.ast.expressions.CallExpression;
 
 import com.ibm.wala.cast.tree.CAst;
 import com.ibm.wala.cast.tree.CAstEntity;
@@ -27,7 +28,9 @@ abstract class AbstractState<T extends ASTNode> extends RubyAstVisitor<T> {
     }
     
     protected void addChildNode(CAstNode node) {
-        
+        AbstractState<?> parent = getParentVisitor();
+        if (parent != null)
+            parent.addChildNode(node);
     }
     
     protected void addChildEntity(CAstEntity entity) {
@@ -37,6 +40,14 @@ abstract class AbstractState<T extends ASTNode> extends RubyAstVisitor<T> {
     protected void addInitializer(CAstNode node) {
         
     }
+    
+    protected void mapNodeToItself(CAstNode node) {
+        getParentVisitor().mapNodeToItself(node);
+    }
+    
+//    protected void addCallFlowEdge(CAstNode node) {
+//        getParentVisitor().mapNodeToItself(node);
+//    }
     
     protected void defineMethod(FunctionEntity entity) {
         addInitializer(astBuilder().makeNode(CAstNode.FUNCTION_STMT, astBuilder().makeConstant(entity)));
@@ -55,4 +66,9 @@ abstract class AbstractState<T extends ASTNode> extends RubyAstVisitor<T> {
         return context.astBuilder();
     }
     
+    @Override
+    protected RubyAstVisitor<?> enterCall(CallExpression node) {
+        return new CallState(this);
+    }
+ 
 }

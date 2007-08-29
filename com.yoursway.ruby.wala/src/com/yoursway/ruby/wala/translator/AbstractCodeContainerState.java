@@ -54,5 +54,9 @@ abstract class AbstractCodeContainerState<T extends ASTNode> extends AbstractSta
         }
         set.add(entity);
     }
+    
+    protected void mapNodeToItself(CAstNode node) {
+        cfg().map(node, node);
+    }
 
 }

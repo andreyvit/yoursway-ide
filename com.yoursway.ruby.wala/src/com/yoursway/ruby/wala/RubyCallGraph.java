@@ -5,6 +5,7 @@ import com.ibm.wala.cast.ipa.callgraph.AstCallGraph.ScriptFakeRoot;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.impl.Everywhere;
+import com.ibm.wala.ipa.callgraph.impl.FakeWorldClinitMethod;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 
 /**
@@ -33,4 +34,9 @@ public class RubyCallGraph extends AstCallGraph {
         return findOrCreateNode(new RubyFakeRoot(cha, options), Everywhere.EVERYWHERE);
     }
     
+    @Override
+    protected CGNode makeFakeWorldClinitNode() {
+      return findOrCreateNode(new FakeWorldClinitMethod(cha, options), Everywhere.EVERYWHERE);
+    }
+
 }

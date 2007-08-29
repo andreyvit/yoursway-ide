@@ -5,6 +5,7 @@ package com.yoursway.ruby.wala.translator;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.expressions.CallExpression;
 
 import com.ibm.wala.cast.tree.CAstEntity;
 import com.ibm.wala.cast.tree.CAstNode;
@@ -34,5 +35,5 @@ class RootState extends AbstractState<ASTNode> {
     public CAstEntity getModuleEntity() {
         return moduleEntity;
     }
-    
+     
 }

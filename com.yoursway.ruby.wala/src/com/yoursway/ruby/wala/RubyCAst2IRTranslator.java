@@ -111,9 +111,8 @@ public class RubyCAst2IRTranslator extends AstTranslator {
         MethodReference ref = name.getValue().equals("ctor") ? RubyMethods.ctorReference : AstMethodReference
                 .fnReference(RubyTypes.CodeBody);
         
-        // FIXME: missing receiver (was a first arg)
         context.cfg().addInstruction(
-                new RubyInvoke(result, arguments, exception, new RubyCallSiteReference(ref, context
+                new RubyInvoke(receiver, result, arguments, exception, new RubyCallSiteReference(ref, context
                         .cfg().getCurrentInstruction())));
         
         context.cfg().addPreNode(call, context.getUnwindState());
@@ -139,9 +138,9 @@ public class RubyCAst2IRTranslator extends AstTranslator {
     protected void doMaterializeFunction(WalkContext context, int result, int exception, CAstEntity fn) {
         int nm = context.currentScope().getConstantValue("L" + composeEntityName(context, fn));
         int tmp = doGlobalRead(context, "Function");
-        // FIXME: first arg was tmp
+        // FIXED FIXME: first arg was tmp
         context.cfg().addInstruction(
-                new RubyInvoke(result, new int[] { nm }, exception, new RubyCallSiteReference(
+                new RubyInvoke(tmp, result, new int[] { nm }, exception, new RubyCallSiteReference(
                         RubyMethods.ctorReference, context.cfg().getCurrentInstruction())));
     }
     

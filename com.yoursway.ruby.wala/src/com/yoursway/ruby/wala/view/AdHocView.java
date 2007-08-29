@@ -92,7 +92,7 @@ public class AdHocView extends ViewPart {
             @Override
             public void run() {
                 try {
-                    buildSomething();
+                    buildSomething2();
                 } catch (Exception e) {
                     final Status status = new Status(Status.ERROR, "com.yoursway.ruby.wala", e.getMessage(), e);
                     Activator.getDefault().getLog().log(status);

@@ -22,9 +22,7 @@ public class RubyZeroXCFABuilder extends RubyCFABuilder {
     SSAContextInterpreter contextInterpreter = makeDefaultContextInterpreters(appContextInterpreter, options, cha, reflect);
     setContextInterpreter(contextInterpreter);
 
-//    options.setSelector(new JavaScriptConstructTargetSelector(cha, options.getMethodTargetSelector()));
-    com.ibm.wala.ipa.callgraph.impl.Util.addDefaultSelectors(options, cha);
-//    options.setSelector(new JavaScriptConstructTargetSelector(cha, options.getMethodTargetSelector()));
+    options.setSelector(new RubyConstructTargetSelector(cha, options.getMethodTargetSelector()));
 
     ContextSelector def = new DefaultContextSelector(cha, options.getMethodTargetSelector());
     ContextSelector contextSelector = appContextSelector == null ? def : new DelegatingContextSelector(appContextSelector, def);

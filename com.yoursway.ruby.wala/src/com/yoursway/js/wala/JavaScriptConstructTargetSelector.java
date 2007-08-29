@@ -355,7 +355,7 @@ public class JavaScriptConstructTargetSelector implements MethodTargetSelector {
         FileWriter FO = new FileWriter(f);
         FO.write(fun.toString());
         FO.close();
-        (UtilCG.getTranslatorFactory().make(cl)).translate(new SourceFileModule(f, System.getProperty("java.io.tmpdir")), fileName);
+        (UtilCG.getJavaScriptTranslatorFactory().make(cl)).translate(new SourceFileModule(f, System.getProperty("java.io.tmpdir")), fileName);
         f.delete();
         IClass fcls = cl.lookupClass("Lctor " + ctorCount + "/_fromctor", cha);
         cha.addClass(fcls);
