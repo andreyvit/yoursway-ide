@@ -13,3 +13,4 @@ def boz
 end
 
 foo
+bar
