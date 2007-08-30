@@ -17,7 +17,7 @@ public class CallState extends AbstractState<CallExpression> {
     @Override
     protected void leave() {
         List<CAstNode> children = new ArrayList<CAstNode>();
-        children.add(astBuilder().makeNode(CAstNode.VAR, astBuilder().makeConstant("boz")));
+        children.add(astBuilder().makeNode(CAstNode.VAR, astBuilder().makeConstant(node().getName())));
         children.add(astBuilder().makeConstant("do"));
         
         CAstNode call = astBuilder().makeNode(CAstNode.CALL, children.toArray(new CAstNode[children.size()]));
