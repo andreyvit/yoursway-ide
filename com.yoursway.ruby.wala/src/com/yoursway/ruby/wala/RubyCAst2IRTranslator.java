@@ -8,16 +8,11 @@ import com.ibm.wala.cast.loader.AstMethod.DebuggingInformation;
 import com.ibm.wala.cast.loader.AstMethod.LexicalInformation;
 import com.ibm.wala.cast.tree.CAstEntity;
 import com.ibm.wala.cast.tree.CAstNode;
-import com.ibm.wala.cast.tree.CAstSymbol;
 import com.ibm.wala.cast.tree.CAstType;
-import com.ibm.wala.cast.tree.impl.CAstSymbolImpl;
 import com.ibm.wala.cast.tree.visit.CAstVisitor;
 import com.ibm.wala.cast.types.AstMethodReference;
 import com.ibm.wala.cfg.AbstractCFG;
-import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.NewSiteReference;
-import com.ibm.wala.ssa.SSAInvokeInstruction;
-import com.ibm.wala.ssa.SSANewInstruction;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.types.FieldReference;
 import com.ibm.wala.types.MethodReference;
@@ -27,7 +22,6 @@ import com.ibm.wala.util.Atom;
 import com.ibm.wala.util.debug.Assertions;
 import com.ibm.wala.util.debug.Trace;
 import com.yoursway.ruby.wala.classloader.RubyClassLoader;
-import com.yoursway.ruby.wala.view.AdHocView;
 
 public class RubyCAst2IRTranslator extends AstTranslator {
     private final static boolean DEBUG = true;
