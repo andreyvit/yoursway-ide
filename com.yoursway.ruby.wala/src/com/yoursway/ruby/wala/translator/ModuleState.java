@@ -26,6 +26,9 @@ class ModuleState extends AbstractModuleOrFuncState<ModuleDeclaration> {
     }
 
     protected void createEntity(Map<CAstNode, Set<CAstEntity>> subs, CAstNode ast) {
-        getParentVisitor().addChildEntity(new ScriptEntity("test", ast, subs, pos(), cfg()));
+        CAstNode functionDef = astBuilder().makeNode(CAstNode.ASSIGN, astBuilder().makeNode(CAstNode.VAR, astBuilder().makeConstant("Function")),
+                astBuilder().makeNode(CAstNode.PRIMITIVE, astBuilder().makeConstant("NewFunction")));
+        CAstNode newAst = astBuilder().makeNode(CAstNode.BLOCK_STMT, functionDef, ast);
+        getParentVisitor().addChildEntity(new ScriptEntity("test", newAst, subs, pos(), cfg()));
     }
 }
