@@ -4,7 +4,7 @@ Bundle-Name: Macosx
 Bundle-SymbolicName: com.yoursway.swt.macosx
 Bundle-Version: 1.0.0
 Bundle-ClassPath: macosx.jar,
- andreyvit/Storage/swt/org.eclipse.swt.carbon.macosx_3.3.0.v3346.jar
+ fourdman/Eclipses/eclipse main/plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3346.jar
 Fragment-Host: org.eclipse.swt
 Export-Package: com.yoursway.swt.experiments,
  org.eclipse.swt.widgets

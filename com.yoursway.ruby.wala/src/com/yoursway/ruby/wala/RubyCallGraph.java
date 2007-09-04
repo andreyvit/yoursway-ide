@@ -2,6 +2,7 @@ package com.yoursway.ruby.wala;
 
 import com.ibm.wala.cast.ipa.callgraph.AstCallGraph;
 import com.ibm.wala.cast.ipa.callgraph.AstCallGraph.ScriptFakeRoot;
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.impl.Everywhere;
@@ -26,17 +27,18 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  */
 public class RubyCallGraph extends AstCallGraph {
     
-    public RubyCallGraph(IClassHierarchy cha, AnalysisOptions options) {
-        super(cha, options);
+
+	public RubyCallGraph(IClassHierarchy cha, AnalysisOptions options, AnalysisCache cache) {
+        super(cha, options, cache);
     }
     
     protected CGNode makeFakeRootNode() {
-        return findOrCreateNode(new RubyFakeRoot(cha, options), Everywhere.EVERYWHERE);
+        return findOrCreateNode(new RubyFakeRoot(cha, options, getAnalysisCache()), Everywhere.EVERYWHERE);
     }
     
     @Override
     protected CGNode makeFakeWorldClinitNode() {
-      return findOrCreateNode(new FakeWorldClinitMethod(cha, options), Everywhere.EVERYWHERE);
+      return findOrCreateNode(new FakeWorldClinitMethod(cha, options, getAnalysisCache()), Everywhere.EVERYWHERE);
     }
 
 }

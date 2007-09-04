@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/andreyvit/Storage/swt/org.eclipse.swt.carbon.macosx_3.3.0.v3346.jar"/>
+	<classpathentry kind="lib" path="/Users/fourdman/Eclipses/eclipse main/plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3346.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

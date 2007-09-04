@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.text.DateFormat;
@@ -20,10 +19,6 @@ import java.util.Set;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import com.ibm.wala.cast.ipa.callgraph.CAstAnalysisScope;
 import com.ibm.wala.cast.ipa.callgraph.StandardFunctionTargetSelector;
@@ -33,6 +28,7 @@ import com.ibm.wala.cast.tree.CAstNode;
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.SourceFileModule;
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
@@ -114,15 +110,15 @@ public class TestApplication implements IApplication {
         IClassHierarchy classHierarchy = ClassHierarchy.make(scope, loaderFactory, RubyClassLoader.RUBY_LANGUAGE);
         Iterable<Entrypoint> roots = new RubyEntryPoints(classHierarchy, classHierarchy.getLoader(RubyTypes.rubyLoader));
         final boolean keepIRs = true;
-        final AnalysisOptions options = new AnalysisOptions(scope, AstIRFactory.makeDefaultFactory(keepIRs), roots);
+        final AnalysisOptions options = new AnalysisOptions(scope, /*AstIRFactory.makeDefaultFactory(keepIRs),*/ roots);
         com.ibm.wala.ipa.callgraph.impl.Util.addDefaultSelectors(options, classHierarchy);
         options.setSelector(new StandardFunctionTargetSelector(classHierarchy, options.getMethodTargetSelector()));
         options.setUseConstantSpecificKeys(true);
         options.setUseStacksForLexicalScoping(true);
         options.getSSAOptions().setPreserveNames(true);
         CallGraph CG;
-        
-        RubyCFABuilder builder = new RubyZeroXCFABuilder(classHierarchy, options, null, null, null, ZeroXInstanceKeys.ALLOCATIONS);
+        AnalysisCache cache = new AnalysisCache(AstIRFactory.makeDefaultFactory(keepIRs));
+        RubyCFABuilder builder = new RubyZeroXCFABuilder(classHierarchy, options, cache, null, null, null, ZeroXInstanceKeys.ALLOCATIONS);
         CG = builder.makeCallGraph(builder.getOptions());
 
         // this seems to be for Java only, and does not work

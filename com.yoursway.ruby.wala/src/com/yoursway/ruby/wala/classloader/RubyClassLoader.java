@@ -189,12 +189,12 @@ public class RubyClassLoader implements IClassLoader {
         return null;
     }
     
-    public void init(Set<Module> modules) throws IOException {
+    public void init(Set modules) throws IOException {
         System.out.println(Arrays.toString(modules.toArray()));
         RubyCAst2IRTranslator translator = new RubyCAst2IRTranslator(this);
         CAstImpl a = new CAstImpl();
         
-        for (Module module : modules) {
+        for (Module module : (Set<Module>)modules) {
             for (ModuleEntry entry : Iterator2Collection.toCollection(module.getEntries())) {
                 String name = entry.getName();
                 System.out.println("Processing " + name + "...");

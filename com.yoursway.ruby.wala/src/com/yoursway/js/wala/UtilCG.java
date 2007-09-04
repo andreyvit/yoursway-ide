@@ -30,7 +30,7 @@ public class UtilCG extends com.ibm.wala.cast.ipa.callgraph.Util {
   }
 
   public static AnalysisOptions makeOptions(AnalysisScope scope, boolean keepIRs, IClassHierarchy cha, Iterable<Entrypoint> roots) {
-    final AnalysisOptions options = new AnalysisOptions(scope, AstIRFactory.makeDefaultFactory(keepIRs), roots);
+    final AnalysisOptions options = new AnalysisOptions(scope, /*AstIRFactory.makeDefaultFactory(keepIRs),*/ roots);
 
     com.ibm.wala.ipa.callgraph.impl.Util.addDefaultSelectors(options, cha);
     options.setSelector(new StandardFunctionTargetSelector(cha, options.getMethodTargetSelector()));

@@ -1,5 +1,6 @@
 package com.yoursway.ruby.wala;
 
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.ContextSelector;
 import com.ibm.wala.ipa.callgraph.ReflectionSpecification;
@@ -15,9 +16,9 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
  */
 public class RubyZeroXCFABuilder extends RubyCFABuilder {
 
-  public RubyZeroXCFABuilder(IClassHierarchy cha, AnalysisOptions options, ContextSelector appContextSelector,
+  public RubyZeroXCFABuilder(IClassHierarchy cha, AnalysisOptions options, AnalysisCache cache, ContextSelector appContextSelector,
       SSAContextInterpreter appContextInterpreter, ReflectionSpecification reflect, int instancePolicy) {
-    super(cha, options);
+    super(cha, options, cache);
 
     SSAContextInterpreter contextInterpreter = makeDefaultContextInterpreters(appContextInterpreter, options, cha, reflect);
     setContextInterpreter(contextInterpreter);

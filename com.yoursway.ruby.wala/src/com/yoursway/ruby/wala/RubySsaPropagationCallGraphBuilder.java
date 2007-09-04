@@ -10,6 +10,7 @@ import com.ibm.wala.fixedpoint.impl.AbstractOperator;
 import com.ibm.wala.fixedpoint.impl.UnaryOperator;
 import com.ibm.wala.fixpoint.IVariable;
 import com.ibm.wala.fixpoint.IntSetVariable;
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.impl.ExplicitCallGraph;
@@ -42,8 +43,8 @@ public class RubySsaPropagationCallGraphBuilder extends AstSSAPropagationCallGra
 
   public static final boolean DEBUG_TYPE_INFERENCE = false;
 
-  protected RubySsaPropagationCallGraphBuilder(IClassHierarchy cha, AnalysisOptions options, PointerKeyFactory pointerKeyFactory) {
-    super(cha, options, pointerKeyFactory);
+  protected RubySsaPropagationCallGraphBuilder(IClassHierarchy cha, AnalysisOptions options, AnalysisCache cache, PointerKeyFactory pointerKeyFactory) {
+    super(cha, options, cache, pointerKeyFactory);
   }
 
   protected boolean isConstantRef(SymbolTable symbolTable, int valueNumber) {
@@ -70,7 +71,7 @@ public class RubySsaPropagationCallGraphBuilder extends AstSSAPropagationCallGra
   // ///////////////////////////////////////////////////////////////////////////
 
   protected ExplicitCallGraph createEmptyCallGraph(IClassHierarchy cha, AnalysisOptions options) {
-    return new RubyCallGraph(cha, options);
+    return new RubyCallGraph(cha, options, getAnalysisCache());
   }
 //
 //  protected TypeInference makeTypeInference(IR ir, IClassHierarchy cha) {

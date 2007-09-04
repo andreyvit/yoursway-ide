@@ -7,6 +7,7 @@ import com.ibm.wala.cast.ipa.callgraph.AstCallGraph.ScriptFakeRoot;
 import com.ibm.wala.cfg.InducedCFG;
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.NewSiteReference;
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.impl.Everywhere;
 import com.ibm.wala.ipa.callgraph.impl.FakeRootMethod;
@@ -28,8 +29,8 @@ public class RubyFakeRoot extends ScriptFakeRoot {
     public final static MethodReference fakeRoot = MethodReference.findOrCreate(RubyTypes.FakeRoot,
             FakeRootMethod.name, FakeRootMethod.descr);
     
-    public RubyFakeRoot(IClassHierarchy cha, AnalysisOptions options) {
-        super(RubyFakeRoot.fakeRoot, cha.lookupClass(RubyTypes.FakeRoot), cha, options);
+    public RubyFakeRoot(IClassHierarchy cha, AnalysisOptions options, AnalysisCache cache) {
+        super(RubyFakeRoot.fakeRoot, cha.lookupClass(RubyTypes.FakeRoot), cha, options, cache);
     }
     
     public InducedCFG makeControlFlowGraph() {

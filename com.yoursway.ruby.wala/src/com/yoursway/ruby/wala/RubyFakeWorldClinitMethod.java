@@ -1,4 +1,5 @@
 package com.yoursway.ruby.wala;
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.impl.AbstractRootMethod;
 import com.ibm.wala.ipa.callgraph.impl.FakeRootClass;
@@ -21,7 +22,7 @@ public class RubyFakeWorldClinitMethod extends AbstractRootMethod {
   private static final MethodReference worldClinitMethod = MethodReference.findOrCreate(FakeRootClass.FAKE_ROOT_CLASS, name, Descriptor
       .findOrCreateUTF8("()V"));
   
-  public RubyFakeWorldClinitMethod(final IClassHierarchy cha, AnalysisOptions options) {
-    super(worldClinitMethod, cha, options);
+  public RubyFakeWorldClinitMethod(final IClassHierarchy cha, AnalysisOptions options, AnalysisCache cache) {
+    super(worldClinitMethod, cha, options, cache);
   }
 }
