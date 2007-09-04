@@ -59,12 +59,12 @@ public final class RubyAstTraverser {
      * @param rootVisitor
      *            a visitor that will visit the given node.
      */
-    public void traverse(ASTNode node, RubyAstVisitor rootVisitor) {
+    public void traverse(ASTNode node, RubyAstVisitor<?> rootVisitor) {
         Assert.isNotNull(node);
         Assert.isNotNull(rootVisitor);
         Assert.isTrue(rootVisitor.getParentVisitor() == null);
         try {
-            RubyAstVisitor outerVisitor = currentVisitor;
+            RubyAstVisitor<?> outerVisitor = currentVisitor;
             currentVisitor = rootVisitor;
             try {
                 node.traverse(adapter);
@@ -79,10 +79,10 @@ public final class RubyAstTraverser {
         }
     }
     
-    private RubyAstVisitor currentVisitor;
+    private RubyAstVisitor<?> currentVisitor;
     
     private boolean enter(ASTNode node) {
-        RubyAstVisitor childrenVisitor = currentVisitor.switchEnter(node);
+        RubyAstVisitor<?> childrenVisitor = currentVisitor.switchEnter(node);
         if (childrenVisitor == null)
             return false;
         childrenVisitor.$verify(currentVisitor, node);

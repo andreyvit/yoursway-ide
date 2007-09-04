@@ -50,6 +50,8 @@ public class RubyAstVisitor<T extends ASTNode> {
     }
     
     void $verify(RubyAstVisitor<?> parentVisitor, ASTNode initialNode) {
+        if (parentVisitor == this)
+            return;
         Assert.isTrue(this.parentVisitor == parentVisitor);
         Assert.isTrue(this.initialNode == initialNode);
     }
