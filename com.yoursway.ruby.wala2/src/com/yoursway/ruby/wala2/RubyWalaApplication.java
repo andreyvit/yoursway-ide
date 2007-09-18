@@ -11,6 +11,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 import com.ibm.wala.classLoader.SourceFileModule;
+import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.util.io.Streams;
 import com.yoursway.ruby.wala2.client.RubySourceAnalysisEngine;
 
@@ -33,7 +34,10 @@ public class RubyWalaApplication implements IApplication {
 		RubySourceAnalysisEngine engine = new RubySourceAnalysisEngine();
 
 		engine.setModuleFiles(Collections.singleton(sfm));
-		engine.buildDefaultCallGraph();
+		CallGraph callGraph = engine.buildDefaultCallGraph();
+		
+		System.out.println(callGraph.toString());
+		
 		return null;
 	}
 

@@ -9,12 +9,11 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
-import com.yoursway.ruby.wala2.RubyLanguage;
+import com.yoursway.ruby.wala2.RubyConstants;
 
 public class RubyFakeRoot extends ScriptFakeRoot {
 
-	public static final TypeReference FakeRoot = TypeReference.findOrCreate(
-			RubyLanguage.LOADER_REF, "Object");
+	public static final TypeReference FakeRoot = RubyConstants.OBJECT_REF;
 
 	public final static MethodReference fakeRoot = MethodReference
 			.findOrCreate(FakeRoot, FakeRootMethod.name, FakeRootMethod.descr);

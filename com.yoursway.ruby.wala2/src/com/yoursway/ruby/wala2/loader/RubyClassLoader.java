@@ -6,13 +6,20 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.ibm.wala.cast.tree.CAstEntity;
+import com.ibm.wala.cast.tree.impl.CAstImpl;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.Language;
+import com.ibm.wala.classLoader.Module;
+import com.ibm.wala.classLoader.ModuleEntry;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.util.Atom;
+import com.ibm.wala.util.collections.Iterator2Collection;
 import com.yoursway.ruby.wala2.RubyLanguage;
+import com.yoursway.ruby.wala2.translator.DltkAstToCommonAstTranslator;
+import com.yoursway.ruby.wala2.translator.RubyCAst2IRTranslator;
 
 public class RubyClassLoader implements IClassLoader {
 
@@ -50,9 +57,20 @@ public class RubyClassLoader implements IClassLoader {
 		throw new UnsupportedOperationException();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void init(Set modules) throws IOException {
-		System.out.println("RubyClassLoader.init() with " + modules.size() + " modules");
-//		throw new UnsupportedOperationException();
+        RubyCAst2IRTranslator translator = new RubyCAst2IRTranslator(this);
+        CAstImpl a = new CAstImpl();
+        
+        for (Module module : (Set<Module>)modules) {
+            for (ModuleEntry entry : Iterator2Collection.toCollection(module.getEntries())) {
+                String name = entry.getName();
+                System.out.println("Processing " + name + "...");
+                DltkAstToCommonAstTranslator atranslator = new DltkAstToCommonAstTranslator(a, entry, name);
+                CAstEntity entity = atranslator.translate();
+                translator.translate(entity, name);
+            }
+        }
 	}
 
 	public Iterator<IClass> iterateAllClasses() {

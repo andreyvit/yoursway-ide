@@ -33,24 +33,7 @@ import com.yoursway.ruby.wala2.RubyLanguage;
 import com.yoursway.ruby.wala2.ipa.callgraph.RubySourceAnalysisScope;
 import com.yoursway.ruby.wala2.loader.RubyLoaderFactory;
 
-
 public class RubySourceAnalysisEngine extends AbstractAnalysisEngine {
-//
-//	/**
-//	 * Modules which are user-space code
-//	 */
-//	private final Set<Module> userEntries = HashSetFactory.make();
-//
-//	/**
-//	 * Modules which are source code
-//	 */
-//	private final Set<Module> sourceEntries = HashSetFactory.make();
-//
-//	/**
-//	 * Modules which are system or library code TODO: what about extension
-//	 * loader?
-//	 */
-//	private final Set<Module> systemEntries = HashSetFactory.make();
 
 	private RubyLoaderFactory rubyLoaderFactory;
 
@@ -60,42 +43,7 @@ public class RubySourceAnalysisEngine extends AbstractAnalysisEngine {
 		setCallGraphBuilderFactory(new RubyZeroCFABuilderFactory());
 	}
 
-//	/**
-//	 * Adds the given source module to the source loader's module list. Clients
-//	 * should/may call this method if they don't supply an IJavaProject to the
-//	 * constructor.
-//	 */
-//	public void addSourceModule(Module M) {
-//		sourceEntries.add(M);
-//	}
-//
-//	/**
-//	 * Adds the given compiled module to the application loader's module list.
-//	 * Clients should/may call this method if they don't supply an IJavaProject
-//	 * to the constructor.
-//	 */
-//	public void addCompiledModule(Module M) {
-//		userEntries.add(M);
-//	}
-//
-//	/**
-//	 * Adds the given module to the primordial loader's module list. Clients
-//	 * should/may call this method if they don't supply an IJavaProject to the
-//	 * constructor.
-//	 */
-//	public void addSystemModule(Module M) {
-//		systemEntries.add(M);
-//	}
-
-//	protected void addApplicationModulesToScope() {
-//		ClassLoaderReference src = ((RubySourceAnalysisScope) scope)
-//				.getLoader();
-//
-//		for (Module M : sourceEntries) {
-//			scope.addToScope(src, M);
-//		}
-//	}
-
+	@SuppressWarnings("unchecked")
 	protected void buildAnalysisScope() {
 		SourceFileModule[] files = (SourceFileModule[]) moduleFiles
 				.toArray(new SourceFileModule[moduleFiles.size()]);
@@ -104,14 +52,7 @@ public class RubySourceAnalysisEngine extends AbstractAnalysisEngine {
 		} catch (IOException e) {
 			throw new AssertionError(e);
 		}
-
-//		// add user stuff
-//		addApplicationModulesToScope();
 	}
-//
-//	public IRTranslatorExtension getTranslatorExtension() {
-//		return new JavaIRTranslatorExtension();
-//	}
 
 	protected ClassLoaderFactory getClassLoaderFactory() {
 		return rubyLoaderFactory;
@@ -122,7 +63,8 @@ public class RubySourceAnalysisEngine extends AbstractAnalysisEngine {
 		ClassLoaderFactory factory = getClassLoaderFactory();
 
 		try {
-			cha = ClassHierarchy.make(getScope(), factory, RubyLanguage.LANGUAGE);
+			cha = ClassHierarchy.make(getScope(), factory,
+					RubyLanguage.LANGUAGE);
 		} catch (ClassHierarchyException e) {
 			System.err.println("Class Hierarchy construction failed");
 			System.err.println(e.toString());
@@ -157,8 +99,6 @@ public class RubySourceAnalysisEngine extends AbstractAnalysisEngine {
 		});
 
 		options.setSSAOptions(ssaOptions);
-		
-		
 
 		return options;
 	}

@@ -8,5 +8,8 @@ Bundle-Vendor: YOURSWAY
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.ibm.wala.cast,
- com.ibm.wala.core
+ com.ibm.wala.core,
+ com.yoursway.rails.commons,
+ org.eclipse.dltk.core,
+ org.eclipse.dltk.ruby.core
 Eclipse-LazyStart: true

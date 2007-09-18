@@ -1,7 +1,6 @@
 package com.yoursway.ruby.wala2.ipa.callgraph;
 
 import com.ibm.wala.cast.ipa.callgraph.AstCallGraph;
-import com.ibm.wala.cast.ipa.callgraph.AstCallGraph.ScriptFakeRoot;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.AnalysisOptions;
 import com.ibm.wala.ipa.callgraph.CGNode;
