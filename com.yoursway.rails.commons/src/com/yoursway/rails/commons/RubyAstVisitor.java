@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ruby.ast.RubySingletonMethodDeclaration;
 
@@ -81,6 +82,10 @@ public class RubyAstVisitor<T extends ASTNode> {
         return enterNode(node);
     }
     
+    protected RubyAstVisitor<?> enterTypeDeclaration(TypeDeclaration node) {
+    	return enterNode(node);
+    }
+    
     protected RubyAstVisitor<?> enterUnknown(ASTNode node) {
         return enterNode(node);
     }
@@ -99,6 +104,8 @@ public class RubyAstVisitor<T extends ASTNode> {
             // copy the following two lines to support a new node
             else if (node instanceof MethodDeclaration)
                 return enter((MethodDeclaration) node);
+            else if (node instanceof TypeDeclaration)
+            	return enterTypeDeclaration((TypeDeclaration) node);
             else
                 return enterUnknown(node);
         } finally {
