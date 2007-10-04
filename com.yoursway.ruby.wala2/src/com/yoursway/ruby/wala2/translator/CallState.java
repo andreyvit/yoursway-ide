@@ -14,9 +14,9 @@ public class CallState extends AbstractState<CallExpression> {
     
     @Override
     protected void leave() {
-    	ASTNode receiver = node().getReceiver();
-    	RubyAstTraverser traverser = new RubyAstTraverser();
-    	traverser.traverse(receiver, new SingleNodeCollectingState(this));
+//    	ASTNode receiver = node().getReceiver();
+//    	RubyAstTraverser traverser = new RubyAstTraverser();
+//    	traverser.traverse(receiver, new SingleNodeCollectingState(this));
 //        List<CAstNode> children = new ArrayList<CAstNode>();
 //        children.add(astBuilder().makeNode(CAstNode.VAR, astBuilder().makeConstant(node().getName())));
 //        children.add(astBuilder().makeConstant("do"));
