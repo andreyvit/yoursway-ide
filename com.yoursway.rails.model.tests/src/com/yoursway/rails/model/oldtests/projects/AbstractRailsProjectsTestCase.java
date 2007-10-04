@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.tests.projects;
+package com.yoursway.rails.model.oldtests.projects;
 
 import org.junit.Before;
 

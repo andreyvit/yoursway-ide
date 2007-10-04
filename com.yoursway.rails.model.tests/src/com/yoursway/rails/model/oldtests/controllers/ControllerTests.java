@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.tests.controllers;
+package com.yoursway.rails.model.oldtests.controllers;
 
 import static com.yoursway.common.YSCollections.sortedArrayListOf;
 import static info.javelot.functionalj.Functions.map;

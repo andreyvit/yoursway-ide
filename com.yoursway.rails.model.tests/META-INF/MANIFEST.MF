@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
 Bundle-SymbolicName: com.yoursway.rails.model.tests
 Bundle-Version: 1.0.0
-Bundle-Activator: com.yoursway.rails.model.tests.internal.Activator
+Bundle-Activator: com.yoursway.rails.model.oldtests.internal.Activator
 Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.core.runtime,
  com.yoursway.rails.model,

@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.tests.internal;
+package com.yoursway.rails.model.oldtests.internal;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
