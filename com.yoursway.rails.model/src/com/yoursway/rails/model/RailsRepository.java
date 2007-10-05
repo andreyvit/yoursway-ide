@@ -15,7 +15,7 @@ public class RailsRepository {
     private ProjectsObservableSet projectSet;
 
     public RailsRepository() {
-        this.realm = new YourSwayRealm();;
+        this.realm = new YourSwayRealm();
         projectSet = new ProjectsObservableSet(realm);
     }
     

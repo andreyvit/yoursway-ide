@@ -19,6 +19,11 @@ public class Scratch {
     }
     
     @Test
+    public void dick1() {
+        
+    }
+    
+    @Test
     public void initiallyEmpty() {
         
     }
