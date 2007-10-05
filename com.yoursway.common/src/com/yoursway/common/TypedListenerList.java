@@ -154,7 +154,7 @@ public final class TypedListenerList<T> implements Iterable<T> {
                     listeners = Collections.emptyList();
                 } else {
                     ArrayList<T> newListeners = new ArrayList<T>(listeners.size());
-                    Collections.copy(newListeners, listeners);
+                    newListeners.addAll(listeners);
                     // We can remove existingListener even if we compare objects'
                     // identity because we just got it from the collection
                     newListeners.remove(existingListener);
