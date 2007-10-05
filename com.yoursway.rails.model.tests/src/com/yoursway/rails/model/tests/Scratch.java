@@ -19,7 +19,10 @@ public class Scratch {
     }
     
     @Test
-    public void initiallyEmpty() {
+    public void dick1() {
+        ModelFamily family = new ModelFamily();
+        FooModelInstance instance = new FooModelInstance();
+        FooSnapshotBuilder builder = instance.createSnapshotBuilder(new MockResourceSnapshot());
         
     }
     
