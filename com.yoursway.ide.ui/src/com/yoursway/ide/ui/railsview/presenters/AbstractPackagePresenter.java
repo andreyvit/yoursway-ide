@@ -7,7 +7,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Display;
@@ -57,22 +56,6 @@ public abstract class AbstractPackagePresenter extends AbstractPresenter {
 
 	public boolean hasChildren() {
 		return false;
-	}
-
-	@Override
-	public void measureItem(TreeItem item, Object element, Event event) {
-		Rectangle bounds = item.getBounds();
-		event.height = bounds.height;
-		event.width = bounds.width + 10;
-		String text = getCaption();
-		Point size = event.gc.textExtent(text);
-		Rectangle clientArea = getOwner().getTree().getClientArea();
-		event.width = clientArea.width; // size.x +
-		// 2 *
-		// TEXT_MARGIN;
-		System.out.println(event.width);
-		event.height = Math.max(event.height, size.y + TEXT_MARGIN);
-		// event.height = 20;
 	}
 
 	@Override

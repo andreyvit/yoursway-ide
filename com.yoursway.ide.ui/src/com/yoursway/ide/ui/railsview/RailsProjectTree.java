@@ -75,8 +75,6 @@ public class RailsProjectTree implements IPresenterOwner {
 		viewer.setLabelProvider(infoProvider);
 		viewer.expandToLevel(null, 1);
 
-		// configureGradientColors();
-
 		contextMenuManager = new MenuManager("#PopupMenu");
 		contextMenuManager.setRemoveAllWhenShown(true);
 		contextMenuManager.addMenuListener(new IMenuListener() {
