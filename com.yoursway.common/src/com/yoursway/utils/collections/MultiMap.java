@@ -2,6 +2,7 @@ package com.yoursway.utils.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,16 +13,24 @@ public class MultiMap<K, V> {
     private final Map<K, Collection<V>> data = new HashMap<K, Collection<V>>();
     
     public void put(K key, V value) {
-        getCollection(key).add(value);
+        lookupCollection(key).add(value);
     }
     
-    protected Collection<V> getCollection(K key) {
+    protected Collection<V> lookupCollection(K key) {
         Collection<V> coll = data.get(key);
         if (coll == null) {
             coll = createInnerCollection();
             data.put(key, coll);
         }
         return coll;
+    }
+    
+    public Collection<V> get(K key) {
+        Collection<V> coll = data.get(key);
+        if (coll == null)
+            return Collections.emptySet();
+        else
+            return coll;
     }
     
     protected Collection<V> createInnerCollection() {

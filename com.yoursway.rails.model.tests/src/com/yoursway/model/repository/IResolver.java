@@ -1,11 +1,12 @@
 package com.yoursway.model.repository;
 
+import java.util.Collection;
 
-public interface IResolver {
+public interface IResolver extends IRootHandleProvider {
     
-    <V> V obtain(Class<V> rootHandleInterface);
-
     <V, H extends IHandle<V>> V get(H handle);
+    
+    <V> Collection<? extends V> changedHandles(Class<V> handleInterface);
     
     void checkCancellation();
     
