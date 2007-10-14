@@ -3,7 +3,6 @@ package com.yoursway.ide.ui.railsview;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
@@ -12,8 +11,14 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -66,7 +71,7 @@ import com.yoursway.rails.launching.IProjectLaunching;
 import com.yoursway.rails.launching.RailsServersModel;
 import com.yoursway.rails.launching.IProjectLaunching.PortNumberNotAvailable;
 
-public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
+public class RailsViewOld extends ViewPart implements IRailsProjectTreeOwner {
     
     public static final String ID = "com.yoursway.ide.ui.RailsView";
     
@@ -296,16 +301,16 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
     private final ElementChangedListener elementChangedListener = new ElementChangedListener();
     private final WindowModelListener windowModelListener = new WindowModelListener();
-    //    private Font boldFont;
-    //    private List<IRailsProject> chooserProjects;
+    // private Font boldFont;
+    // private List<IRailsProject> chooserProjects;
     
-    //    private ExpandableComposite expander;
+    // private ExpandableComposite expander;
     
     private FormToolkit formToolkit;
     
     private Form form;
     
-    //    private Composite expanderComposite;
+    // private Composite expanderComposite;
     
     private RailsProjectTree projectTree;
     
@@ -313,27 +318,29 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     
     private final ServerModelListener serverModelListener = new ServerModelListener();
     
+    private Text searchTextControl;
+    
     class NameSorter extends ViewerSorter {
     }
     
-    public RailsView() {
+    public RailsViewOld() {
     }
     
     public void handleActiveProjectChanged() {
         RailsProject project = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
                 .getRailsProject();
         projectTree.setVisibleProject(project);
-        //        updateProjectChooser();
+        // updateProjectChooser();
         updateBottom();
-        //        if (project == null) {
-        //            if (chooserProjects.isEmpty())
-        //                expander.setText("Create or import a project");
-        //            else
-        //                expander.setText("Choose a project");
-        //            expander.setExpanded(true);
-        //        } else {
-        //            expander.setText(project.getProject().getName());
-        //        }
+        // if (project == null) {
+        // if (chooserProjects.isEmpty())
+        // expander.setText("Create or import a project");
+        // else
+        // expander.setText("Choose a project");
+        // expander.setExpanded(true);
+        // } else {
+        // expander.setText(project.getProject().getName());
+        // }
     }
     
     private void refreshEverything() {
@@ -348,14 +355,12 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     public void createPartControl(Composite parent) {
         formToolkit = new FormToolkit(getSite().getShell().getDisplay());
         form = formToolkit.createForm(parent);
-        //        form.setLayoutData(treeData);
         Composite formBody = form.getBody();
         final GridLayout layout = FormLayoutFactory.createFormGridLayout(false, 1);
-        layout.verticalSpacing = 5;
+        layout.verticalSpacing = 0;
         formBody.setLayout(layout);
         
-        createTopControls(formBody);
-        
+        createSearchTextControl(formBody);
         projectTree = new RailsProjectTree(formBody, formToolkit, this);
         getSite()
                 .registerContextMenu(projectTree.getContextMenuManager(), projectTree.getSelectionProvider());
@@ -369,32 +374,56 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         elementChangedListener.install();
         serverModelListener.install();
         
-        //        Font font = viewer.getTree().getFont();
-        //        FontData[] fontData = font.getFontData();
-        //        fontData[0].setStyle(SWT.BOLD);
-        //        boldFont = new Font(null, fontData[0]);
+        // Font font = viewer.getTree().getFont();
+        // FontData[] fontData = font.getFontData();
+        // fontData[0].setStyle(SWT.BOLD);
+        // boldFont = new Font(null, fontData[0]);
     }
     
-    private void createTopControls(Composite formBody) {
-        //        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
-        //                | ExpandableComposite.CLIENT_INDENT);
-        //        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        //        
-        //        expanderComposite = formToolkit.createComposite(expander);
-        //        expander.setClient(expanderComposite);
-        //        
-        //        updateProjectChooser();
-        
-        //        expanderComposite.setLayout(FormLayoutFactory.createSectionClientGridLayout(false, 1));
+    private void createSearchTextControl(Composite parent) {
+        searchTextControl = new Text(parent, SWT.SEARCH | SWT.CANCEL);
+        searchTextControl.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.GRAB_HORIZONTAL));
+        searchTextControl.setText("Pattern matching");
+        searchTextControl.addModifyListener(new ModifyListener() {
+            
+            public void modifyText(ModifyEvent e) {
+                if (e.getSource() == searchTextControl) {
+                    Text text = (Text) e.getSource();
+                    text.redraw();
+                    projectTree.setFilteringPattern(text.getText());
+                    projectTree.refresh();
+                }
+            }
+            
+        });
+        searchTextControl.addPaintListener(new PaintListener() {
+            
+            public void paintControl(PaintEvent e) {
+                if (e.getSource() == searchTextControl && searchTextControl.getText().length() == 0
+                        && !searchTextControl.isFocusControl()) {
+                    GC gc = e.gc;
+                    Color oldForeground = gc.getForeground();
+                    gc.setForeground(e.display.getSystemColor(SWT.COLOR_GRAY));
+                    int y = (e.height - gc.getFontMetrics().getHeight()) / 2 - 3;
+                    int x = e.height / 2;
+                    gc.drawText("Pattern matching", x, y);
+                    gc.setForeground(oldForeground);
+                }
+            }
+            
+        });
     }
     
     private void createBottomControls(Composite formBody) {
-        //        expander = formToolkit.createSection(formBody, ExpandableComposite.TWISTIE
-        //                | ExpandableComposite.CLIENT_INDENT);
-        //        expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        // expander = formToolkit.createSection(formBody,
+        // ExpandableComposite.TWISTIE
+        // | ExpandableComposite.CLIENT_INDENT);
+        // expander.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+        // false));
         //        
         bottomComposite = formToolkit.createComposite(formBody);
-        //        expander.setClient(expanderComposite);
+        // expander.setClient(expanderComposite);
         final GridLayout layout = FormLayoutFactory.createSectionClientGridLayout(false, 1);
         layout.marginHeight = 0;
         layout.marginTop = 0;
@@ -404,79 +433,90 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         updateBottom();
     }
     
-    //    private void updateProjectChooser() {
-    //        chooserProjects = new ArrayList<IRailsProject>();
-    //        chooserProjects.addAll(RailsCore.instance().getProjectsCollection().getRailsProjects());
-    //        Collections.sort(chooserProjects, new Comparator<IRailsProject>() {
+    // private void updateProjectChooser() {
+    // chooserProjects = new ArrayList<IRailsProject>();
+    // chooserProjects.addAll(RailsCore.instance().getProjectsCollection().getRailsProjects());
+    // Collections.sort(chooserProjects, new Comparator<IRailsProject>() {
     //            
-    //            public int compare(IRailsProject o1, IRailsProject o2) {
-    //                String n1 = o1.getProject().getName();
-    //                String n2 = o2.getProject().getName();
-    //                return n1.compareTo(n2);
-    //            }
+    // public int compare(IRailsProject o1, IRailsProject o2) {
+    // String n1 = o1.getProject().getName();
+    // String n2 = o2.getProject().getName();
+    // return n1.compareTo(n2);
+    // }
     //            
-    //        });
+    // });
     //        
-    //        IRailsProject activeProject = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
-    //                .getRailsProject();
+    // IRailsProject activeProject =
+    // RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+    // .getRailsProject();
     //        
-    //        disposeChildren(expanderComposite);
+    // disposeChildren(expanderComposite);
     //        
-    //        for (final IRailsProject railsProject : chooserProjects) {
-    //            Control hyperlink;
-    //            String name = railsProject.getProject().getName();
-    //            if (railsProject.equals(activeProject)) {
-    //                hyperlink = formToolkit.createLabel(expanderComposite, name);
-    //            } else {
-    //                Hyperlink hyperlink2 = formToolkit.createHyperlink(expanderComposite, name, SWT.NONE);
-    //                hyperlink = hyperlink2;
-    //                hyperlink2.addHyperlinkListener(new HyperlinkAdapter() {
+    // for (final IRailsProject railsProject : chooserProjects) {
+    // Control hyperlink;
+    // String name = railsProject.getProject().getName();
+    // if (railsProject.equals(activeProject)) {
+    // hyperlink = formToolkit.createLabel(expanderComposite, name);
+    // } else {
+    // Hyperlink hyperlink2 = formToolkit.createHyperlink(expanderComposite,
+    // name, SWT.NONE);
+    // hyperlink = hyperlink2;
+    // hyperlink2.addHyperlinkListener(new HyperlinkAdapter() {
     //                    
-    //                    @Override
-    //                    public void linkActivated(HyperlinkEvent e) {
-    //                        RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
-    //                                .setRailsProject(railsProject);
-    //                        expander.setExpanded(false);
-    //                    }
+    // @Override
+    // public void linkActivated(HyperlinkEvent e) {
+    // RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
+    // .setRailsProject(railsProject);
+    // expander.setExpanded(false);
+    // }
     //                    
-    //                });
-    //            }
-    //            hyperlink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-    //        }
+    // });
+    // }
+    // hyperlink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    // }
     //        
-    //        Hyperlink newProjectLink = formToolkit.createHyperlink(expanderComposite,
-    //                "» Create a brand-new Rails application", SWT.NONE);
-    //        newProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    // Hyperlink newProjectLink = formToolkit.createHyperlink(expanderComposite,
+    // "» Create a brand-new Rails application", SWT.NONE);
+    // newProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+    // false));
     //        
-    //        Hyperlink importProjectLink = formToolkit.createHyperlink(expanderComposite,
-    //                "» Import an existing Rails application", SWT.NONE);
-    //        importProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    // Hyperlink importProjectLink =
+    // formToolkit.createHyperlink(expanderComposite,
+    // "» Import an existing Rails application", SWT.NONE);
+    // importProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+    // false));
     //        
-    //        Hyperlink sampleProjectLink = formToolkit.createHyperlink(expanderComposite,
-    //                "» Import a sample Rails application", SWT.NONE);
-    //        sampleProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+    // Hyperlink sampleProjectLink =
+    // formToolkit.createHyperlink(expanderComposite,
+    // "» Import a sample Rails application", SWT.NONE);
+    // sampleProjectLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+    // false));
     //        
-    //        FormText newWindowLabel = formToolkit.createFormText(expanderComposite, true);
-    //        newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-    //        newWindowLabel.setText("<form><p><b>Tip:</b> To work on several projects at once, "
-    //                + "<a href=\"new_win\">open a new window</a>.</p></form>", true, false);
-    //        //        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
-    //        //                SWT.DEFAULT).y;
-    //        newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
+    // FormText newWindowLabel = formToolkit.createFormText(expanderComposite,
+    // true);
+    // newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+    // false));
+    // newWindowLabel.setText("<form><p><b>Tip:</b> To work on several projects
+    // at once, "
+    // + "<a href=\"new_win\">open a new window</a>.</p></form>", true, false);
+    // // ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 *
+    // newWindowLabel.computeSize(SWT.DEFAULT,
+    // // SWT.DEFAULT).y;
+    // newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
     //            
-    //            @Override
-    //            public void linkActivated(HyperlinkEvent e) {
-    //                try {
-    //                    PlatformUI.getWorkbench().openWorkbenchWindow(null);
-    //                } catch (WorkbenchException ex) {
-    //                    Activator.unexpectedError(ex);
-    //                }
-    //            }
+    // @Override
+    // public void linkActivated(HyperlinkEvent e) {
+    // try {
+    // PlatformUI.getWorkbench().openWorkbenchWindow(null);
+    // } catch (WorkbenchException ex) {
+    // Activator.unexpectedError(ex);
+    // }
+    // }
     //            
-    //        });
+    // });
     //        
-    //        expanderComposite.layout();
-    //    }
+    // expanderComposite.layout();
+    // }
     
     private void disposeChildren(final Composite parent) {
         Control[] children = parent.getChildren();
@@ -536,8 +576,9 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
         FormText newWindowLabel = formToolkit.createFormText(bottomComposite, true);
         newWindowLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         newWindowLabel.setText(markup, true, false);
-        //        ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 * newWindowLabel.computeSize(SWT.DEFAULT,
-        //                SWT.DEFAULT).y;
+        // ((GridData) newWindowLabel.getLayoutData()).heightHint = 3 *
+        // newWindowLabel.computeSize(SWT.DEFAULT,
+        // SWT.DEFAULT).y;
         newWindowLabel.addHyperlinkListener(new HyperlinkAdapter() {
             
             @Override
@@ -583,12 +624,12 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
     }
     
     private void fillLocalPullDown(IMenuManager manager) {
-        //        manager.add(action1);
+        // manager.add(action1);
     }
     
     private void fillLocalToolBar(IToolBarManager manager) {
-        //        manager.add(action1);
-        //        manager.add(new Separator());
+        // manager.add(action1);
+        // manager.add(new Separator());
         final Action action = new Action("New (" + KeyStroke.getInstance(SWT.COMMAND, SWT.F2).format() + ")",
                 IAction.AS_DROP_DOWN_MENU) {
             
@@ -608,43 +649,9 @@ public class RailsView extends ViewPart implements IRailsProjectTreeOwner {
             }
             
         };
-        //        manager.add(action);
+        // manager.add(action);
         action.setMenuCreator(new DummyMenuCreator(new String[] { "Check Out" }));
-        ControlContribution controlContribution = new ControlContribution("foo") {
-            
-            @Override
-            protected Control createControl(Composite parent) {
-                //                Composite controls = new Composite(parent, SWT.NONE);
-                //                
-                //                final GridLayout gridLayout = new GridLayout(3, false);
-                //                gridLayout.marginTop = 0;
-                //                gridLayout.marginHeight = 0;
-                //                gridLayout.horizontalSpacing = 8;
-                //                controls.setLayout(gridLayout);
-                
-                //                addSubmenu(controls, "New", KeyStroke.getInstance(SWT.COMMAND, 'N').format(), new String[] {
-                //                        "New Project", "Import Existing Project", "-", "New Controller" });
-                //                
-                //                addSubmenu(controls, "CVS", KeyStroke.getInstance(SWT.CTRL, 'C').format(), new String[] {
-                //                        "Check Out Project From CVS", "-", "Update Project", "Update selected_controller.rb",
-                //                        "-", "Commit All Changes", "Commit Changes in selected_controller.rb", "-",
-                //                        "More CVS Options >" });
-                
-                Text search = new Text(parent, SWT.SEARCH);
-                search.setText("Live search...");
-                
-                return search;
-            }
-            
-            private void addSubmenu(Composite parent, final String label, final String shortcut,
-                    final String[] submenu) {
-                FormText text = new FormText(parent, SWT.NONE);
-                text.setText("<form><p><b>" + label + "</b> (" + shortcut + ") ▾</p></form>", true, false);
-                text.addMouseListener(new XMouseListener(text, new DummyMenuCreator(submenu)));
-            }
-            
-        };
-        manager.add(controlContribution);
+        
     }
     
     private static class DummyAction extends Action {
