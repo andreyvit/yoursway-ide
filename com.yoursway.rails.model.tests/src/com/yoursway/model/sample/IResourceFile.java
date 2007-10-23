@@ -1,10 +1,11 @@
 package com.yoursway.model.sample;
 
 import com.yoursway.model.repository.IHandle;
+import com.yoursway.model.repository.IModelElement;
 
-public interface IResourceFile {
+public interface IResourceFile extends IModelElement {
     
-    String getName();
+    IHandle<String> getName();
     
     IHandle<IAST> ast();
     

@@ -35,11 +35,11 @@ public class BasicModelTracker implements IBasicModelChangesRequestor {
         return rootHandle;
     }
     
-    public void theGivenPieceOfShitChanged(ISnapshot snapshot, Set<IHandle<?>> handles) {
+    public void theGivenPieceOfShitChanged(ISnapshot snapshot, BasicModelDelta delta) {
         PointInTime moment = master.createPointInTime();
         momentsOfGlory.add(moment);
         snapshots.put(moment, snapshot);
-        master.handlesChanged(moment, handles);
+        master.handlesChanged(moment, delta);
     }
     
 }

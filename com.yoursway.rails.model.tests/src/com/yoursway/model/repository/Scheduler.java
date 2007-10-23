@@ -42,10 +42,10 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     }
     
     @SuppressWarnings("unchecked")
-    public <V> V obtain(Class<V> rootHandleInterface) {
-        V result = (V) basicModels.get(rootHandleInterface);
+    public <V extends IModelRoot> V obtainRoot(Class<V> rootInterface) {
+        V result = (V) basicModels.get(rootInterface);
         if (result == null)
-            throw new AssertionError("No model provides a root handle of type " + rootHandleInterface);
+            throw new AssertionError("No model provides a root of type " + rootInterface);
         return result;
     }
     
@@ -53,9 +53,9 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
         dependencies.put(handle, tracker);
     }
 
-    public void handlesChanged(PointInTime moment, Set<IHandle<?>> handles) {
+    public void handlesChanged(PointInTime moment, BasicModelDelta delta) {
         Set<ConsumerTracker> trackersToUpdate = new HashSet<ConsumerTracker>();
-        for (IHandle<?> handle : handles)
+        for (IHandle<?> handle : delta.getChangedHandles())
             trackersToUpdate.addAll(dependencies.get(handle));
         update(moment, trackersToUpdate);
     }
@@ -68,5 +68,6 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     public PointInTime createPointInTime() {
         return timeline.advanceThisCrazyWorldToTheNextMomentInTime();
     }
+
     
 }

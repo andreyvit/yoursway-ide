@@ -11,8 +11,8 @@ public class MegaModelPrinter implements IConsumer {
         System.out.println();
         System.out.println("ALL FILES WITH CLASS NAMES");
         System.out.println("--------------------------");
-        IResourceRoot resourceRoot = resolver.obtain(IResourceRoot.class);
-        for (IResourceProject project : resolver.get(resourceRoot.projects())) {
+        IResourceModelRoot resourceModelRoot = resolver.obtainRoot(IResourceModelRoot.class);
+        for (IResourceProject project : resolver.get(resourceModelRoot.projects())) {
             for (IResourceFile file : resolver.get(project.files())) {
                 IAST ast = resolver.get(file.ast());
                 System.out.println(MessageFormat.format("{0}/{1} - {2}", project.getName(), file.getName(),

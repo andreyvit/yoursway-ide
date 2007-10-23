@@ -1,9 +1,13 @@
 package com.yoursway.model.sample;
 
-public interface IResourceProject {
+import com.yoursway.model.repository.ICollectionHandle;
+import com.yoursway.model.repository.IHandle;
+import com.yoursway.model.repository.IModelElement;
+
+public interface IResourceProject extends IModelElement {
     
-    String getName();
+    IHandle<String> getName();
     
-    ICollection<IResourceFile> files();
+    ICollectionHandle<IResourceFile> files();
     
 }
