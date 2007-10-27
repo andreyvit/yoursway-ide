@@ -22,7 +22,7 @@ public class ControllerElement extends SimpleProjectElement {
     
     public ControllerElement(ControllersCategory parent, IRailsController controller,
             IViewInfoProvider infoProvider) {
-        super(parent, infoProvider.getModelResolver().get(controller.getName()), infoProvider);
+        super(parent, "Bublik", infoProvider);
         this.controller = controller;
     }
     
@@ -31,7 +31,7 @@ public class ControllerElement extends SimpleProjectElement {
         if (resolver != null) {
             List<IPresentableItem> result = new ArrayList<IPresentableItem>();
             
-            Collection<IRailsControllerAction> actions = resolver.get(controller.getActions());
+            Collection<IRailsControllerAction> actions = resolver.get(controller.actions());
             for (IRailsControllerAction a : actions) {
                 result.add(new ActionElement(this, a, this.infoProvider));
             }
@@ -49,9 +49,9 @@ public class ControllerElement extends SimpleProjectElement {
     public boolean hasChildren() {
         IResolver resolver = getResolver();
         if (resolver != null) {
-            Collection<IRailsControllerAction> actions = resolver.get(controller.getActions());
-            Collection<IRailsPartial> partials = resolver.get(controller.getPartials());
-            Collection<IRailsView> views = resolver.get(controller.getViews());
+            Collection<IRailsControllerAction> actions = resolver.get(controller.actions());
+            Collection<IRailsPartial> partials = resolver.get(controller.partials());
+            Collection<IRailsView> views = resolver.get(controller.views());
             return (views.size() + partials.size() + actions.size()) > 0;
         }
         return false;

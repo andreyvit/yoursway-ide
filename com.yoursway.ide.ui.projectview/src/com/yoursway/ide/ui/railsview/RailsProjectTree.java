@@ -13,7 +13,7 @@ import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.shit.FakeProjectItem;
 import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.ide.ui.railsview.shit.ProjectPresentationProvider;
-import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.repository.IConsumer;
 import com.yoursway.model.repository.IResolver;
 
@@ -23,7 +23,7 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
     
     private final PublicMorozovTreeViewer viewer;
     
-    private IRailsProject currentRailsProject;
+    private IRailsApplicationProject currentRailsApplicationProject;
     
     private final MenuManager contextMenuManager;
     
@@ -48,9 +48,9 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
         contextMenuManager = null;
     }
     
-    public void setVisibleProject(IRailsProject project) {
-        currentRailsProject = project;
-        viewer.setInput(new FakeProjectItem(currentRailsProject, this));
+    public void setVisibleProject(IRailsApplicationProject project) {
+        currentRailsApplicationProject = project;
+        viewer.setInput(new FakeProjectItem(currentRailsApplicationProject, this));
     }
     
     public void refresh() {

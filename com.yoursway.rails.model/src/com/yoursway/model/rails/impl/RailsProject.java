@@ -20,72 +20,67 @@ import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.resource.IResourceProject;
 
 public class RailsProject implements IRailsApplicationProject {
-
+    
     public RailsProject() {
     }
     
-    public IHandle<Collection<IRailsController>> getControllers() {
+    public IHandle<Collection<IRailsController>> controllers() {
         List<IRailsController> list = new ArrayList<IRailsController>();
         list.add(new RailsController("Piece Of Shit"));
         return new RabbitFamilyHandle<IRailsController>(list);
     }
-
-    public IHandle<Collection<IRailsFixture>> getFixtures() {
+    
+    public IHandle<Collection<IRailsFixture>> fixtures() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<Collection<IRailsHelper>> getHelpers() {
+    
+    public IHandle<Collection<IRailsHelper>> helpers() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<Collection<IRailsLayout>> getLayouts() {
+    
+    public IHandle<Collection<IRailsLayout>> layouts() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<Collection<IRailsMigration>> getMigrations() {
+    
+    public IHandle<Collection<IRailsMigration>> migrations() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<Collection<IRailsModel>> getModels() {
+    
+    public IHandle<Collection<IRailsModel>> models() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<String> getName() {
+    
+    public IHandle<String> name() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<IPath> getPath() {
+    
+    public IHandle<IPath> path() {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     public IHandle<Collection<IRailsPlugin>> installedPlugins() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<IRailsPublicFolder> getPublic() {
+    
+    public IResourceProject getResourceProject() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<IResourceProject> getResourceProject() {
+    
+    public IHandle<Collection<IRailsTest>> tests() {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public IHandle<Collection<IRailsPartial>> getSharedPartials() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public IHandle<Collection<IRailsTest>> getTests() {
+    
+    public IHandle<Collection<IRailsPartial>> sharedPartials() {
         // TODO Auto-generated method stub
         return null;
     }

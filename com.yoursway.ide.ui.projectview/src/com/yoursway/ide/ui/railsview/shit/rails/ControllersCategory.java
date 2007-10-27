@@ -6,16 +6,16 @@ import java.util.Collection;
 import com.yoursway.ide.ui.railsview.shit.ElementsCategory;
 import com.yoursway.ide.ui.railsview.shit.IPresentableItem;
 import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.rails.IRailsController;
-import com.yoursway.model.rails.IRailsProject;
-import com.yoursway.model.repository.ICollectionHandle;
+import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IResolver;
 
 public class ControllersCategory extends ElementsCategory {
     
-    private final IRailsProject project;
+    private final IRailsApplicationProject project;
     
-    public ControllersCategory(String name, IViewInfoProvider infoProvider, IRailsProject project) {
+    public ControllersCategory(String name, IViewInfoProvider infoProvider, IRailsApplicationProject project) {
         super(name, infoProvider);
         this.project = project;
     }
@@ -35,7 +35,7 @@ public class ControllersCategory extends ElementsCategory {
         if (resolver == null)
             return null;
         
-        ICollectionHandle<IRailsController> controllersHandle = project.getControllers();
+        IHandle<Collection<IRailsController>> controllersHandle = project.controllers();
         Collection<IRailsController> controllers = resolver.get(controllersHandle);
         ArrayList<IPresentableItem> list = new ArrayList<IPresentableItem>();
         for (IRailsController c : controllers) {

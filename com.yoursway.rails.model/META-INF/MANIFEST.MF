@@ -14,8 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  info.javelot.functionalj,
  com.yoursway.databinding.commons,
  org.eclipse.dltk.ruby.core,
- org.eclipse.dltk.core,
- com.yoursway.common.resources
+ org.eclipse.dltk.core
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.model.rails,
  com.yoursway.model.rails.impl,
