@@ -1,6 +1,8 @@
 package com.yoursway.model.rails.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import com.yoursway.model.rails.IRailsController;
 import com.yoursway.model.rails.IRailsControllerAction;
@@ -19,8 +21,9 @@ public class RailsController implements IRailsController {
     }
     
     public ICollectionHandle<IRailsControllerAction> getActions() {
-        // TODO Auto-generated method stub
-        return null;
+        List<IRailsControllerAction> list = new ArrayList<IRailsControllerAction>();
+        list.add(new RailsControllerAction("Piece Of Shit"));
+        return new RabbitFamilyHandle<IRailsControllerAction>(list);
     }
     
     public IHandle<String> getName() {

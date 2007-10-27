@@ -1,5 +1,8 @@
 package com.yoursway.model.rails.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 
 import com.yoursway.model.rails.IRailsController;
@@ -23,8 +26,9 @@ public class RailsProject implements IRailsProject {
     }
     
     public ICollectionHandle<IRailsController> getControllers() {
-        // TODO Auto-generated method stub
-        return null;
+        List<IRailsController> list = new ArrayList<IRailsController>();
+        list.add(new RailsController("Piece Of Shit"));
+        return new RabbitFamilyHandle<IRailsController>(list);
     }
 
     public ICollectionHandle<IRailsFixture> getFixtures() {
