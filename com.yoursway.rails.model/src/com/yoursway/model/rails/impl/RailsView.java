@@ -2,8 +2,8 @@ package com.yoursway.model.rails.impl;
 
 import com.yoursway.model.rails.IRailsView;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.sample.IAST;
-import com.yoursway.model.sample.IResourceFile;
+import com.yoursway.model.resource.IAST;
+import com.yoursway.model.resource.IResourceFile;
 
 public class RailsView implements IRailsView {
     

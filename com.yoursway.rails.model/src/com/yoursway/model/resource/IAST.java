@@ -1,4 +1,4 @@
-package com.yoursway.model.sample;
+package com.yoursway.model.resource;
 
 public interface IAST {
     

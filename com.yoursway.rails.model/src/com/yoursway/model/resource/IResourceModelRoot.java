@@ -1,4 +1,4 @@
-package com.yoursway.model.sample;
+package com.yoursway.model.resource;
 
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IModelRoot;

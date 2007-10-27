@@ -8,7 +8,7 @@ import com.yoursway.model.rails.IRailsPartial;
 import com.yoursway.model.rails.IRailsView;
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.sample.IResourceFile;
+import com.yoursway.model.resource.IResourceFile;
 
 public class RailsController implements IRailsController {
     

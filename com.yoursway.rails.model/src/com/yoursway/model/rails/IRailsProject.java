@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.IPath;
 
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.sample.IResourceProject;
+import com.yoursway.model.resource.IResourceProject;
 
 public interface IRailsProject {
     

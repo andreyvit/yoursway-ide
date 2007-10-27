@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rails Model
+Bundle-SymbolicName: com.yoursway.rails.model.old
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.rails.model.internal.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.core.runtime,
+ com.yoursway.databinding.resources,
+ org.eclipse.core.databinding,
+ com.yoursway.rails.commons,
+ org.eclipse.core.resources,
+ com.yoursway.common,
+ com.yoursway.common.resources,
+ com.yoursway.databinding.commons
+Eclipse-LazyStart: true
+Export-Package: com.yoursway.rails.model,
+ com.yoursway.rails.model.commands

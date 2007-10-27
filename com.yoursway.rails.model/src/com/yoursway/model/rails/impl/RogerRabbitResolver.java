@@ -3,7 +3,6 @@ package com.yoursway.model.rails.impl;
 import java.util.Collection;
 
 import com.yoursway.model.repository.DependencyRequestor;
-import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelRoot;
 import com.yoursway.model.repository.IModelRootProvider;

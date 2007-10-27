@@ -15,7 +15,7 @@ import com.yoursway.model.rails.IRailsPublicFolder;
 import com.yoursway.model.rails.IRailsTest;
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.sample.IResourceProject;
+import com.yoursway.model.resource.IResourceProject;
 
 public class RailsProject implements IRailsProject {
 

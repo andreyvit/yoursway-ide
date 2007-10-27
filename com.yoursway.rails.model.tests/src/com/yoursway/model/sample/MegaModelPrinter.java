@@ -4,6 +4,10 @@ import java.text.MessageFormat;
 
 import com.yoursway.model.repository.IConsumer;
 import com.yoursway.model.repository.IResolver;
+import com.yoursway.model.resource.IAST;
+import com.yoursway.model.resource.IResourceFile;
+import com.yoursway.model.resource.IResourceModelRoot;
+import com.yoursway.model.resource.IResourceProject;
 
 public class MegaModelPrinter implements IConsumer {
     
