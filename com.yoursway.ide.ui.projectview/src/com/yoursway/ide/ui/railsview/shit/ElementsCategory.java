@@ -2,15 +2,12 @@ package com.yoursway.ide.ui.railsview.shit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.graphics.TextLayout;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Scrollable;
@@ -44,6 +41,10 @@ public abstract class ElementsCategory implements IPresentableItem {
     
     public int matches(String pattern) {
         return name.indexOf(pattern);
+    }
+    
+    public boolean headerOnly() {
+        return false;
     }
     
     public void measureItem(TreeItem item, Event event) {
@@ -97,33 +98,19 @@ public abstract class ElementsCategory implements IPresentableItem {
         /* Mark as Background being handled */
         event.detail &= ~SWT.BACKGROUND;
         
-        //String text = item.getText();
         Font font = gc.getFont();
-        Font boldFont = makeBold(gc.getDevice(), font);
         TextLayout text = new TextLayout(gc.getDevice());
         text.setFont(font);
         text.setText(name);
-        String pattern = infoProvider.getPattern();
-        if (pattern != null && pattern.length() > 0) {
-            int pos = name.indexOf(pattern);
-            TextStyle style = new TextStyle(font, gc.getForeground(), categoryGradientEnd);
-            text.setStyle(style, pos, pos + pattern.length() - 1);
-        }
         text.draw(gc, event.x + TEXT_MARGIN, event.y + 2, -1, -1, null, null, SWT.DRAW_TRANSPARENT);
         
         if (drawFocus(event)) {
             gc.drawFocus(3, rect.y, area.width, rect.height - 1);
         }
-        boldFont.dispose();
     }
     
     private boolean drawFocus(Event event) {
         return (event.detail & SWT.SELECTED) != 0;
     }
     
-    private Font makeBold(Device device, Font font) {
-        FontData[] fontData = font.getFontData();
-        fontData[0].style |= SWT.BOLD;
-        return new Font(device, fontData);
-    }
 }

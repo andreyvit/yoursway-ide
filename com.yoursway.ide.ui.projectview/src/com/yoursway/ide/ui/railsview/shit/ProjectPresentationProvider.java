@@ -39,6 +39,11 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
             return new Object[0];
         }
         IPresentableItem item = (IPresentableItem) parentElement;
+        if (item instanceof ElementsCategory) {
+            ElementsCategory elementsCategory = (ElementsCategory) item;
+            if (elementsCategory.headerOnly())
+                return new Object[0];
+        }
         String pattern = searchProvider.getPattern();
         if (pattern == null || pattern.length() == 0) {
             Collection<IPresentableItem> children = item.getChildren();
@@ -46,7 +51,7 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
                 return null;
             return children.toArray(new IPresentableItem[children.size()]);
         } else {
-            Collection<IPresentableItem> children = item.getChildren();
+            Collection<IPresentableItem> children = item.getChildren(); //BIGTODO
             if (children == null)
                 return null;
             for (Iterator<IPresentableItem> iterator = children.iterator(); iterator.hasNext();) {
@@ -62,7 +67,7 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
         }
     }
     
-    private boolean hasMatchingChild(IPresentableItem item, String pattern) {
+    private boolean hasMatchingChild(IPresentableItem item, String pattern) { //TODO : performance optimizations
         Collection<IPresentableItem> children = item.getChildren();
         if (children == null)
             return false;

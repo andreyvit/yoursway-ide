@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.yoursway.ide.ui.railsview.IResolverProvider;
 import com.yoursway.ide.ui.railsview.shit.rails.ControllersCategory;
-import com.yoursway.model.rails.IRailsApplicationProject;
+import com.yoursway.model.rails.IRailsProject;
 
 public class FakeProjectItem implements IPresentableItem {
     
-    private final IRailsApplicationProject project;
+    private final IRailsProject project;
     private final IViewInfoProvider infoProvider;
     
-    public FakeProjectItem(IRailsApplicationProject project, IViewInfoProvider info) {
+    public FakeProjectItem(IRailsProject project, IViewInfoProvider info) {
         this.project = project;
         this.infoProvider = info;
     }
@@ -27,18 +27,18 @@ public class FakeProjectItem implements IPresentableItem {
         throw new UnsupportedOperationException();
     }
     
+    private void addCategory(List<IPresentableItem> list, ElementsCategory category) {
+        list.add(category);
+        if (category.headerOnly()) {
+            list.addAll(category.getChildren());
+        }
+    }
+    
     public Collection<IPresentableItem> getChildren() {
         ArrayList<IPresentableItem> list = new ArrayList<IPresentableItem>();
-        list.add(new ControllersCategory("Controllers", infoProvider, project));
+        addCategory(list, new ControllersCategory("Controllers", infoProvider, project));
         // TODO: add more 
         
-        Collections.sort(list, new Comparator<IPresentableItem>() {
-            
-            public int compare(IPresentableItem o1, IPresentableItem o2) {
-                return ((ElementsCategory) o1).getPriority() - ((ElementsCategory) o2).getPriority();
-            }
-            
-        });
         return list;
     }
     
