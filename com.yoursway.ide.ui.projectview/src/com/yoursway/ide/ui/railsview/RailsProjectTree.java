@@ -11,23 +11,28 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
-import com.yoursway.ide.ui.railsview.shit.ISearchPatternProvider;
+import com.yoursway.ide.ui.railsview.shit.FakeProjectItem;
+import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.ide.ui.railsview.shit.ProjectPresentationProvider;
-import com.yoursway.model.rails.impl.RailsProject;
+import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.repository.IConsumer;
+import com.yoursway.model.repository.IResolver;
 
-public class RailsProjectTree implements IPresenterOwner, ISearchPatternProvider {
+public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, IConsumer {
     
     private final Tree tree;
     
     private final PublicMorozovTreeViewer viewer;
     
-    private RailsProject currentRailsProject;
+    private IRailsProject currentRailsProject;
     
     private final MenuManager contextMenuManager;
     
     private final IRailsProjectTreeOwner owner;
     
     private final PatternFilter patternFilter;
+
+    private IResolver resolver;
     
     public RailsProjectTree(Composite parent, IRailsProjectTreeOwner owner) {
         this.owner = owner;
@@ -39,15 +44,13 @@ public class RailsProjectTree implements IPresenterOwner, ISearchPatternProvider
         
         ProjectPresentationProvider infoProvider = new ProjectPresentationProvider(this);
         infoProvider.install(viewer);
-        viewer.setInput("adsf");
         
         contextMenuManager = null;
-        
     }
     
-    public void setVisibleProject(RailsProject project) {
+    public void setVisibleProject(IRailsProject project) {
         currentRailsProject = project;
-        viewer.setInput(currentRailsProject);
+        viewer.setInput(new FakeProjectItem(currentRailsProject, this));
     }
     
     public void refresh() {
@@ -86,4 +89,14 @@ public class RailsProjectTree implements IPresenterOwner, ISearchPatternProvider
     public String getPattern() {
         return "";
     }
+
+    public void consume(IResolver resolver) {
+        this.resolver = resolver;
+        viewer.refresh();
+    }
+    
+    public IResolver getModelResolver() {
+        return resolver;
+    }
+    
 }

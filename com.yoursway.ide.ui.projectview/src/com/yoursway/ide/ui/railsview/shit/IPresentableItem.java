@@ -1,5 +1,7 @@
 package com.yoursway.ide.ui.railsview.shit;
 
+import java.util.Collection;
+
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
@@ -10,7 +12,7 @@ public interface IPresentableItem {
     
     String getCaption();
     
-    IPresentableItem[] getChildren();
+    Collection<IPresentableItem> getChildren();
     
     boolean hasChildren();
     

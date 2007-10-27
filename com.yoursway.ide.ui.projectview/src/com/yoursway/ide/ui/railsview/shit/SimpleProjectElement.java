@@ -12,25 +12,43 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.yoursway.ide.ui.railsview.shit.SuperPuperMatcher.MatchResult;
+import com.yoursway.model.repository.IResolver;
 
 public abstract class SimpleProjectElement extends ProjectElement {
     
-    private final String name;
-    private final ISearchPatternProvider searchProvider;
+    private String name;
+    protected final IViewInfoProvider infoProvider;
     private final IPresentableItem parent;
     
-    public SimpleProjectElement(IPresentableItem parent, String name, ISearchPatternProvider searchProvider) {
+    public SimpleProjectElement(IPresentableItem parent, String name, IViewInfoProvider infoProvider) {
         this.parent = parent;
         this.name = name;
-        this.searchProvider = searchProvider;
+        this.infoProvider = infoProvider;
+    }
+    
+    public SimpleProjectElement(IPresentableItem parent, IViewInfoProvider infoProvider) {
+        this.parent = parent;
+        this.infoProvider = infoProvider;
     }
     
     public String getCaption() {
+        return getName();
+    }
+    
+    public String getName() {
         return name;
     }
     
+    protected IResolver getResolver() {
+        return infoProvider.getModelResolver();
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public int matches(String pattern) {
-        MatchResult match = SuperPuperMatcher.match(name, pattern);
+        MatchResult match = SuperPuperMatcher.match(getCaption(), pattern);
         if (match == null)
             return -1;
         return match.kind;
@@ -46,16 +64,16 @@ public abstract class SimpleProjectElement extends ProjectElement {
     
     public void paintItem(TreeItem item, Event event) {
         
-        String pattern = searchProvider.getPattern();
+        String pattern = infoProvider.getPattern();
         MatchResult match = null;
         if (pattern != null && pattern.length() > 0)
-            match = SuperPuperMatcher.match(name, pattern); //XXX: possible speed-block
+            match = SuperPuperMatcher.match(getCaption(), pattern); //XXX: possible speed-block
             
         GC gc = event.gc;
         TextLayout textLayout = new TextLayout(gc.getDevice());
         Font font = gc.getFont();
         Font bold = makeBold(gc.getDevice(), font);
-        textLayout.setText(name);
+        textLayout.setText(getCaption());
         textLayout.setFont(font);
         TextStyle style = new TextStyle(bold, gc.getForeground(), gc.getBackground());
         if (match != null) {

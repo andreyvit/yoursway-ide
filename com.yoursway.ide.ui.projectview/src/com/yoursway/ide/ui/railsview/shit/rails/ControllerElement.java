@@ -1,29 +1,64 @@
 package com.yoursway.ide.ui.railsview.shit.rails;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.swt.graphics.Image;
 
+import com.yoursway.ide.ui.railsview.RailsViewImages;
 import com.yoursway.ide.ui.railsview.shit.IPresentableItem;
-import com.yoursway.ide.ui.railsview.shit.ISearchPatternProvider;
+import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.ide.ui.railsview.shit.SimpleProjectElement;
+import com.yoursway.model.rails.IRailsController;
+import com.yoursway.model.rails.IRailsControllerAction;
+import com.yoursway.model.rails.IRailsPartial;
+import com.yoursway.model.rails.IRailsView;
+import com.yoursway.model.repository.IResolver;
 
 public class ControllerElement extends SimpleProjectElement {
     
-    public ControllerElement(ControllersCategory parent, String name, ISearchPatternProvider searchProvider) {
-        super(parent, name, searchProvider);
+    private final IRailsController controller;
+    
+    public ControllerElement(ControllersCategory parent, IRailsController controller,
+            IViewInfoProvider infoProvider) {
+        super(parent, null, infoProvider);
+        this.controller = controller;
+        IResolver resolver = getResolver();
+        if (resolver != null) {
+            String name = resolver.get(controller.getName());
+            this.setName(name);
+        }
     }
     
-    public IPresentableItem[] getChildren() {
-        // TODO Auto-generated method stub
+    public Collection<IPresentableItem> getChildren() {
+        IResolver resolver = getResolver();
+        if (resolver != null) {
+            List<IPresentableItem> result = new ArrayList<IPresentableItem>();
+            
+            Collection<IRailsControllerAction> actions = resolver.get(controller.getActions());
+            for (IRailsControllerAction a : actions) {
+                result.add(new ActionElement(this, a, this.infoProvider));
+            }
+//            Collection<IRailsPartial> partials = resolver.get(controller.getPartials());
+//            Collection<IRailsView> views = resolver.get(controller.getViews());
+            return result;
+        }
         return null;
     }
     
     public Image getImage() {
-        // TODO Auto-generated method stub
-        return null;
+        return RailsViewImages.CONTROLLER_ICON_IMG;
     }
     
     public boolean hasChildren() {
-        // TODO Auto-generated method stub
+        IResolver resolver = getResolver();
+        if (resolver != null) {
+            Collection<IRailsControllerAction> actions = resolver.get(controller.getActions());
+            Collection<IRailsPartial> partials = resolver.get(controller.getPartials());
+            Collection<IRailsView> views = resolver.get(controller.getViews());
+            return (views.size() + partials.size() + actions.size()) > 0;
+        }
         return false;
     }
     

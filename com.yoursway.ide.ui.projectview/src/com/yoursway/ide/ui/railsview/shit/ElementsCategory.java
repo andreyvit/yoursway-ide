@@ -22,16 +22,16 @@ public abstract class ElementsCategory implements IPresentableItem {
     
     final int TEXT_MARGIN = 3;
     
-    protected final ISearchPatternProvider searchProvider;
+    protected final IViewInfoProvider infoProvider;
     private final String name;
     
     public int getPriority() {
         return 0;
     }
     
-    public ElementsCategory(String name, ISearchPatternProvider searchProvider) {
+    public ElementsCategory(String name, IViewInfoProvider searchProvider) {
         this.name = name;
-        this.searchProvider = searchProvider;
+        this.infoProvider = searchProvider;
     }
     
     public String getCaption() {
@@ -103,7 +103,7 @@ public abstract class ElementsCategory implements IPresentableItem {
         TextLayout text = new TextLayout(gc.getDevice());
         text.setFont(font);
         text.setText(name);
-        String pattern = searchProvider.getPattern();
+        String pattern = infoProvider.getPattern();
         if (pattern != null && pattern.length() > 0) {
             int pos = name.indexOf(pattern);
             TextStyle style = new TextStyle(font, gc.getForeground(), gc.getBackground());

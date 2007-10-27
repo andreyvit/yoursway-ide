@@ -1,6 +1,7 @@
 package com.yoursway.ide.ui.railsview.shit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -42,7 +43,10 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
         IPresentableItem item = (IPresentableItem) parentElement;
         String pattern = searchProvider.getPattern();
         if (pattern == null || pattern.length() == 0) {
-            return item.getChildren();
+            Collection<IPresentableItem> children = item.getChildren();
+            if (children == null)
+                return null;
+            return children.toArray(new IPresentableItem[children.size()]);
         } else {
             
         }
@@ -63,17 +67,7 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
     }
     
     public Object[] getElements(Object inputElement) {
-        // TODO: handle actual categories here
-        ArrayList<ElementsCategory> list = new ArrayList<ElementsCategory>();
-        list.add(new ControllersCategory("Controllers", searchProvider));
-        Collections.sort(list, new Comparator<ElementsCategory>() {
-            
-            public int compare(ElementsCategory o1, ElementsCategory o2) {
-                return o1.getPriority() - o2.getPriority();
-            }
-            
-        });
-        return list.toArray(new ElementsCategory[list.size()]);
+        return getChildren(inputElement);
     }
     
     public void dispose() {

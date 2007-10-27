@@ -1,5 +1,7 @@
 package com.yoursway.ide.ui.railsview;
 
+import java.util.Collection;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -18,15 +20,29 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
+import com.yoursway.model.rails.IRailsModelRoot;
+import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.impl.RailsModelRoot;
+import com.yoursway.model.rails.impl.RogerRabbitResolver;
+import com.yoursway.model.repository.DependencyRequestor;
+import com.yoursway.model.repository.ICollectionHandle;
+import com.yoursway.model.repository.IHandle;
+import com.yoursway.model.repository.IModelRoot;
+import com.yoursway.model.repository.IModelRootProvider;
+
 public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner {
     
     public static final String ID = "com.yoursway.ide.ui.RailsProjectView";
+    
+    private static IRailsModelRoot railsModelRoot = new RailsModelRoot();
     
     private Text searchTextControl;
     private RailsProjectTree projectTree;
     private Composite body;
     
     private RailsProjectStateComposite projectStateComposite;
+    
+    private RogerRabbitResolver resolver;
     
     @Override
     public void createPartControl(final Composite parent) {
@@ -38,13 +54,29 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
         
         createSearchTextControl(body);
         
-        projectTree = new RailsProjectTree(body, this);
+        resolver = new RogerRabbitResolver(new IModelRootProvider() {
+            
+            public <V extends IModelRoot> V obtainRoot(Class<V> rootHandleInterface) {
+                return (V) railsModelRoot;
+            }
+            
+        }, new DependencyRequestor() {
+            
+            public void dependency(IHandle<?> handle) {
+            }
+            
+        });
         
-        //        RailsProject project = RailsWindowModel.instance().getWindow(getSite().getWorkbenchWindow())
-        //                .getRailsProject();
-        //        
-        //        projectTree.setVisibleProject(project);
-        //        
+        projectTree = new RailsProjectTree(body, this);
+        projectTree.consume(resolver);
+        
+        IRailsModelRoot root = resolver.obtainRoot(IRailsModelRoot.class);
+        ICollectionHandle<IRailsProject> projects = root.projects();
+        Collection<IRailsProject> collection = resolver.get(projects);
+        IRailsProject project = collection.iterator().next();
+        
+        projectTree.setVisibleProject(project);
+        
         createBottomControls(body);
         
         contributeToActionBars();
@@ -109,14 +141,13 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
     }
     
     private void fillLocalToolBar(IToolBarManager manager) {
-//        manager.add(new Action("Project info...", DLTKPluginImages.DESC_DLCL_CODE_ASSIST) { // TODO: add nornal icon
-//                
-//                    @Override
-//                    public void run() {
-//                        
-//                    }
-//                    
-//                });
+        manager.add(new Action("More magic", null) { // TODO: add nornal icon
+                
+                    @Override
+                    public void run() {
+                        projectTree.consume(resolver);
+                    }
+                    
+                });
     }
-    
 }
