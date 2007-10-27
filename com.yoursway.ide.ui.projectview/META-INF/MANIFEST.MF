@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Projectview Plug-in
+Bundle-SymbolicName: com.yoursway.ide.ui.projectview;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.ide.ui.projectview.Activator
+Bundle-Vendor: YOURSWAY
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.yoursway.rails.model,
+ org.eclipse.jface.text
+Eclipse-LazyStart: true
+Export-Package: com.yoursway.ide.ui.projectview,
+ com.yoursway.ide.ui.railsview,
+ com.yoursway.ide.ui.railsview.actions,
+ com.yoursway.ide.ui.railsview.presentation,
+ com.yoursway.ide.ui.railsview.presenters,
+ com.yoursway.ide.ui.railsview.shit,
+ com.yoursway.ide.ui.railsview.shit.rails
