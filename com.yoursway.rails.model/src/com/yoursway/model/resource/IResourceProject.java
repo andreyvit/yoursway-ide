@@ -1,13 +1,13 @@
 package com.yoursway.model.resource;
 
-import com.yoursway.model.repository.ICollectionHandle;
-import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.repository.IModelElement;
+import java.io.File;
 
-public interface IResourceProject extends IModelElement {
+import com.yoursway.model.repository.IHandle;
+
+public interface IResourceProject extends IResourceContainer {
     
     IHandle<String> getName();
     
-    ICollectionHandle<IResourceFile> files();
+    IHandle<File> getFileSystemLocation();
     
 }

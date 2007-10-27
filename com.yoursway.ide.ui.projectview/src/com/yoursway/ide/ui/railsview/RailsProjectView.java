@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
 import com.yoursway.model.rails.IRailsModelRoot;
-import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.rails.impl.RailsModelRoot;
 import com.yoursway.model.rails.impl.RogerRabbitResolver;
 import com.yoursway.model.repository.DependencyRequestor;
@@ -71,9 +71,9 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
         projectTree.consume(resolver);
         
         IRailsModelRoot root = resolver.obtainRoot(IRailsModelRoot.class);
-        ICollectionHandle<IRailsProject> projects = root.projects();
-        Collection<IRailsProject> collection = resolver.get(projects);
-        IRailsProject project = collection.iterator().next();
+        ICollectionHandle<IRailsApplicationProject> projects = root.projects();
+        Collection<IRailsApplicationProject> collection = resolver.get(projects);
+        IRailsApplicationProject project = collection.iterator().next();
         
         projectTree.setVisibleProject(project);
         

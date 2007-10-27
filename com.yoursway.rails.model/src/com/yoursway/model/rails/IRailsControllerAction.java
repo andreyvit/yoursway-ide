@@ -5,6 +5,8 @@ import com.yoursway.model.repository.IModelElement;
 
 public interface IRailsControllerAction extends IModelElement {
     
-    IHandle<String> getName();
+    IHandle<String> name();
+    
+    // ...method from AST...
     
 }

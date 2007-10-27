@@ -7,15 +7,15 @@ import com.yoursway.ide.ui.railsview.shit.ElementsCategory;
 import com.yoursway.ide.ui.railsview.shit.IPresentableItem;
 import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.model.rails.IRailsController;
-import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IResolver;
 
 public class ControllersCategory extends ElementsCategory {
     
-    private final IRailsProject project;
+    private final IRailsApplicationProject project;
     
-    public ControllersCategory(String name, IViewInfoProvider infoProvider, IRailsProject project) {
+    public ControllersCategory(String name, IViewInfoProvider infoProvider, IRailsApplicationProject project) {
         super(name, infoProvider);
         this.project = project;
     }

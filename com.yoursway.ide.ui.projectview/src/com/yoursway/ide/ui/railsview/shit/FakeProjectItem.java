@@ -11,14 +11,14 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import com.yoursway.ide.ui.railsview.IResolverProvider;
 import com.yoursway.ide.ui.railsview.shit.rails.ControllersCategory;
-import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.IRailsApplicationProject;
 
 public class FakeProjectItem implements IPresentableItem {
     
-    private final IRailsProject project;
+    private final IRailsApplicationProject project;
     private final IViewInfoProvider infoProvider;
     
-    public FakeProjectItem(IRailsProject project, IViewInfoProvider info) {
+    public FakeProjectItem(IRailsApplicationProject project, IViewInfoProvider info) {
         this.project = project;
         this.infoProvider = info;
     }

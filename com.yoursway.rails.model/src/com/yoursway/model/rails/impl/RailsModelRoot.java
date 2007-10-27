@@ -4,7 +4,7 @@ import java.util.Collections;
 
 import com.yoursway.model.rails.IRailsModelRoot;
 import com.yoursway.model.rails.IRailsPlugin;
-import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.repository.ICollectionHandle;
 
 public class RailsModelRoot implements IRailsModelRoot {
@@ -16,8 +16,8 @@ public class RailsModelRoot implements IRailsModelRoot {
         return null;
     }
 
-    public ICollectionHandle<IRailsProject> projects() {
-        return new RabbitFamilyHandle<IRailsProject>(Collections.singleton((IRailsProject)new RailsProject()));
+    public ICollectionHandle<IRailsApplicationProject> projects() {
+        return new RabbitFamilyHandle<IRailsApplicationProject>(Collections.singleton((IRailsApplicationProject)new RailsProject()));
     }
     
 }

@@ -13,14 +13,14 @@ import com.yoursway.model.rails.IRailsMigration;
 import com.yoursway.model.rails.IRailsModel;
 import com.yoursway.model.rails.IRailsPartial;
 import com.yoursway.model.rails.IRailsPlugin;
-import com.yoursway.model.rails.IRailsProject;
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.rails.IRailsPublicFolder;
 import com.yoursway.model.rails.IRailsTest;
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.resource.IResourceProject;
 
-public class RailsProject implements IRailsProject {
+public class RailsProject implements IRailsApplicationProject {
 
     public RailsProject() {
     }
@@ -66,7 +66,7 @@ public class RailsProject implements IRailsProject {
         return null;
     }
 
-    public ICollectionHandle<IRailsPlugin> getPlugins() {
+    public ICollectionHandle<IRailsPlugin> installedPlugins() {
         // TODO Auto-generated method stub
         return null;
     }

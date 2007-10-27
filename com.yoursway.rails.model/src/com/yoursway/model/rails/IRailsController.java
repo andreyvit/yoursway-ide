@@ -1,17 +1,17 @@
 package com.yoursway.model.rails;
 
+import com.yoursway.model.rails.conventionalClassNames.IConventionalClassName;
 import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.repository.IModelElement;
 
-public interface IRailsController extends IFileBasedElement, IModelElement {
+public interface IRailsController extends IFileBasedElement {
     
-    IHandle<String> getName();
+    IHandle<IConventionalClassName> name();
     
-    ICollectionHandle<IRailsView> getViews();
+    ICollectionHandle<IRailsView> views();
     
-    ICollectionHandle<IRailsControllerAction> getActions();
+    ICollectionHandle<IRailsControllerAction> actions();
     
-    ICollectionHandle<IRailsPartial> getPartials();
+    ICollectionHandle<IRailsPartial> partials();
     
 }

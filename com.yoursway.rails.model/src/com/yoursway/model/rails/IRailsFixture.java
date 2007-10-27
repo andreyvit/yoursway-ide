@@ -1,10 +1,9 @@
 package com.yoursway.model.rails;
 
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.repository.IModelElement;
 
-public interface IRailsFixture  extends IModelElement, IFileBasedElement {
+public interface IRailsFixture extends IFileBasedElement {
     
-    IHandle<String> getTableName();
+    IHandle<String> tableName();
     
 }

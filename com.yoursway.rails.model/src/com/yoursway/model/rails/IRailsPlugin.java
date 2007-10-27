@@ -4,5 +4,7 @@ import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelElement;
 
 public interface IRailsPlugin extends IModelElement {
-    IHandle<String> getName();
+    
+    IHandle<String> name();
+    
 }
