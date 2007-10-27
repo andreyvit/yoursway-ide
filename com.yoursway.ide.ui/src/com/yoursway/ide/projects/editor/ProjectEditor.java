@@ -2,8 +2,9 @@ package com.yoursway.ide.projects.editor;
 
 import org.eclipse.core.databinding.observable.value.AbstractObservableValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -11,6 +12,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import com.yoursway.ide.projects.ProjectRenameFailed;
+import com.yoursway.ide.projects.YourSwayProjects;
 import com.yoursway.ide.ui.Activator;
 import com.yoursway.rails.core.projects.RailsProject;
 
@@ -30,7 +33,20 @@ public class ProjectEditor extends FormEditor {
             
             @Override
             protected void doSetValue(Object value) {
-                MessageDialog.openInformation(null, "Change", "New value: " + value);
+                String newName = (String) value;
+                if (newName == railsProject.getProject().getName())
+                    return;
+                IWorkspaceRoot root = railsProject.getProject().getWorkspace().getRoot();
+                IProject newProject = root.getProject(newName);
+                if (newProject.exists())
+                    throw new IllegalArgumentException("Project already exists");
+                IProject oldProject = railsProject.getProject();
+                try {
+                    YourSwayProjects.rename(oldProject, newProject, null);
+                } catch (ProjectRenameFailed e) {
+                    throw new RuntimeException(e);
+                }
+                //                MessageDialog.openInformation(null, "Change",  "Renamed : " + value);
             }
             
             public Object getValueType() {

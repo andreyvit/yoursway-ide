@@ -173,6 +173,9 @@ public class ProjectUtils {
      */
     private static boolean hasDirectories(File path, String[] directoryList) {
         File[] contents = path.listFiles();
+        if (contents == null)
+            return true;
+        
         // first look for project description files
         HashSet<String> dirHash = new HashSet<String>();
         for (String dir : directoryList) {

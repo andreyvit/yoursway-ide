@@ -1,7 +1,11 @@
 package com.yoursway.ide.projects;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -9,9 +13,11 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -22,6 +28,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 import com.yoursway.ide.projects.commands.NoRailsApplicationAtGivenLocation;
 import com.yoursway.ide.projects.commands.ProjectLocationPreference;
@@ -38,6 +45,97 @@ import com.yoursway.rails.core.projects.RailsProjectsCollection;
 import com.yoursway.utils.ProjectUtils;
 
 public class YourSwayProjects {
+    
+    private static final class RenameSupport {
+        
+        private final Map<IProject, IProject> sourceToDestination = new HashMap<IProject, IProject>();
+        
+        private final Map<IProject, IProject> destinationToSource = new HashMap<IProject, IProject>();
+        
+        public synchronized void add(IProject source, IProject destination) {
+            sourceToDestination.put(source, destination);
+            destinationToSource.put(destination, source);
+        }
+        
+        public synchronized void remove(IProject destination) {
+            IProject source = destinationToSource.remove(destination);
+            if (source != null)
+                sourceToDestination.remove(source);
+        }
+        
+        public synchronized boolean isSource(IProject project) {
+            return sourceToDestination.containsKey(project);
+        }
+        
+        public synchronized IProject getSource(IProject project) {
+            return destinationToSource.get(project);
+        }
+        
+    }
+    
+    private static final RenameSupport RENAME_SUPPORT = new RenameSupport();
+    
+    public static boolean isRenaming(IProject source) {
+        return RENAME_SUPPORT.isSource(source);
+    }
+    
+    public static void rename(final IProject source, final IProject destination, final File newLocation)
+            throws ProjectRenameFailed {
+        try {
+            RailsProject oldRailsProject = RailsProjectsCollection.instance().get(source);
+            try {
+                RENAME_SUPPORT.add(source, destination);
+                
+                WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
+                    
+                    @Override
+                    protected void execute(IProgressMonitor monitor) throws CoreException,
+                            InvocationTargetException, InterruptedException {
+                        try {
+                            IProjectDescription description = source.getDescription();
+                            File oldPath = description.getLocation().toFile().getCanonicalFile();
+                            File location;
+                            if (newLocation == null)
+                                location = oldPath.getParentFile();
+                            else
+                                location = newLocation;
+                            
+                            File newPath = new File(location, destination.getName()).getCanonicalFile();
+                            description.setLocation(new Path(newPath.getAbsolutePath()));
+                            
+                            boolean wasOpen = source.isOpen();
+                            source.delete(false, true, null);
+                            if (!oldPath.equals(newPath))
+                                if (!oldPath.renameTo(newPath))
+                                    throw new ProjectRenameFailed(NLS.bind(
+                                            "Cannot rename folder {0} into {1}", oldPath, newPath));
+                            destination.create(description, null);
+                        } catch (ProjectRenameFailed e) {
+                            throw new InvocationTargetException(e);
+                        } catch (IOException e) {
+                            throw new InvocationTargetException(e);
+                        }
+                    }
+                    
+                };
+                operation.run(null);
+                RailsProject railsProject = RailsProjectsCollection.instance().get(destination);
+                Assert.isNotNull(railsProject);
+                RailsWindowModel.instance().replaceProject(oldRailsProject, railsProject);
+            } finally {
+                RENAME_SUPPORT.remove(destination);
+            }
+        } catch (InvocationTargetException e) {
+            final Throwable te = e.getTargetException();
+            if (te instanceof ProjectRenameFailed)
+                throw (ProjectRenameFailed) te;
+            else
+                throw new ProjectRenameFailed(te);
+        } catch (InterruptedException e) {
+            // WorkspaceModifyOperation.run converts OperationCanceledException into InterruptedException
+            throw new OperationCanceledException(e.getMessage());
+        }
+    }
     
     public static void openRailsApplication(final File location) throws NoRailsApplicationAtGivenLocation {
         if (!ProjectUtils.looksLikeRailsApplication(location))

@@ -98,4 +98,10 @@ public class RailsWindowModel {
         return result;
     }
     
+    public void replaceProject(RailsProject oldRailsProject, RailsProject railsProject) {
+        for (RailsWindow window : mapping.values())
+            if (window.getRailsProject() == oldRailsProject)
+                window.setRailsProject(railsProject);
+    }
+    
 }

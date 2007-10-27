@@ -81,7 +81,7 @@ public class FirstPage extends ProjectEditorPage {
     private void bindValue(MessageManagerFeedback feedbackManager, IObservableValue modelValue,
             IObservableValueWithFeedback targetValue, IValidator validator) {
         UpdateValueStrategy mup = createModelUpdatePolicy().setAfterGetValidator(validator);
-        Binding binding = dbc.bindValue(modelValue, targetValue.observe(), mup, null);
+        Binding binding = dbc.bindValue(targetValue.observe(), modelValue, mup, null);
         feedbackManager.hook(binding, targetValue.feedback());
     }
     
