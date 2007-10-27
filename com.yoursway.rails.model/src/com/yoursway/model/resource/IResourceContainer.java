@@ -1,11 +1,13 @@
 package com.yoursway.model.resource;
 
-import com.yoursway.model.repository.ICollectionHandle;
+import java.util.Collection;
+
+import com.yoursway.model.repository.IHandle;
 
 public interface IResourceContainer extends IResourceElement {
-
-    ICollectionHandle<IResourceFile> files();
     
-    ICollectionHandle<IResourceFolder> folders();
+    IHandle<Collection<IResourceFile>> files();
+    
+    IHandle<Collection<IResourceFolder>> folders();
     
 }

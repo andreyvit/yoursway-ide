@@ -12,11 +12,11 @@ public class RailsModelRoot implements IRailsModelRoot {
     public RailsModelRoot() {
     }
     
-    public ICollectionHandle<IRailsPlugin> getPlugins() {
+    public IHandle<Collection<IRailsPlugin>> getPlugins() {
         return null;
     }
 
-    public ICollectionHandle<IRailsApplicationProject> projects() {
+    public IHandle<Collection<IRailsApplicationProject>> projects() {
         return new RabbitFamilyHandle<IRailsApplicationProject>(Collections.singleton((IRailsApplicationProject)new RailsProject()));
     }
     

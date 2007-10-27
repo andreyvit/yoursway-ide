@@ -71,7 +71,7 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
         projectTree.consume(resolver);
         
         IRailsModelRoot root = resolver.obtainRoot(IRailsModelRoot.class);
-        ICollectionHandle<IRailsApplicationProject> projects = root.projects();
+        IHandle<Collection<IRailsApplicationProject>> projects = root.projects();
         Collection<IRailsApplicationProject> collection = resolver.get(projects);
         IRailsApplicationProject project = collection.iterator().next();
         

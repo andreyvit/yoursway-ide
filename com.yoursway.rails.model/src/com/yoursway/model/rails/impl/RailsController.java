@@ -20,7 +20,7 @@ public class RailsController implements IRailsController {
         this.name = name;
     }
     
-    public ICollectionHandle<IRailsControllerAction> getActions() {
+    public IHandle<Collection<IRailsControllerAction>> getActions() {
         List<IRailsControllerAction> list = new ArrayList<IRailsControllerAction>();
         list.add(new RailsControllerAction("Piece Of Shit"));
         return new RabbitFamilyHandle<IRailsControllerAction>(list);
@@ -30,12 +30,12 @@ public class RailsController implements IRailsController {
         return new RabbitHandle<String>(name);
     }
     
-    public ICollectionHandle<IRailsPartial> getPartials() {
+    public IHandle<Collection<IRailsPartial>> getPartials() {
         // TODO Auto-generated method stub
         return null;
     }
     
-    public ICollectionHandle<IRailsView> getViews() {
+    public IHandle<Collection<IRailsView>> getViews() {
         return new RabbitFamilyHandle<IRailsView>(Collections.singleton((IRailsView)new RailsView()));
     }
     

@@ -25,33 +25,33 @@ public class RailsProject implements IRailsApplicationProject {
     public RailsProject() {
     }
     
-    public ICollectionHandle<IRailsController> getControllers() {
+    public IHandle<Collection<IRailsController>> getControllers() {
         List<IRailsController> list = new ArrayList<IRailsController>();
         list.add(new RailsController("Piece Of Shit"));
         return new RabbitFamilyHandle<IRailsController>(list);
     }
 
-    public ICollectionHandle<IRailsFixture> getFixtures() {
+    public IHandle<Collection<IRailsFixture>> getFixtures() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ICollectionHandle<IRailsHelper> getHelpers() {
+    public IHandle<Collection<IRailsHelper>> getHelpers() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ICollectionHandle<IRailsLayout> getLayouts() {
+    public IHandle<Collection<IRailsLayout>> getLayouts() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ICollectionHandle<IRailsMigration> getMigrations() {
+    public IHandle<Collection<IRailsMigration>> getMigrations() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ICollectionHandle<IRailsModel> getModels() {
+    public IHandle<Collection<IRailsModel>> getModels() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -66,7 +66,7 @@ public class RailsProject implements IRailsApplicationProject {
         return null;
     }
 
-    public ICollectionHandle<IRailsPlugin> installedPlugins() {
+    public IHandle<Collection<IRailsPlugin>> installedPlugins() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -81,12 +81,12 @@ public class RailsProject implements IRailsApplicationProject {
         return null;
     }
 
-    public ICollectionHandle<IRailsPartial> getSharedPartials() {
+    public IHandle<Collection<IRailsPartial>> getSharedPartials() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ICollectionHandle<IRailsTest> getTests() {
+    public IHandle<Collection<IRailsTest>> getTests() {
         // TODO Auto-generated method stub
         return null;
     }

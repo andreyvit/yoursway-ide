@@ -1,6 +1,8 @@
 package com.yoursway.model.rails;
 
-import com.yoursway.model.repository.ICollectionHandle;
+import java.util.Collection;
+
+import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelElement;
 import com.yoursway.model.resource.IResourceProject;
 
@@ -8,22 +10,22 @@ public interface IRailsApplicationProject extends IModelElement {
     
     IResourceProject getResourceProject();
     
-    ICollectionHandle<IRailsController> controllers();
+    IHandle<Collection<IRailsController>> controllers();
     
-    ICollectionHandle<IRailsModel> models();
+    IHandle<Collection<IRailsModel>> models();
     
-    ICollectionHandle<IRailsMigration> migrations();
+    IHandle<Collection<IRailsMigration>> migrations();
     
-    ICollectionHandle<IRailsTest> tests();
+    IHandle<Collection<IRailsTest>> tests();
     
-    ICollectionHandle<IRailsFixture> fixtures();
+    IHandle<Collection<IRailsFixture>> fixtures();
     
-    ICollectionHandle<IRailsPlugin> installedPlugins();
+    IHandle<Collection<IRailsPlugin>> installedPlugins();
     
-    ICollectionHandle<IRailsHelper> helpers();
+    IHandle<Collection<IRailsHelper>> helpers();
     
-    ICollectionHandle<IRailsPartial> sharedPartials();
+    IHandle<Collection<IRailsPartial>> sharedPartials();
     
-    ICollectionHandle<IRailsLayout> layouts();
+    IHandle<Collection<IRailsLayout>> layouts();
     
 }

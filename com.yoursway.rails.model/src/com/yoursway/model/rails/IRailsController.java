@@ -1,17 +1,18 @@
 package com.yoursway.model.rails;
 
+import java.util.Collection;
+
 import com.yoursway.model.rails.conventionalClassNames.IConventionalClassName;
-import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
 
 public interface IRailsController extends IFileBasedElement {
     
     IHandle<IConventionalClassName> name();
     
-    ICollectionHandle<IRailsView> views();
+    IHandle<Collection<IRailsView>> views();
     
-    ICollectionHandle<IRailsControllerAction> actions();
+    IHandle<Collection<IRailsControllerAction>> actions();
     
-    ICollectionHandle<IRailsPartial> partials();
+    IHandle<Collection<IRailsPartial>> partials();
     
 }

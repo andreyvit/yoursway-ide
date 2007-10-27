@@ -1,11 +1,12 @@
 package com.yoursway.model.resource;
 
-import com.yoursway.model.repository.ICollectionHandle;
-import com.yoursway.model.repository.IModelRoot;
+import java.util.Collection;
 
+import com.yoursway.model.repository.IHandle;
+import com.yoursway.model.repository.IModelRoot;
 
 public interface IResourceModelRoot extends IModelRoot {
     
-    ICollectionHandle<IResourceProject> projects();
+    IHandle<Collection<IResourceProject>> projects();
     
 }

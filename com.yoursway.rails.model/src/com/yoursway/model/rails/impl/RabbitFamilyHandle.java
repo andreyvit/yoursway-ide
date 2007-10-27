@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.yoursway.model.repository.ICollectionHandle;
 
-public class RabbitFamilyHandle<T> implements ICollectionHandle<T> {
+public class RabbitFamilyHandle<T> implements IHandle<Collection<T>> {
     
     private final Collection<T> t;
 

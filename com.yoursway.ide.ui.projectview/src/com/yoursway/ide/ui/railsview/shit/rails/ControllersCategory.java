@@ -30,7 +30,7 @@ public class ControllersCategory extends ElementsCategory {
         if (resolver == null)
             return null;
         
-        ICollectionHandle<IRailsController> controllersHandle = project.getControllers();
+        IHandle<Collection<IRailsController>> controllersHandle = project.getControllers();
         Collection<IRailsController> controllers = resolver.get(controllersHandle);
         ArrayList<IPresentableItem> list = new ArrayList<IPresentableItem>();
         for (IRailsController c : controllers) {
