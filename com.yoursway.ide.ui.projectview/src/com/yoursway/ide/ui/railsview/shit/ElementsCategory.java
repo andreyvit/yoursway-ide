@@ -106,11 +106,19 @@ public abstract class ElementsCategory implements IPresentableItem {
         String pattern = infoProvider.getPattern();
         if (pattern != null && pattern.length() > 0) {
             int pos = name.indexOf(pattern);
-            TextStyle style = new TextStyle(font, gc.getForeground(), gc.getBackground());
+            TextStyle style = new TextStyle(font, gc.getForeground(), categoryGradientEnd);
             text.setStyle(style, pos, pos + pattern.length() - 1);
         }
         text.draw(gc, event.x + TEXT_MARGIN, event.y + 2, -1, -1, null, null, SWT.DRAW_TRANSPARENT);
+        
+        if (drawFocus(event)) {
+            gc.drawFocus(3, rect.y, area.width, rect.height - 1);
+        }
         boldFont.dispose();
+    }
+    
+    private boolean drawFocus(Event event) {
+        return (event.detail & SWT.SELECTED) != 0;
     }
     
     private Font makeBold(Device device, Font font) {

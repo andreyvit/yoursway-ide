@@ -1,9 +1,9 @@
 package com.yoursway.ide.ui.railsview.shit;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -15,8 +15,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
-
-import com.yoursway.ide.ui.railsview.shit.rails.ControllersCategory;
 
 public class ProjectPresentationProvider implements ITreeContentProvider, ILabelProvider, Listener {
     
@@ -48,9 +46,37 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
                 return null;
             return children.toArray(new IPresentableItem[children.size()]);
         } else {
-            
+            Collection<IPresentableItem> children = item.getChildren();
+            if (children == null)
+                return null;
+            for (Iterator<IPresentableItem> iterator = children.iterator(); iterator.hasNext();) {
+                IPresentableItem i = (IPresentableItem) iterator.next();
+                if (hasMatchingChild(i, pattern))
+                    continue;
+                int matches = i.matches(pattern);
+                if (matches < 0) {
+                    iterator.remove();
+                }
+            }
+            return children.toArray(new IPresentableItem[children.size()]);
         }
-        return new Object[0];
+    }
+    
+    private boolean hasMatchingChild(IPresentableItem item, String pattern) {
+        Collection<IPresentableItem> children = item.getChildren();
+        if (children == null)
+            return false;
+        Queue<IPresentableItem> q = new LinkedList<IPresentableItem>();
+        q.addAll(children);
+        while (!q.isEmpty()) {
+            IPresentableItem next = q.poll();
+            if (next.matches(pattern) >= 0)
+                return true;
+            Collection<IPresentableItem> ch2 = next.getChildren();
+            if (ch2 != null)
+                q.addAll(ch2);
+        }
+        return false;
     }
     
     public Object getParent(Object element) {

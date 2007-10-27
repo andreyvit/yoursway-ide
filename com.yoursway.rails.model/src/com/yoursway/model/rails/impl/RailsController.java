@@ -1,7 +1,6 @@
 package com.yoursway.model.rails.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,7 +8,7 @@ import com.yoursway.model.rails.IRailsController;
 import com.yoursway.model.rails.IRailsControllerAction;
 import com.yoursway.model.rails.IRailsPartial;
 import com.yoursway.model.rails.IRailsView;
-import com.yoursway.model.rails.conventionalClassNames.IConventionalClassName;
+import com.yoursway.model.repository.ICollectionHandle;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.resource.IResourceFile;
 
@@ -21,9 +20,9 @@ public class RailsController implements IRailsController {
         this.name = name;
     }
     
-    public IHandle<Collection<IRailsControllerAction>> getActions() {
+    public ICollectionHandle<IRailsControllerAction> getActions() {
         List<IRailsControllerAction> list = new ArrayList<IRailsControllerAction>();
-        list.add(new RailsControllerAction("Piece Of Shit"));
+        list.add(new RailsControllerAction("die"));
         return new RabbitFamilyHandle<IRailsControllerAction>(list);
     }
     
@@ -31,32 +30,17 @@ public class RailsController implements IRailsController {
         return new RabbitHandle<String>(name);
     }
     
-    public IHandle<Collection<IRailsPartial>> getPartials() {
+    public ICollectionHandle<IRailsPartial> getPartials() {
         // TODO Auto-generated method stub
         return null;
     }
     
-    public IHandle<Collection<IRailsView>> getViews() {
-        return new RabbitFamilyHandle<IRailsView>(Collections.singleton((IRailsView) new RailsView()));
+    public ICollectionHandle<IRailsView> getViews() {
+        return new RabbitFamilyHandle<IRailsView>(Collections.singleton((IRailsView)new RailsView()));
     }
     
-    public IHandle<Collection<IRailsControllerAction>> actions() {
-        return null;
-    }
-    
-    public IHandle<IConventionalClassName> name() {
-        return null;
-    }
-    
-    public IHandle<Collection<IRailsPartial>> partials() {
-        return null;
-    }
-    
-    public IHandle<Collection<IRailsView>> views() {
-        return null;
-    }
-    
-    public IResourceFile getFile() {
+    public IHandle<IResourceFile> getFile() {
+        // TODO Auto-generated method stub
         return null;
     }
     

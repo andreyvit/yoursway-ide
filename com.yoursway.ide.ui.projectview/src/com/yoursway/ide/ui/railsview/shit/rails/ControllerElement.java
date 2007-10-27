@@ -22,13 +22,8 @@ public class ControllerElement extends SimpleProjectElement {
     
     public ControllerElement(ControllersCategory parent, IRailsController controller,
             IViewInfoProvider infoProvider) {
-        super(parent, null, infoProvider);
+        super(parent, infoProvider.getModelResolver().get(controller.getName()), infoProvider);
         this.controller = controller;
-        IResolver resolver = getResolver();
-        if (resolver != null) {
-            String name = resolver.get(controller.name());
-            this.setName(name);
-        }
     }
     
     public Collection<IPresentableItem> getChildren() {

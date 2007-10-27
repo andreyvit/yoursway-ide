@@ -1,11 +1,13 @@
 package com.yoursway.ide.ui.railsview.shit;
 
+import org.eclipse.jface.resource.FontDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Event;
@@ -60,35 +62,46 @@ public abstract class SimpleProjectElement extends ProjectElement {
     }
     
     public void measureItem(TreeItem item, Event event) {
+        TextLayout textLayout = createTextLayout(event.gc);
+        TextLayout textLayout2 = createPlainTextLayout(event.gc);
+        event.width += (textLayout.getBounds().width - textLayout2.getBounds().width);
     }
     
     public void paintItem(TreeItem item, Event event) {
-        
+        GC gc = event.gc;
+        Rectangle textBounds = item.getTextBounds(0);
+        TextLayout textLayout = createTextLayout(gc);
+        gc.drawImage(getImage(), item.getImageBounds(0).x, item.getImageBounds(0).y);
+        textLayout.draw(gc, textBounds.x, textBounds.y + 1, -1, -1, null, null, SWT.DRAW_TRANSPARENT);
+    }
+    
+    private TextLayout createTextLayout(GC gc) {
         String pattern = infoProvider.getPattern();
         MatchResult match = null;
         if (pattern != null && pattern.length() > 0)
             match = SuperPuperMatcher.match(getCaption(), pattern); //XXX: possible speed-block
             
-        GC gc = event.gc;
         TextLayout textLayout = new TextLayout(gc.getDevice());
         Font font = gc.getFont();
-        Font bold = makeBold(gc.getDevice(), font);
-        textLayout.setText(getCaption());
+        Font boldFont = new LocalResourceManager(JFaceResources.getResources()).createFont(FontDescriptor
+                .createFrom(font).setStyle(SWT.BOLD));
         textLayout.setFont(font);
-        TextStyle style = new TextStyle(bold, gc.getForeground(), gc.getBackground());
+        textLayout.setText(getCaption());
+        TextStyle style = new TextStyle(boldFont, gc.getForeground(), gc.getBackground());
         if (match != null) {
             for (IRegion region : match.regions) {
                 textLayout.setStyle(style, region.getOffset(), region.getOffset() + region.getLength() - 1);
             }
         }
-        textLayout.draw(gc, event.x, event.y, -1, -1, null, null, SWT.DRAW_TRANSPARENT);
-        bold.dispose();
+        return textLayout;
     }
     
-    private Font makeBold(Device device, Font font) {
-        FontData[] fontData = font.getFontData();
-        fontData[0].style |= SWT.BOLD;
-        return new Font(device, fontData);
+    private TextLayout createPlainTextLayout(GC gc) {
+        TextLayout textLayout = new TextLayout(gc.getDevice());
+        Font font = gc.getFont();
+        textLayout.setFont(font);
+        textLayout.setText(getCaption());
+        return textLayout;
     }
     
     public void eraseItem(TreeItem item, Event event) {

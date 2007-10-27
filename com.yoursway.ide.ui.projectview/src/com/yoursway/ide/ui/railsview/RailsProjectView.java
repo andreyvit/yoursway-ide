@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -21,7 +22,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
 import com.yoursway.model.rails.IRailsModelRoot;
-import com.yoursway.model.rails.IRailsApplicationProject;
+import com.yoursway.model.rails.IRailsProject;
 import com.yoursway.model.rails.impl.RailsModelRoot;
 import com.yoursway.model.rails.impl.RogerRabbitResolver;
 import com.yoursway.model.repository.DependencyRequestor;
@@ -71,9 +72,9 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
         projectTree.consume(resolver);
         
         IRailsModelRoot root = resolver.obtainRoot(IRailsModelRoot.class);
-        IHandle<Collection<IRailsApplicationProject>> projects = root.projects();
-        Collection<IRailsApplicationProject> collection = resolver.get(projects);
-        IRailsApplicationProject project = collection.iterator().next();
+        ICollectionHandle<IRailsProject> projects = root.projects();
+        Collection<IRailsProject> collection = resolver.get(projects);
+        IRailsProject project = collection.iterator().next();
         
         projectTree.setVisibleProject(project);
         
@@ -100,6 +101,7 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
                     text.redraw();
                     projectTree.setFilteringPattern(text.getText());
                     projectTree.refresh();
+                    projectTree.getTreeViewer().expandToLevel(TreeViewer.ALL_LEVELS);
                 }
             }
             

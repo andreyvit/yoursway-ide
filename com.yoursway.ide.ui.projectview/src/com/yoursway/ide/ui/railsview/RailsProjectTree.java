@@ -8,13 +8,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
 import com.yoursway.ide.ui.railsview.shit.FakeProjectItem;
 import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.ide.ui.railsview.shit.ProjectPresentationProvider;
-import com.yoursway.model.rails.IRailsApplicationProject;
+import com.yoursway.model.rails.IRailsProject;
 import com.yoursway.model.repository.IConsumer;
 import com.yoursway.model.repository.IResolver;
 
@@ -24,14 +23,14 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
     
     private final PublicMorozovTreeViewer viewer;
     
-    private IRailsApplicationProject currentRailsApplicationProject;
+    private IRailsProject currentRailsProject;
     
     private final MenuManager contextMenuManager;
     
     private final IRailsProjectTreeOwner owner;
     
-    private final PatternFilter patternFilter;
-
+    private String patternString;
+    
     private IResolver resolver;
     
     public RailsProjectTree(Composite parent, IRailsProjectTreeOwner owner) {
@@ -39,7 +38,8 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
         tree = new Tree(parent, SWT.BORDER | SWT.MULTI | SWT.VERTICAL | SWT.V_SCROLL);
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        patternFilter = new PatternFilter();
+        patternString = "";
+        
         viewer = new PublicMorozovTreeViewer(tree);
         
         ProjectPresentationProvider infoProvider = new ProjectPresentationProvider(this);
@@ -48,14 +48,13 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
         contextMenuManager = null;
     }
     
-    public void setVisibleProject(IRailsApplicationProject project) {
-        currentRailsApplicationProject = project;
-        viewer.setInput(new FakeProjectItem(currentRailsApplicationProject, this));
+    public void setVisibleProject(IRailsProject project) {
+        currentRailsProject = project;
+        viewer.setInput(new FakeProjectItem(currentRailsProject, this));
     }
     
     public void refresh() {
-        if (currentRailsApplicationProject != null)
-            viewer.refresh(currentRailsApplicationProject);
+       viewer.refresh();
     }
     
     public MenuManager getContextMenuManager() {
@@ -83,13 +82,15 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
     }
     
     public void setFilteringPattern(String text) {
-        patternFilter.setPattern(text);
+        if (text == null)
+            throw new IllegalArgumentException();
+        patternString = text;
     }
     
     public String getPattern() {
-        return "";
+        return patternString;
     }
-
+    
     public void consume(IResolver resolver) {
         this.resolver = resolver;
         viewer.refresh();
