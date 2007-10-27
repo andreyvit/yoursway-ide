@@ -1,4 +1,4 @@
-package com.yoursway.rails.model.layer1.timeline;
+package com.yoursway.model.timeline;
 
 public final class PointInTime implements Comparable<PointInTime> {
     

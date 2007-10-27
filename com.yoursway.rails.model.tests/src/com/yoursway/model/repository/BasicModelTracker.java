@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.yoursway.rails.model.layer1.timeline.PointInTime;
+import com.yoursway.model.timeline.PointInTime;
 
 public class BasicModelTracker implements IBasicModelChangesRequestor {
     

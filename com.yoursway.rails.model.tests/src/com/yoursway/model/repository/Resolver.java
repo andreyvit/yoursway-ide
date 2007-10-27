@@ -5,7 +5,7 @@ package com.yoursway.model.repository;
 
 import java.util.Collection;
 
-import com.yoursway.rails.model.layer1.timeline.PointInTime;
+import com.yoursway.model.timeline.PointInTime;
 
 public final class Resolver implements IResolver {
     

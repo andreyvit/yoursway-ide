@@ -3,7 +3,7 @@
  */
 package com.yoursway.model.repository;
 
-import com.yoursway.rails.model.layer1.timeline.PointInTime;
+import com.yoursway.model.timeline.PointInTime;
 
 public class ConsumerTracker implements DependencyRequestor {
     

@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import com.yoursway.rails.model.layer1.timeline.PointInTime;
-import com.yoursway.rails.model.layer1.timeline.Timeline;
+import com.yoursway.model.timeline.PointInTime;
+import com.yoursway.model.timeline.Timeline;
 import com.yoursway.utils.collections.HashSetMultiMap;
 import com.yoursway.utils.collections.MultiMap;
 

@@ -1,8 +1,4 @@
-package com.yoursway.rails.model.layer1.timeline;
-
-import java.util.Collection;
-
-import com.yoursway.rails.model.layer1.models.ModelFamily;
+package com.yoursway.model.timeline;
 
 public class Timeline {
     
@@ -10,7 +6,7 @@ public class Timeline {
     
     private int moment = 1;
     
-    public Timeline(Collection<ModelFamily<?>> basicFamilies) {
+    public Timeline() {
         advanceThisCrazyWorldToTheNextMomentInTime();
     }
     

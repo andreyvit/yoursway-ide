@@ -4,9 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yoursway.rails.model.layer1.timeline.PointInTime;
-import com.yoursway.rails.model.layer1.timeline.Timeline;
-import com.yoursway.rails.model.layer1.timeline.TimelineBuilder;
+import com.yoursway.model.timeline.PointInTime;
+import com.yoursway.model.timeline.Timeline;
+import com.yoursway.model.timeline.TimelineBuilder;
 
 public class TimelineTests {
     
