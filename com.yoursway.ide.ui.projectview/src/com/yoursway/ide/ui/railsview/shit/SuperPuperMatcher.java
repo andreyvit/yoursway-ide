@@ -1,7 +1,6 @@
 package com.yoursway.ide.ui.railsview.shit;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,47 +9,44 @@ import org.eclipse.jface.text.Region;
 
 public final class SuperPuperMatcher {
     
-    public static final int FULL_MATCH = 0;
-    public static final int PREFIX = 1;
-    public static final int SUBSTRING = 2;
-    public static final int SUBSEQUENCE = 100;
+    private static boolean startWithIgnoreCase(String string, String pattern) {
+        int length = pattern.length();
+        if (string.length() < length)
+            return false;
+        for (int i = 0; i < length; i++) {
+            if (Character.toLowerCase(string.charAt(i)) != Character.toLowerCase(pattern.charAt(i)))
+                return false;
+        }
+        return true;
+    }
     
-    public static class MatchResult {
-        public int kind;
-        public Collection<IRegion> regions;
-        
-        public MatchResult(int kind, Collection<IRegion> regions) {
-            this.kind = kind;
-            this.regions = regions;
-        }
-        
-        public MatchResult(int kind) {
-            this.kind = kind;
-            this.regions = null;
-        }
+    private static boolean chrCmp(char a, char b) {
+        return Character.toLowerCase(a) == Character.toLowerCase(b);
     }
     
     public static MatchResult match(String string, String pattern) {
         int patternLength = pattern.length();
-        if (string.equals(pattern))
-            return new MatchResult(FULL_MATCH, Collections.singletonList((IRegion) new Region(0,
+        if (string.equalsIgnoreCase(pattern))
+            return new MatchResult(MatchResult.FULL_MATCH, Collections.singletonList((IRegion) new Region(0,
                     patternLength)));
-        if (string.startsWith(pattern))
-            return new MatchResult(PREFIX, Collections.singletonList((IRegion) new Region(0, patternLength)));
-        int pos = string.indexOf(pattern);
-        if (pos >= 0)
-            return new MatchResult(SUBSTRING + pos, Collections.singletonList((IRegion) new Region(pos,
+        if (startWithIgnoreCase(string, pattern))
+            return new MatchResult(MatchResult.PREFIX, Collections.singletonList((IRegion) new Region(0,
                     patternLength)));
         int stringLength = string.length();
         boolean matching[][] = new boolean[stringLength][patternLength];
+        for (int i = 0; i < stringLength; i++) {
+            matching[i][0] = chrCmp(string.charAt(i), pattern.charAt(0));
+        }
         for (int i = 0; i < stringLength; i++) { // not the best solution but I'm too lazy to rewrite it
-            for (int j = 0; j < patternLength; j++) {
-                if (string.charAt(i) == pattern.charAt(j)) {
-                    boolean prev = (i == 0);
+            for (int j = 1; j < patternLength; j++) {
+                if (chrCmp(string.charAt(i), pattern.charAt(j))) {
+                    matching[i][j] = false;
                     for (int k = 0; k < i; k++) {
-                        prev |= matching[k][j - 1];
+                        if (matching[k][j - 1]) {
+                            matching[i][j] = true;
+                            break;
+                        }
                     }
-                    matching[i][j] = prev;
                 } else
                     matching[i][j] = false;
             }
@@ -85,7 +81,7 @@ public final class SuperPuperMatcher {
                 length = 1;
                 continue;
             }
-            if (x == prev + 1) {
+            if (x == prev + length) {
                 length++;
             } else {
                 regions.add(new Region(prev, length));
@@ -94,6 +90,10 @@ public final class SuperPuperMatcher {
             }
         }
         regions.add(new Region(prev, length));
-        return new MatchResult(SUBSEQUENCE, regions);
+        if (regions.size() == 1) {
+            return new MatchResult(MatchResult.SUBSTRING + prev, Collections
+                    .singletonList((IRegion) new Region(prev, patternLength)));
+        }
+        return new MatchResult(MatchResult.SUBSEQUENCE, regions);
     }
 }

@@ -74,7 +74,7 @@ public abstract class ElementsCategory implements IPresentableItem {
     }
     
     public void paintItem(TreeItem item, Event event) {
-        Color categoryGradientEnd = new Color(Display.getDefault(), 205, 205, 205);
+        Color categoryGradientEnd = new Color(Display.getDefault(), 182, 193, 233);
         
         Scrollable scrollable = (Scrollable) event.widget;
         GC gc = event.gc;

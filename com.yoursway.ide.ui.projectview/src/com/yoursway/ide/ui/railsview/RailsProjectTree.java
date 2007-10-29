@@ -10,9 +10,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPage;
 
 import com.yoursway.ide.ui.railsview.presentation.IPresenterOwner;
-import com.yoursway.ide.ui.railsview.shit.FakeProjectItem;
 import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.ide.ui.railsview.shit.ProjectPresentationProvider;
+import com.yoursway.ide.ui.railsview.shit.rails.FakeProjectItem;
 import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.repository.IConsumer;
 import com.yoursway.model.repository.IResolver;

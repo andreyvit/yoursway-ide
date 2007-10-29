@@ -134,20 +134,24 @@ public class ProjectPresentationProvider implements ITreeContentProvider, ILabel
     }
     
     public void handleEvent(Event event) {
-        TreeItem item = (TreeItem) event.item;
-        if (item.getData() instanceof IPresentableItem) {
-            IPresentableItem presentable = (IPresentableItem) item.getData();
-            switch (event.type) {
-            case SWT.PaintItem:
-                presentable.paintItem(item, event);
-                break;
-            case SWT.MeasureItem:
-                presentable.measureItem(item, event);
-                break;
-            case SWT.EraseItem:
-                presentable.eraseItem(item, event);
-                break;
+        try {
+            TreeItem item = (TreeItem) event.item;
+            if (item.getData() instanceof IPresentableItem) {
+                IPresentableItem presentable = (IPresentableItem) item.getData();
+                switch (event.type) {
+                case SWT.PaintItem:
+                    presentable.paintItem(item, event);
+                    break;
+                case SWT.MeasureItem:
+                    presentable.measureItem(item, event);
+                    break;
+                case SWT.EraseItem:
+                    presentable.eraseItem(item, event);
+                    break;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

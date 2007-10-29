@@ -7,13 +7,13 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.yoursway.ide.ui.railsview.shit.SuperPuperMatcher.MatchResult;
 import com.yoursway.model.repository.IResolver;
 
 public abstract class SimpleProjectElement extends ProjectElement {
@@ -63,6 +63,7 @@ public abstract class SimpleProjectElement extends ProjectElement {
     
     public void measureItem(TreeItem item, Event event) {
         TextLayout textLayout = createTextLayout(event.gc);
+        
         TextLayout textLayout2 = createPlainTextLayout(event.gc);
         event.width += (textLayout.getBounds().width - textLayout2.getBounds().width);
     }
@@ -71,7 +72,9 @@ public abstract class SimpleProjectElement extends ProjectElement {
         GC gc = event.gc;
         Rectangle textBounds = item.getTextBounds(0);
         TextLayout textLayout = createTextLayout(gc);
-        gc.drawImage(getImage(), item.getImageBounds(0).x, item.getImageBounds(0).y);
+        Image image = getImage();
+        if (image != null)
+            gc.drawImage(image, item.getImageBounds(0).x, item.getImageBounds(0).y);
         textLayout.draw(gc, textBounds.x, textBounds.y + 1, -1, -1, null, null, SWT.DRAW_TRANSPARENT);
     }
     

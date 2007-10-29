@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.core
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.model.rails,
+ com.yoursway.model.rails.conventionalClassNames,
  com.yoursway.model.rails.impl,
  com.yoursway.model.repository,
  com.yoursway.model.resource,

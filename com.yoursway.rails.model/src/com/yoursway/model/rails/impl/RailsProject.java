@@ -16,6 +16,8 @@ import com.yoursway.model.rails.IRailsModel;
 import com.yoursway.model.rails.IRailsPartial;
 import com.yoursway.model.rails.IRailsPlugin;
 import com.yoursway.model.rails.IRailsTest;
+import com.yoursway.model.rails.conventionalClassNames.ConsistentConventionalClassName;
+import com.yoursway.model.rails.conventionalClassNames.QualifiedRubyClassName;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.resource.IResourceProject;
 
@@ -27,37 +29,39 @@ public class RailsProject implements IRailsApplicationProject {
     public IHandle<Collection<IRailsController>> controllers() {
         List<IRailsController> list = new ArrayList<IRailsController>();
         list.add(new RailsController("Piece Of Shit"));
-        return new RabbitFamilyHandle<IRailsController>(list);
+        return new RabbitHandle<Collection<IRailsController>>(list);
     }
     
     public IHandle<Collection<IRailsFixture>> fixtures() {
-        // TODO Auto-generated method stub
         return null;
     }
     
     public IHandle<Collection<IRailsHelper>> helpers() {
-        // TODO Auto-generated method stub
         return null;
     }
     
     public IHandle<Collection<IRailsLayout>> layouts() {
-        // TODO Auto-generated method stub
         return null;
     }
     
     public IHandle<Collection<IRailsMigration>> migrations() {
-        // TODO Auto-generated method stub
-        return null;
+        List<IRailsMigration> list = new ArrayList<IRailsMigration>();
+        list.add(new RailsMigration(new ConsistentConventionalClassName("mig1", new QualifiedRubyClassName(
+                "Mig1")), 1));
+        list.add(new RailsMigration(new ConsistentConventionalClassName("mig_boo",
+                new QualifiedRubyClassName("MigBoo")), 2));
+        return new RabbitHandle<Collection<IRailsMigration>>(list);
     }
     
     public IHandle<Collection<IRailsModel>> models() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    public IHandle<String> name() {
-        // TODO Auto-generated method stub
-        return null;
+        List<IRailsModel> list = new ArrayList<IRailsModel>();
+        list.add(new RailsModel(new ConsistentConventionalClassName("bablo", new QualifiedRubyClassName(
+                "Bablo"))));
+        list.add(new RailsModel(new ConsistentConventionalClassName("fuflo", new QualifiedRubyClassName(
+                "Fuflo"))));
+        list.add(new RailsModel(new ConsistentConventionalClassName("lohi",
+                new QualifiedRubyClassName("Lohi"))));
+        return new RabbitHandle<Collection<IRailsModel>>(list);
     }
     
     public IHandle<IPath> path() {

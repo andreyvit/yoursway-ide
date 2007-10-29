@@ -1,4 +1,4 @@
-package com.yoursway.ide.ui.railsview.shit;
+package com.yoursway.ide.ui.railsview.shit.rails;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +10,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.yoursway.ide.ui.railsview.shit.rails.ControllersCategory;
+import com.yoursway.ide.ui.railsview.shit.ElementsCategory;
+import com.yoursway.ide.ui.railsview.shit.IPresentableItem;
+import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.model.rails.IRailsApplicationProject;
 
 public class FakeProjectItem implements IPresentableItem {
@@ -37,6 +39,8 @@ public class FakeProjectItem implements IPresentableItem {
     public Collection<IPresentableItem> getChildren() {
         ArrayList<IPresentableItem> list = new ArrayList<IPresentableItem>();
         addCategory(list, new ControllersCategory("Controllers", infoProvider, project));
+        addCategory(list, new ModelsCategory("Models", infoProvider, project));
+        addCategory(list, new MigrationsCategory("Migrations", infoProvider, project));
         // TODO: add more 
         
         return list;

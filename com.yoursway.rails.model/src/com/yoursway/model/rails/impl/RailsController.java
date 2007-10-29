@@ -44,7 +44,7 @@ public class RailsController implements IRailsController {
     
     public IHandle<Collection<IRailsControllerAction>> actions() {
         List<IRailsControllerAction> list = new ArrayList<IRailsControllerAction>();
-        list.add(new RailsControllerAction("die"));
+        list.add(new RailsControllerAction("die()"));
         return new RabbitFamilyHandle<IRailsControllerAction>(list);
     }
     
