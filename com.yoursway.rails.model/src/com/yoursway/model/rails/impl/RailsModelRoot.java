@@ -1,11 +1,12 @@
 package com.yoursway.model.rails.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 
+import com.yoursway.model.rails.IRailsApplicationProject;
 import com.yoursway.model.rails.IRailsModelRoot;
 import com.yoursway.model.rails.IRailsPlugin;
-import com.yoursway.model.rails.IRailsApplicationProject;
-import com.yoursway.model.repository.ICollectionHandle;
+import com.yoursway.model.repository.IHandle;
 
 public class RailsModelRoot implements IRailsModelRoot {
 

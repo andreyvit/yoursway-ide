@@ -11,8 +11,8 @@ public class RailsControllerAction implements IRailsControllerAction {
         this.name = name;
     }
     
-    public IHandle<String> getName() {
-        return new RabbitHandle<String>(name);
+    public IHandle<String> name() {
+        return null;
     }
     
 }
