@@ -542,7 +542,7 @@ public class RailsViewOld extends ViewPart implements IRailsProjectTreeOwner {
             switch (launching.getState()) {
             case NOT_RUNNING:
                 createServerControls(railsProject, "<form><p><a href=\"start\">Start "
-                        + railsProject.getProject().getName() + "</a></p></form>");
+                        + railsProject.getProject().name() + "</a></p></form>");
                 break;
             case RUNNING:
                 if (port == 0)

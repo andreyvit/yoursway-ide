@@ -15,7 +15,7 @@ public class RailsView implements IRailsView {
                 return null;
             }
             
-            public IHandle<String> getName() {
+            public IHandle<String> name() {
                 return new RabbitHandle<String>("index.html");
             }
             

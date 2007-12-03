@@ -28,7 +28,7 @@ public class FieldPresenter extends AbstractPresenter {
     }
     
     public String getCaption() {
-        return dbField.getName() + " (" + dbField.getType() + ")";
+        return dbField.name() + " (" + dbField.getType() + ")";
     }
     
     public Object[] getChildren() {

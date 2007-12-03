@@ -16,7 +16,7 @@ public class ActionElement extends SimpleProjectElement {
     
     public ActionElement(IPresentableItem parent, IRailsControllerAction action,
             IViewInfoProvider infoProvider) {
-        super(parent, infoProvider.getModelResolver().get(action.getName()), infoProvider);
+        super(parent, infoProvider.getModelResolver().get(action.name()), infoProvider);
         this.action = action;
     }
     

@@ -26,7 +26,7 @@ public class ControllerElement extends SimpleProjectElement {
         this.controller = controller;
         IResolver resolver = getResolver();
         if (resolver != null) {
-            String name = resolver.get(controller.getName());
+            String name = resolver.get(controller.name());
             this.setName(name);
         }
     }

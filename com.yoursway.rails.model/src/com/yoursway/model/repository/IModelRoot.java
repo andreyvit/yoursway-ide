@@ -1,5 +1,5 @@
 package com.yoursway.model.repository;
 
-public interface IModelRoot {
+public interface IModelRoot extends IModelElement {
     
 }
