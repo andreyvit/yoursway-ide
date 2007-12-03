@@ -50,7 +50,7 @@ public abstract class SimpleProjectElement extends ProjectElement {
     }
     
     public int matches(String pattern) {
-        MatchResult match = SuperPuperMatcher.match(getCaption(), pattern);
+        MatchResult match = SearchPatternMatcher.match(getCaption(), pattern);
         if (match == null)
             return -1;
         return match.kind;
@@ -82,7 +82,7 @@ public abstract class SimpleProjectElement extends ProjectElement {
         String pattern = infoProvider.getPattern();
         MatchResult match = null;
         if (pattern != null && pattern.length() > 0)
-            match = SuperPuperMatcher.match(getCaption(), pattern); //XXX: possible speed-block
+            match = SearchPatternMatcher.match(getCaption(), pattern); //XXX: possible speed-block
             
         TextLayout textLayout = new TextLayout(gc.getDevice());
         Font font = gc.getFont();

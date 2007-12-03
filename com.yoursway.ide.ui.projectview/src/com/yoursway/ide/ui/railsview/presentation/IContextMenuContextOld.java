@@ -2,7 +2,7 @@ package com.yoursway.ide.ui.railsview.presentation;
 
 import org.eclipse.jface.action.IMenuManager;
 
-public interface IContextMenuContext extends IProvidesTreeItem {
+public interface IContextMenuContextOld extends IProvidesTreeItem {
     
     IMenuManager getMenuManager();
     

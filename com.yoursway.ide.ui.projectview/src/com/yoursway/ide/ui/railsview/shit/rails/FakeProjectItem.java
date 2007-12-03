@@ -2,10 +2,9 @@ package com.yoursway.ide.ui.railsview.shit.rails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
@@ -68,5 +67,10 @@ public class FakeProjectItem implements IPresentableItem {
     
     public void eraseItem(TreeItem item, Event event) {
         throw new UnsupportedOperationException();
+    }
+
+    public void fillContextMenu(IMenuManager menuManager) {
+        // TODO Auto-generated method stub
+        
     }
 }

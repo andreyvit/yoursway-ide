@@ -24,4 +24,12 @@ public interface IPresentableItem {
     
     int matches(String pattern);
     
+//    void fillContextMenu(IContextMenuContext menuManager);
+    
+//    Collection<IAction> getQuickClickActions(); 
+    // TODO: 
+    // I think that we should add not more than one button on the right side of a line
+    // Also I think that added buttons should not be very different in order not to 
+    // overload user's eye
+    
 }

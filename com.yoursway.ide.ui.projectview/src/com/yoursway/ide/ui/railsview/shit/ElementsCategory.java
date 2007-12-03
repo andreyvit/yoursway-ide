@@ -1,5 +1,6 @@
 package com.yoursway.ide.ui.railsview.shit;
 
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -17,6 +18,9 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public abstract class ElementsCategory implements IPresentableItem {
     
+    public void fillContextMenu(IMenuManager menuManager) {        
+    }
+
     final int TEXT_MARGIN = 3;
     
     protected final IViewInfoProvider infoProvider;

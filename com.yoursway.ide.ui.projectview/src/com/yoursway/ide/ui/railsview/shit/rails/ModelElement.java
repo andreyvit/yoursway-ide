@@ -5,12 +5,13 @@ import java.util.Collection;
 import org.eclipse.swt.graphics.Image;
 
 import com.yoursway.ide.ui.railsview.RailsViewImages;
+import com.yoursway.ide.ui.railsview.shit.IInPlaceRenameable;
 import com.yoursway.ide.ui.railsview.shit.IPresentableItem;
 import com.yoursway.ide.ui.railsview.shit.IViewInfoProvider;
 import com.yoursway.ide.ui.railsview.shit.SimpleProjectElement;
 import com.yoursway.model.rails.IRailsModel;
 
-public class ModelElement extends SimpleProjectElement {
+public class ModelElement extends SimpleProjectElement implements IInPlaceRenameable {
     
     private IRailsModel model;
     
@@ -30,6 +31,15 @@ public class ModelElement extends SimpleProjectElement {
     
     public boolean hasChildren() {
         return false;
+    }
+
+    public String getInitialName() {
+        return "ya modelko";
+    }
+
+    public void setNewName(String name) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

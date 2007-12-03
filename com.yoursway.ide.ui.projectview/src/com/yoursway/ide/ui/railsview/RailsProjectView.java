@@ -68,6 +68,7 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
         });
         
         projectTree = new RailsProjectTree(body, this);
+        
         projectTree.consume(resolver);
         
         IRailsModelRoot root = resolver.obtainRoot(IRailsModelRoot.class);
@@ -80,6 +81,7 @@ public class RailsProjectView extends ViewPart implements IRailsProjectTreeOwner
         createBottomControls(body);
         
         contributeToActionBars();
+        
     }
     
     private void createBottomControls(Composite parent) {

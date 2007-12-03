@@ -7,7 +7,7 @@ import java.util.List;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
-public final class SuperPuperMatcher {
+public final class SearchPatternMatcher {
     
     private static boolean startWithIgnoreCase(String string, String pattern) {
         int length = pattern.length();
@@ -24,6 +24,14 @@ public final class SuperPuperMatcher {
         return Character.toLowerCase(a) == Character.toLowerCase(b);
     }
     
+    /**
+     * Performs a tricky matching: first it tries full match, than prefix match, and
+     * finally checks possibility of a subsequence match
+     * 
+     * @param string
+     * @param pattern
+     * @return
+     */
     public static MatchResult match(String string, String pattern) {
         int patternLength = pattern.length();
         if (string.equalsIgnoreCase(pattern))
