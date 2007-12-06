@@ -18,7 +18,6 @@ import com.yoursway.model.repository.BasicModelDelta;
 import com.yoursway.model.repository.IBasicModelChangesRequestor;
 import com.yoursway.model.repository.IBasicModelRegistry;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.repository.IModelElement;
 import com.yoursway.model.resource.IResourceModelRoot;
 import com.yoursway.model.resource.IResourceProject;
 import com.yoursway.model.tracking.TrackedSnapshot;
@@ -100,10 +99,6 @@ public class ResourceModel {
             return "resource-projects";
         }
         
-        public IModelElement getModelElement() {
-            return resourceModelRoot;
-        }
-        
     };
     
     private WorkspaceResourceChangeListener changeListener;
@@ -131,7 +126,7 @@ public class ResourceModel {
         // can subscribe to changes now
         changeListener = new ChangeListener();
     }
-
+    
     private IResourceProject processAddedProject(SnapshotBuilder sb, IProject eclipseProject) {
         IResourceProject proj = new ResourceProject();
         sb.added(proj);
