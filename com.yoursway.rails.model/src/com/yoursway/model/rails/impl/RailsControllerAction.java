@@ -12,7 +12,7 @@ public class RailsControllerAction implements IRailsControllerAction {
     }
     
     public IHandle<String> name() {
-        return null;
+        return new RabbitHandle<String>(name);
     }
     
 }

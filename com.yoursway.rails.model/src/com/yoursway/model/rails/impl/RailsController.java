@@ -9,7 +9,9 @@ import com.yoursway.model.rails.IRailsController;
 import com.yoursway.model.rails.IRailsControllerAction;
 import com.yoursway.model.rails.IRailsPartial;
 import com.yoursway.model.rails.IRailsView;
+import com.yoursway.model.rails.conventionalClassNames.ConsistentConventionalClassName;
 import com.yoursway.model.rails.conventionalClassNames.IConventionalClassName;
+import com.yoursway.model.rails.conventionalClassNames.IConventionalClassNameVisitor;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.resource.IResourceFile;
 
@@ -21,39 +23,29 @@ public class RailsController implements IRailsController {
         this.name = name;
     }
     
-    public IHandle<Collection<IRailsControllerAction>> getActions() {
-        List<IRailsControllerAction> list = new ArrayList<IRailsControllerAction>();
-        list.add(new RailsControllerAction("Piece Of Shit"));
-        return new RabbitFamilyHandle<IRailsControllerAction>(list);
+    public IHandle<IConventionalClassName> name() {
+        return new RabbitHandle<IConventionalClassName>(new IConventionalClassName() {
+            
+            public void accept(IConventionalClassNameVisitor visitor) {
+                visitor.visitConsistentName(new ConsistentConventionalClassName(name, null));
+            }
+            
+        });
     }
     
-    public IHandle<String> getName() {
-        return new RabbitHandle<String>(name);
-    }
-    
-    public IHandle<Collection<IRailsPartial>> getPartials() {
+    public IHandle<Collection<IRailsPartial>> partials() {
         // TODO Auto-generated method stub
         return null;
     }
     
-    public IHandle<Collection<IRailsView>> getViews() {
+    public IHandle<Collection<IRailsView>> views() {
         return new RabbitFamilyHandle<IRailsView>(Collections.singleton((IRailsView) new RailsView()));
     }
     
     public IHandle<Collection<IRailsControllerAction>> actions() {
-        return null;
-    }
-    
-    public IHandle<IConventionalClassName> name() {
-        return null;
-    }
-    
-    public IHandle<Collection<IRailsPartial>> partials() {
-        return null;
-    }
-    
-    public IHandle<Collection<IRailsView>> views() {
-        return null;
+        List<IRailsControllerAction> list = new ArrayList<IRailsControllerAction>();
+        list.add(new RailsControllerAction("die()"));
+        return new RabbitFamilyHandle<IRailsControllerAction>(list);
     }
     
     public IResourceFile getFile() {

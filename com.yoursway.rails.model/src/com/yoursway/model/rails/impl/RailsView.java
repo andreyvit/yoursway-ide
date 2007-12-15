@@ -9,7 +9,7 @@ public class RailsView implements IRailsView {
     public IResourceFile getFile() {
         return new IResourceFile() {
             
-            public IHandle<String> name() {
+            public IHandle<String> getName() {
                 return new RabbitHandle<String>("index.html");
             }
             

@@ -1,8 +1,7 @@
 package com.yoursway.model.repository;
 
-import java.util.concurrent.Executor;
 
-public interface IBasicModelChangesRequestor extends Executor {
+public interface IBasicModelChangesRequestor {
     
     void theGivenPieceOfShitChanged(ISnapshot snapshot, BasicModelDelta delta);
     
