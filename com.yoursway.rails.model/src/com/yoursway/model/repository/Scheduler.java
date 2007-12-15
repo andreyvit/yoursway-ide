@@ -47,7 +47,8 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     
     @SuppressWarnings("unchecked")
     public <V extends IModelRoot> V obtainRoot(Class<V> rootInterface) {
-        V result = (V) basicModels.get(rootInterface);
+        BasicModelTracker tracker = basicModels.get(rootInterface);
+        V result = (V) tracker.getRootHandle();
         if (result == null)
             throw new AssertionError("No model provides a root of type " + rootInterface);
         return result;
