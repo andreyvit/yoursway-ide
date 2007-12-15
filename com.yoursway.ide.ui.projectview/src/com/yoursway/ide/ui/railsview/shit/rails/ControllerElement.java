@@ -24,6 +24,11 @@ public class ControllerElement extends SimpleProjectElement {
             IViewInfoProvider infoProvider) {
         super(parent, "Bublik", infoProvider);
         this.controller = controller;
+        IResolver resolver = getResolver();
+        if (resolver != null) {
+            String name = resolver.get(controller.name());
+            this.setName(name);
+        }
     }
     
     public Collection<IPresentableItem> getChildren() {

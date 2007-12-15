@@ -41,6 +41,10 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
         consumerTracker.call(timeline.now());
     }
     
+    public void registerModel(ICalculatedModelUpdater modelUpdater) {
+        // TODO
+    }
+    
     @SuppressWarnings("unchecked")
     public <V extends IModelRoot> V obtainRoot(Class<V> rootInterface) {
         V result = (V) basicModels.get(rootInterface);
@@ -52,22 +56,21 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     public void addDependency(ConsumerTracker tracker, IHandle<?> handle) {
         dependencies.put(handle, tracker);
     }
-
+    
     public void handlesChanged(PointInTime moment, BasicModelDelta delta) {
         Set<ConsumerTracker> trackersToUpdate = new HashSet<ConsumerTracker>();
         for (IHandle<?> handle : delta.getChangedHandles())
             trackersToUpdate.addAll(dependencies.get(handle));
         update(moment, trackersToUpdate);
     }
-
+    
     private void update(PointInTime moment, Set<ConsumerTracker> trackersToUpdate) {
         for (ConsumerTracker tracker : trackersToUpdate)
             tracker.call(moment);
     }
-
+    
     public PointInTime createPointInTime() {
         return timeline.advanceThisCrazyWorldToTheNextMomentInTime();
     }
-
     
 }
