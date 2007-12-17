@@ -30,4 +30,8 @@ public abstract class CheckingConsumer implements IConsumer {
 
 	protected abstract void consumeInternal(IResolver resolver);
 
+	public AssertionError error() {
+	    return error;
+	}
+	
 }

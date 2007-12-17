@@ -30,7 +30,8 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     }
     
     public <T> IBasicModelChangesRequestor addBasicModel(Class<T> rootHandleInterface, T rootHandle) {
-        BasicModelTracker tracker = new BasicModelTracker(rootHandleInterface, rootHandle, this);
+        BasicModelTracker tracker = new BasicModelTracker(rootHandleInterface, rootHandle, this,
+                executorService);
         basicModels.put(rootHandleInterface, tracker);
         return tracker;
     }

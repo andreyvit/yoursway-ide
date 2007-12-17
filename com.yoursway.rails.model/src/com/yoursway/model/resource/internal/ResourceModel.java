@@ -125,7 +125,7 @@ public class ResourceModel {
             projects.add(processAddedProject(sb, eclipseProject));
         }
         sb.put(projectsCollectionHandle, projects);
-        requestor.theGivenPieceOfShitChanged(sb.getSnapshot(), new BasicModelDelta(sb.getChangedHandles(), sb
+        requestor.modelChanged(sb.getSnapshot(), new BasicModelDelta(sb.getChangedHandles(), sb
                 .getAddedElements(), sb.getRemovedElements()));
         
         // can subscribe to changes now

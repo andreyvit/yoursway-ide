@@ -9,15 +9,16 @@ import com.yoursway.model.timeline.Timeline;
 import com.yoursway.model.timeline.TimelineBuilder;
 
 public class AbstractSchedulerTests extends Assert {
-
-	public AbstractSchedulerTests() {
-		super();
-	}
-
-	protected Scheduler createScheduler() {
-		TimelineBuilder timelineBuilder = new TimelineBuilder();
-		Timeline timeline = timelineBuilder.build();
-		return new Scheduler(timeline, Executors.newCachedThreadPool());
-	}
-
+    
+    public AbstractSchedulerTests() {
+        super();
+    }
+    
+    protected Scheduler createScheduler() {
+        TimelineBuilder timelineBuilder = new TimelineBuilder();
+        Timeline timeline = timelineBuilder.build();
+        return new Scheduler(timeline, Executors.newCachedThreadPool());
+    }
+    
+    
 }

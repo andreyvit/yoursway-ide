@@ -19,8 +19,6 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 		<V, H extends IHandle<V>> V get(IResolver resolver, H handle);
 	}
 
-	private static final int TIME_LIMIT = 100;
-
 	private final static IModelRoot CALC_MODEL_ROOT_1 = new IModelRoot() {
 	};
 	private final static IModelRoot CALC_MODEL_ROOT_2 = new IModelRoot() {
@@ -80,22 +78,13 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 	private void waitForUpdates(AbstractCalculatedMockModel cm)
 			throws InterruptedException {
 		int i;
-		for (i = 0; (i < TIME_LIMIT && cm.updates() == 0); i++)
+		for (i = 0; (i < 1000 && cm.updates() == 0); i++)
 			Thread.sleep(1);
-		if (i == TIME_LIMIT)
+		if (i == 1000)
 			throw new AssertionError(
 					"timeout, update() was not called, zaebals'a zhdat'");
 	}
-
-	private void waitForData(CheckingConsumer cc) throws InterruptedException {
-		int init = cc.callsCount();
-		int i;
-		for (i = 0; (i < TIME_LIMIT && cc.callsCount() == init); i++)
-			Thread.sleep(1);
-		if (i == TIME_LIMIT)
-			throw new AssertionError(
-					"timeout, consume() was not called, zaebals'a zhdat'");
-	}
+	
 
 	private AbstractCalculatedMockModel createNullCheckingCalculatedModel(
 			Scheduler scheduler, final IBridgeResolver br,
@@ -234,12 +223,8 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 
 		};
 		scheduler.addConsumer(checkingConsumer);
-		checkingConsumer.check();
-		// god loves trinity: just check whether we are updated about new
-		// changes in the model
-		waitForData(checkingConsumer);
-		waitForData(checkingConsumer);
-		waitForData(checkingConsumer);
+		
+		assertEquals(3, checkingConsumer);
 		checkingConsumer.check();
 	}
 
@@ -297,8 +282,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 
 		};
 		scheduler.addConsumer(checkingConsumer);
-		checkingConsumer.check();
-		waitForData(checkingConsumer);
+		assertEquals(3, checkingConsumer);
 		checkingConsumer.check();
 	}
 
@@ -394,7 +378,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 		Thread.sleep(1000);
 		waitForUpdates(CM1);
 		waitForUpdates(CM2);
-		waitForData(checkingConsumer);
+		assertEquals(3, checkingConsumer);
 		CM1.check();
 		CM2.check();
 		checkingConsumer.check();
