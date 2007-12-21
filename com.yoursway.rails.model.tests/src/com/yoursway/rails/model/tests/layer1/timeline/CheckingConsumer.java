@@ -2,6 +2,7 @@ package com.yoursway.rails.model.tests.layer1.timeline;
 
 import com.yoursway.model.repository.IConsumer;
 import com.yoursway.model.repository.IResolver;
+import com.yoursway.model.repository.NoSuchHandleException;
 
 public abstract class CheckingConsumer implements IConsumer {
 
@@ -14,7 +15,9 @@ public abstract class CheckingConsumer implements IConsumer {
 				consumeInternal(resolver);
 			} catch (AssertionError e) {
 				this.error = e;
-			}
+			} catch (NoSuchHandleException e) {
+                e.printStackTrace();
+            }
 		}
 		callsCounter++;
 	}
@@ -28,7 +31,7 @@ public abstract class CheckingConsumer implements IConsumer {
 			throw error;
 	}
 
-	protected abstract void consumeInternal(IResolver resolver);
+	protected abstract void consumeInternal(IResolver resolver) throws NoSuchHandleException;
 
 	public AssertionError error() {
 	    return error;

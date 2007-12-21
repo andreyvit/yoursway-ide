@@ -23,10 +23,12 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     private final Map<Class<?>, BasicModelTracker> basicModels = new HashMap<Class<?>, BasicModelTracker>();
     
     private final MultiMap<IHandle<?>, ConsumerTracker> dependencies = new HashSetMultiMap<IHandle<?>, ConsumerTracker>();
+    private final SimpleSnapshotStorage snapshotStorage;
     
     public Scheduler(Timeline timeline, ExecutorService executorService) {
         this.timeline = timeline;
         this.executorService = executorService;
+        this.snapshotStorage = new SimpleSnapshotStorage();
     }
     
     public <T> IBasicModelChangesRequestor addBasicModel(Class<T> rootHandleInterface, T rootHandle) {
@@ -39,7 +41,7 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     public void addConsumer(IConsumer consumer) {
         ConsumerTracker consumerTracker = new ConsumerTracker(consumer, this);
         consumers.add(consumerTracker);
-        consumerTracker.call(timeline.now());
+        consumerTracker.call(snapshotStorage, timeline.now());
     }
     
     public void registerModel(ICalculatedModelUpdater modelUpdater) {
@@ -60,6 +62,7 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     }
     
     public void handlesChanged(PointInTime moment, BasicModelDelta delta) {
+        // Update consumers
         Set<ConsumerTracker> trackersToUpdate = new HashSet<ConsumerTracker>();
         for (IHandle<?> handle : delta.getChangedHandles())
             trackersToUpdate.addAll(dependencies.get(handle));
@@ -68,11 +71,14 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     
     private void update(PointInTime moment, Set<ConsumerTracker> trackersToUpdate) {
         for (ConsumerTracker tracker : trackersToUpdate)
-            tracker.call(moment);
+            tracker.call(snapshotStorage, moment);
     }
     
     public PointInTime createPointInTime() {
         return timeline.advanceThisCrazyWorldToTheNextMomentInTime();
     }
     
+    public ISnapshotStorage getSnapshotStorage() {
+        return snapshotStorage;
+    }
 }

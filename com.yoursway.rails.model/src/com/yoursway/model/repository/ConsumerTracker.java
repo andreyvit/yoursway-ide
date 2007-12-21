@@ -8,7 +8,6 @@ import com.yoursway.model.timeline.PointInTime;
 public class ConsumerTracker implements DependencyRequestor {
     
     private final IConsumer consumer;
-    private PointInTime previousMoment = null;
     private final ConsumerTrackerMaster master;
     
     public ConsumerTracker(IConsumer consumer, ConsumerTrackerMaster master) {
@@ -16,10 +15,10 @@ public class ConsumerTracker implements DependencyRequestor {
         this.master = master;
     }
     
-    public void call(PointInTime moment) {
-        Resolver resolver = new Resolver(moment, master, this);
+    public void call(SimpleSnapshotStorage storage, PointInTime moment) {
+        Resolver resolver = new Resolver(moment, master, this, storage);
+        storage.registerResolver(resolver, moment);
         consumer.consume(resolver);
-        this.previousMoment = moment;
     }
     
     public void dependency(IHandle<?> handle) {

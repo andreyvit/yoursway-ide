@@ -21,13 +21,13 @@ import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelElement;
 import com.yoursway.model.resource.IResourceModelRoot;
 import com.yoursway.model.resource.IResourceProject;
-import com.yoursway.model.tracking.TrackedSnapshot;
+import com.yoursway.model.tracking.IMapSnapshot;
 
 public class ResourceModel {
     
     private abstract class Update {
         
-        public abstract void perform(TrackedSnapshot previous, SnapshotBuilder sb);
+        public abstract void perform(IMapSnapshot previous, ISnapshotBuilder sb);
         
     }
     
@@ -40,7 +40,7 @@ public class ResourceModel {
         }
         
         @Override
-        public void perform(final TrackedSnapshot previous, final SnapshotBuilder sb) {
+        public void perform(final IMapSnapshot previous, final ISnapshotBuilder sb) {
             try {
                 eclipseResource.accept(new ResourceSwitch() {
                     

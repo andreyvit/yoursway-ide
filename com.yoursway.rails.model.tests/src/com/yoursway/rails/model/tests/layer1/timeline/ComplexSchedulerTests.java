@@ -10,13 +10,14 @@ import com.yoursway.model.repository.IConsumer;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelRoot;
 import com.yoursway.model.repository.IResolver;
+import com.yoursway.model.repository.NoSuchHandleException;
 import com.yoursway.model.repository.Scheduler;
 import com.yoursway.model.resource.internal.SnapshotBuilder;
 
 public class ComplexSchedulerTests extends AbstractSchedulerTests {
 
 	private interface IBridgeResolver {
-		<V, H extends IHandle<V>> V get(IResolver resolver, H handle);
+		<V, H extends IHandle<V>> V get(IResolver resolver, H handle) throws NoSuchHandleException;
 	}
 
 	private final static IModelRoot CALC_MODEL_ROOT_1 = new IModelRoot() {
@@ -26,14 +27,14 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 
 	private static final IBridgeResolver GET_RESOLVER = new IBridgeResolver() {
 
-		public <V, H extends IHandle<V>> V get(IResolver resolver, H handle) {
+		public <V, H extends IHandle<V>> V get(IResolver resolver, H handle) throws NoSuchHandleException {
 			return resolver.get(handle);
 		}
 	};
 
 	private static final IBridgeResolver GETIFAVAIL_RESOLVER = new IBridgeResolver() {
 
-		public <V, H extends IHandle<V>> V get(IResolver resolver, H handle) {
+		public <V, H extends IHandle<V>> V get(IResolver resolver, H handle) throws NoSuchHandleException {
 			return resolver.getIfAvail(handle);
 		}
 	};
@@ -60,10 +61,15 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 			public void consume(IResolver resolver) {
 				try {
 					assertNotNull(resolver);
-					assertEquals("42", proxy.get(resolver, new StubHandle(
-							"answer", model0.getModelRootInterface())));
-					assertNull(proxy.get(resolver, new StubHandle("answer2",
-							model0.getModelRootInterface())));
+					try {
+                        assertEquals("42", proxy.get(resolver, new StubHandle(
+                        		"answer", model0.getModelRootInterface())));
+                        assertNull(proxy.get(resolver, new StubHandle("answer2",
+                                model0.getModelRootInterface())));
+                    } catch (NoSuchHandleException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 				} catch (AssertionError e) {
 					error[0] = e;
 				}
@@ -94,7 +100,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 			@Override
 			public void updateInternal(IResolver resolver,
 					SnapshotBuilder snapshotBuilder,
-					Set<IHandle<?>> changedHandles) {
+					Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
 
 				String string = br.get(resolver, new StubHandle("shit",
 						MockModelRoot.class));
@@ -196,7 +202,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 			@Override
 			public void updateInternal(IResolver resolver,
 					SnapshotBuilder snapshotBuilder,
-					Set<IHandle<?>> changedHandles) {
+					Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
 				snapshotBuilder.put(answerHandle, "42");
 				String string = resolver.get(new StubHandle("shit",
 						MockModelRoot.class));
@@ -209,7 +215,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 		CheckingConsumer checkingConsumer = new CheckingConsumer() {
 
 			@Override
-			protected void consumeInternal(IResolver resolver) {
+			protected void consumeInternal(IResolver resolver) throws NoSuchHandleException {
 				String date = resolver.get(holyHandle);
 				assertNotNull(date);
 				try {
@@ -247,7 +253,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 			@Override
 			public void updateInternal(IResolver resolver,
 					SnapshotBuilder snapshotBuilder,
-					Set<IHandle<?>> changedHandles) {
+					Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
@@ -264,7 +270,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 		CheckingConsumer checkingConsumer = new CheckingConsumer() {
 
 			@Override
-			protected void consumeInternal(IResolver resolver) {
+			protected void consumeInternal(IResolver resolver) throws NoSuchHandleException {
 				if (!waitForResults) {
 					if (callsCount() == 1) {
 						String date = resolver.getIfAvail(holyHandle);
@@ -325,7 +331,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 			@Override
 			public void updateInternal(IResolver resolver,
 					SnapshotBuilder snapshotBuilder,
-					Set<IHandle<?>> changedHandles) {
+					Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
 
 				String m = resolver.get(milliHandle);
 				assertNotNull(m);
@@ -345,7 +351,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 			@Override
 			public void updateInternal(IResolver resolver,
 					SnapshotBuilder snapshotBuilder,
-					Set<IHandle<?>> changedHandles) {
+					Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
 
 				String m = resolver.get(new StubHandle("milli",
 						MockModelRoot.class));
@@ -363,7 +369,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 		CheckingConsumer checkingConsumer = new CheckingConsumer() {
 
 			@Override
-			protected void consumeInternal(IResolver resolver) {
+			protected void consumeInternal(IResolver resolver) throws NoSuchHandleException {
 				String milli = resolver.get(milliHandle);
 				assertNotNull(milli);
 				String milli2 = resolver.get(milli2Handle);
