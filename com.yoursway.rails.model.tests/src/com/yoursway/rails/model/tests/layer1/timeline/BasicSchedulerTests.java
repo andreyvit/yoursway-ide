@@ -1,8 +1,5 @@
 package com.yoursway.rails.model.tests.layer1.timeline;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-
 import org.junit.Test;
 
 import com.yoursway.model.repository.IResolver;

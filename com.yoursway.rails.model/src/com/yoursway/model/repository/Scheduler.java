@@ -13,16 +13,18 @@ import com.yoursway.model.timeline.Timeline;
 import com.yoursway.utils.collections.HashSetMultiMap;
 import com.yoursway.utils.collections.MultiMap;
 
-public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModelTrackerMaster {
+public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrackerMaster,
+        CalculatedModelTrackerMaster {
     
     private final ExecutorService executorService;
     private final Timeline timeline;
     
     private final Collection<ConsumerTracker> consumers = new ArrayList<ConsumerTracker>();
     
+    private final Map<Class<?>, CalculatedModelTracker> calculatedModels = new HashMap<Class<?>, CalculatedModelTracker>();
     private final Map<Class<?>, BasicModelTracker> basicModels = new HashMap<Class<?>, BasicModelTracker>();
     
-    private final MultiMap<IHandle<?>, ConsumerTracker> dependencies = new HashSetMultiMap<IHandle<?>, ConsumerTracker>();
+    private final MultiMap<IHandle<?>, IDependant> dependencies = new HashSetMultiMap<IHandle<?>, IDependant>(); // would it better to store them for each model separately
     private final SimpleSnapshotStorage snapshotStorage;
     
     public Scheduler(Timeline timeline, ExecutorService executorService) {
@@ -41,37 +43,46 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     public void addConsumer(IConsumer consumer) {
         ConsumerTracker consumerTracker = new ConsumerTracker(consumer, this);
         consumers.add(consumerTracker);
-        consumerTracker.call(snapshotStorage, timeline.now());
+        consumerTracker.call(snapshotStorage, timeline.now(), null); //delta = null?
     }
     
-    public void registerModel(ICalculatedModelUpdater modelUpdater) {
-        // TODO
+    public <T> void registerModel(Class<T> rootHandleInterface, T rootHandle,
+            ICalculatedModelUpdater modelUpdater) {
+        CalculatedModelTracker tracker = new CalculatedModelTracker(rootHandleInterface, rootHandle, this,
+                modelUpdater, executorService);
+        calculatedModels.put(rootHandleInterface, tracker);
+        tracker.call(snapshotStorage, timeline.now(), null);
     }
     
     @SuppressWarnings("unchecked")
     public <V extends IModelRoot> V obtainRoot(Class<V> rootInterface) {
         BasicModelTracker tracker = basicModels.get(rootInterface);
         V result = (V) tracker.getRootHandle();
-        if (result == null)
-            throw new AssertionError("No model provides a root of type " + rootInterface);
-        return result;
+        if (result != null)
+            return result;
+        CalculatedModelTracker tracker2 = calculatedModels.get(rootInterface);
+        result = (V) tracker2.getRootHandle();
+        if (result != null)
+            return result;
+        throw new AssertionError("No model provides a root of type " + rootInterface);
     }
     
-    public void addDependency(ConsumerTracker tracker, IHandle<?> handle) {
+    public void addDependency(IDependant tracker, IHandle<?> handle) {
         dependencies.put(handle, tracker);
     }
     
-    public void handlesChanged(PointInTime moment, BasicModelDelta delta) {
+    public void handlesChanged(PointInTime moment, ModelDelta delta) {
         // Update consumers
-        Set<ConsumerTracker> trackersToUpdate = new HashSet<ConsumerTracker>();
+        Set<IDependant> trackersToUpdate = new HashSet<IDependant>();
         for (IHandle<?> handle : delta.getChangedHandles())
             trackersToUpdate.addAll(dependencies.get(handle));
-        update(moment, trackersToUpdate);
+        update(moment, trackersToUpdate, delta);
     }
     
-    private void update(PointInTime moment, Set<ConsumerTracker> trackersToUpdate) {
-        for (ConsumerTracker tracker : trackersToUpdate)
-            tracker.call(snapshotStorage, moment);
+    private void update(PointInTime moment, Set<IDependant> trackersToUpdate, ModelDelta delta) {
+        for (IDependant tracker : trackersToUpdate) {
+            tracker.call(snapshotStorage, moment, delta);
+        }
     }
     
     public PointInTime createPointInTime() {
@@ -81,4 +92,5 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, BasicModel
     public ISnapshotStorage getSnapshotStorage() {
         return snapshotStorage;
     }
+    
 }

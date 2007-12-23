@@ -8,6 +8,4 @@ public interface ICalculatedModelUpdater {
     
     void update(IResolver resolver, SnapshotBuilder snapshotBuilder, Set<IHandle<?>> changedHandles);
     
-    Class<?> getModelRootInterface();
-    
 }

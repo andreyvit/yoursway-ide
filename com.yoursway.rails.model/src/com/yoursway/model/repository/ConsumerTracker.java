@@ -5,7 +5,7 @@ package com.yoursway.model.repository;
 
 import com.yoursway.model.timeline.PointInTime;
 
-public class ConsumerTracker implements DependencyRequestor {
+public class ConsumerTracker implements DependencyRequestor, IDependant {
     
     private final IConsumer consumer;
     private final ConsumerTrackerMaster master;
@@ -15,7 +15,7 @@ public class ConsumerTracker implements DependencyRequestor {
         this.master = master;
     }
     
-    public void call(SimpleSnapshotStorage storage, PointInTime moment) {
+    public void call(ISnapshotStorage storage, PointInTime moment, ModelDelta delta) {
         Resolver resolver = new Resolver(moment, master, this, storage);
         storage.registerResolver(resolver, moment);
         consumer.consume(resolver);

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.common.resources.ResourceSwitch;
 import com.yoursway.common.resources.ResourceUtils;
-import com.yoursway.model.repository.BasicModelDelta;
+import com.yoursway.model.repository.ModelDelta;
 import com.yoursway.model.repository.IBasicModelChangesRequestor;
 import com.yoursway.model.repository.IBasicModelRegistry;
 import com.yoursway.model.repository.IHandle;
@@ -125,7 +125,7 @@ public class ResourceModel {
             projects.add(processAddedProject(sb, eclipseProject));
         }
         sb.put(projectsCollectionHandle, projects);
-        requestor.modelChanged(sb.getSnapshot(), new BasicModelDelta(sb.getChangedHandles(), sb
+        requestor.modelChanged(sb.getSnapshot(), new ModelDelta(sb.getChangedHandles(), sb
                 .getAddedElements(), sb.getRemovedElements()));
         
         // can subscribe to changes now

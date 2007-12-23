@@ -17,7 +17,7 @@ public class AbstractSchedulerTests extends Assert {
     protected Scheduler createScheduler() {
         TimelineBuilder timelineBuilder = new TimelineBuilder();
         Timeline timeline = timelineBuilder.build();
-        return new Scheduler(timeline, Executors.newCachedThreadPool());
+        return new Scheduler(timeline, Executors.newSingleThreadExecutor()); // for synch
     }
     
     

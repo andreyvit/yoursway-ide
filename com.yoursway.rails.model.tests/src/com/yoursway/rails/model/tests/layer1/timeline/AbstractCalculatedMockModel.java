@@ -17,8 +17,9 @@ public abstract class AbstractCalculatedMockModel implements ICalculatedModelUpd
     private final IModelRoot root;
     private AssertionError error;
     
+    @SuppressWarnings("unchecked")
     public AbstractCalculatedMockModel(Scheduler scheduler, IModelRoot root) {
-        scheduler.registerModel(this);
+        scheduler.registerModel((Class<IModelRoot>) root.getClass(), (IModelRoot) root, this);
         this.root = root;
         updates = 0;
         frozen = false;
@@ -49,18 +50,22 @@ public abstract class AbstractCalculatedMockModel implements ICalculatedModelUpd
             throw error;
     }
     
+    public AssertionError getError() {
+        return error;
+    }
+    
     public void update(IResolver resolver, SnapshotBuilder snapshotBuilder, Set<IHandle<?>> changedHandles) {
         if (frozen)
-            return;
-        updates++;
+            return;        
         try {
             updateInternal(resolver, snapshotBuilder, changedHandles);
         } catch (AssertionError e) {
             e.printStackTrace();
             this.error = e;
         } catch (NoSuchHandleException e) {
-            e.printStackTrace();
+            this.error = new AssertionError(e);
         }
+        updates++;
     }
     
     public abstract void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
