@@ -24,7 +24,8 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
     private final Map<Class<?>, CalculatedModelTracker> calculatedModels = new HashMap<Class<?>, CalculatedModelTracker>();
     private final Map<Class<?>, BasicModelTracker> basicModels = new HashMap<Class<?>, BasicModelTracker>();
     
-    private final MultiMap<IHandle<?>, IDependant> dependencies = new HashSetMultiMap<IHandle<?>, IDependant>(); // would it better to store them for each model separately
+    private final MultiMap<IHandle<?>, IDependant> dependencies = new HashSetMultiMap<IHandle<?>, IDependant>();
+    private final MultiMap<IDependant, IHandle<?>> invertedDependencies = new HashSetMultiMap<IDependant, IHandle<?>>();
     private final SimpleSnapshotStorage snapshotStorage;
     
     public Scheduler(Timeline timeline, ExecutorService executorService) {
@@ -41,9 +42,9 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
     }
     
     public void addConsumer(IConsumer consumer) {
-        ConsumerTracker consumerTracker = new ConsumerTracker(consumer, this);
+        ConsumerTracker consumerTracker = new ConsumerTracker(consumer, this, executorService);
         consumers.add(consumerTracker);
-        consumerTracker.call(snapshotStorage, timeline.now(), null); //delta = null?
+        consumerTracker.call(snapshotStorage, timeline.now(), ModelDelta.EMPTY_DELTA);
     }
     
     public <T> void registerModel(Class<T> rootHandleInterface, T rootHandle,
@@ -51,7 +52,7 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
         CalculatedModelTracker tracker = new CalculatedModelTracker(rootHandleInterface, rootHandle, this,
                 modelUpdater, executorService);
         calculatedModels.put(rootHandleInterface, tracker);
-        tracker.call(snapshotStorage, timeline.now(), null);
+        tracker.call(snapshotStorage, timeline.now(), ModelDelta.EMPTY_DELTA);
     }
     
     @SuppressWarnings("unchecked")
@@ -69,10 +70,10 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
     
     public void addDependency(IDependant tracker, IHandle<?> handle) {
         dependencies.put(handle, tracker);
+        invertedDependencies.put(tracker, handle);
     }
     
     public void handlesChanged(PointInTime moment, ModelDelta delta) {
-        // Update consumers
         Set<IDependant> trackersToUpdate = new HashSet<IDependant>();
         for (IHandle<?> handle : delta.getChangedHandles())
             trackersToUpdate.addAll(dependencies.get(handle));
@@ -91,6 +92,14 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
     
     public ISnapshotStorage getSnapshotStorage() {
         return snapshotStorage;
+    }
+    
+    public void clearDependencies(IDependant dependant) {
+        Collection<IHandle<?>> list = invertedDependencies.get(dependant);
+        for (IHandle<?> h : list) {
+            dependencies.get(h).remove(dependant);
+        }
+        list.clear();
     }
     
 }

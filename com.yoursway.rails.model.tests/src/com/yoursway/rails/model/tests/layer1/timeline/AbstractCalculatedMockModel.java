@@ -1,13 +1,12 @@
 package com.yoursway.rails.model.tests.layer1.timeline;
 
-import java.util.Set;
-
 import com.yoursway.model.repository.ICalculatedModelUpdater;
-import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelRoot;
 import com.yoursway.model.repository.IResolver;
+import com.yoursway.model.repository.ModelDelta;
 import com.yoursway.model.repository.NoSuchHandleException;
 import com.yoursway.model.repository.Scheduler;
+import com.yoursway.model.repository.SnapshotDeltaPair;
 import com.yoursway.model.resource.internal.SnapshotBuilder;
 
 public abstract class AbstractCalculatedMockModel implements ICalculatedModelUpdater {
@@ -25,11 +24,11 @@ public abstract class AbstractCalculatedMockModel implements ICalculatedModelUpd
         frozen = false;
     }
     
-    public Class<?> getModelRootInterface() {
+    public Class<? extends IModelRoot> getModelRootInterface() {
         return root.getClass();
     }
     
-    protected Class<?> getKlass() {
+    protected Class<? extends IModelRoot> getKlass() {
         return root.getClass();
     }
     
@@ -54,21 +53,23 @@ public abstract class AbstractCalculatedMockModel implements ICalculatedModelUpd
         return error;
     }
     
-    public void update(IResolver resolver, SnapshotBuilder snapshotBuilder, Set<IHandle<?>> changedHandles) {
+    public SnapshotDeltaPair update(IResolver resolver) {
         if (frozen)
-            return;        
+            return null;        
+        SnapshotBuilder snapshotBuilder = new SnapshotBuilder();
         try {
-            updateInternal(resolver, snapshotBuilder, changedHandles);
+            updateInternal(resolver, snapshotBuilder);
         } catch (AssertionError e) {
             e.printStackTrace();
             this.error = e;
         } catch (NoSuchHandleException e) {
+            e.printStackTrace();
             this.error = new AssertionError(e);
         }
         updates++;
+        return new SnapshotDeltaPair(snapshotBuilder.getSnapshot(), new ModelDelta(snapshotBuilder.getChangedHandles()));
     }
     
-    public abstract void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-            Set<IHandle<?>> changedHandles) throws NoSuchHandleException;
+    public abstract void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) throws NoSuchHandleException;
     
 }

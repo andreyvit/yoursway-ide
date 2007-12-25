@@ -2,6 +2,7 @@ package com.yoursway.rails.model.tests.layer1.timeline;
 
 import org.junit.Test;
 
+import com.yoursway.model.repository.IModelRoot;
 import com.yoursway.model.repository.IResolver;
 import com.yoursway.model.repository.NoSuchHandleException;
 import com.yoursway.model.repository.Scheduler;
@@ -10,7 +11,7 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
     
     private final class ShitConsumer extends CheckingConsumer {
         
-        public ShitConsumer(Class<?> modelRootClass) {
+        public ShitConsumer(Class<? extends IModelRoot> modelRootClass) {
             shitHandle = new StubHandle("shit", modelRootClass);
             answerHandle = new StubHandle("answer", modelRootClass);
         }
@@ -36,13 +37,14 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
     }
     
     @Test
-    public void nothing() {
+    public void nothing() throws Exception {
         Scheduler scheduler = createScheduler();
         assertNotNull(scheduler);
         ShitConsumer consumer = new ShitConsumer(MockModelRoot.class);
         scheduler.addConsumer(consumer);
         consumer.check();
-        assertEquals(1, consumer.callsCount());
+        while (consumer.callsCount() < 1)
+            Thread.sleep(10);
     }
     
     @Test
@@ -51,7 +53,8 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         assertNotNull(scheduler);
         ShitConsumer consumer = new ShitConsumer(MockModelRoot.class);
         scheduler.addConsumer(consumer);
-        assertEquals(1, consumer.callsCount());
+        while (consumer.callsCount() < 1)
+            Thread.sleep(10);
         // add model
         MockModelRoot mockModelRoot = new MockModelRoot();
         MockModel mockModel = new MockModel(scheduler, MockModelRoot.class, mockModelRoot);
@@ -59,7 +62,8 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         assertEquals(root, mockModelRoot);
         for (int i = 0; i < 42; i++)
             mockModel.tick();
-        assertEquals(43, consumer.callsCount());
+        while (consumer.callsCount() < 43)
+            Thread.sleep(10);
         // check that a consumer is not called when the model is stopped
         consumer.check();
     }
@@ -70,13 +74,15 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         assertNotNull(scheduler);
         ShitConsumer consumer = new ShitConsumer(MockModelRoot.class);
         scheduler.addConsumer(consumer);
-        assertEquals(1, consumer.callsCount());
+        while (consumer.callsCount() < 1)
+            Thread.sleep(10);
         // add model
         MockModelRoot mockModelRoot = new MockModelRoot();
         MockModel mockModel = new MockModel(scheduler, MockModelRoot.class, mockModelRoot);
         mockModel.setAnswer("43");
         mockModel.tick();
-        assertEquals(2, consumer.callsCount());
+        while (consumer.callsCount() < 2)
+            Thread.sleep(10);
         assertNotNull(consumer.error()); // bad value, should fail
     }
     
@@ -89,13 +95,17 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         scheduler.addConsumer(consumer1);
         scheduler.addConsumer(consumer2);
         Thread.sleep(100);
-        assertEquals(1, consumer1.callsCount());
-        assertEquals(1, consumer2.callsCount());
+        while (consumer1.callsCount() < 1)
+            Thread.sleep(10);
+        while (consumer2.callsCount() < 1)
+            Thread.sleep(10);
         MockModel mockModel = new MockModel(scheduler, MockModelRoot.class, new MockModelRoot());
         for (int i = 0; i < 42; i++)
             mockModel.tick();
-        assertEquals(43, consumer1.callsCount());
-        assertEquals(43, consumer2.callsCount());
+        while (consumer1.callsCount() < 43)
+            Thread.sleep(10);
+        while (consumer2.callsCount() < 43)
+            Thread.sleep(10);
         consumer1.check();
         consumer2.check();
     }
@@ -108,8 +118,10 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         ShitConsumer consumer2 = new ShitConsumer(AnotherMockModelRoot.class);
         scheduler.addConsumer(consumer1);
         scheduler.addConsumer(consumer2);
-        assertEquals(1, consumer1.callsCount());
-        assertEquals(1, consumer2.callsCount());
+        while (consumer1.callsCount() < 1)
+            Thread.sleep(10);
+        while (consumer2.callsCount() < 1)
+            Thread.sleep(10);
         MockModelRoot mockModelRoot = new MockModelRoot();
         MockModel mockModel = new MockModel(scheduler, MockModelRoot.class, mockModelRoot);
         AnotherMockModelRoot anotherMockModelRoot = new AnotherMockModelRoot();
@@ -118,12 +130,14 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         assertEquals(anotherMockModelRoot, scheduler.obtainRoot(AnotherMockModelRoot.class));
         for (int i = 0; i < 42; i++)
             mockModel.tick();
-        assertEquals(43, consumer1.callsCount());
+        while (consumer1.callsCount() < 43)
+            Thread.sleep(10);
         assertEquals(1, consumer2.callsCount());
         for (int i = 0; i < 42; i++)
             mockModel2.tick();
+        while (consumer2.callsCount() < 43)
+            Thread.sleep(10);
         assertEquals(43, consumer1.callsCount());
-        assertEquals(43, consumer2.callsCount());
         consumer1.check();
         consumer2.check();
     }

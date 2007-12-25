@@ -9,7 +9,7 @@ import com.yoursway.model.repository.IModelElement;
 import com.yoursway.model.tracking.CompleteTrackedSnapshot;
 import com.yoursway.model.tracking.TrackedSnapshot;
 
-public class SnapshotBuilder implements ISnapshotBuilder {
+public class SnapshotBuilder {
     
     private final TrackedSnapshot snapshot = new CompleteTrackedSnapshot();
     

@@ -1,9 +1,8 @@
 package com.yoursway.model.repository;
 
-import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
-import com.yoursway.model.resource.internal.SnapshotBuilder;
+import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
 
 public class CalculatedModelTracker implements IDependant, DependencyRequestor {
@@ -32,23 +31,32 @@ public class CalculatedModelTracker implements IDependant, DependencyRequestor {
     }
     
     public void call(final ISnapshotStorage storage, final PointInTime point, final ModelDelta delta) {
-        final Resolver resolver = new Resolver(point, master, this, storage);
-        storage.registerResolver(resolver, point);
+        final Resolver resolver = new Resolver(point, master, this, storage, delta);
         executor.execute(new Runnable() {
             
             @SuppressWarnings("unchecked")
             public void run() {
-                SnapshotBuilder snapshotBuilder = new SnapshotBuilder();
-                modelUpdater.update(resolver, snapshotBuilder, ((delta == null) ? Collections.EMPTY_SET
-                        : delta.getChangedHandles()));
-                storage.pushSnapshot(rootHandleInterface, point, snapshotBuilder);
+                master.clearDependencies(CalculatedModelTracker.this);
+                final ModelDelta[] newDelta = new ModelDelta[1];
+                storage.pushSnapshot(rootHandleInterface, point, new ISnapshotBuilder() {
+                    
+                    public ISnapshot buildSnapshot() {
+                        SnapshotDeltaPair update = modelUpdater.update(resolver);
+                        newDelta[0] = update.getDelta();
+                        return update.getSnapshot();
+                    }
+                    
+                });
+                master.handlesChanged(point, newDelta[0]);
+                System.out.println("CM.run() ch=" + newDelta[0].getChangedHandles());
             }
             
         });
     }
     
     public void dependency(IHandle<?> handle) {
-        master.addDependency(this, handle);
+        if (handle.getModelRootInterface() != rootHandleInterface)
+            master.addDependency(this, handle);
     }
     
 }

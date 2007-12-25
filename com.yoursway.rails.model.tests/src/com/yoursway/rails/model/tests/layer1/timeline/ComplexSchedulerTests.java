@@ -2,7 +2,6 @@ package com.yoursway.rails.model.tests.layer1.timeline;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -48,11 +47,11 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
                 CALC_MODEL_ROOT_1) {
             
             @Override
-            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-                    Set<IHandle<?>> changedHandles) {
+            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) {
                 System.out.println(".updateInternal()");
                 snapshotBuilder.put(new StubHandle("answer", getKlass()), "42");
             }
+          
             
         };
         
@@ -90,8 +89,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
         return new AbstractCalculatedMockModel(scheduler, CALC_MODEL_ROOT_1) {
             
             @Override
-            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-                    Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
+            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) throws NoSuchHandleException {
                 System.out.println(".updateInternal()");
                 if (shouldBeNull) {
                     try {
@@ -193,8 +191,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
         AbstractCalculatedMockModel CM = new AbstractCalculatedMockModel(scheduler, CALC_MODEL_ROOT_1) {
             
             @Override
-            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-                    Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
+            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) throws NoSuchHandleException {
                 snapshotBuilder.put(answerHandle, "42");
                 String string = resolver.get(new StubHandle("shit", MockModelRoot.class));
                 snapshotBuilder.put(holyHandle, string);
@@ -241,8 +238,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
         AbstractCalculatedMockModel CM = new AbstractCalculatedMockModel(scheduler, CALC_MODEL_ROOT_1) {
             
             @Override
-            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-                    Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
+            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) throws NoSuchHandleException {
                 try {
                     Thread.sleep(1000); // simulate a long work
                 } catch (InterruptedException e) {
@@ -323,16 +319,16 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
         AbstractCalculatedMockModel CM1 = new AbstractCalculatedMockModel(scheduler, CALC_MODEL_ROOT_1) {
             
             @Override
-            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-                    Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
-                
+            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) throws NoSuchHandleException {
+                System.out.println(".updateInternal() 1-1");
                 String m = resolver.get(milliHandle);
                 assertNotNull(m);
                 
-                String oldValue = resolver.get(milli2Handle);
+                String oldValue = resolver.getIfAvail(milli2Handle);
                 if (this.updates() > 1)
                     assertNotNull(oldValue);
                 snapshotBuilder.put(milli2Handle, m);
+                System.out.println(".updateInternal() 1-2");
             }
             
         };
@@ -340,9 +336,8 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
         AbstractCalculatedMockModel CM2 = new AbstractCalculatedMockModel(scheduler, CALC_MODEL_ROOT_2) {
             
             @Override
-            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder,
-                    Set<IHandle<?>> changedHandles) throws NoSuchHandleException {
-                
+            public void updateInternal(IResolver resolver, SnapshotBuilder snapshotBuilder) throws NoSuchHandleException {
+                System.out.println(".updateInternal() 2-1");
                 String m = resolver.get(new StubHandle("milli", MockModelRoot.class));
                 assertNotNull(m);
                 String milli2 = resolver.get(milli2Handle);
@@ -352,6 +347,7 @@ public class ComplexSchedulerTests extends AbstractSchedulerTests {
 //                assertEquals(milli2, m);
 //                
                 snapshotBuilder.put(milli3Handle, m + " " + milli2);
+                System.out.println(".updateInternal() 2-2");
             }
             
         };

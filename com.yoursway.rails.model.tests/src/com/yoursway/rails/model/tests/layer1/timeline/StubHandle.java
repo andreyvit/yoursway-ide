@@ -4,17 +4,20 @@
 package com.yoursway.rails.model.tests.layer1.timeline;
 
 import com.yoursway.model.repository.IHandle;
+import com.yoursway.model.repository.IModelRoot;
+import com.yoursway.model.repository.ISnapshot;
+import com.yoursway.model.tracking.IMapSnapshot;
 
 class StubHandle implements IHandle<String> {
 	/**
 	 * 
 	 */
 	private final String magicString;
-	private final Class<?> modelRootClass;
+	private final Class<? extends IModelRoot> modelRootClass;
 
-	public StubHandle(String magicString, Class<?> mrc) {
+	public StubHandle(String magicString, Class<? extends IModelRoot> mrc) {
 		this.magicString = magicString;
-		this.modelRootClass = mrc;
+		this.modelRootClass = mrc;		
 	}
 
 	@Override
@@ -51,8 +54,16 @@ class StubHandle implements IHandle<String> {
 		return true;
 	}
 
-	public Class<?> getModelRootInterface() {
+	public Class<? extends IModelRoot> getModelRootInterface() {
 		return modelRootClass;
 	}
+
+    public String resolve(ISnapshot snapshot) {
+        if (snapshot instanceof IMapSnapshot) {
+            IMapSnapshot mapSnapshot = (IMapSnapshot) snapshot;
+            return mapSnapshot.get(this);
+        }
+        return null;
+    }
 
 }

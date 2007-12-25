@@ -7,33 +7,31 @@ import java.util.LinkedList;
 
 import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
-import com.yoursway.model.tracking.IMapSnapshot;
 
 class PerModelStorage {
     
     private class Tuple {
         PointInTime point;
-        IMapSnapshot snapshot;
+        ISnapshot snapshot;
         
-        public Tuple(PointInTime point, IMapSnapshot snapshot) {
-            super();
+        public Tuple(PointInTime point, ISnapshot snapshot) {
             this.point = point;
             this.snapshot = snapshot;
         }
         
     }
     
-    private class ProxySnapshot implements IMapSnapshot, ISnapshotInProgress {
+    private class FakeProxySnapshot implements ISnapshot {
         
-        private IMapSnapshot fullSnapshot;
+        private ISnapshot fullSnapshot;
         
         private final Object flag = new Object();
         
-        public ProxySnapshot() {
+        public FakeProxySnapshot() {
             fullSnapshot = null;
         }
         
-        public <T> T get(IHandle<T> handle) {
+        public ISnapshot getFullSnapshot() {
             synchronized (flag) {
                 while (fullSnapshot == null) {
                     try {
@@ -43,18 +41,14 @@ class PerModelStorage {
                     }
                 }
             }
-            return fullSnapshot.get(handle);
+            return fullSnapshot;
         }
         
-        public void setFullSnapshot(IMapSnapshot snapshot) {
+        public void setFullSnapshot(ISnapshot snapshot) {
             fullSnapshot = snapshot;
             synchronized (flag) {
                 flag.notifyAll();
             }
-        }
-        
-        public void setPointInTime(PointInTime pit) {
-            throw new UnsupportedOperationException();
         }
         
     }
@@ -64,15 +58,24 @@ class PerModelStorage {
     public PerModelStorage(Class<?> modelRoot) {
     }
     
-    public IMapSnapshot getLast(PointInTime point) {
-        return findSnapshot(point, true);
+    public ISnapshot getLast(PointInTime point) {
+        ISnapshot snapshot = findSnapshot(point, true);
+        if (snapshot instanceof FakeProxySnapshot) {
+            FakeProxySnapshot fakeProxySnapshot = (FakeProxySnapshot) snapshot;
+            return fakeProxySnapshot.getFullSnapshot();
+        }
+        return snapshot;
     }
     
-    private IMapSnapshot findSnapshot(PointInTime point, boolean allowNotComplete) {
-        IMapSnapshot winner = null;
-        synchronized (snapshots) { //TODO, insert binary search
+    public ISnapshot getLastAccessible(PointInTime point) {
+        return findSnapshot(point, false);
+    }
+    
+    private ISnapshot findSnapshot(PointInTime point, boolean allowNotComplete) {
+        ISnapshot winner = null;
+        synchronized (snapshots) { //TODO, use binary search
             for (Tuple t : snapshots) {
-                if (!allowNotComplete && t.snapshot instanceof ISnapshotInProgress)
+                if (!allowNotComplete && t.snapshot instanceof FakeProxySnapshot)
                     break;
                 if (t.point.compareTo(point) <= 0)
                     winner = t.snapshot;
@@ -83,17 +86,13 @@ class PerModelStorage {
         return winner;
     }
     
-    public IMapSnapshot getLastAccessible(PointInTime point) {
-        return findSnapshot(point, false);
-    }
-    
     synchronized public void pushSnapshot(PointInTime point, ISnapshotBuilder snapshotBuilder) {
-        ProxySnapshot proxySnapshot = new ProxySnapshot();
+        FakeProxySnapshot proxySnapshot = new FakeProxySnapshot();
         synchronized (snapshots) {
             snapshots.add(new Tuple(point, proxySnapshot));
         }
         // this may execute long
-        IMapSnapshot snapshot = snapshotBuilder.getSnapshot();
+        ISnapshot snapshot = snapshotBuilder.buildSnapshot();
         if (snapshot == null)
             throw new RuntimeException("SnapshotBuilder returned null snapshot!");
         synchronized (snapshots) {

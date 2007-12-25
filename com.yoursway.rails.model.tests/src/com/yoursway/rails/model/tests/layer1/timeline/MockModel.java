@@ -15,12 +15,11 @@ class MockModel {
     private final IBasicModelChangesRequestor requestor;
     
     int ticks;
-    private final Class<?> rootClass;
+    private final Class<? extends IModelRoot> rootClass;
     
     private String answer;
     
-    @SuppressWarnings("unchecked")
-    public MockModel(IBasicModelRegistry registry, Class<?> rootClass, IModelRoot root) {
+    public MockModel(IBasicModelRegistry registry, Class<? extends IModelRoot> rootClass, IModelRoot root) {
         this.rootClass = rootClass;
         requestor = registry.addBasicModel(((Class<IModelRoot>) rootClass), root);
         ticks = 0;

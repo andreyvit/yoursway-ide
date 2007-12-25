@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutorService;
 
 import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
-import com.yoursway.model.tracking.IMapSnapshot;
 
 public class BasicModelTracker implements IBasicModelChangesRequestor {
     
@@ -36,15 +35,13 @@ public class BasicModelTracker implements IBasicModelChangesRequestor {
             public void run() {
                 master.getSnapshotStorage().pushSnapshot(rootHandleInterface, moment, new ISnapshotBuilder() {
                     
-                    public IMapSnapshot getSnapshot() {
-                        if (!(snapshot instanceof IMapSnapshot))
-                            throw new RuntimeException("Shit! I love only IMapSnapshot!");
-                        return (IMapSnapshot) snapshot;
+                    public ISnapshot buildSnapshot() {
+                        return snapshot;
                     }
                     
                 });
                 master.handlesChanged(moment, delta);
-                System.out.println(".modelChanged()");
+                System.out.println("BM.run() ch=" + delta.getChangedHandles());
             }
             
         });

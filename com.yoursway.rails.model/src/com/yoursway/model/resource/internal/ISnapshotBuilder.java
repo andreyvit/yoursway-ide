@@ -1,9 +1,9 @@
 package com.yoursway.model.resource.internal;
 
-import com.yoursway.model.tracking.IMapSnapshot;
+import com.yoursway.model.repository.ISnapshot;
 
 public interface ISnapshotBuilder {
     
-    public abstract IMapSnapshot getSnapshot();
+    ISnapshot buildSnapshot();
     
 }
