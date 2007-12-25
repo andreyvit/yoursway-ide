@@ -4,6 +4,6 @@ import com.yoursway.model.timeline.PointInTime;
 
 public interface IDependant {
     
-    void call(ISnapshotStorage snapshotStorage, PointInTime moment, ModelDelta delta);
+    void call(PointInTime moment, ModelDelta delta);
     
 }

@@ -42,17 +42,18 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
     }
     
     public void addConsumer(IConsumer consumer) {
-        ConsumerTracker consumerTracker = new ConsumerTracker(consumer, this, executorService);
+        ConsumerTracker consumerTracker = new ConsumerTracker(consumer, this, executorService,
+                snapshotStorage);
         consumers.add(consumerTracker);
-        consumerTracker.call(snapshotStorage, timeline.now(), ModelDelta.EMPTY_DELTA);
+        consumerTracker.call(timeline.now(), ModelDelta.EMPTY_DELTA);
     }
     
     public <T> void registerModel(Class<T> rootHandleInterface, T rootHandle,
             ICalculatedModelUpdater modelUpdater) {
         CalculatedModelTracker tracker = new CalculatedModelTracker(rootHandleInterface, rootHandle, this,
-                modelUpdater, executorService);
+                modelUpdater, executorService, snapshotStorage);
         calculatedModels.put(rootHandleInterface, tracker);
-        tracker.call(snapshotStorage, timeline.now(), ModelDelta.EMPTY_DELTA);
+        tracker.call(timeline.now(), ModelDelta.EMPTY_DELTA);
     }
     
     @SuppressWarnings("unchecked")
@@ -82,7 +83,7 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
     
     private void update(PointInTime moment, Set<IDependant> trackersToUpdate, ModelDelta delta) {
         for (IDependant tracker : trackersToUpdate) {
-            tracker.call(snapshotStorage, moment, delta);
+            tracker.call(moment, delta);
         }
     }
     

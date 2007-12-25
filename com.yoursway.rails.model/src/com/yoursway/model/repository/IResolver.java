@@ -12,4 +12,6 @@ public interface IResolver extends IModelRootProvider {
     
     void checkCancellation();
     
+    void dontKillForLaterAccess();
+    
 }

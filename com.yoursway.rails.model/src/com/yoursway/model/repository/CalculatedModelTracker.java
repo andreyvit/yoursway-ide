@@ -11,15 +11,19 @@ public class CalculatedModelTracker implements IDependant, DependencyRequestor {
     private final CalculatedModelTrackerMaster master;
     private final ICalculatedModelUpdater modelUpdater;
     private final ExecutorService executor;
+    private Resolver previousResolver;
+    private final ISnapshotStorage storage;
     
     public CalculatedModelTracker(Class<?> rootHandleInterface, Object rootHandle,
             CalculatedModelTrackerMaster master, ICalculatedModelUpdater modelUpdater,
-            ExecutorService executor) {
+            ExecutorService executor, final ISnapshotStorage storage) {
         this.rootHandleInterface = rootHandleInterface;
         this.rootHandle = rootHandle;
         this.master = master;
         this.modelUpdater = modelUpdater;
         this.executor = executor;
+        this.storage = storage;
+        this.previousResolver = null;
     }
     
     public Class<?> getRootHandleInterface() {
@@ -30,7 +34,11 @@ public class CalculatedModelTracker implements IDependant, DependencyRequestor {
         return rootHandle;
     }
     
-    public void call(final ISnapshotStorage storage, final PointInTime point, final ModelDelta delta) {
+    public void call(final PointInTime point, final ModelDelta delta) {
+        if (previousResolver != null) {
+            storage.disposeResolver(previousResolver);
+            previousResolver = null;
+        }
         final Resolver resolver = new Resolver(point, master, this, storage, delta);
         executor.execute(new Runnable() {
             
@@ -47,6 +55,10 @@ public class CalculatedModelTracker implements IDependant, DependencyRequestor {
                     }
                     
                 });
+                if (resolver.inGodMode())
+                    previousResolver = resolver;
+                else
+                    storage.disposeResolver(resolver);
                 master.handlesChanged(point, newDelta[0]);
                 System.out.println("CM.run() ch=" + newDelta[0].getChangedHandles());
             }

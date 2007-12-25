@@ -15,6 +15,7 @@ public final class Resolver implements IResolver {
     private final IModelRootProvider modelRootProvider;
     private final ISnapshotStorage storage;
     private final ModelDelta delta;
+    private boolean godMode;
     
     public Resolver(PointInTime moment, IModelRootProvider modelRootProvider,
             DependencyRequestor dependencyRequestor, ISnapshotStorage storage, ModelDelta delta) {
@@ -23,6 +24,7 @@ public final class Resolver implements IResolver {
         this.dependencyRequestor = dependencyRequestor;
         this.storage = storage;
         this.delta = delta;
+        this.godMode = false;
         storage.registerResolver(this, moment);
     }
     
@@ -66,6 +68,14 @@ public final class Resolver implements IResolver {
             }
         }
         return res;
+    }
+    
+    public void dontKillForLaterAccess() {
+        this.godMode = true;
+    }
+    
+    public boolean inGodMode() {
+        return godMode;
     }
     
 }
