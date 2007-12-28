@@ -126,6 +126,7 @@ public class RailsProjectTree implements IPresenterOwner, IViewInfoProvider, ICo
     
     public void consume(IResolver resolver) {
         this.resolver = resolver;
+        resolver.dontKillForLaterAccess();
         viewer.refresh();
     }
     
