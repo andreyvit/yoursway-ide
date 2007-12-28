@@ -9,7 +9,7 @@ import com.yoursway.model.rails.IRailsPlugin;
 import com.yoursway.model.repository.IHandle;
 
 public class RailsModelRoot implements IRailsModelRoot {
-    
+
     public RailsModelRoot() {
     }
     
@@ -18,8 +18,7 @@ public class RailsModelRoot implements IRailsModelRoot {
     }
     
     public IHandle<Collection<IRailsApplicationProject>> projects() {
-        return new RabbitFamilyHandle<IRailsApplicationProject>(Collections
-                .singleton((IRailsApplicationProject) new RailsProject()));
+        return new RabbitFamilyHandle<IRailsApplicationProject>(Collections.singleton((IRailsApplicationProject)new RailsProject()));
     }
     
 }
