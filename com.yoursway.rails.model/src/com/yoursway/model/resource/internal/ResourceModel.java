@@ -14,11 +14,11 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.yoursway.common.resources.ResourceSwitch;
 import com.yoursway.common.resources.ResourceUtils;
-import com.yoursway.model.repository.ModelDelta;
 import com.yoursway.model.repository.IBasicModelChangesRequestor;
 import com.yoursway.model.repository.IBasicModelRegistry;
 import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.repository.IModelElement;
+import com.yoursway.model.repository.ISnapshotBuilder;
+import com.yoursway.model.repository.ModelDelta;
 import com.yoursway.model.resource.IResourceModelRoot;
 import com.yoursway.model.resource.IResourceProject;
 import com.yoursway.model.tracking.IMapSnapshot;
@@ -93,16 +93,16 @@ public class ResourceModel {
         
     };
     
-    private final IHandle<Collection<IResourceProject>> projectsCollectionHandle = new IHandle<Collection<IResourceProject>>() {
+    private final IHandle<Collection<IResourceProject>> projectsCollectionHandle = new ResourceHandle<Collection<IResourceProject>>() {
         
         @Override
         public String toString() {
             return "resource-projects";
         }
         
-        public IModelElement getModelElement() {
-            return resourceModelRoot;
-        }
+        //        public IModelElement getModelElement() {
+        //            return resourceModelRoot;
+        //        }
         
     };
     
@@ -121,17 +121,19 @@ public class ResourceModel {
     private void createInitialSnapshot() {
         SnapshotBuilder sb = new SnapshotBuilder();
         Collection<IResourceProject> projects = new ArrayList<IResourceProject>();
+        
         for (IProject eclipseProject : workspaceRoot.getProjects()) {
             projects.add(processAddedProject(sb, eclipseProject));
         }
+        
         sb.put(projectsCollectionHandle, projects);
-        requestor.modelChanged(sb.getSnapshot(), new ModelDelta(sb.getChangedHandles(), sb
-                .getAddedElements(), sb.getRemovedElements()));
+        requestor.modelChanged(sb.getSnapshot(), new ModelDelta(sb.getChangedHandles(),
+                sb.getAddedElements(), sb.getRemovedElements()));
         
         // can subscribe to changes now
         changeListener = new ChangeListener();
     }
-
+    
     private IResourceProject processAddedProject(SnapshotBuilder sb, IProject eclipseProject) {
         IResourceProject proj = new ResourceProject();
         sb.added(proj);

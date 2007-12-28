@@ -2,7 +2,6 @@ package com.yoursway.model.repository;
 
 import java.util.concurrent.ExecutorService;
 
-import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
 
 public class BasicModelTracker implements IBasicModelChangesRequestor {
@@ -30,22 +29,29 @@ public class BasicModelTracker implements IBasicModelChangesRequestor {
     
     public void modelChanged(final ISnapshot snapshot, final ModelDelta delta) {
         final PointInTime moment = master.createPointInTime();
-        executor.execute(new Runnable() {
+        //        executor.execute(new Runnable() {
+        //            
+        //            public void run() {
+        
+        // model cares about execution itself
+        
+        master.getSnapshotStorage().pushSnapshot(rootHandleInterface, moment, new ISnapshotBuilder() {
             
-            public void run() {
-                master.getSnapshotStorage().pushSnapshot(rootHandleInterface, moment, new ISnapshotBuilder() {
-                    
-                    public ISnapshot buildSnapshot() {
-                        return snapshot;
-                    }
-                    
-                });
-                master.handlesChanged(moment, delta);
-                System.out.println("BM.run() ch=" + delta.getChangedHandles());
+            public ISnapshot buildSnapshot() {
+                return snapshot;
             }
             
         });
+        master.handlesChanged(moment, delta);
+        System.out.println("BM.run() ch=" + delta.getChangedHandles());
+        //            }
+        //            
+        //        });
         
+    }
+    
+    public void execute(Runnable r) {
+        executor.execute(r);
     }
     
 }

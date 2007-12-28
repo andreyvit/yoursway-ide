@@ -2,7 +2,6 @@ package com.yoursway.model.repository;
 
 import java.util.concurrent.ExecutorService;
 
-import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
 
 public class CalculatedModelTracker implements IDependant, DependencyRequestor {

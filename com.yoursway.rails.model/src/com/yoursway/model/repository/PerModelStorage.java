@@ -5,7 +5,6 @@ package com.yoursway.model.repository;
 
 import java.util.LinkedList;
 
-import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
 
 class PerModelStorage {

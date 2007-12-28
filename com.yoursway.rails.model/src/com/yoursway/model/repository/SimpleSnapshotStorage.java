@@ -3,7 +3,6 @@ package com.yoursway.model.repository;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
 
 public class SimpleSnapshotStorage implements ISnapshotStorage {

@@ -2,11 +2,10 @@ package com.yoursway.model.resource.internal;
 
 import org.eclipse.core.resources.IProject;
 
-import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.IModelElement;
 import com.yoursway.model.resource.IResourceProject;
 
-public class ResourceProjectHandle implements IHandle<IResourceProject> {
+public class ResourceProjectHandle extends ResourceHandle<IResourceProject> {
     
     private final IProject eclipseProject;
     

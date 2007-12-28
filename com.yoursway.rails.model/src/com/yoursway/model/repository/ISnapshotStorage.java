@@ -1,6 +1,5 @@
 package com.yoursway.model.repository;
 
-import com.yoursway.model.resource.internal.ISnapshotBuilder;
 import com.yoursway.model.timeline.PointInTime;
 
 public interface ISnapshotStorage extends IResolverTracker {
