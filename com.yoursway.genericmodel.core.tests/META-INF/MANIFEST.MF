@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests Plug-in
+Bundle-SymbolicName: com.yoursway.genericmodel.core.tests
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.genericmodel.core.tests.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-LazyStart: true

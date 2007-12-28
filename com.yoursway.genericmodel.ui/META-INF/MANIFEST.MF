@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in
+Bundle-SymbolicName: com.yoursway.genericmodel.ui
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.genericmodel.ui.internal.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true

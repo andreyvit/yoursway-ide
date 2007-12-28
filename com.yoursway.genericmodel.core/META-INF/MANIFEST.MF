@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core Plug-in
+Bundle-SymbolicName: com.yoursway.genericmodel.core
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.genericmodel.core.internal.Activator
+Bundle-Vendor: YourSway
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-LazyStart: true
