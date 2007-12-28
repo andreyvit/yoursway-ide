@@ -1,11 +1,9 @@
-package com.yoursway.model.resource.internal;
+package com.yoursway.model.repository;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.yoursway.model.repository.IHandle;
-import com.yoursway.model.repository.IModelElement;
 import com.yoursway.model.tracking.CompleteTrackedSnapshot;
 import com.yoursway.model.tracking.TrackedSnapshot;
 

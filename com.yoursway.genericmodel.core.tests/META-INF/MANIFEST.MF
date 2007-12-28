@@ -5,5 +5,7 @@ Bundle-SymbolicName: com.yoursway.genericmodel.core.tests
 Bundle-Version: 1.0.0
 Bundle-Activator: com.yoursway.genericmodel.core.tests.Activator
 Bundle-Vendor: YourSway
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ com.yoursway.genericmodel.core,
+ org.junit4
 Eclipse-LazyStart: true

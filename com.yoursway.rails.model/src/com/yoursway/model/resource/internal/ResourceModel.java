@@ -19,6 +19,7 @@ import com.yoursway.model.repository.IBasicModelRegistry;
 import com.yoursway.model.repository.IHandle;
 import com.yoursway.model.repository.ISnapshotBuilder;
 import com.yoursway.model.repository.ModelDelta;
+import com.yoursway.model.repository.SnapshotBuilder;
 import com.yoursway.model.resource.IResourceModelRoot;
 import com.yoursway.model.resource.IResourceProject;
 import com.yoursway.model.tracking.IMapSnapshot;

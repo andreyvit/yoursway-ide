@@ -5,11 +5,11 @@ package com.yoursway.rails.model.tests.layer1.timeline;
 
 import java.util.GregorianCalendar;
 
-import com.yoursway.model.repository.ModelDelta;
 import com.yoursway.model.repository.IBasicModelChangesRequestor;
 import com.yoursway.model.repository.IBasicModelRegistry;
 import com.yoursway.model.repository.IModelRoot;
-import com.yoursway.model.resource.internal.SnapshotBuilder;
+import com.yoursway.model.repository.ModelDelta;
+import com.yoursway.model.repository.SnapshotBuilder;
 
 class MockModel {
     private final IBasicModelChangesRequestor requestor;

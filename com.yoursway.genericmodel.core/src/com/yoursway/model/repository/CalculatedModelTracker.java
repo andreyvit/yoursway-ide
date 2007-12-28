@@ -53,9 +53,10 @@ public class CalculatedModelTracker implements IDependant, DependencyRequestor {
                 storage.pushSnapshot(rootHandleInterface, point, new ISnapshotBuilder() {
                     
                     public ISnapshot buildSnapshot() {
-                        SnapshotDeltaPair update = modelUpdater.update(resolver);
-                        newDelta[0] = update.getDelta();
-                        return update.getSnapshot();
+                        //SnapshotDeltaPair update = modelUpdater.update(resolver);
+                        //newDelta[0] = update.getDelta();
+                        //return update.getSnapshot();
+                        return null;
                     }
                     
                 });

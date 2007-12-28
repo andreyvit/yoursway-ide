@@ -15,14 +15,12 @@ Require-Bundle: org.eclipse.core.runtime,
  com.yoursway.databinding.commons,
  org.eclipse.dltk.ruby.core,
  org.eclipse.dltk.core,
- com.yoursway.common.resources
+ com.yoursway.common.resources,
+ com.yoursway.genericmodel.core
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.model.rails,
  com.yoursway.model.rails.conventionalClassNames,
  com.yoursway.model.rails.impl,
- com.yoursway.model.repository,
  com.yoursway.model.resource,
  com.yoursway.model.resource.internal,
- com.yoursway.model.timeline,
- com.yoursway.model.tracking,
  com.yoursway.rails.model

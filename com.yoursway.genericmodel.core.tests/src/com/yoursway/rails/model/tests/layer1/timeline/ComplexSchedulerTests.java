@@ -11,7 +11,7 @@ import com.yoursway.model.repository.IModelRoot;
 import com.yoursway.model.repository.IResolver;
 import com.yoursway.model.repository.NoSuchHandleException;
 import com.yoursway.model.repository.Scheduler;
-import com.yoursway.model.resource.internal.SnapshotBuilder;
+import com.yoursway.model.repository.SnapshotBuilder;
 
 public class ComplexSchedulerTests extends AbstractSchedulerTests {
     

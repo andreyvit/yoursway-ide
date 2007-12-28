@@ -6,8 +6,8 @@ import com.yoursway.model.repository.IResolver;
 import com.yoursway.model.repository.ModelDelta;
 import com.yoursway.model.repository.NoSuchHandleException;
 import com.yoursway.model.repository.Scheduler;
+import com.yoursway.model.repository.SnapshotBuilder;
 import com.yoursway.model.repository.SnapshotDeltaPair;
-import com.yoursway.model.resource.internal.SnapshotBuilder;
 
 public abstract class AbstractCalculatedMockModel implements ICalculatedModelUpdater {
     
