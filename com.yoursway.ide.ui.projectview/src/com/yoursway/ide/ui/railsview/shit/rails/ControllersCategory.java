@@ -32,9 +32,6 @@ public class ControllersCategory extends ElementsCategory {
     
     public Collection<IPresentableItem> getChildren() {
         IResolver resolver = infoProvider.getModelResolver();
-        if (resolver == null)
-            return null;
-        
         IHandle<Collection<IRailsController>> controllersHandle = project.controllers();
         Collection<IRailsController> controllers = resolver.get(controllersHandle);
         ArrayList<IPresentableItem> list = new ArrayList<IPresentableItem>();
