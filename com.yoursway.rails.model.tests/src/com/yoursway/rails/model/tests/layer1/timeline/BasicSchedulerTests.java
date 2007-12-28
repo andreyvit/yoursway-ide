@@ -23,6 +23,7 @@ public class BasicSchedulerTests extends AbstractSchedulerTests {
         protected void consumeInternal(IResolver resolver) throws NoSuchHandleException {
             assertNotNull(resolver);
             if (callsCount() == 0) {
+            	// WTF?!!! can't query data from a non-existing model!
                 assertNull(resolver.get(shitHandle));
                 assertNull(resolver.get(answerHandle));
                 assertNull(resolver.getIfAvail(shitHandle));
