@@ -33,6 +33,11 @@ public class CalculatedModelTracker implements IDependant, DependencyRequestor {
         return rootHandle;
     }
     
+    public void init(final PointInTime point) {
+        final Resolver resolver = new Resolver(point, master, this, storage, ModelDelta.EMPTY_DELTA);
+        ISnapshot initialSnapshot = modelUpdater.buildInitialSnapshot(resolver);
+    }
+    
     public void call(final PointInTime point, final ModelDelta delta) {
         if (previousResolver != null) {
             storage.disposeResolver(previousResolver);
