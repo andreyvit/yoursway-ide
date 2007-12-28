@@ -34,10 +34,6 @@ public abstract class SimpleProjectElement extends ProjectElement {
     }
     
     public String getCaption() {
-        return getName();
-    }
-    
-    public String getName() {
         return name;
     }
     
