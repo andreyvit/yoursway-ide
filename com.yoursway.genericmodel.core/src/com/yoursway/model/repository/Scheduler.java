@@ -102,5 +102,10 @@ public class Scheduler implements IRepository, ConsumerTrackerMaster, ModelTrack
         }
         list.clear();
     }
+
+    public IResolver addBackgroundConsumer(IConsumer consumer) {
+        // TODO: implement
+        return null;
+    }
     
 }
