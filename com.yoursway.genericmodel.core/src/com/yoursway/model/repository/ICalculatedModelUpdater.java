@@ -9,6 +9,4 @@ public interface ICalculatedModelUpdater {
     void calculateHandle(IHandle<?> handle, IResolver resolver, ISnapshot snapshot,
             Set<IHandle<?>> updatedHandles);
     
-    ISnapshot calculateHandle(IHandle<?> handle, IResolver resolver, Set<IHandle<?>> updatedHandles);
-    
 }
