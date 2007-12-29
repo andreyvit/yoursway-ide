@@ -6,5 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Activator: com.yoursway.genericmodel.ui.tests.Activator
 Bundle-Vendor: YOURSWAY
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ com.yoursway.genericmodel.core,
+ com.yoursway.genericmodel.ui
 Eclipse-LazyStart: true
