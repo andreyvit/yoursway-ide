@@ -55,7 +55,7 @@ public final class TypedListenerList<T> implements Iterable<T> {
      * Indicates the comparison mode used to determine if two listeners are
      * equivalent
      */
-    private final boolean identity;
+    private final boolean identity = true;
     
     /**
      * The list of listeners. Initially empty but initialized to an array of
@@ -65,23 +65,9 @@ public final class TypedListenerList<T> implements Iterable<T> {
     private volatile List<T> listeners = Collections.emptyList();
     
     /**
-     * Creates a listener list in which listeners are compared using equality.
+     * Creates a listener list in which listeners are compared using identity.
      */
     public TypedListenerList() {
-        this(EQUALITY);
-    }
-    
-    /**
-     * Creates a listener list using the provided comparison mode.
-     * 
-     * @param mode
-     *            The mode used to determine if listeners are the <a
-     *            href="#same">same</a>.
-     */
-    public TypedListenerList(int mode) {
-        if (mode != EQUALITY && mode != IDENTITY)
-            throw new IllegalArgumentException();
-        this.identity = mode == IDENTITY;
     }
     
     /**
@@ -92,16 +78,13 @@ public final class TypedListenerList<T> implements Iterable<T> {
      *            the non-<code>null</code> listener to add
      */
     public synchronized <L extends T> void add(L listener) {
-        // This method is synchronized to protect against multiple threads adding 
-        // or removing listeners concurrently. This does not block concurrent readers.
         if (listener == null)
-            throw new IllegalArgumentException();
-        // check for duplicates 
-        for (T existingListener : listeners) {
+            throw new NullPointerException("listener is null");
+        for (T existingListener : listeners)
             if (identity ? listener == existingListener : listener.equals(existingListener))
                 return;
-        }
-        ArrayList<T> newListeners = new ArrayList<T>(listeners.size() + 1);
+        
+        List<T> newListeners = new ArrayList<T>(listeners.size() + 1);
         newListeners.addAll(listeners);
         newListeners.add(listener);
         
@@ -141,29 +124,27 @@ public final class TypedListenerList<T> implements Iterable<T> {
      * @param listener
      *            the non-<code>null</code> listener to remove
      */
-    public synchronized <E extends T> void remove(E listener) {
-        // This method is synchronized to protect against multiple threads adding 
-        // or removing listeners concurrently. This does not block concurrent readers.
+    public synchronized void remove(T listener) {
         if (listener == null)
-            throw new IllegalArgumentException();
+            throw new NullPointerException("listener is null");
         
-        for (T existingListener : listeners) {
-            if (identity ? listener == existingListener : listener.equals(existingListener)) {
-                // Optimization.
-                if (listeners.size() == 1) {
-                    listeners = Collections.emptyList();
-                } else {
-                    ArrayList<T> newListeners = new ArrayList<T>(listeners.size());
-                    newListeners.addAll(listeners);
-                    // We can remove existingListener even if we compare objects'
-                    // identity because we just got it from the collection
-                    newListeners.remove(existingListener);
-                    // atomic assignment
-                    listeners = newListeners;
-                }
-                return;
-            }
+        // Optimization
+        if (listeners.isEmpty())
+            ;
+        else if (listeners.size() == 1) {
+            if (isSame(listeners.get(0), listener))
+                listeners = Collections.emptyList();
+        } else {
+            List<T> newListeners = new ArrayList<T>(listeners.size());
+            for (T existingListener : listeners)
+                if (!isSame(existingListener, listener))
+                    newListeners.add(existingListener);
+            listeners = newListeners;
         }
+    }
+    
+    private boolean isSame(T a, T b) {
+        return identity ? a == b : a.equals(b);
     }
     
     /**
@@ -181,4 +162,5 @@ public final class TypedListenerList<T> implements Iterable<T> {
     public synchronized void clear() {
         listeners = Collections.emptyList();
     }
+    
 }
