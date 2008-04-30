@@ -50,4 +50,4 @@ Export-Package: jregex,
  org.jvyamlb.nodes,
  org.jvyamlb.tokens,
  org.jvyamlb.util
-Require-Bundle: com.ibm.wala.cast.java
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

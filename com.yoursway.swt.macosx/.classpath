@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="/Users/fourdman/Eclipse 3.3/eclipse/plugins/org.eclipse.swt.carbon.macosx_3.3.0.v3346.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.carbon.macosx_3.4.0.v3428.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
