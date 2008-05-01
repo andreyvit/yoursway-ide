@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+    <extension
+         id="com.yoursway.ide.rcp.workbench"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.yoursway.ide.rcp.internal.IDEApplication">
+         </run>
+      </application>
+   </extension>
+    <extension
+          point="org.eclipse.ui.preferencePages">
+     <page
+            name="Startup and Shutdown"
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="com.yoursway.ide.rcp.internal.IDEStartupPreferencePage"
+            id="org.eclipse.ui.preferencePages.Startup">
+         <keywordReference id="org.eclipse.ui.ide.startupAndShutdown"/>
+      </page>
+    </extension>
+     <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Жопа"
+            icon="$nl$/icons/resource_persp.gif"
+            class="com.yoursway.ide.rcp.internal.ResourcePerspective"
+            id="com.yoursway.ide.resourcePerspective">
+         <description>
+            This perspective is designed to provide general resource viewing and navigation.
+         </description>
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="com.yoursway.ide.resourcePerspective">
+         <showInPart
+               id="org.eclipse.ui.navigator.ProjectExplorer">
+         </showInPart>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:file?after=open.ext">
+         <command
+               commandId="org.eclipse.ui.file.restartWorkbench"
+               id="org.eclipse.ui.file.restartWorkbench"
+               mnemonic="t"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

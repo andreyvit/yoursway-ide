@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="com.yoursway.autoupdate.ui.eclipse.updatableApplications">
+      <application
+            update-url="http://ide-updates.s3.amazonaws.com/"
+            version="0.0.0"
+            version-name="0.0.0">
+      </application>
+   </extension>
+
+</plugin>

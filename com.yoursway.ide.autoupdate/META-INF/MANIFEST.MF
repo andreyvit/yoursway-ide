@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Autoupdate Plug-in
+Bundle-SymbolicName: com.yoursway.ide.autoupdate;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: YourSway
+Require-Bundle: com.yoursway.autoupdate.ui.eclipse;bundle-version="1.0.0"
