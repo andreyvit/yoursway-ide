@@ -2,7 +2,6 @@ package com.yoursway.ide.rcp.internal;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -51,13 +50,13 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	public static void log(String message) {
-	    getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message));
+//	    getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message));
 	    if (Platform.inDebugMode()) {
 	        System.err.println(message);
 	    }
 	}
 	public static void log(String message, Throwable throwable) {
-        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, throwable));
+//        getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, throwable));
         if (Platform.inDebugMode()) {
             System.err.println(message);
             throwable.printStackTrace(System.err);
@@ -65,7 +64,7 @@ public class Activator extends AbstractUIPlugin {
     }
 	
 	public static void log(Throwable throwable) {
-	    getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, throwable.getMessage(), throwable));
+//	    getDefault().getLog().log(new Status(Status.ERROR, PLUGIN_ID, throwable.getMessage(), throwable));
 	    if (Platform.inDebugMode()) {
 	        throwable.printStackTrace(System.err);
 	    }
@@ -75,7 +74,7 @@ public class Activator extends AbstractUIPlugin {
         // this code is crazy, but copied from the Platform
         if (message != null)
             log(message);
-        getDefault().getLog().log(status);
+//        getDefault().getLog().log(status);
     }
 
 }

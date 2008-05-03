@@ -1,4 +1,4 @@
-package com.yoursway.ide.rcp.internal;
+package com.yoursway.ide.rcp.launcher.internal;
 
 import java.io.File;
 import java.io.FileReader;

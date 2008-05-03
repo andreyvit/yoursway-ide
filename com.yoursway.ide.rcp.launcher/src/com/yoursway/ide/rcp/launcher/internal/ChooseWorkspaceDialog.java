@@ -1,4 +1,4 @@
-package com.yoursway.ide.rcp.internal;
+package com.yoursway.ide.rcp.launcher.internal;
 
 import java.io.File;
 
@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.jface.window.Window;
@@ -30,20 +29,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
+
 /**
  * A dialog that prompts for a directory to use as a workspace.
  */
 public class ChooseWorkspaceDialog extends TitleAreaDialog {
 	
-	private static final String DIALOG_SETTINGS_SECTION = "ChooseWorkspaceDialogSettings"; //$NON-NLS-1$
-	
 	private ChooseWorkspaceData launchData;
 
     private Combo text;
 
-    private boolean suppressAskAgain = false;
+    private final boolean suppressAskAgain;
 
-    private boolean centerOnMonitor = false;
+    protected final boolean centerOnMonitor;
     /**
      * Create a modal dialog on the arugment shell, using and updating the
      * argument data object.
@@ -76,7 +74,7 @@ public class ChooseWorkspaceDialog extends TitleAreaDialog {
      *            the show dialog checkbox
      */
     public void prompt(boolean force) {
-        if (force || launchData.getShowDialog()) {
+        if (true || force || launchData.getShowDialog()) {
             open();
 
             // 70576: make sure dialog gets dismissed on ESC too
@@ -327,25 +325,4 @@ public class ChooseWorkspaceDialog extends TitleAreaDialog {
 				.getItem(0) : launchData.getInitialDefault())));
     }
     
-	/* (non-Javadoc)
-     * @see org.eclipse.jface.window.Dialog#getDialogBoundsSettings()
-     * 
-     * @since 3.2
-     */
-	protected IDialogSettings getDialogBoundsSettings() {
-		// If we were explicitly instructed to center on the monitor, then
-		// do not provide any settings for retrieving a different location or, worse,
-		// saving the centered location.
-		if (centerOnMonitor) {
-			return null;
-		}
-		
-        IDialogSettings settings = Activator.getDefault().getDialogSettings();
-        IDialogSettings section = settings.getSection(DIALOG_SETTINGS_SECTION);
-        if (section == null) {
-            section = settings.addNewSection(DIALOG_SETTINGS_SECTION);
-        } 
-        return section;
-	}
-
 }

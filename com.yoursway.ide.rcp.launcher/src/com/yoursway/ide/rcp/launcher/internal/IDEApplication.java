@@ -1,4 +1,4 @@
-package com.yoursway.ide.rcp.internal;
+package com.yoursway.ide.rcp.launcher.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
+import com.yoursway.ide.rcp.internal.IDEWorkbenchAdvisor;
+
 /**
  * The "main program" for the Eclipse IDE.
  * 
@@ -44,30 +46,6 @@ public class IDEApplication implements IApplication, IExecutableExtension {
     
     private static final String PROP_EXIT_CODE = "eclipse.exitcode"; //$NON-NLS-1$
     
-    /**
-     * A special return code that will be recognized by the launcher and used to
-     * restart the workbench.
-     */
-    private static final Integer EXIT_RELAUNCH = new Integer(24);
-    
-    /**
-     * The ID of the application plug-in
-     */
-    public static final String PLUGIN_ID = "org.eclipse.ui.ide.application"; //$NON-NLS-1$
-    
-    /**
-     * Creates a new IDE application.
-     */
-    public IDEApplication() {
-        // There is nothing to do for IDEApplication
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext
-     *      context)
-     */
     public Object start(IApplicationContext appContext) throws Exception {
         Display display = createDisplay();
         
@@ -111,23 +89,11 @@ public class IDEApplication implements IApplication, IExecutableExtension {
         }
     }
     
-    /**
-     * Creates the display used by the application.
-     * 
-     * @return the display used by the application
-     */
     protected Display createDisplay() {
         return PlatformUI.createDisplay();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement,
-     *      java.lang.String, java.lang.Object)
-     */
     public void setInitializationData(IConfigurationElement config, String propertyName, Object data) {
-        // There is nothing to do for IDEApplication
     }
     
     /**
@@ -203,6 +169,11 @@ public class IDEApplication implements IApplication, IExecutableExtension {
             force = true;
             
             try {
+                if (instanceLoc.isSet()) {
+                    MessageDialog.openInformation(shell, "Workspace Info", "Already set to "
+                            + instanceLoc.getURL() + " - please contact the developers.");
+                    return false;
+                }
                 // the operation will fail if the url is not a valid
                 // instance data area, so other checking is unneeded
                 if (instanceLoc.setURL(workspaceUrl, true)) {
@@ -215,7 +186,7 @@ public class IDEApplication implements IApplication, IExecutableExtension {
                         .openError(
                                 shell,
                                 "Workspace Cannot Be Created",
-                                "Could not launch the product because the specified workspace cannot be created.  The specified workspace directory is either invalid or read-only.");
+                                "Could not launch the product because the specified workspace cannot be created.  The specified workspace directory is either invalid or read-only.\n"  + e);
                 return false;
             }
             
@@ -360,7 +331,7 @@ public class IDEApplication implements IApplication, IExecutableExtension {
             
             return props.getProperty(WORKSPACE_VERSION_KEY);
         } catch (IOException e) {
-            Activator.log("Could not read version file", e);
+            Activator.logWhenNoWorkspace("Could not read version file", e);
             return null;
         }
     }
@@ -454,4 +425,5 @@ public class IDEApplication implements IApplication, IExecutableExtension {
             }
         });
     }
+    
 }

@@ -424,8 +424,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
      * installed features.
      */
     private void openWelcomeEditors(IWorkbenchWindow window) {
-        if (Activator.getDefault().getPreferenceStore().getBoolean(
-                IDEInternalPreferences.WELCOME_DIALOG)) {
+        if (Activator.getDefault().getPreferenceStore().getBoolean(IDEInternalPreferences.WELCOME_DIALOG)) {
             // show the welcome page for the product the first time the
             // workbench opens
             IProduct product = Platform.getProduct();
@@ -439,8 +438,8 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 return;
             }
             
-            Activator.getDefault().getPreferenceStore().setValue(
-                    IDEInternalPreferences.WELCOME_DIALOG, false);
+            Activator.getDefault().getPreferenceStore()
+                    .setValue(IDEInternalPreferences.WELCOME_DIALOG, false);
             openWelcomeEditor(window, new WelcomeEditorInput(productInfo), null);
         } else {
             // Show the welcome page for any newly installed features
@@ -469,7 +468,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                                     bundle.start(Bundle.START_TRANSIENT);
                                 } catch (BundleException exception) {
                                     StatusManager.getManager().handle(
-                                            new Status(IStatus.ERROR, IDEApplication.PLUGIN_ID,
+                                            new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                                                     "Failed to load feature", exception));//$NON-NLS-1$
                                 }
                             }
@@ -527,8 +526,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             try {
                 page = win.openPage(id, wbAdvisor.getDefaultPageInput());
             } catch (WorkbenchException e) {
-                ErrorDialog.openError(win.getShell(), "Problems Opening Page", e
-                        .getMessage(), e.getStatus());
+                ErrorDialog.openError(win.getShell(), "Problems Opening Page", e.getMessage(), e.getStatus());
             }
         }
         if (page == null) {
@@ -539,9 +537,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             try {
                 page = getWorkbench().showPerspective(id, win);
             } catch (WorkbenchException e) {
-                ErrorDialog.openError(win.getShell(),
-                        "Problem",
-                        "Unable to open editor", e.getStatus());
+                ErrorDialog.openError(win.getShell(), "Problem", "Unable to open editor", e.getStatus());
                 return;
             }
         }
@@ -558,8 +554,7 @@ public class IDEWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         try {
             page.openEditor(input, WELCOME_EDITOR_ID);
         } catch (PartInitException e) {
-            ErrorDialog.openError(win.getShell(), "Problem",
-                    "Unable to open editor", e.getStatus());
+            ErrorDialog.openError(win.getShell(), "Problem", "Unable to open editor", e.getStatus());
         }
         return;
     }

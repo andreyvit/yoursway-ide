@@ -3,15 +3,6 @@
 <plugin>
 
     <extension
-         id="com.yoursway.ide.rcp.workbench"
-         point="org.eclipse.core.runtime.applications">
-      <application>
-         <run
-               class="com.yoursway.ide.rcp.internal.IDEApplication">
-         </run>
-      </application>
-   </extension>
-    <extension
           point="org.eclipse.ui.preferencePages">
      <page
             name="Startup and Shutdown"
