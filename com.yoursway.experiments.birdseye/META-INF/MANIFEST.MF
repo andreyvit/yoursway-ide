@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Birdseye Plug-in
+Bundle-SymbolicName: com.yoursway.experiments.birdseye;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.experiments.birdseye.internal.Activator
+Bundle-Vendor: YOURSWAY
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.google.collections;bundle-version="1.0.0",
+ com.yoursway.utils;bundle-version="1.0.0",
+ com.yoursway.swt.additions;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
