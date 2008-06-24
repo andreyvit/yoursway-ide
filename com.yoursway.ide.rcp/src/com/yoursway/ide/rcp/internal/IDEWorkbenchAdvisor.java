@@ -37,6 +37,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -426,7 +427,7 @@ public class IDEWorkbenchAdvisor extends WorkbenchAdvisor {
         if (index >= 0 && welcomeInfos != null && index < welcomeInfos.length) {
             perspectiveId = welcomeInfos[index].getWelcomePerspectiveId();
         }
-        if (perspectiveId == null) {
+        if (perspectiveId == null) {            
             perspectiveId = ResourcePerspective.ID;
         }
         return perspectiveId;

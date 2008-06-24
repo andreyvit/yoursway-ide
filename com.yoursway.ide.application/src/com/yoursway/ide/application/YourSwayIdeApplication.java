@@ -3,6 +3,8 @@ package com.yoursway.ide.application;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
+import com.yoursway.databinding.Realm;
+import com.yoursway.databinding.SWTObservables;
 import com.yoursway.ide.application.controllers.ApplicationController;
 import com.yoursway.ide.application.model.application.ApplicationModel;
 import com.yoursway.ide.application.view.impl.ApplicationPresentationFactoryImpl;
@@ -20,6 +22,7 @@ public class YourSwayIdeApplication implements IApplication {
         
         ApplicationController controller = new ApplicationController(model,
                 new ApplicationPresentationFactoryImpl());
+        
         controller.run();
         
         return IApplication.EXIT_OK;

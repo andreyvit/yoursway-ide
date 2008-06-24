@@ -2,10 +2,13 @@ package com.yoursway.ide.application.view.impl;
 
 import org.eclipse.swt.widgets.Display;
 
+import com.yoursway.databinding.Realm;
+import com.yoursway.databinding.SWTObservables;
 import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
 import com.yoursway.ide.application.view.mainwindow.MainWindow;
 import com.yoursway.ide.application.view.mainwindow.MainWindowCallback;
+import com.yoursway.ide.application.view.mainwindow.MainWindowModel;
 
 public class ApplicationPresentationImpl implements ApplicationPresentation {
     
@@ -31,8 +34,12 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
         display.dispose();
     }
 
-    public MainWindow openWindow(MainWindowCallback callback) {
-        return new MainWindowImpl(display, callback);
+    public MainWindow openWindow(MainWindowModel windowModel, MainWindowCallback callback) {
+        return new MainWindowImpl(display, windowModel, callback);
+    }
+
+    public Realm getDefaultBindingRealm() {
+        return SWTObservables.getRealm(display);
     }
     
 }

@@ -16,4 +16,13 @@ public class RailsProjectType extends ProjectType {
         return null;
     }
     
+    public String getDescriptiveName() {
+        return "Rails";
+    }
+
+    @Override
+    public boolean recognize(File location) {
+        return true;
+    }
+    
 }

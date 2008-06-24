@@ -1,5 +1,7 @@
 package com.yoursway.ide.application.controllers;
 
+import com.yoursway.databinding.Realm;
+import com.yoursway.ide.application.controllers.mainwindow.MainWindowController;
 import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.model.application.ApplicationModel;
 import com.yoursway.ide.application.model.application.ApplicationModelListener;
@@ -25,12 +27,18 @@ public class ApplicationController implements ApplicationPresentationCallback, A
     }
     
     public void run() {
-        model.createProject(model.getRegisteredProjectTypes().iterator().next());
-        presentation.runEventLoop();
+        Realm.runWithDefault(presentation.getDefaultBindingRealm(), new Runnable() {
+
+            public void run() {
+                model.createProject(model.getRegisteredProjectTypes().iterator().next());
+                presentation.runEventLoop();
+            }
+            
+        });
     }
     
     public void projectAdded(Project project, ProjectAdditionReason reason) {
-        new MainWindowController(presentation);
+        new MainWindowController(project, presentation);
     }
     
 }

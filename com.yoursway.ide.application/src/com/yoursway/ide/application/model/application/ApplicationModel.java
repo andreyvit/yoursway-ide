@@ -48,13 +48,23 @@ public class ApplicationModel implements ProjectOwner {
     }
     
     public void openProject(File location) {
-        addProject(new Project(this, location), ProjectAdditionReason.OPENED);
+        ProjectType type = recognizeType(location);
+        if (type == null)
+            type = projectTypes.iterator().next(); // TODO: use a “generic” type
+        addProject(new Project(this, type, location), ProjectAdditionReason.OPENED);
+    }
+    
+    private ProjectType recognizeType(File location) {
+        for (ProjectType type : projectTypes)
+            if (type.recognize(location))
+                return type;
+        return null;
     }
     
     public void createProject(ProjectType type) {
         String projectName = type.generateNewProjectName(defaultProjectFolder);
         File location = new File(defaultProjectFolder, projectName);
-        addProject(new Project(this, location), ProjectAdditionReason.CREATED);
+        addProject(new Project(this, type, location), ProjectAdditionReason.CREATED);
     }
 
     private void addProject(Project project, ProjectAdditionReason reason) {
