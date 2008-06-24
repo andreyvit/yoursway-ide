@@ -94,15 +94,15 @@ public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
     
     @Override
     public void createPartControl(Composite parent) {
-        parent.setLayout(fillDefaults().margins(5, 5).spacing(0, 0).create());
+        parent.setLayout(fillDefaults().margins(0, 0).spacing(0, 0).create());
         
-        stack = new Composite(parent, SWT.NO_BACKGROUND);
+        stack = new Composite(parent, SWT.NONE);
         stack.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         stack.setLayout(new StackLayout());
         createBirdsEyeComposite(stack);
         createSettingsComposite(stack);
         
-        flipper = new Flipper(birdsEyeContainer, settingsComposite);
+        flipper = new Flipper(birdsEyeContainer, settingsComposite, 600);
         new StackLayoutFlipperListener(flipper, stack);
     }
 
@@ -154,7 +154,7 @@ public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
     private void createSettingsComposite(Composite parent) {
         settingsComposite = new Composite(parent, SWT.NONE);
         settingsComposite.setLayout(new GridLayout(1, false));
-        addBorder(settingsComposite);
+//        addBorder(settingsComposite);
         
         applySmallSize(settingsComposite);
         
