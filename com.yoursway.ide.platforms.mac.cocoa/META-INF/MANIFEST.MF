@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cocoa Plug-in
+Bundle-SymbolicName: com.yoursway.ide.platforms.mac.cocoa;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: YOURSWAY
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Eclipse-PlatformFilter: (& (osgi.ws=cocoa) (osgi.os=macosx) (|(osgi.arch=x86)(osgi.arch=ppc)) )
+Require-Bundle: com.yoursway.ide.platforms;bundle-version="1.0.0",
+ com.yoursway.ide.platforms.mac;bundle-version="1.0.0"
