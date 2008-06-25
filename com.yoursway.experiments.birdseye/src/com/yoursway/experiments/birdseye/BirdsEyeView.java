@@ -2,7 +2,7 @@ package com.yoursway.experiments.birdseye;
 
 import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Maps.newHashMap;
-import static com.yoursway.swt.additions.YsSwtUtils.applySmallSize;
+import static com.yoursway.swt.additions.YsSwtUtils.applyMiniSize;
 import static com.yoursway.utils.YsCollections.addIfNotNull;
 import static com.yoursway.utils.YsPathUtils.extension;
 import static com.yoursway.utils.YsStrings.emptyToNull;
@@ -13,7 +13,6 @@ import static org.eclipse.jface.layout.GridLayoutFactory.fillDefaults;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -41,6 +40,7 @@ import com.yoursway.experiments.birdseye.model.Node;
 import com.yoursway.swt.animations.flip.Flipper;
 import com.yoursway.swt.animations.flip.FlipperListener;
 import com.yoursway.swt.animations.flip.StackLayoutFlipperListener;
+import com.yoursway.utils.YsFileUtils;
 
 public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
     
@@ -140,7 +140,7 @@ public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
         birdsEyeDisplay.display(root);
         birdsEyeDisplay.addListener(this);
         
-        applySmallSize(parent);
+        applyMiniSize(parent);
         
         birdsEyeDisplay.addListener(SWT.MouseDown, new Listener() {
 
@@ -156,7 +156,7 @@ public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
         settingsComposite.setLayout(new GridLayout(1, false));
 //        addBorder(settingsComposite);
         
-        applySmallSize(settingsComposite);
+        applyMiniSize(settingsComposite);
         
         Label label = new Label(settingsComposite, SWT.NONE);
         label.setText("Working sets to show:");
@@ -196,7 +196,7 @@ public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
         if (entry.isFile())
             return factory.createLeaf(entry, prefix + entry.getName());
         String name = entry.getName();
-        if (Pattern.compile("^([._](git|svn|darcs)|CVS)$").matcher(name).find())
+        if (YsFileUtils.isBogusFile(name))
             return null;
         File[] files = entry.listFiles();
         Collection<Node> children;
@@ -213,7 +213,7 @@ public class BirdsEyeView extends ViewPart implements BirdsEyeListener {
         else
             return new Container(children);
     }
-    
+
     @Override
     public void setFocus() {
         birdsEyeDisplay.setFocus();
