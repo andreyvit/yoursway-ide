@@ -6,6 +6,7 @@ import static com.yoursway.swt.additions.YsSwtUtils.centerShellOnNearestMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -17,6 +18,9 @@ import com.yoursway.ide.application.view.View;
 import com.yoursway.ide.application.view.ViewCallback;
 import com.yoursway.ide.application.view.ViewDefinition;
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
+import com.yoursway.ide.application.view.mainwindow.EditorWindow;
+import com.yoursway.ide.application.view.mainwindow.EditorWindowCallback;
+import com.yoursway.ide.application.view.mainwindow.EditorWindowModel;
 import com.yoursway.ide.application.view.mainwindow.MainWindow;
 import com.yoursway.ide.application.view.mainwindow.MainWindowArea;
 import com.yoursway.ide.application.view.mainwindow.MainWindowAreas;
@@ -32,7 +36,6 @@ public class MainWindowImpl implements MainWindow {
     private Shell shell;
     private Composite projectComposite;
     private CTabFolder tabFolder;
-    private CTabItem tabItem;
     private final MainWindowAreas areas;
     private final ViewDefinitionFactory viewDefinitions;
     
@@ -57,11 +60,7 @@ public class MainWindowImpl implements MainWindow {
         shell.setLayout(new FormLayout());
         
         projectComposite = new Composite(shell, SWT.NONE);
-        formDataOf(projectComposite).left(0).right(0, 150).top(0).bottom(100);
-        
-        //        ViewSite projectListSite = viewSites.findOneByRole(ViewSiteRole.PROJECT_LIST);
-        //        if (projectListSite != null)
-        //            new 
+        formDataOf(projectComposite).left(0).right(0, 170).top(0).bottom(100);
         
         tabFolder = new CTabFolder(shell, SWT.TOP | SWT.CLOSE);
         //        tabFolder = new TabFolder(shell, SWT.TOP);
@@ -71,32 +70,17 @@ public class MainWindowImpl implements MainWindow {
         tabFolder.setMRUVisible(false); // no-no-no, David Blane, no-no-no
         tabFolder.setSimple(true); // no fancy space-eating curves
         
-        tabItem = new CTabItem(tabFolder, SWT.NONE);
-        tabItem.setText("application.rb");
-        
-        tabItem = new CTabItem(tabFolder, SWT.NONE);
-        tabItem.setText("application.rb");
-        
-        tabItem = new CTabItem(tabFolder, SWT.NONE);
-        tabItem.setText("application.rb");
-        
-        tabItem = new CTabItem(tabFolder, SWT.NONE);
-        tabItem.setText("application.rb");
-        
-        //        helloLabel = new Label(shell, SWT.NONE);
-        
         new SwtUpdater(shell) {
             protected void updateControl() {
                 shell.setText(windowModel.projectLocation().getValue() + " - "
                         + windowModel.projectType().getValue().getDescriptiveName());
-                //                helloLabel.setText("Hello, world to " + windowModel.projectLocation().getValue().getName() + "!");
-                
-                // needed for the text to be visible 
                 shell.layout();
             }
         };
         
-        shell.setSize(600, 300);
+        // TODO: remember which monitor the window was in, and reopen it there
+        Rectangle bounds = display.getPrimaryMonitor().getBounds();
+        shell.setSize(bounds.width * 2 / 3, bounds.height * 2 / 3);
     }
     
     public MainWindowAreas definition() {
@@ -126,6 +110,10 @@ public class MainWindowImpl implements MainWindow {
     public void open() {
         centerShellOnNearestMonitor(shell);
         shell.open();
+    }
+
+    public EditorWindow createEditorWindow(EditorWindowModel model, EditorWindowCallback callback) {
+        return new EditorWindowImpl(model, callback, tabFolder);
     }
     
 }

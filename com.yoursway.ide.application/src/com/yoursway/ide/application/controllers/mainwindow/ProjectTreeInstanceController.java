@@ -1,5 +1,7 @@
 package com.yoursway.ide.application.controllers.mainwindow;
 
+import java.io.File;
+
 import com.yoursway.ide.application.model.Project;
 
 public class ProjectTreeInstanceController implements ProjectTreeViewCallback {
@@ -13,6 +15,10 @@ public class ProjectTreeInstanceController implements ProjectTreeViewCallback {
         this.project = project;
         this.view = viewFactory.bind(this);
         view.show(project);
+    }
+
+    public void openFile(File file) {
+        project.openDocument(file);
     }
     
 }

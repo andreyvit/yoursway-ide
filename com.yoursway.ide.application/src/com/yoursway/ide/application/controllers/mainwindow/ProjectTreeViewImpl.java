@@ -7,6 +7,9 @@ import static com.yoursway.utils.YsFileUtils.isBogusFile;
 import java.io.File;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -61,6 +64,15 @@ public class ProjectTreeViewImpl implements ProjectTreeView {
                 return !isBogusFile(file.getName());
             }
             
+        });
+        treeViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                File file = (File) selection.getFirstElement();
+                if (file != null) {
+                    callback.openFile(file);
+                }
+            }
         });
     }
 
