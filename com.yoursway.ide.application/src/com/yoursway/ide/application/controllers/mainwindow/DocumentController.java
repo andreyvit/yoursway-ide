@@ -1,5 +1,6 @@
 package com.yoursway.ide.application.controllers.mainwindow;
 
+import com.google.common.base.Function;
 import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowCallback;
@@ -9,8 +10,12 @@ public class DocumentController implements EditorWindowCallback {
 
     private EditorWindowModelImpl viewModel;
     private EditorWindow editor;
+    private final Document document;
 
     public DocumentController(Document document, EditorWindowFactory factory) {
+        if (document == null)
+            throw new NullPointerException("document is null");
+        this.document = document;
         viewModel = new EditorWindowModelImpl();
         editor = factory.createEditorWindow(viewModel, this);
         
@@ -24,6 +29,22 @@ public class DocumentController implements EditorWindowCallback {
         });
         
         viewModel.title.setValue(document.file().getName());
+    }
+    
+    public Document document() {
+        return document;
+    }
+    
+    public static final Function<DocumentController, Document> GET_DOCUMENT = new Function<DocumentController, Document>() {
+
+        public Document apply(DocumentController from) {
+            return from.document();
+        }
+        
+    };
+
+    public void activateEditor() {
+        editor.activateEditor();
     }
     
 }

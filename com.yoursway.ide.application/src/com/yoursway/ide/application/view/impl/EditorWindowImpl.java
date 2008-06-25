@@ -16,6 +16,7 @@ public class EditorWindowImpl implements EditorWindow {
     private final EditorWindowModel model;
     private CTabItem item;
     private Composite composite;
+    private final CTabFolder tabFolder;
 
     public EditorWindowImpl(EditorWindowModel model, EditorWindowCallback callback, CTabFolder tabFolder) {
         if (model == null)
@@ -27,11 +28,12 @@ public class EditorWindowImpl implements EditorWindow {
         
         this.model = model;
         this.callback = callback;
+        this.tabFolder = tabFolder;
         item = new CTabItem(tabFolder, SWT.NONE);
         composite = new Composite(tabFolder, SWT.NONE);
         item.setControl(composite);
         update(tabFolder);
-        tabFolder.setSelection(item);
+        activateEditor();
     }
 
     private void update(CTabFolder tabFolder) {
@@ -44,6 +46,10 @@ public class EditorWindowImpl implements EditorWindow {
 
     public Composite composite() {
         return composite;
+    }
+
+    public void activateEditor() {
+        tabFolder.setSelection(item);
     }
     
 }

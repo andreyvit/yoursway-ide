@@ -5,6 +5,7 @@ import static com.yoursway.ide.application.model.DocumentAdditionReason.OPENED;
 import static com.yoursway.utils.Listeners.newListenersByIdentity;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 import com.yoursway.ide.application.model.projects.types.ProjectType;
@@ -27,7 +28,7 @@ public class Project implements DocumentOwner {
     public synchronized void removeListener(ProjectListener listener) {
         listeners.remove(listener);
     }
-
+    
     public Project(ProjectOwner owner, ProjectType type, File location) {
         if (owner == null)
             throw new NullPointerException("owner is null");
@@ -50,12 +51,30 @@ public class Project implements DocumentOwner {
     }
     
     public void openDocument(File file) {
-        addDocument(new Document(this, file), OPENED);
+        Document document = findDocument(file);
+        if (document == null)
+            addDocument(new Document(this, file), OPENED);
+        else
+            for(ProjectListener listener : listeners)
+                listener.documentAlreadyOpen(document);
+            
     }
-
+    
+    private Document findDocument(File file) {
+        for (Document document : documents)
+            try {
+                if (document.file().getCanonicalFile().equals(file.getCanonicalFile()))
+                    return document;
+            } catch (IOException e) {
+                if (document.file().getAbsoluteFile().equals(file.getAbsolutePath()))
+                    return document;
+            }
+        return null;
+    }
+    
     private void addDocument(Document document, DocumentAdditionReason reason) {
         documents.add(document);
-        for(ProjectListener listener : listeners)
+        for (ProjectListener listener : listeners)
             listener.documentAdded(document, reason);
     }
     
