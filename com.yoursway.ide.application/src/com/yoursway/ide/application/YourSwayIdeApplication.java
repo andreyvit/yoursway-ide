@@ -20,7 +20,7 @@ public class YourSwayIdeApplication implements IApplication {
         ApplicationModel model = new ApplicationModel(platformSupport.defaultProjectsLocation());
         model.registerProjectType(new RailsProjectType());
         
-        ApplicationController controller = new ApplicationController(model,
+        ApplicationController controller = new ApplicationController(platformSupport, model,
                 new ApplicationPresentationFactoryImpl());
         
         controller.run();
