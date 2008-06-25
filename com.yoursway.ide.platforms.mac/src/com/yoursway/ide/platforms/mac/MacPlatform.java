@@ -21,7 +21,7 @@ public abstract class MacPlatform implements PlatformSupport {
     
     public File defaultProjectsLocation() {
         try {
-            return homeFolder();
+            return new File(homeFolder(), "Documents");
         } catch (FolderNotAvailable e) {
             // TODO: log a warning about the problem with the home folder
             e.printStackTrace();
