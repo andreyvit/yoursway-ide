@@ -28,6 +28,10 @@ public abstract class AbstractCommand implements Command {
             return singletonList(handlerContract);
     }
     
+    public boolean invokeSpecificHandler(Handler handler) {
+        return false;
+    }
+
     private static String interfaceToName(Class<? extends Handler> handlerContract) {
         String name = simpleNameOf(handlerContract);
         name = name.replaceAll("^HandlerOf", "");

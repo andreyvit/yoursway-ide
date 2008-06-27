@@ -5,9 +5,9 @@ import static com.yoursway.utils.YsStrings.emptyToNullWithTrim;
 import java.io.File;
 import java.io.IOException;
 
-import com.yoursway.ide.platforms.api.PlatformSupport;
+import com.yoursway.ide.platforms.api.AbstractPlatform;
 
-public abstract class MacPlatform implements PlatformSupport {
+public abstract class MacPlatform extends AbstractPlatform {
     
     protected File homeFolder() throws FolderNotAvailable {
         String home = emptyToNullWithTrim(System.getProperty("user.home"));

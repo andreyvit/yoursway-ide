@@ -10,4 +10,6 @@ public interface PlatformSupport {
     
     GlobalMenuSupport globalMenuSupport();
     
+    NativeGlobalAlerts nativeGlobalAlerts();
+    
 }

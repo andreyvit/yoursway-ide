@@ -77,5 +77,11 @@ public class Project implements DocumentOwner {
         for (ProjectListener listener : listeners)
             listener.documentAdded(document, reason);
     }
+
+    public void close() {
+        owner.closeProject(this);
+        for (ProjectListener listener : listeners)
+            listener.closed();
+    }
     
 }

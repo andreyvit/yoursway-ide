@@ -5,5 +5,7 @@ public interface ProjectListener {
     void documentAdded(Document document, DocumentAdditionReason reason);
 
     void documentAlreadyOpen(Document document);
+
+    void closed();
     
 }

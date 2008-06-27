@@ -76,5 +76,9 @@ public class ApplicationModel implements ProjectOwner {
                 Bugs.listenerFailed(e, listener, "Adding project " + project + " (reason " + reason + ")");
             }
     }
+
+    public void closeProject(Project project) {
+        projects.remove(project);
+    }
     
 }

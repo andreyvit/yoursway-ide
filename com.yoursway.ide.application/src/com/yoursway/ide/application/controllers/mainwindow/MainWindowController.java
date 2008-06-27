@@ -9,6 +9,9 @@ import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.model.DocumentAdditionReason;
 import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.model.ProjectListener;
+import com.yoursway.ide.application.view.impl.ApplicationCommands;
+import com.yoursway.ide.application.view.impl.commands.Command;
+import com.yoursway.ide.application.view.impl.commands.Handler;
 import com.yoursway.ide.application.view.mainwindow.MainWindow;
 import com.yoursway.ide.application.view.mainwindow.MainWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.MainWindowFactory;
@@ -21,6 +24,7 @@ public class MainWindowController extends AbstractController implements MainWind
     
     private IntrusiveMap<Document, DocumentController> docsToControllers = newIntrusiveHashMap(DocumentController.GET_DOCUMENT);
     private final Context context;
+    private final Project project;
     
     public MainWindowController(Project project, MainWindowFactory presentation, Context context,
             ApplicationViewsDefinition viewsDefinition) {
@@ -32,6 +36,7 @@ public class MainWindowController extends AbstractController implements MainWind
             throw new NullPointerException("context is null");
         if (viewsDefinition == null)
             throw new NullPointerException("viewsDefinition is null");
+        this.project = project;
         this.context = new Context(this, context);
         this.windowModel = new MainWindowModelImpl();
         windowModel.projectLocation.setValue(project.getLocation());
@@ -43,9 +48,23 @@ public class MainWindowController extends AbstractController implements MainWind
         
         new ProjectTreeController(window, viewsDefinition.projectTreeViewDefinition, project);
         
+        hook();
+        
         window.open();
     }
     
+    private void hook() {
+        ApplicationCommands commands = new ApplicationCommands();
+        context.addHandler(commands.closeProject, new Handler() {
+
+            public boolean run(Command command) {
+                project.close();
+                return true;
+            }
+            
+        });
+    }
+
     public void documentAdded(Document document, DocumentAdditionReason reason) {
         DocumentController controller = new DocumentController(document, window);
         docsToControllers.add(controller);
@@ -54,6 +73,22 @@ public class MainWindowController extends AbstractController implements MainWind
     public void documentAlreadyOpen(Document document) {
         DocumentController controller = docsToControllers.get(document);
         controller.activateEditor();
+    }
+
+    public void activated() {
+        context.setActive(true);
+    }
+
+    public void deactivated() {
+        context.setActive(false);
+    }
+
+    public void closed() {
+        window.forceClose();
+    }
+
+    public void windowDisposed() {
+        dispose();
     }
     
 }

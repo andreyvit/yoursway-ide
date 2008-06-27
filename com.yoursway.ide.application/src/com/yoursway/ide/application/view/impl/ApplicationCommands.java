@@ -9,58 +9,30 @@ public class ApplicationCommands {
     
     public final Command openDocument = new AbstractCommand("openDocument") {
 
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
-        
     };
     
     public final Command newProject = new AbstractCommand("newProject") {
 
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
-        
     };
     
     public final Command openProject = new AbstractCommand(HandlerOfOpenProject.class) {
 
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
-        
     };
     
     public final Command closeProject = new AbstractCommand("closeProject") {
 
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
-        
     };
     
     public final Command newFile = new AbstractCommand("newFile") {
 
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
-        
     };
     
     public final Command closeFile = new AbstractCommand("closeFile") {
-
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
         
     };
     
     public final Command saveFile = new AbstractCommand("saveFile") {
 
-        public boolean invokeSpecificHandler(Handler handler) {
-            return false;
-        }
-        
     };
     
 }

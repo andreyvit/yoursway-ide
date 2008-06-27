@@ -7,5 +7,7 @@ public interface MainWindow extends ViewFactory, EditorWindowFactory {
     MainWindowAreas definition();
     
     void open();
+
+    void forceClose();
     
 }

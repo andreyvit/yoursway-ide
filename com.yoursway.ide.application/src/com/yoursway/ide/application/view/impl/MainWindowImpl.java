@@ -6,6 +6,8 @@ import static com.yoursway.swt.additions.YsSwtUtils.centerShellOnNearestMonitor;
 import org.eclipse.jface.internal.databinding.provisional.swt.ControlUpdater;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
@@ -60,15 +62,6 @@ public class MainWindowImpl implements MainWindow {
         shell.setData(this);
         shell.setLayout(new FormLayout());
         
-        shell.addShellListener(new ShellAdapter(){
-            public void shellActivated(ShellEvent e) {
-                super.shellActivated(e);
-            }
-            public void shellDeactivated(ShellEvent e) {
-                super.shellDeactivated(e);
-            }
-        });
-        
         projectComposite = new Composite(shell, SWT.NONE);
         formDataOf(projectComposite).left(0).right(0, 170).top(0).bottom(100);
         
@@ -80,6 +73,14 @@ public class MainWindowImpl implements MainWindow {
         tabFolder.setMRUVisible(false); // no-no-no, David Blane, no-no-no
         tabFolder.setSimple(true); // no fancy space-eating curves
         
+        hookEverything(windowModel);
+        
+        // TODO: remember which monitor the window was in, and reopen it there
+        Rectangle bounds = display.getPrimaryMonitor().getBounds();
+        shell.setSize(bounds.width * 2 / 3, bounds.height * 2 / 3);
+    }
+
+    private void hookEverything(final MainWindowModel windowModel) {
         new ControlUpdater(shell) {
             protected void updateControl() {
                 shell.setText(windowModel.projectLocation().getValue() + " - "
@@ -87,10 +88,19 @@ public class MainWindowImpl implements MainWindow {
                 shell.layout();
             }
         };
-        
-        // TODO: remember which monitor the window was in, and reopen it there
-        Rectangle bounds = display.getPrimaryMonitor().getBounds();
-        shell.setSize(bounds.width * 2 / 3, bounds.height * 2 / 3);
+        shell.addShellListener(new ShellAdapter(){
+            public void shellActivated(ShellEvent e) {
+                callback.activated();
+            }
+            public void shellDeactivated(ShellEvent e) {
+                callback.deactivated();
+            }
+        });
+        shell.addDisposeListener(new DisposeListener() {
+            public void widgetDisposed(DisposeEvent e) {
+                callback.windowDisposed();
+            }
+        });
     }
     
     public MainWindowAreas definition() {
@@ -124,6 +134,10 @@ public class MainWindowImpl implements MainWindow {
 
     public EditorWindow createEditorWindow(EditorWindowModel model, EditorWindowCallback callback) {
         return new EditorWindowImpl(model, callback, tabFolder);
+    }
+
+    public void forceClose() {
+        shell.dispose();
     }
     
 }

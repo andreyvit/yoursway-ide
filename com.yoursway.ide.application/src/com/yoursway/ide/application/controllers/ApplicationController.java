@@ -1,6 +1,7 @@
 package com.yoursway.ide.application.controllers;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.core.databinding.observable.Realm;
 
@@ -9,16 +10,19 @@ import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.model.application.ApplicationModel;
 import com.yoursway.ide.application.model.application.ApplicationModelListener;
 import com.yoursway.ide.application.model.application.ProjectAdditionReason;
+import com.yoursway.ide.application.problems.Bugs;
+import com.yoursway.ide.application.problems.Severity;
 import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
 import com.yoursway.ide.application.view.application.ApplicationPresentationFactory;
+import com.yoursway.ide.application.view.impl.ApplicationCommands;
+import com.yoursway.ide.application.view.impl.commands.AbstractHandler;
 import com.yoursway.ide.application.view.impl.commands.Command;
 import com.yoursway.ide.application.view.impl.commands.Handler;
-import com.yoursway.ide.application.view.impl.commands.HandlerOfOpenProject;
 import com.yoursway.ide.platforms.api.PlatformSupport;
 
 public class ApplicationController extends AbstractController implements ApplicationPresentationCallback,
-        ApplicationModelListener, Handler, HandlerOfOpenProject {
+        ApplicationModelListener {
     
     private final ApplicationModel model;
     private final ApplicationPresentation presentation;
@@ -26,8 +30,6 @@ public class ApplicationController extends AbstractController implements Applica
     private final PlatformSupport platformSupport;
     
     private final Context context;
-    
-    private final CommandDispatcher dispatcher;
     
     public ApplicationController(PlatformSupport platformSupport, ApplicationModel model,
             ApplicationPresentationFactory presentationFactory) {
@@ -40,12 +42,34 @@ public class ApplicationController extends AbstractController implements Applica
         this.platformSupport = platformSupport;
         this.model = model;
         this.context = new Context(this);
-        this.dispatcher = new CommandDispatcher(this);
         this.presentation = presentationFactory.createPresentation(this);
         this.viewsDefinition = new ApplicationViewsDefinition(presentation.viewDefinitions(), presentation
                 .mainWindowAreas());
         
         model.addListener(this);
+        
+        hook();
+    }
+
+    private void hook() {
+        // XXX hack - should not create another instance here 
+        ApplicationCommands commands = new ApplicationCommands();
+        context.addHandler(commands.openProject, new Handler() {
+
+            public boolean run(Command command) {
+                File file = presentation.chooseProjectToOpen();
+                if (file != null) {
+                    try {
+                        model.openProject(file);
+                    } catch (Throwable e) {
+                        Bugs.unknownErrorRecovery(Severity.USER_COMMAND_IGNORED, e);
+                        presentation.displayFailedToOpenProjectError(file);
+                    }
+                }
+                return true;
+            }
+            
+        });
     }
     
     public void run() {
@@ -69,7 +93,7 @@ public class ApplicationController extends AbstractController implements Applica
     }
     
     public void execute(Command command) {
-        dispatcher.execute(command);
+        context.execute(command);
     }
     
     public void openProject() {

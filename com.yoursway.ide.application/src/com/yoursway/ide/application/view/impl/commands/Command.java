@@ -4,8 +4,8 @@ import java.util.Collection;
 
 public interface Command {
     
-    boolean invokeSpecificHandler(Handler handler);
-    
     Collection<? extends Object> tags();
+
+    boolean invokeSpecificHandler(Handler handler);
     
 }

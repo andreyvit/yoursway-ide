@@ -69,9 +69,9 @@ public class ProjectTreeViewImpl implements ProjectTreeView {
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 File file = (File) selection.getFirstElement();
-                if (file != null) {
-                    callback.openFile(file);
-                }
+                if (file != null)
+                    if (!file.isDirectory())
+                        callback.openFile(file);
             }
         });
     }

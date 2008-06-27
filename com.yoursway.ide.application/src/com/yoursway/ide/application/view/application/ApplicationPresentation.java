@@ -1,5 +1,7 @@
 package com.yoursway.ide.application.view.application;
 
+import java.io.File;
+
 import org.eclipse.core.databinding.observable.Realm;
 
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
@@ -17,5 +19,9 @@ public interface ApplicationPresentation extends MainWindowFactory {
     ViewDefinitionFactory viewDefinitions();
     
     MainWindowAreas mainWindowAreas();
+
+    File chooseProjectToOpen();
+
+    void displayFailedToOpenProjectError(File file);
     
 }
