@@ -1,9 +1,10 @@
 package com.yoursway.ide.platforms.api;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 
-public interface GlobalMenuSupport extends PlatformSupport {
+public interface GlobalMenuSupport {
 
-    void setGlobalApplicationMenu(Menu menu);
+    void setGlobalApplicationMenu(Display display, Menu menu);
     
 }

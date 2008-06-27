@@ -6,6 +6,8 @@ import static com.yoursway.swt.additions.YsSwtUtils.centerShellOnNearestMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -57,7 +59,17 @@ public class MainWindowImpl implements MainWindow {
         this.viewDefinitions = viewDefinitions;
         
         shell = new Shell(display);
+        shell.setData(this);
         shell.setLayout(new FormLayout());
+        
+        shell.addShellListener(new ShellAdapter(){
+            public void shellActivated(ShellEvent e) {
+                super.shellActivated(e);
+            }
+            public void shellDeactivated(ShellEvent e) {
+                super.shellDeactivated(e);
+            }
+        });
         
         projectComposite = new Composite(shell, SWT.NONE);
         formDataOf(projectComposite).left(0).right(0, 170).top(0).bottom(100);

@@ -6,4 +6,8 @@ public class Bugs {
         error.printStackTrace(System.err);
     }
     
+    public static void illegalCaseRecovery(Severity severity, String description) {
+        System.err.println("[" + severity + "] " + description);
+    }
+    
 }

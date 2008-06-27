@@ -3,8 +3,6 @@ package com.yoursway.ide.application;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
-import com.yoursway.databinding.Realm;
-import com.yoursway.databinding.SWTObservables;
 import com.yoursway.ide.application.controllers.ApplicationController;
 import com.yoursway.ide.application.model.application.ApplicationModel;
 import com.yoursway.ide.application.view.impl.ApplicationPresentationFactoryImpl;
@@ -21,7 +19,7 @@ public class YourSwayIdeApplication implements IApplication {
         model.registerProjectType(new RailsProjectType());
         
         ApplicationController controller = new ApplicationController(platformSupport, model,
-                new ApplicationPresentationFactoryImpl());
+                new ApplicationPresentationFactoryImpl(platformSupport));
         
         controller.run();
         

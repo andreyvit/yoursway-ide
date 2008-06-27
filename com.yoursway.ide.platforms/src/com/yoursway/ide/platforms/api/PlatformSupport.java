@@ -8,4 +8,6 @@ public interface PlatformSupport {
     
     LastWindowCloseBehavior conventionalLastWindowCloseBehavior();
     
+    GlobalMenuSupport globalMenuSupport();
+    
 }

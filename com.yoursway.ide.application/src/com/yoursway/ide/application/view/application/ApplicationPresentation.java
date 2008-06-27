@@ -1,6 +1,7 @@
 package com.yoursway.ide.application.view.application;
 
-import com.yoursway.databinding.Realm;
+import org.eclipse.core.databinding.observable.Realm;
+
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
 import com.yoursway.ide.application.view.mainwindow.MainWindowAreas;
 import com.yoursway.ide.application.view.mainwindow.MainWindowFactory;

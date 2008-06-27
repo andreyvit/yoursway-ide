@@ -7,10 +7,13 @@ import com.yoursway.databinding.SWTObservables;
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
 import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
+import com.yoursway.ide.application.view.impl.commands.Command;
 import com.yoursway.ide.application.view.mainwindow.MainWindow;
 import com.yoursway.ide.application.view.mainwindow.MainWindowAreas;
 import com.yoursway.ide.application.view.mainwindow.MainWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.MainWindowModel;
+import com.yoursway.ide.platforms.api.GlobalMenuSupport;
+import com.yoursway.ide.platforms.api.PlatformSupport;
 
 public class ApplicationPresentationImpl implements ApplicationPresentation {
     
@@ -22,12 +25,17 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     
     private ViewDefinitionFactory viewDefinitions = new ViewDefinitionFactoryImpl();
 
-    public ApplicationPresentationImpl(ApplicationPresentationCallback callback) {
+    public ApplicationPresentationImpl(ApplicationPresentationCallback callback, PlatformSupport platformSupport) {
         if (callback == null)
             throw new NullPointerException("callback is null");
         this.callback = callback;
         
         display = new Display();
+        
+        GlobalMenuSupport globalMenuSupport = platformSupport.globalMenuSupport();
+        if (globalMenuSupport != null)
+            globalMenuSupport.setGlobalApplicationMenu(display, new ApplicationMenu(display, callback,
+                    new ApplicationCommands()).menu);
     }
     
     public void runEventLoop() {
