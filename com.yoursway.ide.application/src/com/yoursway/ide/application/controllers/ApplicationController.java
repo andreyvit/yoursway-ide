@@ -2,7 +2,8 @@ package com.yoursway.ide.application.controllers;
 
 import java.io.File;
 
-import com.yoursway.databinding.Realm;
+import org.eclipse.core.databinding.observable.Realm;
+
 import com.yoursway.ide.application.controllers.mainwindow.MainWindowController;
 import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.model.application.ApplicationModel;

@@ -1,7 +1,7 @@
 package com.yoursway.ide.application.controllers.mainwindow;
 
-import com.yoursway.databinding.IObservableValue;
-import com.yoursway.databinding.WritableValue;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.WritableValue;
 
 public class DocumentContentWindowModelImpl implements DocumentContentWindowModel {
     

@@ -2,8 +2,9 @@ package com.yoursway.ide.application.controllers.mainwindow;
 
 import java.io.File;
 
-import com.yoursway.databinding.IObservableValue;
-import com.yoursway.databinding.WritableValue;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.WritableValue;
+
 import com.yoursway.ide.application.model.projects.types.ProjectType;
 import com.yoursway.ide.application.view.mainwindow.MainWindowModel;
 

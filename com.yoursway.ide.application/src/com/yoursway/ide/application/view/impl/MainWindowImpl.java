@@ -3,9 +3,9 @@ package com.yoursway.ide.application.view.impl;
 import static com.yoursway.swt.additions.FormDataBuilder.formDataOf;
 import static com.yoursway.swt.additions.YsSwtUtils.centerShellOnNearestMonitor;
 
+import org.eclipse.jface.internal.databinding.provisional.swt.ControlUpdater;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
@@ -14,8 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.yoursway.databinding.SwtUpdater;
-import com.yoursway.ide.application.controllers.mainwindow.ProjectTreeViewImpl;
 import com.yoursway.ide.application.view.View;
 import com.yoursway.ide.application.view.ViewCallback;
 import com.yoursway.ide.application.view.ViewDefinition;
@@ -82,7 +80,7 @@ public class MainWindowImpl implements MainWindow {
         tabFolder.setMRUVisible(false); // no-no-no, David Blane, no-no-no
         tabFolder.setSimple(true); // no fancy space-eating curves
         
-        new SwtUpdater(shell) {
+        new ControlUpdater(shell) {
             protected void updateControl() {
                 shell.setText(windowModel.projectLocation().getValue() + " - "
                         + windowModel.projectType().getValue().getDescriptiveName());

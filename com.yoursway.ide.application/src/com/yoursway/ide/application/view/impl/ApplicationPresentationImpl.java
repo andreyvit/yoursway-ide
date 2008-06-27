@@ -1,13 +1,12 @@
 package com.yoursway.ide.application.view.impl;
 
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.widgets.Display;
 
-import com.yoursway.databinding.Realm;
-import com.yoursway.databinding.SWTObservables;
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
 import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
-import com.yoursway.ide.application.view.impl.commands.Command;
 import com.yoursway.ide.application.view.mainwindow.MainWindow;
 import com.yoursway.ide.application.view.mainwindow.MainWindowAreas;
 import com.yoursway.ide.application.view.mainwindow.MainWindowCallback;

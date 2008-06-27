@@ -1,11 +1,11 @@
 package com.yoursway.ide.application.view.impl;
 
+import org.eclipse.jface.internal.databinding.provisional.swt.ControlUpdater;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
 
-import com.yoursway.databinding.ControlUpdater;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowModel;

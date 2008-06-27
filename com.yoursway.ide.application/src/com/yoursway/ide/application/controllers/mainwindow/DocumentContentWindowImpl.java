@@ -1,11 +1,11 @@
 package com.yoursway.ide.application.controllers.mainwindow;
 
+import org.eclipse.jface.internal.databinding.provisional.swt.ControlUpdater;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import com.yoursway.databinding.ControlUpdater;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 
 public class DocumentContentWindowImpl implements DocumentContentWindow {
