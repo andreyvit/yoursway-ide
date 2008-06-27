@@ -90,5 +90,9 @@ public class MainWindowController extends AbstractController implements MainWind
     public void windowDisposed() {
         dispose();
     }
+
+    public void execute(Command command) {
+        context.execute(command);
+    }
     
 }

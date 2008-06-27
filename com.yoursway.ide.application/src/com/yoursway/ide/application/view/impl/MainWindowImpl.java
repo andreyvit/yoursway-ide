@@ -20,6 +20,7 @@ import com.yoursway.ide.application.view.View;
 import com.yoursway.ide.application.view.ViewCallback;
 import com.yoursway.ide.application.view.ViewDefinition;
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
+import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowModel;
@@ -42,7 +43,7 @@ public class MainWindowImpl implements MainWindow {
     private final ViewDefinitionFactory viewDefinitions;
     
     public MainWindowImpl(Display display, final MainWindowModel windowModel, MainWindowCallback callback,
-            MainWindowAreas areas, ViewDefinitionFactory viewDefinitions) {
+            MainWindowAreas areas, ViewDefinitionFactory viewDefinitions, boolean addMenu) {
         if (display == null)
             throw new NullPointerException("display is null");
         if (windowModel == null)
@@ -61,6 +62,9 @@ public class MainWindowImpl implements MainWindow {
         shell = new Shell(display);
         shell.setData(this);
         shell.setLayout(new FormLayout());
+        
+        if (addMenu)
+            shell.setMenuBar(new ApplicationMenu(shell, callback, new ApplicationCommands()).menu);
         
         projectComposite = new Composite(shell, SWT.NONE);
         formDataOf(projectComposite).left(0).right(0, 170).top(0).bottom(100);

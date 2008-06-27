@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.yoursway.ide.application.problems.Severity.USER_COMMAND_IGNORED;
 import static com.yoursway.utils.DebugOutputHelper.simpleNameOf;
+import static com.yoursway.utils.YsStrings.nullToEmpty;
 
 import java.util.Collection;
 import java.util.Map;
@@ -81,6 +82,24 @@ public class Context implements Disposable, PublicContext {
     }
     
     private boolean tryExecute(Command command) {
+        if (tryExecuteWithChildren(command))
+            return true;
+        else if (parent != null)
+            return parent.tryExecuteWithParents(command);
+        else
+            return false;
+    }
+
+    private boolean tryExecuteWithParents(Command command) {
+        if (tryExecuteHere(command))
+            return true;
+        else if (parent != null)
+            return parent.tryExecuteWithParents(command);
+        else 
+            return false;
+    }
+
+    private boolean tryExecuteWithChildren(Command command) {
         for (Context child : activeChildren)
             if (child.tryExecute(command))
                 return true;

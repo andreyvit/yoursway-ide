@@ -5,10 +5,8 @@ import java.io.File;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 import com.yoursway.ide.application.view.ViewDefinitionFactory;
@@ -62,7 +60,8 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     }
 
     public MainWindow createWindow(MainWindowModel windowModel, MainWindowCallback callback) {
-        return new MainWindowImpl(display, windowModel, callback, mainWindowAreas, viewDefinitions);
+        return new MainWindowImpl(display, windowModel, callback, mainWindowAreas, viewDefinitions,
+                platformSupport.globalMenuSupport() == null);
     }
 
     public Realm getDefaultBindingRealm() {

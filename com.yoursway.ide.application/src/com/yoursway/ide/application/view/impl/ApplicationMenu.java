@@ -12,11 +12,16 @@ public class ApplicationMenu {
     public final Menu menu;
 
     public ApplicationMenu(Display display, CommandExecutor target, ApplicationCommands commands) {
+        this(new Shell(display), target, commands);
+    }
+    
+    public ApplicationMenu(Shell shell, CommandExecutor target, ApplicationCommands commands) {
+        if (target == null)
+            throw new NullPointerException("target is null");
         if (commands == null)
             throw new NullPointerException("commands is null");
         this.commands = commands;
-        Shell fakeMenuShell = new Shell(display);
-        MenuBuilder builder = new MenuBuilder(fakeMenuShell, target);
+        MenuBuilder builder = new MenuBuilder(shell, target);
         createFileMenu(builder.submenu("File", 'F'));
         menu = builder.getMenu();
     }

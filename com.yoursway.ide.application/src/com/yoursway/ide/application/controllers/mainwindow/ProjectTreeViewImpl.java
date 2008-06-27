@@ -1,6 +1,5 @@
 package com.yoursway.ide.application.controllers.mainwindow;
 
-import static com.yoursway.swt.additions.YsSwtUtils.applyMiniSize;
 import static com.yoursway.swt.additions.YsSwtUtils.applySmallSize;
 import static com.yoursway.utils.YsFileUtils.isBogusFile;
 
@@ -14,16 +13,12 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.carbon.GDevice;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.yoursway.ide.application.model.Project;
-import com.yoursway.ide.application.view.View;
 import com.yoursway.ide.application.view.ViewPresentation;
 
 public class ProjectTreeViewImpl implements ProjectTreeView {
