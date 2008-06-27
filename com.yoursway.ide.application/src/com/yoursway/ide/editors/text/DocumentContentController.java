@@ -1,12 +1,13 @@
-package com.yoursway.ide.application.controllers.mainwindow;
+package com.yoursway.ide.editors.text;
 
 import static com.yoursway.utils.YsFileUtils.readAsString;
 
 import java.io.IOException;
 
+import com.yoursway.ide.application.controllers.mainwindow.EditorComponent;
 import com.yoursway.ide.application.model.Document;
 
-public class DocumentContentController implements DocumentContentWindowCallback {
+public class DocumentContentController implements DocumentContentWindowCallback, EditorComponent {
 
     private DocumentContentWindow view;
     private final Document document;

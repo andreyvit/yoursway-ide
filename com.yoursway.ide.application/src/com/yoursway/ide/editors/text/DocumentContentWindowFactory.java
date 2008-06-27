@@ -1,4 +1,4 @@
-package com.yoursway.ide.application.controllers.mainwindow;
+package com.yoursway.ide.editors.text;
 
 public interface DocumentContentWindowFactory {
     

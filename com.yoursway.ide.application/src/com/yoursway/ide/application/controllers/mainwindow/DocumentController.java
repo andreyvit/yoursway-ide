@@ -1,10 +1,17 @@
 package com.yoursway.ide.application.controllers.mainwindow;
 
 import com.google.common.base.Function;
+import com.yoursway.ide.application.controllers.EditorRegistry;
 import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowFactory;
+import com.yoursway.ide.editors.text.DocumentContentController;
+import com.yoursway.ide.editors.text.DocumentContentWindow;
+import com.yoursway.ide.editors.text.DocumentContentWindowCallback;
+import com.yoursway.ide.editors.text.DocumentContentWindowFactory;
+import com.yoursway.ide.editors.text.DocumentContentWindowImpl;
+import com.yoursway.ide.editors.text.DocumentContentWindowModel;
 
 public class DocumentController implements EditorWindowCallback {
 
@@ -12,22 +19,14 @@ public class DocumentController implements EditorWindowCallback {
     private EditorWindow editor;
     private final Document document;
 
-    public DocumentController(Document document, EditorWindowFactory factory) {
+    public DocumentController(Document document, EditorWindowFactory factory, EditorRegistry editorRegistry) {
         if (document == null)
             throw new NullPointerException("document is null");
         this.document = document;
         viewModel = new EditorWindowModelImpl();
         editor = factory.createEditorWindow(viewModel, this);
         
-        new DocumentContentController(document, new DocumentContentWindowFactory() {
-
-            public DocumentContentWindow bind(DocumentContentWindowModel model,
-                    DocumentContentWindowCallback callback) {
-                return new DocumentContentWindowImpl(model, callback, editor);
-            }
-            
-        });
-        
+        editorRegistry.createComponentFor(document, editor);
         viewModel.title.setValue(document.file().getName());
     }
     

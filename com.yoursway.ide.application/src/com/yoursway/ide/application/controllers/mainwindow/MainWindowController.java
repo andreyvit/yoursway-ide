@@ -5,6 +5,7 @@ import static com.yoursway.utils.instrusive.IntrusiveMaps.newIntrusiveHashMap;
 import com.yoursway.ide.application.controllers.AbstractController;
 import com.yoursway.ide.application.controllers.ApplicationViewsDefinition;
 import com.yoursway.ide.application.controllers.Context;
+import com.yoursway.ide.application.controllers.EditorRegistry;
 import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.model.DocumentAdditionReason;
 import com.yoursway.ide.application.model.Project;
@@ -25,9 +26,10 @@ public class MainWindowController extends AbstractController implements MainWind
     private IntrusiveMap<Document, DocumentController> docsToControllers = newIntrusiveHashMap(DocumentController.GET_DOCUMENT);
     private final Context context;
     private final Project project;
+    private final EditorRegistry editorRegistry;
     
     public MainWindowController(Project project, MainWindowFactory presentation, Context context,
-            ApplicationViewsDefinition viewsDefinition) {
+            ApplicationViewsDefinition viewsDefinition, EditorRegistry editorRegistry) {
         if (project == null)
             throw new NullPointerException("project is null");
         if (presentation == null)
@@ -36,9 +38,12 @@ public class MainWindowController extends AbstractController implements MainWind
             throw new NullPointerException("context is null");
         if (viewsDefinition == null)
             throw new NullPointerException("viewsDefinition is null");
+        if (editorRegistry == null)
+            throw new NullPointerException("editorRegistry is null");
         this.project = project;
         this.context = new Context(this, context);
         this.windowModel = new MainWindowModelImpl();
+        this.editorRegistry = editorRegistry;
         windowModel.projectLocation.setValue(project.getLocation());
         windowModel.projectType.setValue(project.getType());
         
@@ -66,7 +71,7 @@ public class MainWindowController extends AbstractController implements MainWind
     }
 
     public void documentAdded(Document document, DocumentAdditionReason reason) {
-        DocumentController controller = new DocumentController(document, window);
+        DocumentController controller = new DocumentController(document, window, editorRegistry);
         docsToControllers.add(controller);
     }
     

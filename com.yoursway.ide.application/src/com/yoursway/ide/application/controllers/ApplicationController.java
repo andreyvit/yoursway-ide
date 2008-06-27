@@ -30,23 +30,29 @@ public class ApplicationController extends AbstractController implements Applica
     private final PlatformSupport platformSupport;
     
     private final Context context;
+    private final EditorRegistry editorRegistry;
     
     public ApplicationController(PlatformSupport platformSupport, ApplicationModel model,
-            ApplicationPresentationFactory presentationFactory) {
+            ApplicationPresentationFactory presentationFactory, EditorRegistry editorRegistry) {
         if (platformSupport == null)
             throw new NullPointerException("platformSupport is null");
         if (model == null)
             throw new NullPointerException("model is null");
         if (presentationFactory == null)
             throw new NullPointerException("presentationFactory is null");
+        if (editorRegistry == null)
+            throw new NullPointerException("editorRegistry is null");
         this.platformSupport = platformSupport;
         this.model = model;
         this.context = new Context(this);
         this.presentation = presentationFactory.createPresentation(this);
+        this.editorRegistry = editorRegistry;
         this.viewsDefinition = new ApplicationViewsDefinition(presentation.viewDefinitions(), presentation
                 .mainWindowAreas());
         
         model.addListener(this);
+        
+//        registry
         
         hook();
     }
@@ -89,7 +95,7 @@ public class ApplicationController extends AbstractController implements Applica
     }
     
     public void projectAdded(Project project, ProjectAdditionReason reason) {
-        new MainWindowController(project, presentation, context, viewsDefinition);
+        new MainWindowController(project, presentation, context, viewsDefinition, editorRegistry);
     }
     
     public void execute(Command command) {
