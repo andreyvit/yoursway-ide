@@ -33,5 +33,4 @@ Export-Package: com.mkalugin.corchy.internal.ui.location,
  com.yoursway.ide.application.view.impl.commands,
  com.yoursway.ide.application.view.mainwindow,
  com.yoursway.ide.editors.text,
- com.yoursway.ide.rails.projects,
- com.yoursway.utils.disposable
+ com.yoursway.ide.rails.projects
