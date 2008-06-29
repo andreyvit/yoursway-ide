@@ -18,8 +18,6 @@ public interface ApplicationPresentation extends MainWindowFactory {
     
     ViewDefinitionFactory viewDefinitions();
     
-    MainWindowAreas mainWindowAreas();
-
     File chooseProjectToOpen();
 
     void displayFailedToOpenProjectError(File file);

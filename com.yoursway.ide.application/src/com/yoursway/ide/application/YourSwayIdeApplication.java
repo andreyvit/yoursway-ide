@@ -5,12 +5,14 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 import com.yoursway.ide.application.controllers.ApplicationController;
 import com.yoursway.ide.application.controllers.EditorRegistry;
+import com.yoursway.ide.application.controllers.ViewRegistry;
 import com.yoursway.ide.application.model.application.ApplicationModel;
 import com.yoursway.ide.application.view.impl.ApplicationPresentationFactoryImpl;
 import com.yoursway.ide.editors.text.TextEditorComponentType;
 import com.yoursway.ide.platforms.api.PlatformSupport;
 import com.yoursway.ide.platforms.api.PlatformUtilities;
 import com.yoursway.ide.rails.projects.RailsProjectType;
+import com.yoursway.ide.views.project.ProjectTreeComponentFactoryFactory;
 
 public class YourSwayIdeApplication implements IApplication {
     
@@ -23,9 +25,12 @@ public class YourSwayIdeApplication implements IApplication {
         EditorRegistry editorRegistry = new EditorRegistry();
         editorRegistry.add(new TextEditorComponentType());
         
+        ViewRegistry viewRegistry = new ViewRegistry();
+        viewRegistry.add(new ProjectTreeComponentFactoryFactory());
+        
         ApplicationController controller = new ApplicationController(platformSupport, model,
                 new ApplicationPresentationFactoryImpl(platformSupport, new ApplicationMenuFactoryImpl()),
-                editorRegistry);
+                editorRegistry, viewRegistry);
         
         controller.run();
         

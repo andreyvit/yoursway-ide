@@ -1,5 +1,6 @@
-package com.yoursway.ide.application.controllers.mainwindow;
+package com.yoursway.ide.views.project;
 
+import com.yoursway.ide.application.controllers.ViewComponent;
 import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.view.View;
 import com.yoursway.ide.application.view.ViewCallback;
@@ -7,7 +8,7 @@ import com.yoursway.ide.application.view.ViewDefinition;
 import com.yoursway.ide.application.view.ViewFactory;
 import com.yoursway.ide.application.view.ViewPresentation;
 
-public class ProjectTreeController implements ViewCallback {
+public class ProjectTreeController implements ViewCallback, ViewComponent {
     
     private final Project project;
     private final View view;

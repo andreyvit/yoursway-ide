@@ -13,7 +13,6 @@ import com.yoursway.ide.application.view.ViewDefinitionFactory;
 import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
 import com.yoursway.ide.application.view.mainwindow.MainWindow;
-import com.yoursway.ide.application.view.mainwindow.MainWindowAreas;
 import com.yoursway.ide.application.view.mainwindow.MainWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.MainWindowModel;
 import com.yoursway.ide.platforms.api.GlobalMenuSupport;
@@ -25,8 +24,6 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     private Display display;
     
     private final ApplicationPresentationCallback callback;
-    
-    private MainWindowAreas mainWindowAreas = new MainWindowAreas();;
     
     private ViewDefinitionFactory viewDefinitions = new ViewDefinitionFactoryImpl();
     
@@ -50,8 +47,7 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
         
         GlobalMenuSupport globalMenuSupport = platformSupport.globalMenuSupport();
         if (globalMenuSupport != null)
-            globalMenuSupport.setGlobalApplicationMenu(display, 
-                    menuFactory.createMenuFor(display, callback));
+            globalMenuSupport.setGlobalApplicationMenu(display, menuFactory.createMenuFor(display, callback));
     }
     
     public void runEventLoop() {
@@ -66,8 +62,8 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     }
     
     public MainWindow createWindow(MainWindowModel windowModel, MainWindowCallback callback) {
-        return new MainWindowImpl(display, windowModel, callback, mainWindowAreas, viewDefinitions,
-                platformSupport.globalMenuSupport() == null ? menuFactory : null);
+        return new MainWindowImpl(display, windowModel, callback, viewDefinitions, platformSupport
+                .globalMenuSupport() == null ? menuFactory : null);
     }
     
     public Realm getDefaultBindingRealm() {
@@ -76,10 +72,6 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     
     public ViewDefinitionFactory viewDefinitions() {
         return viewDefinitions;
-    }
-    
-    public MainWindowAreas mainWindowAreas() {
-        return mainWindowAreas;
     }
     
     public File chooseProjectToOpen() {

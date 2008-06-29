@@ -1,4 +1,4 @@
-package com.yoursway.ide.application.controllers.mainwindow;
+package com.yoursway.ide.views.project;
 
 import com.yoursway.ide.application.model.Project;
 

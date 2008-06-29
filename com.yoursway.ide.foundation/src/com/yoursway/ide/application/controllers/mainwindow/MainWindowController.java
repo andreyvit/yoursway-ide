@@ -3,9 +3,9 @@ package com.yoursway.ide.application.controllers.mainwindow;
 import static com.yoursway.utils.instrusive.IntrusiveMaps.newIntrusiveHashMap;
 
 import com.yoursway.ide.application.controllers.AbstractController;
-import com.yoursway.ide.application.controllers.ApplicationViewsDefinition;
 import com.yoursway.ide.application.controllers.Context;
 import com.yoursway.ide.application.controllers.EditorRegistry;
+import com.yoursway.ide.application.controllers.ViewRegistry2;
 import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.model.DocumentAdditionReason;
 import com.yoursway.ide.application.model.Project;
@@ -29,15 +29,15 @@ public class MainWindowController extends AbstractController implements MainWind
     private final EditorRegistry editorRegistry;
     
     public MainWindowController(Project project, MainWindowFactory presentation, Context context,
-            ApplicationViewsDefinition viewsDefinition, EditorRegistry editorRegistry) {
+            ViewRegistry2 viewRegistry, EditorRegistry editorRegistry) {
         if (project == null)
             throw new NullPointerException("project is null");
         if (presentation == null)
             throw new NullPointerException("presentation is null");
         if (context == null)
             throw new NullPointerException("context is null");
-        if (viewsDefinition == null)
-            throw new NullPointerException("viewsDefinition is null");
+        if (viewRegistry == null)
+            throw new NullPointerException("viewRegistry is null");
         if (editorRegistry == null)
             throw new NullPointerException("editorRegistry is null");
         this.project = project;
@@ -51,7 +51,7 @@ public class MainWindowController extends AbstractController implements MainWind
         
         project.addListener(this);
         
-        new ProjectTreeController(window, viewsDefinition.projectTreeViewDefinition, project);
+        viewRegistry.implement(project, window);
         
         hook();
         

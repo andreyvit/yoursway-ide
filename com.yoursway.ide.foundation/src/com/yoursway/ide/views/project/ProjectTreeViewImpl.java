@@ -1,4 +1,4 @@
-package com.yoursway.ide.application.controllers.mainwindow;
+package com.yoursway.ide.views.project;
 
 import static com.yoursway.swt.additions.YsSwtUtils.applySmallSize;
 import static com.yoursway.utils.YsFileUtils.isBogusFile;
@@ -18,6 +18,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import com.yoursway.ide.application.controllers.mainwindow.FileContentProvider;
+import com.yoursway.ide.application.controllers.mainwindow.FileLabelProvider;
 import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.view.ViewPresentation;
 

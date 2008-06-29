@@ -1,7 +1,6 @@
 package com.yoursway.ide.application.controllers;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.eclipse.core.databinding.observable.Realm;
 
@@ -14,7 +13,6 @@ import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
 import com.yoursway.ide.application.view.application.ApplicationPresentationFactory;
 import com.yoursway.ide.application.view.impl.ApplicationCommands;
-import com.yoursway.ide.application.view.impl.commands.AbstractHandler;
 import com.yoursway.ide.application.view.impl.commands.Command;
 import com.yoursway.ide.application.view.impl.commands.Handler;
 import com.yoursway.ide.platforms.api.PlatformSupport;
@@ -26,14 +24,15 @@ public class ApplicationController extends AbstractController implements Applica
     
     private final ApplicationModel model;
     private final ApplicationPresentation presentation;
-    private final ApplicationViewsDefinition viewsDefinition;
     private final PlatformSupport platformSupport;
     
     private final Context context;
     private final EditorRegistry editorRegistry;
+    private ViewRegistry2 viewRegistry;
     
     public ApplicationController(PlatformSupport platformSupport, ApplicationModel model,
-            ApplicationPresentationFactory presentationFactory, EditorRegistry editorRegistry) {
+            ApplicationPresentationFactory presentationFactory, EditorRegistry editorRegistry,
+            ViewRegistry viewRegistry) {
         if (platformSupport == null)
             throw new NullPointerException("platformSupport is null");
         if (model == null)
@@ -47,8 +46,7 @@ public class ApplicationController extends AbstractController implements Applica
         this.context = new Context(this);
         this.presentation = presentationFactory.createPresentation(this);
         this.editorRegistry = editorRegistry;
-        this.viewsDefinition = new ApplicationViewsDefinition(presentation.viewDefinitions(), presentation
-                .mainWindowAreas());
+        this.viewRegistry = viewRegistry.instantiate(presentation.viewDefinitions());
         
         model.addListener(this);
         
@@ -93,7 +91,7 @@ public class ApplicationController extends AbstractController implements Applica
     }
     
     public void projectAdded(Project project, ProjectAdditionReason reason) {
-        new MainWindowController(project, presentation, context, viewsDefinition, editorRegistry);
+        new MainWindowController(project, presentation, context, viewRegistry, editorRegistry);
     }
     
     public void execute(Command command) {

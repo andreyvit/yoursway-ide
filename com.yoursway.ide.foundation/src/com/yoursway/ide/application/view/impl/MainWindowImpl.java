@@ -38,24 +38,20 @@ public class MainWindowImpl implements MainWindow {
     private Shell shell;
     private Composite projectComposite;
     private CTabFolder tabFolder;
-    private final MainWindowAreas areas;
     private final ViewDefinitionFactory viewDefinitions;
     
     public MainWindowImpl(Display display, final MainWindowModel windowModel, MainWindowCallback callback,
-            MainWindowAreas areas, ViewDefinitionFactory viewDefinitions, ApplicationMenuFactory menuFactory) {
+            ViewDefinitionFactory viewDefinitions, ApplicationMenuFactory menuFactory) {
         if (display == null)
             throw new NullPointerException("display is null");
         if (windowModel == null)
             throw new NullPointerException("windowModel is null");
         if (callback == null)
             throw new NullPointerException("callback is null");
-        if (areas == null)
-            throw new NullPointerException("areas is null");
         if (viewDefinitions == null)
             throw new NullPointerException("viewDefinitions is null");
         this.windowModel = windowModel;
         this.callback = callback;
-        this.areas = areas;
         this.viewDefinitions = viewDefinitions;
         
         shell = new Shell(display);
