@@ -6,12 +6,6 @@ import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowCallback;
 import com.yoursway.ide.application.view.mainwindow.EditorWindowFactory;
-import com.yoursway.ide.editors.text.DocumentContentController;
-import com.yoursway.ide.editors.text.DocumentContentWindow;
-import com.yoursway.ide.editors.text.DocumentContentWindowCallback;
-import com.yoursway.ide.editors.text.DocumentContentWindowFactory;
-import com.yoursway.ide.editors.text.DocumentContentWindowImpl;
-import com.yoursway.ide.editors.text.DocumentContentWindowModel;
 
 public class DocumentController implements EditorWindowCallback {
 
