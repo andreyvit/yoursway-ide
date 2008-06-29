@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Application Plug-in
-Bundle-SymbolicName: com.yoursway.ide.application;singleton:=true
+Bundle-Name: Texteditor Plug-in
+Bundle-SymbolicName: com.yoursway.ide.texteditor
 Bundle-Version: 1.0.0
-Bundle-Activator: com.yoursway.ide.application.internal.Activator
+Bundle-Activator: com.yoursway.ide.texteditor.Activator
 Bundle-Vendor: YOURSWAY
 Require-Bundle: com.yoursway.swt.additions;bundle-version="1.0.0",
  com.yoursway.utils;bundle-version="1.0.0",
@@ -17,11 +17,7 @@ Require-Bundle: com.yoursway.swt.additions;bundle-version="1.0.0",
  org.eclipse.osgi;bundle-version="3.4.0",
  org.eclipse.jface;bundle-version="3.4.0",
  org.eclipse.equinox.app;bundle-version="1.1.0",
- com.yoursway.ide.foundation;bundle-version="1.0.0",
- com.yoursway.ide.texteditor;bundle-version="1.0.0"
+ com.yoursway.ide.foundation;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: com.mkalugin.corchy.internal.ui.location,
- com.mkalugin.corchy.ui.core.preference,
- com.yoursway.ide.application,
- com.yoursway.ide.rails.projects
+Export-Package: com.yoursway.ide.editors.text
