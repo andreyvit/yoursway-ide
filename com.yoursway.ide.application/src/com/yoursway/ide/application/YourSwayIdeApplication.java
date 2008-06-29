@@ -24,7 +24,8 @@ public class YourSwayIdeApplication implements IApplication {
         editorRegistry.add(new TextEditorComponentType());
         
         ApplicationController controller = new ApplicationController(platformSupport, model,
-                new ApplicationPresentationFactoryImpl(platformSupport), editorRegistry);
+                new ApplicationPresentationFactoryImpl(platformSupport, new ApplicationMenuFactoryImpl()),
+                editorRegistry);
         
         controller.run();
         

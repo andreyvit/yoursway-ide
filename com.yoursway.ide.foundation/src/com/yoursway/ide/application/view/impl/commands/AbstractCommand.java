@@ -21,6 +21,11 @@ public abstract class AbstractCommand implements Command {
         this.handlerContract = null;
     }
     
+    public AbstractCommand() {
+        this.debuggingName = commandToName(getClass());
+        this.handlerContract = null;
+    }
+    
     public Collection<? extends Object> tags() {
         if (handlerContract == null)
             return emptyList();
@@ -37,6 +42,13 @@ public abstract class AbstractCommand implements Command {
         name = name.replaceAll("^HandlerOf", "");
         name = name.replaceAll("^Handler", "");
         name = name.replaceAll("Handler$", "");
+        name.replaceAll("([A-Z])", " $1");
+        return name.trim();
+    }
+    
+    private static String commandToName(Class<?> commandClass) {
+        String name = simpleNameOf(commandClass);
+        name = name.replaceAll("Command$", "");
         name.replaceAll("([A-Z])", " $1");
         return name.trim();
     }

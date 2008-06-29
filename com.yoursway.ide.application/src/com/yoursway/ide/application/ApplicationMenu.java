@@ -1,38 +1,42 @@
-package com.yoursway.ide.application.view.impl;
+package com.yoursway.ide.application;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
+import com.yoursway.ide.application.view.impl.ApplicationCommands;
+import com.yoursway.ide.application.view.impl.CommandExecutor;
+import com.yoursway.ide.application.view.impl.MenuBuilder;
+
 public class ApplicationMenu {
     
-    private final ApplicationCommands commands;
-    
-    public final Menu menu;
+    private final Menu menu;
 
-    public ApplicationMenu(Display display, CommandExecutor target, ApplicationCommands commands) {
-        this(new Shell(display), target, commands);
+    public ApplicationMenu(Display display, CommandExecutor target) {
+        this(new Shell(display), target);
     }
     
-    public ApplicationMenu(Shell shell, CommandExecutor target, ApplicationCommands commands) {
+    public ApplicationMenu(Shell shell, CommandExecutor target) {
         if (target == null)
             throw new NullPointerException("target is null");
-        if (commands == null)
-            throw new NullPointerException("commands is null");
-        this.commands = commands;
         MenuBuilder builder = new MenuBuilder(shell, target);
         createFileMenu(builder.submenu("File", 'F'));
         menu = builder.getMenu();
     }
     
     void createFileMenu(final MenuBuilder builder) {
-        builder.item("New", SWT.MOD1 + 'N', commands.newFile);
-        builder.item("Open Project...", SWT.MOD1 + 'O', commands.openProject);
+        builder.item("New", SWT.MOD1 + 'N', new ApplicationCommands.NewDocumentCommand());
+        builder.item("New Project", SWT.MOD1 + SWT.SHIFT + 'N', new ApplicationCommands.NewProjectCommand());
+        builder.item("Open Project...", SWT.MOD1 + 'O', new ApplicationCommands.OpenProjectCommand());
         builder.separator();
-        builder.item("Close File", SWT.MOD1 + 'W', commands.closeFile);
-        builder.item("Close Project", SWT.MOD1 + SWT.SHIFT + 'W', commands.closeProject);
-        builder.item("Save As...", SWT.MOD1 + SWT.SHIFT + 'S', commands.saveFile);
+        builder.item("Close File", SWT.MOD1 + 'W', new ApplicationCommands.CloseDocumentCommand());
+        builder.item("Close Project", SWT.MOD1 + SWT.SHIFT + 'W', new ApplicationCommands.CloseProjectCommand());
+        builder.item("Save As...", SWT.MOD1 + SWT.SHIFT + 'S', new ApplicationCommands.SaveFileAsCommand());
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
     
 //  Menu createEditMenu(Shell shell) {

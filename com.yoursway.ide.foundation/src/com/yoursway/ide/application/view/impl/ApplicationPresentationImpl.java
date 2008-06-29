@@ -29,23 +29,29 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     private MainWindowAreas mainWindowAreas = new MainWindowAreas();;
     
     private ViewDefinitionFactory viewDefinitions = new ViewDefinitionFactoryImpl();
-
+    
     private final PlatformSupport platformSupport;
-
-    public ApplicationPresentationImpl(ApplicationPresentationCallback callback, PlatformSupport platformSupport) {
+    
+    private final ApplicationMenuFactory menuFactory;
+    
+    public ApplicationPresentationImpl(ApplicationPresentationCallback callback,
+            PlatformSupport platformSupport, ApplicationMenuFactory menuFactory) {
         if (callback == null)
             throw new NullPointerException("callback is null");
         if (platformSupport == null)
             throw new NullPointerException("platformSupport is null");
+        if (menuFactory == null)
+            throw new NullPointerException("menuFactory is null");
         this.callback = callback;
         this.platformSupport = platformSupport;
+        this.menuFactory = menuFactory;
         
         display = new Display();
         
         GlobalMenuSupport globalMenuSupport = platformSupport.globalMenuSupport();
         if (globalMenuSupport != null)
-            globalMenuSupport.setGlobalApplicationMenu(display, new ApplicationMenu(display, callback,
-                    new ApplicationCommands()).menu);
+            globalMenuSupport.setGlobalApplicationMenu(display, 
+                    menuFactory.createMenuFor(display, callback));
     }
     
     public void runEventLoop() {
@@ -58,24 +64,24 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
     public void terminateEventLoop() {
         display.dispose();
     }
-
+    
     public MainWindow createWindow(MainWindowModel windowModel, MainWindowCallback callback) {
         return new MainWindowImpl(display, windowModel, callback, mainWindowAreas, viewDefinitions,
-                platformSupport.globalMenuSupport() == null);
+                platformSupport.globalMenuSupport() == null ? menuFactory : null);
     }
-
+    
     public Realm getDefaultBindingRealm() {
         return SWTObservables.getRealm(display);
     }
-
+    
     public ViewDefinitionFactory viewDefinitions() {
         return viewDefinitions;
     }
-
+    
     public MainWindowAreas mainWindowAreas() {
         return mainWindowAreas;
     }
-
+    
     public File chooseProjectToOpen() {
         Shell fakeShell = new Shell();
         try {
@@ -90,7 +96,7 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
             fakeShell.dispose();
         }
     }
-
+    
     public void displayFailedToOpenProjectError(File file) {
         NativeGlobalAlerts nativeGlobalAlerts = platformSupport.nativeGlobalAlerts();
         String title = "Opening failed";

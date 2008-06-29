@@ -59,8 +59,7 @@ public class MainWindowController extends AbstractController implements MainWind
     }
     
     private void hook() {
-        ApplicationCommands commands = new ApplicationCommands();
-        context.addHandler(commands.closeProject, new Handler() {
+        context.addHandler(new ApplicationCommands.CloseProjectCommand(), new Handler() {
 
             public boolean run(Command command) {
                 project.close();

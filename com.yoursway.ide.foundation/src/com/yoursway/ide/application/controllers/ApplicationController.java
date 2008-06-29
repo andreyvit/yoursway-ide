@@ -58,9 +58,7 @@ public class ApplicationController extends AbstractController implements Applica
     }
 
     private void hook() {
-        // XXX hack - should not create another instance here 
-        ApplicationCommands commands = new ApplicationCommands();
-        context.addHandler(commands.openProject, new Handler() {
+        context.addHandler(new ApplicationCommands.OpenProjectCommand(), new Handler() {
 
             public boolean run(Command command) {
                 File file = presentation.chooseProjectToOpen();
