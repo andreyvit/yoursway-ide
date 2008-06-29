@@ -25,5 +25,4 @@ Export-Package: com.yoursway.ide.application.controllers,
  com.yoursway.ide.application.view.application,
  com.yoursway.ide.application.view.impl,
  com.yoursway.ide.application.view.impl.commands,
- com.yoursway.ide.application.view.mainwindow,
- com.yoursway.ide.views.project
+ com.yoursway.ide.application.view.mainwindow
