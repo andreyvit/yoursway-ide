@@ -10,8 +10,8 @@ import java.util.Collections;
 import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.model.ProjectOwner;
 import com.yoursway.ide.application.model.projects.types.ProjectType;
-import com.yoursway.ide.application.problems.Bugs;
 import com.yoursway.utils.Listeners;
+import com.yoursway.utils.bugs.Bugs;
 
 public class ApplicationModel implements ProjectOwner {
     

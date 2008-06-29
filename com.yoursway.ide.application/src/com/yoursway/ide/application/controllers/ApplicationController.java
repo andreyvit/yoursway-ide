@@ -10,8 +10,6 @@ import com.yoursway.ide.application.model.Project;
 import com.yoursway.ide.application.model.application.ApplicationModel;
 import com.yoursway.ide.application.model.application.ApplicationModelListener;
 import com.yoursway.ide.application.model.application.ProjectAdditionReason;
-import com.yoursway.ide.application.problems.Bugs;
-import com.yoursway.ide.application.problems.Severity;
 import com.yoursway.ide.application.view.application.ApplicationPresentation;
 import com.yoursway.ide.application.view.application.ApplicationPresentationCallback;
 import com.yoursway.ide.application.view.application.ApplicationPresentationFactory;
@@ -20,6 +18,8 @@ import com.yoursway.ide.application.view.impl.commands.AbstractHandler;
 import com.yoursway.ide.application.view.impl.commands.Command;
 import com.yoursway.ide.application.view.impl.commands.Handler;
 import com.yoursway.ide.platforms.api.PlatformSupport;
+import com.yoursway.utils.bugs.Bugs;
+import com.yoursway.utils.bugs.Severity;
 
 public class ApplicationController extends AbstractController implements ApplicationPresentationCallback,
         ApplicationModelListener {

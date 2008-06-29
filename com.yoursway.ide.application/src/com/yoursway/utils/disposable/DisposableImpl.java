@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.yoursway.ide.application.problems.Bugs;
+import com.yoursway.utils.bugs.Bugs;
 
 public class DisposableImpl implements Disposable, Disposer {
     

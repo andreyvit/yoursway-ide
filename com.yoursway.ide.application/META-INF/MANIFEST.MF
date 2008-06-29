@@ -19,3 +19,19 @@ Require-Bundle: com.yoursway.swt.additions;bundle-version="1.0.0",
  org.eclipse.equinox.app;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
+Export-Package: com.mkalugin.corchy.internal.ui.location,
+ com.mkalugin.corchy.ui.core.preference,
+ com.yoursway.ide.application,
+ com.yoursway.ide.application.controllers,
+ com.yoursway.ide.application.controllers.mainwindow,
+ com.yoursway.ide.application.model,
+ com.yoursway.ide.application.model.application,
+ com.yoursway.ide.application.model.projects.types,
+ com.yoursway.ide.application.view,
+ com.yoursway.ide.application.view.application,
+ com.yoursway.ide.application.view.impl,
+ com.yoursway.ide.application.view.impl.commands,
+ com.yoursway.ide.application.view.mainwindow,
+ com.yoursway.ide.editors.text,
+ com.yoursway.ide.rails.projects,
+ com.yoursway.utils.disposable

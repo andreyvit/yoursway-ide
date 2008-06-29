@@ -2,16 +2,16 @@ package com.yoursway.ide.application.controllers;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static com.yoursway.ide.application.problems.Severity.USER_COMMAND_IGNORED;
 import static com.yoursway.utils.DebugOutputHelper.simpleNameOf;
 import static com.yoursway.utils.YsStrings.nullToEmpty;
+import static com.yoursway.utils.bugs.Severity.USER_COMMAND_IGNORED;
 
 import java.util.Collection;
 import java.util.Map;
 
-import com.yoursway.ide.application.problems.Bugs;
 import com.yoursway.ide.application.view.impl.commands.Command;
 import com.yoursway.ide.application.view.impl.commands.Handler;
+import com.yoursway.utils.bugs.Bugs;
 import com.yoursway.utils.disposable.Disposable;
 import com.yoursway.utils.disposable.Disposer;
 
