@@ -55,8 +55,9 @@ public class UndoableTextChange implements IUndoableOperation {
         }
     }
     
-    public String getLabel() {
-        return "some text changed: '" + replacedText + "' to '" + event.text() + "'";
+    public String getLabel() {     
+        return "some text changed: '" + replacedText + "' to '" + event.text() + "'" +
+            " in " + event.input().getName();
     }
 
     public String getFactoryId() {
