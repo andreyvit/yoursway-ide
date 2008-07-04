@@ -39,12 +39,14 @@ public class OperationHistory implements IPersistableElement {
         operation.execute();
         
         if (!locked) {
-            IUndoableOperation last = operations.get(operations.size() - 1);
-            boolean merged = operation.tryToMergeWith(last);
-            if (merged) {
-                operations.remove(last);
-                listeners.remove(last);                
-            }            
+            if (operations.size() > 0) {
+                IUndoableOperation last = operations.get(operations.size() - 1);
+                boolean merged = operation.tryToMergeWith(last);
+                if (merged) {
+                    operations.remove(last);
+                    listeners.remove(last);                
+                }
+            }
             
             operations.add(operation);
             listeners.add(operation);

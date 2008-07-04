@@ -10,8 +10,8 @@ import org.eclipse.ui.PartInitException;
 
 public class UndoableTextChange implements IUndoableOperation {
 	
-	private final MyDocumentEvent event;
-    private final String replacedText;
+	private MyDocumentEvent event;
+    private String replacedText;
     
     public UndoableTextChange(DocumentEvent event, String replacedText) {
         this.event = new MyDocumentEvent(event);
@@ -79,7 +79,28 @@ public class UndoableTextChange implements IUndoableOperation {
     }
 
     public boolean tryToMergeWith(IUndoableOperation last) {
-        //>
+        if (last instanceof UndoableTextChange) {
+            UndoableTextChange merging = (UndoableTextChange)last;
+            if (event.input().equals(merging.event.input()) &&
+                    replacedText.equals("") &&
+                    merging.event.offset() + merging.event.text().length() == event.offset()) {
+                
+                replacedText = merging.replacedText;
+                merging.event.setText(merging.event.text() + event.text());
+                event = merging.event;
+                return true;
+            }
+            
+            if (event.input().equals(merging.event.input()) &&
+                    event.text().equals("") && merging.event.text().equals("") &&
+                    event.offset() + replacedText.length() == merging.event.offset()) {
+                
+                replacedText += merging.replacedText;
+                return true;
+            }
+            
+            
+        }
         
         
         return false;

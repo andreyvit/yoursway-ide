@@ -59,5 +59,9 @@ public class MyDocumentEvent implements IPersistableElement {
     public IEditorInput input() {
         return input;
     }
+
+    public void setText(String text) {
+        this.text = text;
+    }
     
 }
