@@ -3,6 +3,7 @@ package com.yoursway.ide.undo;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.XMLMemento;
@@ -53,6 +54,10 @@ public class MyDocumentEvent implements IPersistableElement {
         memento.putString("text", text);
         
         memento.putMemento(MyMemento.childForPersistableElement("input", input));
+    }
+
+    public IEditorInput input() {
+        return input;
     }
     
 }

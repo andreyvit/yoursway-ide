@@ -1,10 +1,12 @@
 package com.yoursway.ide.undo;
 
-import java.util.List;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 
 public class UndoableTextChange implements IUndoableOperation {
 	
@@ -25,6 +27,7 @@ public class UndoableTextChange implements IUndoableOperation {
         // nothing to do
     }
     
+    @SuppressWarnings("restriction")
     public void undo() {
         //if (fDocumentUndoManager.fDocument instanceof IDocumentExtension4)
         //    ((IDocumentExtension4) fDocumentUndoManager.fDocument).replace(fStart, fText.length(),
@@ -32,9 +35,23 @@ public class UndoableTextChange implements IUndoableOperation {
         //else
         
         try {
+            // open editor for document
+            IWorkbenchWindow window = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow();
+            //! if (window == null) return null;
+            IWorkbenchPage p = window.getActivePage();
+            //! if (p == null) throwPartInitException(JavaEditorMessages.EditorUtility_no_active_WorkbenchPage);
+            p.openEditor(event.input(), "com.yoursway.ide.undo.txteditor", true);
+            
+            //initializeHighlightRange(editorPart);     - EditorUtility
+            //return editorPart;          
+            
             event.getDocument().replace(event.offset(), event.text().length(), replacedText);
         } catch (BadLocationException e) {
-            //!
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (PartInitException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
     

@@ -27,50 +27,10 @@ public class OperationHistory implements IPersistableElement {
         
     }
     
-    private static String serializationFilename = "/Users/lliypik/operationHistory";
-    
-    /*
-    public void dispose() {
-      
-        try {
-            FileOutputStream fo = new FileOutputStream(serializationFilename);
-            ObjectOutputStream serializer = new ObjectOutputStream(fo);
-            serializer.writeObject(operations);
-            serializer.flush();
-            serializer.close();
-            fo.close();
-        } catch (FileNotFoundException e) {
-            //!
-            e.printStackTrace();
-        } catch (IOException e) {
-            //!
-            e.printStackTrace();
-        }
-        
-    }*/
-    
+   
     public static OperationHistory get() {
         if (instance == null) {
-            
-            instance = new OperationHistory();
-            
-            /*
-        	try {
-				FileInputStream fi = new FileInputStream(serializationFilename);
-				ObjectInputStream deserializer = new ObjectInputStream(fi);
-				instance = (OperationHistory) deserializer.readObject();
-				return instance;
-			} catch (FileNotFoundException e) {
-			    //! logic uses exception
-				instance = new OperationHistory();
-			} catch (IOException e) {
-				//!
-				e.printStackTrace();				
-			} catch (ClassNotFoundException e) {
-				//!
-				e.printStackTrace();
-			}*/
-            
+            instance = new OperationHistory();            
         }
         return instance;
     }

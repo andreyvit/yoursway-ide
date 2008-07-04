@@ -27,6 +27,6 @@ public class DocumentListener implements IDocumentListener {
         IUndoableOperation operation = new UndoableTextChange(event, replacedText);
         history.execute(operation);
         
-        editor.doSave(null);
+        editor.doSave(null); // editor must be opened
     }
 }

@@ -50,7 +50,7 @@ public class UndoListViewPart extends ViewPart {
                     IUndoableOperation operation = (IUndoableOperation) element;
                     return operation.getLabel();
                 }
-                else return "---"; 
+                else return "---"; //!
             }
             
         };
