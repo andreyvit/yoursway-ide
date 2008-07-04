@@ -11,5 +11,7 @@ public interface IUndoableOperation extends IPersistableElement {
     void undo();
     
     String getLabel();
+
+    boolean tryToMergeWith(IUndoableOperation last);
     
 }

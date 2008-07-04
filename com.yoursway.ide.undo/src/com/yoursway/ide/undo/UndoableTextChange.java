@@ -77,4 +77,11 @@ public class UndoableTextChange implements IUndoableOperation {
         
         return new UndoableTextChange(event, replacedText);
     }
+
+    public boolean tryToMergeWith(IUndoableOperation last) {
+        //>
+        
+        
+        return false;
+    }
 }
