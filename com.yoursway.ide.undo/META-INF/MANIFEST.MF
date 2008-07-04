@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Undo Plug-in
+Bundle-SymbolicName: com.yoursway.ide.undo;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.yoursway.ide.undo.Activator
+Bundle-Vendor: YOURSWAY
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text;bundle-version="3.4.0",
+ org.eclipse.ui.editors;bundle-version="3.4.0",
+ org.eclipse.ui.ide;bundle-version="3.4.0",
+ org.eclipse.core.resources;bundle-version="3.4.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy

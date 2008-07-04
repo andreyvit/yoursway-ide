@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.yoursway.ide.undo.MyTextEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="true"
+            extensions="txt"
+            id="com.yoursway.ide.undo.txteditor"
+            name="Undoable Text Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="com.yoursway.ide.undo.UndoListViewPart"
+            id="com.yoursway.ide.undo.view"
+            name="Undo List"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>
