@@ -16,7 +16,8 @@ Require-Bundle: com.yoursway.swt.additions;bundle-version="1.0.0",
  org.eclipse.equinox.app,
  com.yoursway.ide.foundation;bundle-version="1.0.0",
  com.yoursway.ide.texteditor;bundle-version="1.0.0",
- com.yoursway.ide.views.project;bundle-version="1.0.0"
+ com.yoursway.ide.views.project;bundle-version="1.0.0",
+ com.yoursway.ide.views.birdsEyeView;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: com.mkalugin.corchy.internal.ui.location,
