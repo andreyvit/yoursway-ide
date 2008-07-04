@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Carbon Plug-in
+Bundle-SymbolicName: com.yoursway.ide.platforms.windows.win32;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: YOURSWAY
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Eclipse-PlatformFilter: (& (osgi.arch=x86) (osgi.ws=win32))
+Require-Bundle: com.yoursway.ide.platforms;bundle-version="1.0.0",
+ com.yoursway.ide.platforms.windows
+Export-Package: com.yoursway.ide.platforms.windows.win32

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="com.yoursway.ide.platforms.platformImplementations">
+      <platform
+            class="com.yoursway.ide.platforms.windows.win32.Win32Platform">
+      </platform>
+   </extension>
+
+</plugin>
