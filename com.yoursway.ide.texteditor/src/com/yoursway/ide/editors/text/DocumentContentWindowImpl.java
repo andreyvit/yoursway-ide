@@ -1,10 +1,11 @@
 package com.yoursway.ide.editors.text;
 
 import org.eclipse.jface.internal.databinding.provisional.swt.ControlUpdater;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 
@@ -13,7 +14,8 @@ public class DocumentContentWindowImpl implements DocumentContentWindow {
     private final DocumentContentWindowModel model;
     private final DocumentContentWindowCallback callback;
     private Composite composite;
-    private Text text;
+    private SourceViewer sourceViewer;
+    private Document document;
 
     public DocumentContentWindowImpl(DocumentContentWindowModel model,
             DocumentContentWindowCallback callback, EditorWindow editor) {
@@ -32,11 +34,13 @@ public class DocumentContentWindowImpl implements DocumentContentWindow {
 
     private void createWidgets() {
         composite.setLayout(new FillLayout());
-        text = new Text(composite, SWT.MULTI);
-        new ControlUpdater(text) {
+        sourceViewer = new SourceViewer(composite, null, null, false, SWT.NONE);
+        document = new Document();
+        sourceViewer.setDocument(document);
+        new ControlUpdater(sourceViewer.getControl()) {
             protected void updateControl() {
-                text.setText(model.data().getValue());
-                text.redraw();
+                String data = model.data().getValue();
+                document.set(data);
                 composite.layout();
             }
         };

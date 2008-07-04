@@ -71,7 +71,7 @@ public class BirdsEyeViewImpl implements BirdsEyeView, BirdsEyeListener {
         createBirdsEyeComposite(stack);
         createSettingsComposite(stack);
         
-        flipper = new Flipper(birdsEyeContainer, settingsComposite, 600);
+        flipper = new Flipper(birdsEyeContainer, settingsComposite, 480);
         new StackLayoutFlipperListener(flipper, stack);
         parent.layout();
     }
@@ -188,9 +188,9 @@ public class BirdsEyeViewImpl implements BirdsEyeView, BirdsEyeListener {
         factory.associate("png", SWT.COLOR_GREEN);
         factory.associate("jpg", SWT.COLOR_GREEN);
         
-        File rootFile = new File("/Users/andreyvit/Projects/ujudge/ujudge");
+        File rootFile = project.getLocation();
         Node root = collectChildren(rootFile, factory, "");
         birdsEyeDisplay.display(root);
     }
-     
+
 }
