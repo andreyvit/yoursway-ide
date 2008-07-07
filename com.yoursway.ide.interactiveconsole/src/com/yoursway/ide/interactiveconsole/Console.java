@@ -22,7 +22,9 @@ import org.eclipse.swt.widgets.Shell;
 public class Console extends StyledText {
     
     private static Display display;
-    boolean inputting;
+    private boolean inputting;
+    private String[] history;
+    private int historyIndex;
     
     public Console(Composite parent, final IDebug debug) {
         super(parent, SWT.MULTI | SWT.WRAP);
@@ -32,6 +34,8 @@ public class Console extends StyledText {
         
         output("Hello world!\n");
         prepareForInput();
+        
+        history = debug.getHistory(); //> get old history
         
         debug.addOutputListener(new IDebugOutputListener() {
             
@@ -85,10 +89,37 @@ public class Console extends StyledText {
                     
                     String[] lines = getText().split("\n");
                     String command = lines[lines.length - 1].substring(inputPrefix().length());
+                    //? trim
+                    
+                    if (command.trim().equals(""))
+                        return;
                     
                     prepareForInput();
                     
                     debug.executeCommand(command);
+                    debug.addToHistory(command);
+                    
+                    history = debug.getHistory();
+                    historyIndex = history.length;
+                }
+                
+                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                    
+                    if (e.keyCode == SWT.ARROW_UP) {
+                        if (historyIndex > 0)
+                            historyIndex--;
+                    } else { // e.keyCode == SWT.ARROW_DOWN
+                        if (historyIndex < history.length - 1)
+                            historyIndex++;
+                    }
+                    
+                    if (historyIndex < history.length) {
+                        String command = history[historyIndex];
+                        int place = getText().lastIndexOf('\n') + 1 + inputPrefix().length();
+                        replaceTextRange(place, getCharCount() - place, command);
+                    }
+                    
+                    moveCaretToEnd(); //? what if command didn't replace
                 }
             }
             
@@ -149,8 +180,12 @@ public class Console extends StyledText {
     
     private void prepareForInput() { //? rename to printInputPrefix
         append("\n" + inputPrefix());
-        setCaretOffset(getCharCount());
+        moveCaretToEnd();
         inputting = true;
+    }
+    
+    private void moveCaretToEnd() {
+        setCaretOffset(getCharCount());
     }
     
     private String inputPrefix() {

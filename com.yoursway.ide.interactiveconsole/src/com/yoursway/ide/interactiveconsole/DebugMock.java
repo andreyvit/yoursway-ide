@@ -7,6 +7,8 @@ public class DebugMock implements IDebug {
     
     List<IDebugOutputListener> outputListeners = new LinkedList<IDebugOutputListener>();
     
+    private final List<String> history = new LinkedList<String>();
+    
     public DebugMock() {
         Thread outputter = new Thread() {
             
@@ -42,14 +44,12 @@ public class DebugMock implements IDebug {
         }
     }
     
-    public List<String> loadHistory() {
-        // TODO Auto-generated method stub
-        return null;
+    public String[] getHistory() {
+        return history.toArray(new String[0]); //? effectiveness
     }
     
     public void addToHistory(String newCommand) {
-        // TODO Auto-generated method stub
-        
+        history.add(newCommand);
     }
     
     public List<CompletionProposal> complete(String command, int position) {

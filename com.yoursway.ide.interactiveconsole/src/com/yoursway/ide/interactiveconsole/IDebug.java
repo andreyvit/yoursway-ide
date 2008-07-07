@@ -8,7 +8,7 @@ public interface IDebug {
     
     void executeCommand(String command);
     
-    List<String> loadHistory();
+    String[] getHistory();
     
     void addToHistory(String newCommand);
     
