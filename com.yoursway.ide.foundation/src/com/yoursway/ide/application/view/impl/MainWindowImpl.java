@@ -10,6 +10,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,6 +40,7 @@ public class MainWindowImpl implements MainWindow {
     private Composite projectComposite;
     private CTabFolder tabFolder;
     private final ViewDefinitionFactory viewDefinitions;
+    private Composite birdsEyeViewComposite;
     
     public MainWindowImpl(Display display, final MainWindowModel windowModel, MainWindowCallback callback,
             ViewDefinitionFactory viewDefinitions, ApplicationMenuFactory menuFactory) {
@@ -62,7 +64,11 @@ public class MainWindowImpl implements MainWindow {
             shell.setMenuBar(menuFactory.createMenuFor(shell, callback));
         
         projectComposite = new Composite(shell, SWT.NONE);
-        formDataOf(projectComposite).left(0).right(0, 170).top(0).bottom(100);
+        formDataOf(projectComposite).left(0).right(0, 220).top(0).bottom(100, -150);
+        
+        birdsEyeViewComposite = new Composite(shell, SWT.NONE);
+        formDataOf(birdsEyeViewComposite).left(0).right(projectComposite, 0, SWT.RIGHT).top(projectComposite)
+                .bottom(100);
         
         tabFolder = new CTabFolder(shell, SWT.TOP | SWT.CLOSE);
         //        tabFolder = new TabFolder(shell, SWT.TOP);
@@ -116,6 +122,10 @@ public class MainWindowImpl implements MainWindow {
 
             public void visitProjectViewArea() {
                 result = new CompositeView(projectComposite, callback);
+            }
+
+            public void visitBirdsEyeViewArea() {
+                result = new CompositeView(birdsEyeViewComposite, callback);
             }
             
         };

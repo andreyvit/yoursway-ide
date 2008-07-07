@@ -5,3 +5,6 @@ Bundle-SymbolicName: com.yoursway.ide.platforms.windows
 Bundle-Version: 1.0.0
 Bundle-Vendor: YOURSWAY
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.yoursway.utils,
+ com.yoursway.ide.platforms
+Export-Package: com.yoursway.ide.platforms.win

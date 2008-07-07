@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BirdsEyeView Plug-in
+Bundle-SymbolicName: com.yoursway.ide.views.birdsEyeView
+Bundle-Version: 1.0.0
+Bundle-Vendor: YOURSWAY
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.yoursway.swt.additions;bundle-version="1.0.0",
+ org.eclipse.swt;bundle-version="3.4.0",
+ com.google.collections;bundle-version="1.0.0",
+ com.yoursway.utils;bundle-version="1.0.0",
+ com.yoursway.swt.animations;bundle-version="1.0.0",
+ com.yoursway.ide.foundation;bundle-version="1.0.0",
+ org.eclipse.jface;bundle-version="3.4.0"
+Export-Package: com.yoursway.experiments.birdseye.component

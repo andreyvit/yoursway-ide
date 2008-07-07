@@ -13,6 +13,12 @@ public class MainWindowAreas extends WindowDef {
         }
     };
     
+    public final static MainWindowArea birdsEyeViewArea = new MainWindowArea("Bird's Eye View", false) {
+        public void accept(MainWindowViewAreaVisitor visitor) {
+            visitor.visitBirdsEyeViewArea();
+        }
+    };
+    
     public final static MainWindowArea generalArea = new MainWindowArea("General", true) {
         public void accept(MainWindowViewAreaVisitor visitor) {
             visitor.visitGeneralArea();
