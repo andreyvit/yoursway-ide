@@ -5,17 +5,12 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
-import org.eclipse.swt.custom.MovementEvent;
-import org.eclipse.swt.custom.MovementListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -65,35 +60,31 @@ public class Console extends StyledText {
             
         });
         
-        addSelectionListener(new SelectionListener() {
-            
-            public void widgetDefaultSelected(SelectionEvent e) {
-                
-            }
-            
-            public void widgetSelected(SelectionEvent e) {
-                
-            }
-            
-        });
-        
         addVerifyKeyListener(new VerifyKeyListener() {
             
             public void verifyKey(VerifyEvent e) {
-                if (e.character == '\n' || e.character == '\r') {
+                
+                switch (e.character) {
+                
+                case '\n':
+                case '\r':
                     if (command().trim().equals(""))
                         e.doit = false;
-                }
-
-                else if (e.character == '\t') {
+                    break;
+                
+                case '\t':
                     e.doit = false;
-                    
                     int position = getSelection().x - inputStartOffset();
-                    
                     List<CompletionProposal> proposals = debug.complete(command(), position);
-                    
                     proposalPopup.show(proposals);
+                    break;
                 }
+                
+                if (e.character == '\b' || e.keyCode == SWT.ARROW_LEFT) {
+                    if (getCaretOffset() <= inputStartOffset())
+                        e.doit = false;
+                }
+                
             }
             
         });
@@ -142,25 +133,9 @@ public class Console extends StyledText {
             
         });
         
-        addVerifyListener(new VerifyListener() {
-            
-            public void verifyText(VerifyEvent e) {
-                
-            }
-            
-        });
-        
-        addWordMovementListener(new MovementListener() {
-            
-            public void getNextOffset(MovementEvent event) {
-                
-            }
-            
-            public void getPreviousOffset(MovementEvent event) {
-                
-            }
-            
-        });
+        // addVerifyListener(new VerifyListener() {});
+        // addSelectionListener(new SelectionListener() {});
+        // addWordMovementListener(new MovementListener() {});
         
     }
     
