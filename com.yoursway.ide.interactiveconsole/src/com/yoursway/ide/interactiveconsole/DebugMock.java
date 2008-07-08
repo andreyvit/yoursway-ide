@@ -45,7 +45,7 @@ public class DebugMock implements IDebug {
     }
     
     public String[] getHistory() {
-        return history.toArray(new String[0]); //? effectiveness
+        return history.toArray(new String[0]); //? ineffective
     }
     
     public void addToHistory(String newCommand) {
@@ -53,8 +53,15 @@ public class DebugMock implements IDebug {
     }
     
     public List<CompletionProposal> complete(String command, int position) {
-        // TODO Auto-generated method stub
-        return null;
+        String prefix = command.substring(0, position);
+        
+        List<CompletionProposal> proposals = new LinkedList<CompletionProposal>();
+        
+        for (String item : history) {
+            if (item.startsWith(prefix))
+                proposals.add(new CompletionProposal(0, command.length(), item));
+        }
+        
+        return proposals;
     }
-    
 }

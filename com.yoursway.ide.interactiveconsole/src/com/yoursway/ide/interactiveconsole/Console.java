@@ -1,5 +1,7 @@
 package com.yoursway.ide.interactiveconsole;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
@@ -22,6 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 public class Console extends StyledText {
     
     private static Display display;
+    private static CompletionProposalPopup proposalPopup;
     private boolean inputting;
     private String[] history;
     private int historyIndex;
@@ -77,7 +80,20 @@ public class Console extends StyledText {
         addVerifyKeyListener(new VerifyKeyListener() {
             
             public void verifyKey(VerifyEvent e) {
-                
+                if (e.character == '\n' || e.character == '\r') {
+                    if (command().trim().equals(""))
+                        e.doit = false;
+                }
+
+                else if (e.character == '\t') {
+                    e.doit = false;
+                    
+                    int position = getSelection().x - inputStartOffset();
+                    
+                    List<CompletionProposal> proposals = debug.complete(command(), position);
+                    
+                    proposalPopup.show(proposals);
+                }
             }
             
         });
@@ -87,11 +103,8 @@ public class Console extends StyledText {
             public void keyPressed(KeyEvent e) {
                 if (e.character == '\n' || e.character == '\r') {
                     
-                    String[] lines = getText().split("\n");
-                    String command = lines[lines.length - 1].substring(inputPrefix().length());
-                    //? trim
-                    
-                    if (command.trim().equals(""))
+                    String command = command(); //? trim
+                    if (command.trim().equals("")) //? extract method
                         return;
                     
                     prepareForInput();
@@ -102,8 +115,8 @@ public class Console extends StyledText {
                     history = debug.getHistory();
                     historyIndex = history.length;
                 }
-                
-                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+
+                else if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
                     
                     if (e.keyCode == SWT.ARROW_UP) {
                         if (historyIndex > 0)
@@ -114,13 +127,13 @@ public class Console extends StyledText {
                     }
                     
                     if (historyIndex < history.length) {
-                        String command = history[historyIndex];
-                        int place = getText().lastIndexOf('\n') + 1 + inputPrefix().length();
-                        replaceTextRange(place, getCharCount() - place, command);
+                        int commandLength = command().length(); //? ineffective
+                        replaceTextRange(getCharCount() - commandLength, commandLength, history[historyIndex]);
                     }
                     
                     moveCaretToEnd(); //? what if command didn't replace
                 }
+                
             }
             
             public void keyReleased(KeyEvent e) {
@@ -154,10 +167,11 @@ public class Console extends StyledText {
     public static void main(String[] args) {
         display = new Display();
         Shell shell = new Shell(display);
-        
         shell.setText("Interactive Console");
         
-        new Console(shell, new DebugMock());
+        Console console = new Console(shell, new DebugMock());
+        
+        proposalPopup = new CompletionProposalPopup(shell, console);
         
         shell.open();
         
@@ -178,7 +192,7 @@ public class Console extends StyledText {
         inputting = true;
     }
     
-    private void prepareForInput() { //? rename to printInputPrefix
+    private void prepareForInput() {
         append("\n" + inputPrefix());
         moveCaretToEnd();
         inputting = true;
@@ -192,4 +206,24 @@ public class Console extends StyledText {
         return ">";
     }
     
+    private String command() {
+        String[] lines = getText().split("\n");
+        return lines[lines.length - 1].substring(inputPrefix().length());
+        //? use inputPrefixOffset instead
+    }
+    
+    public int inputStartOffset() {
+        return getText().lastIndexOf('\n') + 1 + inputPrefix().length();
+    }
+    
+    public void useCompletionProposal(final CompletionProposal proposal) {
+        int start = inputStartOffset() + proposal.replaceStart();
+        int length = proposal.replaceLength();
+        String text = proposal.text();
+        
+        //? need not to use syncExec? it's weird
+        replaceTextRange(start, length, text);
+        // setSelectionRange(start, text.length());
+        moveCaretToEnd();
+    }
 }
