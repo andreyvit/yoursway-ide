@@ -16,7 +16,7 @@ public class DebugMock implements IDebug {
             public void run() {
                 try {
                     while (true) {
-                        sleep(2000);
+                        sleep(10000);
                         outputString("hahaha\n");
                     }
                 } catch (InterruptedException e) {

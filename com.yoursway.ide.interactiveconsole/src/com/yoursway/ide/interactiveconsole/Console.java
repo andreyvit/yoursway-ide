@@ -1,5 +1,6 @@
 package com.yoursway.ide.interactiveconsole;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -13,6 +14,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -27,7 +29,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     private final IDebug debug;
     
     public Console(Composite parent, final IDebug debug) {
-        super(parent, SWT.MULTI | SWT.WRAP);
+        super(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         
         setFont(new Font(display, "Monaco", 12, 0));
         setBounds(parent.getClientArea());
@@ -84,6 +86,10 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                 if (e.character == '\b' || e.keyCode == SWT.ARROW_LEFT) {
                     if (getCaretOffset() <= inputStartOffset())
                         e.doit = false;
+                }
+                
+                if (e.keyCode == SWT.ESC) {
+                    proposalPopup.hide();
                 }
                 
             }
@@ -145,6 +151,8 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         Shell shell = new Shell(display);
         shell.setText("Interactive Console");
         
+        shell.setLayout(new FillLayout());
+        
         Console console = new Console(shell, new DebugMock());
         
         proposalPopup = new CompletionProposalPopup(shell, console);
@@ -205,6 +213,8 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     
     public List<CompletionProposal> getCompletionProposals() {
         int position = getSelection().x - inputStartOffset();
+        if (position < 0)
+            return new LinkedList<CompletionProposal>();
         return debug.complete(command(), position);
     }
     

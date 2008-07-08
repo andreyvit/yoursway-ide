@@ -11,6 +11,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -22,53 +24,31 @@ public class CompletionProposalPopup {
     private final IConsoleForProposalPopup console;
     
     public CompletionProposalPopup(Shell parent, final Console console) {
-        shell = new Shell(parent, SWT.ON_TOP);
+        shell = new Shell(parent, SWT.ON_TOP | SWT.RESIZE);
         
-        proposalTable = new Table(shell, SWT.SINGLE); //? h&v scrollbars
-        proposalTable.setBounds(shell.getClientArea());
+        proposalTable = new Table(shell, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+        
+        // scrollbars
+        
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        shell.setLayout(layout);
+        
+        GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+        proposalTable.setLayoutData(data);
+        
+        shell.pack();
+        shell.setSize(200, 100);
+        
+        //
         
         this.console = console;
         
-        final Runnable update = new Runnable() {
-            
-            public void run() {
-                updateProposalList();
-                setLocation();
-            }
-            
-        };
-        
-        console.addTraverseListener(new TraverseListener() {
-            
-            public void keyTraversed(TraverseEvent e) {
-                shell.getDisplay().asyncExec(update);
-            }
-            
-        });
-        
-        console.addMouseListener(new MouseListener() {
-            
-            public void mouseDoubleClick(MouseEvent e) {
-                
-            }
-            
-            public void mouseDown(MouseEvent e) {
-                shell.getDisplay().asyncExec(update);
-            }
-            
-            public void mouseUp(MouseEvent e) {
-                
-            }
-            
-        });
-        
-        console.addModifyListener(new ModifyListener() {
-            
-            public void modifyText(ModifyEvent e) {
-                shell.getDisplay().asyncExec(update);
-            }
-            
-        });
+        Updater updater = new Updater();
+        console.addTraverseListener(updater);
+        console.addMouseListener(updater);
+        console.addModifyListener(updater);
         
         proposalTable.addSelectionListener(new SelectionListener() {
             
@@ -80,7 +60,7 @@ public class CompletionProposalPopup {
                 CompletionProposal proposal = (CompletionProposal) e.item.getData();
                 console.useCompletionProposal(proposal);
                 
-                shell.setVisible(false);
+                hide();
             }
             
         });
@@ -89,8 +69,12 @@ public class CompletionProposalPopup {
     public void show() {
         updateProposalList();
         setLocation();
-        shell.setSize(100, 100);
+        
         shell.setVisible(true);
+    }
+    
+    public void hide() {
+        shell.setVisible(false);
     }
     
     private void updateProposalList() {
@@ -108,4 +92,38 @@ public class CompletionProposalPopup {
     private void setLocation() {
         shell.setLocation(console.getLocationForPopup());
     }
+    
+    private class Updater implements TraverseListener, MouseListener, ModifyListener, Runnable {
+        
+        public void keyTraversed(TraverseEvent e) {
+            update();
+        }
+        
+        public void mouseDoubleClick(MouseEvent e) {
+            // nothing
+        }
+        
+        public void mouseDown(MouseEvent e) {
+            update();
+        }
+        
+        public void mouseUp(MouseEvent e) {
+            // nothing
+        }
+        
+        public void modifyText(ModifyEvent e) {
+            update();
+        }
+        
+        private void update() {
+            shell.getDisplay().asyncExec(this);
+        }
+        
+        public void run() {
+            updateProposalList();
+            setLocation();
+        }
+        
+    }
+    
 }
