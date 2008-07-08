@@ -12,17 +12,19 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public class Console extends StyledText {
+public class Console extends StyledText implements IConsoleForProposalPopup {
     
     private static Display display;
     private static CompletionProposalPopup proposalPopup;
     private boolean inputting;
     private String[] history;
     private int historyIndex;
+    private final IDebug debug;
     
     public Console(Composite parent, final IDebug debug) {
         super(parent, SWT.MULTI | SWT.WRAP);
@@ -33,6 +35,7 @@ public class Console extends StyledText {
         output("Hello world!\n");
         prepareForInput();
         
+        this.debug = debug;
         history = debug.getHistory(); //> get old history
         
         debug.addOutputListener(new IDebugOutputListener() {
@@ -74,9 +77,7 @@ public class Console extends StyledText {
                 
                 case '\t':
                     e.doit = false;
-                    int position = getSelection().x - inputStartOffset();
-                    List<CompletionProposal> proposals = debug.complete(command(), position);
-                    proposalPopup.show(proposals);
+                    proposalPopup.show();
                     break;
                 }
                 
@@ -200,5 +201,23 @@ public class Console extends StyledText {
         replaceTextRange(start, length, text);
         // setSelectionRange(start, text.length());
         moveCaretToEnd();
+    }
+    
+    public List<CompletionProposal> getCompletionProposals() {
+        int position = getSelection().x - inputStartOffset();
+        return debug.complete(command(), position);
+    }
+    
+    public Point getLocationForPopup() {
+        int offset = inputStartOffset(); //? .getSelection().x;
+        Point p = getLocationAtOffset(offset);
+        /*
+        p.x -= fProposalShell.getBorderWidth();
+        if (p.x < 0) p.x= 0;
+        if (p.y < 0) p.y= 0;
+        */
+        p.y += getLineHeight(offset);
+        p = toDisplay(p);
+        return p;
     }
 }
