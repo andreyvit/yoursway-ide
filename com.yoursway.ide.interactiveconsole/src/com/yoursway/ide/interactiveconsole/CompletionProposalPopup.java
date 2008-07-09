@@ -69,6 +69,13 @@ public class CompletionProposalPopup {
         updateProposalList();
         setLocation();
         
+        //! hack
+        if (proposalTable.getItemCount() == 1) {
+            CompletionProposal proposal = (CompletionProposal) proposalTable.getItem(0).getData();
+            console.useCompletionProposal(proposal, true);
+            return;
+        }
+        
         shell.setVisible(true);
     }
     
@@ -162,7 +169,7 @@ public class CompletionProposalPopup {
             i = proposalTable.getItemCount() - 1;
         selectAndScroll(i);
     }
-
+    
     private void selectAndScroll(int itemIndex) {
         proposalTable.select(itemIndex);
         proposalTable.showItem(proposalTable.getItem(itemIndex));
@@ -176,7 +183,7 @@ public class CompletionProposalPopup {
         TableItem[] selection = proposalTable.getSelection();
         if (selection.length == 1) {
             CompletionProposal proposal = (CompletionProposal) selection[0].getData();
-            console.useCompletionProposal(proposal);
+            console.useCompletionProposal(proposal, false);
         }
         hide();
     }

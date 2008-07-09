@@ -11,6 +11,6 @@ public interface IConsoleForProposalPopup {
     
     Point getLocationForPopup();
     
-    void useCompletionProposal(CompletionProposal proposal);
+    void useCompletionProposal(CompletionProposal proposal, boolean select);
     
 }

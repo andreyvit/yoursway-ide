@@ -11,6 +11,8 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
@@ -94,6 +96,13 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
             
             public void verifyKey(VerifyEvent e) {
                 
+                if (!inInput()) {
+                    if (e.character != 'c' || (e.stateMask != SWT.CONTROL && e.stateMask != SWT.COMMAND)) {
+                        e.doit = false;
+                        return;
+                    }
+                }
+                
                 switch (e.character) {
                 
                 case '\n':
@@ -128,19 +137,13 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                     if (getCaretOffset() <= inputStartOffset())
                         e.doit = false;
                 }
-                
-                if (e.keyCode == SWT.ESC) {
+
+                else if (e.keyCode == SWT.ESC) {
                     proposalPopup.hide();
                 }
-                
-            }
-            
-        });
-        
-        addKeyListener(new KeyListener() {
-            
-            public void keyPressed(KeyEvent e) {
-                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+
+                else if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                    e.doit = false;
                     String command = command();
                     
                     if (e.keyCode == SWT.ARROW_UP) {
@@ -157,10 +160,36 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                 
             }
             
+        });
+        
+        addKeyListener(new KeyListener() {
+            
+            public void keyPressed(KeyEvent e) {
+                
+            }
+            
             public void keyReleased(KeyEvent e) {
                 if (e.keyCode == '\t' && e.stateMask == SWT.SHIFT) {
                     proposalPopup.selectPrevious();
                 }
+            }
+            
+        });
+        
+        addMouseListener(new MouseListener() {
+            
+            public void mouseDoubleClick(MouseEvent e) {
+                
+            }
+            
+            public void mouseDown(MouseEvent e) {
+                if (!inInput()) {
+                    proposalPopup.hide();
+                }
+            }
+            
+            public void mouseUp(MouseEvent e) {
+                
             }
             
         });
@@ -256,15 +285,21 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         return toDisplay(p);
     }
     
-    public void useCompletionProposal(final CompletionProposal proposal) {
+    public void useCompletionProposal(final CompletionProposal proposal, boolean select) {
         int start = inputStartOffset() + proposal.replaceStart();
         int length = proposal.replaceLength();
         String text = proposal.text();
         
         //? need not to use syncExec? it's weird
         replaceTextRange(start, length, text);
-        // setSelectionRange(start, text.length());
-        setSelectionToEnd();
+        if (select)
+            setSelectionRange(start + length, text.length() - length);
+        else
+            setSelectionToEnd();
+    }
+    
+    private boolean inInput() {
+        return (getSelection().x >= inputStartOffset());
     }
     
 }
