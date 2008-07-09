@@ -1,6 +1,6 @@
 package com.yoursway.ide.interactiveconsole;
 
-public class CompletionProposal {
+public class CompletionProposal implements Comparable<CompletionProposal> {
     
     private final int replaceStart;
     private final int replaceLength;
@@ -19,6 +19,21 @@ public class CompletionProposal {
             return replaceStart == p.replaceStart && replaceLength == p.replaceLength && text.equals(p.text);
         }
         return false;
+    }
+    
+    public int compareTo(CompletionProposal o) {
+        int r = text.compareTo(o.text);
+        if (r != 0)
+            return r;
+        if (replaceStart < o.replaceStart)
+            return -1;
+        if (replaceStart > o.replaceStart)
+            return 1;
+        if (replaceLength < o.replaceLength)
+            return -1;
+        if (replaceLength > o.replaceLength)
+            return 1;
+        return 0;
     }
     
     public String text() {
