@@ -1,6 +1,5 @@
 package com.yoursway.ide.interactiveconsole;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -11,8 +10,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
@@ -35,19 +32,19 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     private boolean inputting;
     private boolean needToScrollToEnd;
     
-    private final CommandHistory history;
+    private static CommandHistory history = new CommandHistory();
     
     public Console(Composite parent, final IDebug debug) {
         super(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         
         setFont(new Font(display, "Monaco", 12, 0));
-        setBounds(parent.getClientArea());
         
         output("Hello world!\n");
         prepareForInput();
         
         this.debug = debug;
-        history = new CommandHistory(debug);
+        
+        // listeners
         
         debug.addOutputListener(new IDebugOutputListener() {
             
@@ -84,10 +81,9 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
             
             public void verifyText(VerifyEvent e) {
                 ScrollBar scrollbar = getVerticalBar();
-                int selection = scrollbar.getSelection();
-                int maximum = scrollbar.getMaximum();
-                int pageIncrement = scrollbar.getPageIncrement();
-                needToScrollToEnd = (selection + pageIncrement == maximum);
+                boolean scrolledToEnd = (scrollbar.getSelection() + scrollbar.getPageIncrement() == scrollbar
+                        .getMaximum());
+                needToScrollToEnd = scrolledToEnd;
             }
             
         });
@@ -112,7 +108,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                     if (proposalPopup.visible()) {
                         proposalPopup.apply();
                     } else {
-                        String command = command(); //? trim
+                        String command = command();
                         if (command.trim().equals(""))
                             return;
                         
@@ -120,7 +116,6 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                         prepareForInput();
                         
                         debug.executeCommand(command);
-                        
                         history.add(command);
                     }
                     
@@ -134,7 +129,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                 }
                 
                 if (e.character == '\b' || e.keyCode == SWT.ARROW_LEFT) {
-                    if (getCaretOffset() <= inputStartOffset())
+                    if (getCaretOffset() <= inputOffset())
                         e.doit = false;
                 }
 
@@ -155,7 +150,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                     int commandLength = command.length();
                     replaceTextRange(getCharCount() - commandLength, commandLength, history.command());
                     
-                    setSelectionToEnd(); //? what if command didn't replace
+                    moveCaretToEnd(); //> don't move if command didn't replace
                 }
                 
             }
@@ -176,27 +171,6 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
             
         });
         
-        addMouseListener(new MouseListener() {
-            
-            public void mouseDoubleClick(MouseEvent e) {
-                
-            }
-            
-            public void mouseDown(MouseEvent e) {
-                if (!inInput()) {
-                    proposalPopup.hide();
-                }
-            }
-            
-            public void mouseUp(MouseEvent e) {
-                
-            }
-            
-        });
-        
-        // addSelectionListener(new SelectionListener() {});
-        // addWordMovementListener(new MovementListener() {});
-        
         getVerticalBar().addSelectionListener(new SelectionListener() {
             
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -214,15 +188,15 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         display = new Display();
         Shell shell = new Shell(display);
         shell.setText("Interactive Console");
-        shell.setBounds(240, 240, 640, 240); //! magic
+        shell.setBounds(240, 240, 640, 240); //! magic :)
         shell.setLayout(new FillLayout());
         
-        Console console = new Console(shell, new DebugMock());
+        Console console = new Console(shell, new DebugMock(history));
         proposalPopup = new CompletionProposalPopup(shell, console);
         
         shell.open();
         
-        while (!shell.isDisposed()) { //?
+        while (!shell.isDisposed()) {
             if (!display.readAndDispatch())
                 display.sleep();
         }
@@ -241,65 +215,61 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     
     private void prepareForInput() {
         inputting = false;
-        append("\n" + inputPrefix());
-        setSelectionToEnd();
+        append("\n" + inputPrompt());
+        moveCaretToEnd();
         inputting = true;
-    }
-    
-    private void setSelectionToEnd() {
-        setSelection(getCharCount());
     }
     
     private void scrollToEnd() {
         Point selection = getSelection();
-        setSelectionToEnd();
+        moveCaretToEnd();
         setSelection(selection);
     }
     
-    private String inputPrefix() {
+    private void moveCaretToEnd() {
+        setSelection(getCharCount());
+    }
+    
+    private boolean inInput() {
+        return (getSelection().x >= inputOffset());
+    }
+    
+    private int inputOffset() {
+        return getText().lastIndexOf('\n') + 1 + inputPrompt().length();
+    }
+    
+    private String inputPrompt() {
         return ">";
     }
     
     private String command() {
-        String[] lines = getText().split("\n");
-        return lines[lines.length - 1].substring(inputPrefix().length());
-        //? use inputPrefixOffset instead
-    }
-    
-    public int inputStartOffset() {
-        return getText().lastIndexOf('\n') + 1 + inputPrefix().length();
+        return getText().substring(inputOffset());
     }
     
     public List<CompletionProposal> getCompletionProposals() {
-        int position = getSelection().x - inputStartOffset();
+        int position = getSelection().x - inputOffset();
         if (position < 0)
-            return new LinkedList<CompletionProposal>();
+            return null;
         return debug.complete(command(), position);
     }
     
     public Point getLocationForPopup() {
-        int offset = inputStartOffset(); //? getSelection().x;
+        int offset = inputOffset();
         Point p = getLocationAtOffset(offset);
-        //p.x -= proposalShell.getBorderWidth();
         p.y += getLineHeight(offset);
         return toDisplay(p);
     }
     
     public void useCompletionProposal(final CompletionProposal proposal, boolean select) {
-        int start = inputStartOffset() + proposal.replaceStart();
+        int start = inputOffset() + proposal.replaceStart();
         int length = proposal.replaceLength();
         String text = proposal.text();
         
-        //? need not to use syncExec? it's weird
         replaceTextRange(start, length, text);
         if (select)
             setSelectionRange(start + length, text.length() - length);
         else
-            setSelectionToEnd();
-    }
-    
-    private boolean inInput() {
-        return (getSelection().x >= inputStartOffset());
+            moveCaretToEnd();
     }
     
 }

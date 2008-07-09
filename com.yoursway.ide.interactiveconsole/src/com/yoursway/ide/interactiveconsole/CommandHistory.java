@@ -1,32 +1,31 @@
 package com.yoursway.ide.interactiveconsole;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class CommandHistory {
     
-    public String[] commands;
-    public int index;
+    private final List<String> history = new LinkedList<String>();
     
-    private final IDebug debug;
+    // working history
+    private String[] commands;
+    private int index;
     
-    public CommandHistory(IDebug debug) {
-        this.debug = debug; //? move history responsibility from IDebug
-        
+    public CommandHistory() {
         //> load old persistent history
-        
-        update();
+        prepareWorkingHistory();
     }
     
     public void add(String command) {
-        debug.addToHistory(command);
-        update();
+        history.add(command);
+        prepareWorkingHistory();
     }
     
-    public void update() {
-        List<String> h = debug.getHistory();
-        commands = h.toArray(new String[h.size() + 1]);
-        commands[h.size()] = "";
-        index = h.size();
+    private void prepareWorkingHistory() {
+        int size = history.size();
+        commands = history.toArray(new String[size + 1]);
+        commands[size] = "";
+        index = size;
     }
     
     public void next(String currentCommand) {
@@ -46,4 +45,10 @@ public class CommandHistory {
     public String command() {
         return commands[index];
     }
+    
+    //! special for DebugMock
+    public String[] getCommands() {
+        return history.toArray(new String[0]);
+    }
+    
 }

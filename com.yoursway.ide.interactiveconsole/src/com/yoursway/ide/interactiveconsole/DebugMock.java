@@ -5,11 +5,12 @@ import java.util.List;
 
 public class DebugMock implements IDebug {
     
-    List<IDebugOutputListener> outputListeners = new LinkedList<IDebugOutputListener>();
+    private final List<IDebugOutputListener> outputListeners = new LinkedList<IDebugOutputListener>();
+    private final CommandHistory history;
     
-    private final List<String> history = new LinkedList<String>();
-    
-    public DebugMock() {
+    public DebugMock(CommandHistory history) {
+        this.history = history;
+        
         Thread outputter = new Thread() {
             
             @Override
@@ -44,20 +45,12 @@ public class DebugMock implements IDebug {
         }
     }
     
-    public List<String> getHistory() {
-        return history; //! returning changeable array field
-    }
-    
-    public void addToHistory(String newCommand) {
-        history.add(newCommand);
-    }
-    
     public List<CompletionProposal> complete(String command, int position) {
         String prefix = command.substring(0, position);
         
         List<CompletionProposal> proposals = new LinkedList<CompletionProposal>();
         
-        for (String item : history) {
+        for (String item : history.getCommands()) {
             if (item.startsWith(prefix))
                 proposals.add(new CompletionProposal(0, command.length(), item));
         }

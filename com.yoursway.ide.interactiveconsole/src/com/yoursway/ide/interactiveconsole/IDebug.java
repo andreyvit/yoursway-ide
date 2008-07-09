@@ -8,10 +8,6 @@ public interface IDebug {
     
     void executeCommand(String command);
     
-    List<String> getHistory();
-    
-    void addToHistory(String newCommand);
-    
     List<CompletionProposal> complete(String command, int position);
     
 }
