@@ -24,6 +24,7 @@ public class CompletionProposalPopup {
     private final IConsoleForProposalPopup console;
     
     public CompletionProposalPopup(Shell parent, final Console console) {
+        //? parent = console.getShell();
         shell = new Shell(parent, SWT.ON_TOP | SWT.RESIZE);
         
         proposalTable = new Table(shell, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -53,17 +54,15 @@ public class CompletionProposalPopup {
         proposalTable.addSelectionListener(new SelectionListener() {
             
             public void widgetDefaultSelected(SelectionEvent e) {
-                
+                apply();
             }
             
             public void widgetSelected(SelectionEvent e) {
-                CompletionProposal proposal = (CompletionProposal) e.item.getData();
-                console.useCompletionProposal(proposal);
                 
-                hide();
             }
             
         });
+        
     }
     
     public void show() {
@@ -78,15 +77,33 @@ public class CompletionProposalPopup {
     }
     
     private void updateProposalList() {
-        
-        proposalTable.removeAll();
-        
         List<CompletionProposal> proposals = console.getCompletionProposals();
-        for (CompletionProposal proposal : proposals) {
-            TableItem item = new TableItem(proposalTable, SWT.FULL_SELECTION); //? FULL_SELECTION
-            item.setText(proposal.text());
-            item.setData(proposal);
+        
+        if (proposalsChanged(proposals)) {
+            
+            proposalTable.removeAll();
+            
+            for (CompletionProposal proposal : proposals) {
+                TableItem item = new TableItem(proposalTable, SWT.FULL_SELECTION); //? FULL_SELECTION
+                item.setText(proposal.text());
+                item.setData(proposal);
+            }
         }
+    }
+    
+    private boolean proposalsChanged(List<CompletionProposal> proposals) {
+        // compare proposal lists: current & new
+        
+        if (proposalTable.getItemCount() != proposals.size())
+            return true;
+        
+        for (int i = 0; i < proposals.size(); i++) {
+            CompletionProposal proposal = (CompletionProposal) proposalTable.getItem(i).getData();
+            if (!proposals.get(i).equals(proposal))
+                return true;
+        }
+        
+        return false;
     }
     
     private void setLocation() {
@@ -126,4 +143,41 @@ public class CompletionProposalPopup {
         
     }
     
+    public void showOrSelectNext() {
+        if (!shell.getVisible())
+            show();
+        else {
+            int i = proposalTable.getSelectionIndex();
+            i++;
+            if (i == proposalTable.getItemCount())
+                i = 0;
+            selectAndScroll(i);
+        }
+    }
+    
+    public void selectPrevious() {
+        int i = proposalTable.getSelectionIndex();
+        i--;
+        if (i < 0)
+            i = proposalTable.getItemCount() - 1;
+        selectAndScroll(i);
+    }
+
+    private void selectAndScroll(int itemIndex) {
+        proposalTable.select(itemIndex);
+        proposalTable.showItem(proposalTable.getItem(itemIndex));
+    }
+    
+    public boolean visible() {
+        return shell.getVisible();
+    }
+    
+    public void apply() {
+        TableItem[] selection = proposalTable.getSelection();
+        if (selection.length == 1) {
+            CompletionProposal proposal = (CompletionProposal) selection[0].getData();
+            console.useCompletionProposal(proposal);
+        }
+        hide();
+    }
 }

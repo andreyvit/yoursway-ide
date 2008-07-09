@@ -11,22 +11,30 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 
 public class Console extends StyledText implements IConsoleForProposalPopup {
     
+    private final IDebug debug;
+    
     private static Display display;
     private static CompletionProposalPopup proposalPopup;
+    
     private boolean inputting;
+    private boolean needToScrollToEnd;
+    
     private String[] history;
     private int historyIndex;
-    private final IDebug debug;
     
     public Console(Composite parent, final IDebug debug) {
         super(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
@@ -58,9 +66,27 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
             
             public void modifyText(ExtendedModifyEvent event) {
                 if (inputting) {
-                    setStyleRange(new StyleRange(event.start, event.length, getForeground(), getBackground(),
-                            SWT.BOLD));
+                    StyleRange style = new StyleRange(event.start, event.length, getForeground(),
+                            getBackground(), SWT.BOLD);
+                    style.underline = true;
+                    setStyleRange(style);
                 }
+                
+                if (needToScrollToEnd) {
+                    scrollToEnd();
+                }
+            }
+            
+        });
+        
+        addVerifyListener(new VerifyListener() {
+            
+            public void verifyText(VerifyEvent e) {
+                ScrollBar scrollbar = getVerticalBar();
+                int selection = scrollbar.getSelection();
+                int maximum = scrollbar.getMaximum();
+                int pageIncrement = scrollbar.getPageIncrement();
+                needToScrollToEnd = (selection + pageIncrement == maximum);
             }
             
         });
@@ -73,13 +99,31 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                 
                 case '\n':
                 case '\r':
-                    if (command().trim().equals(""))
-                        e.doit = false;
+                    e.doit = false;
+                    
+                    if (proposalPopup.visible()) {
+                        proposalPopup.apply();
+                    } else {
+                        String command = command(); //? trim
+                        if (command.trim().equals(""))
+                            return;
+                        
+                        append("\n");
+                        prepareForInput();
+                        
+                        debug.executeCommand(command);
+                        debug.addToHistory(command);
+                        
+                        history = debug.getHistory();
+                        historyIndex = history.length;
+                    }
+                    
                     break;
                 
                 case '\t':
                     e.doit = false;
-                    proposalPopup.show();
+                    proposalPopup.showOrSelectNext();
+                    scrollToEnd();
                     break;
                 }
                 
@@ -99,22 +143,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         addKeyListener(new KeyListener() {
             
             public void keyPressed(KeyEvent e) {
-                if (e.character == '\n' || e.character == '\r') {
-                    
-                    String command = command(); //? trim
-                    if (command.trim().equals("")) //? extract method
-                        return;
-                    
-                    prepareForInput();
-                    
-                    debug.executeCommand(command);
-                    debug.addToHistory(command);
-                    
-                    history = debug.getHistory();
-                    historyIndex = history.length;
-                }
-
-                else if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
                     
                     if (e.keyCode == SWT.ARROW_UP) {
                         if (historyIndex > 0)
@@ -129,20 +158,32 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                         replaceTextRange(getCharCount() - commandLength, commandLength, history[historyIndex]);
                     }
                     
-                    moveCaretToEnd(); //? what if command didn't replace
+                    setSelectionToEnd(); //? what if command didn't replace
                 }
                 
             }
             
             public void keyReleased(KeyEvent e) {
-                
+                if (e.keyCode == '\t' && e.stateMask == SWT.SHIFT) {
+                    proposalPopup.selectPrevious();
+                }
             }
             
         });
         
-        // addVerifyListener(new VerifyListener() {});
         // addSelectionListener(new SelectionListener() {});
         // addWordMovementListener(new MovementListener() {});
+        
+        getVerticalBar().addSelectionListener(new SelectionListener() {
+            
+            public void widgetDefaultSelected(SelectionEvent e) {
+                
+            }
+            
+            public void widgetSelected(SelectionEvent e) {
+                proposalPopup.hide();
+            }
+        });
         
     }
     
@@ -150,11 +191,10 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         display = new Display();
         Shell shell = new Shell(display);
         shell.setText("Interactive Console");
-        
+        shell.setBounds(240, 240, 640, 240); //! magic
         shell.setLayout(new FillLayout());
         
         Console console = new Console(shell, new DebugMock());
-        
         proposalPopup = new CompletionProposalPopup(shell, console);
         
         shell.open();
@@ -177,13 +217,20 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     }
     
     private void prepareForInput() {
+        inputting = false;
         append("\n" + inputPrefix());
-        moveCaretToEnd();
+        setSelectionToEnd();
         inputting = true;
     }
     
-    private void moveCaretToEnd() {
-        setCaretOffset(getCharCount());
+    private void setSelectionToEnd() {
+        setSelection(getCharCount());
+    }
+    
+    private void scrollToEnd() {
+        Point selection = getSelection();
+        setSelectionToEnd();
+        setSelection(selection);
     }
     
     private String inputPrefix() {
@@ -200,17 +247,6 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         return getText().lastIndexOf('\n') + 1 + inputPrefix().length();
     }
     
-    public void useCompletionProposal(final CompletionProposal proposal) {
-        int start = inputStartOffset() + proposal.replaceStart();
-        int length = proposal.replaceLength();
-        String text = proposal.text();
-        
-        //? need not to use syncExec? it's weird
-        replaceTextRange(start, length, text);
-        // setSelectionRange(start, text.length());
-        moveCaretToEnd();
-    }
-    
     public List<CompletionProposal> getCompletionProposals() {
         int position = getSelection().x - inputStartOffset();
         if (position < 0)
@@ -219,15 +255,22 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     }
     
     public Point getLocationForPopup() {
-        int offset = inputStartOffset(); //? .getSelection().x;
+        int offset = inputStartOffset(); //? getSelection().x;
         Point p = getLocationAtOffset(offset);
-        /*
-        p.x -= fProposalShell.getBorderWidth();
-        if (p.x < 0) p.x= 0;
-        if (p.y < 0) p.y= 0;
-        */
+        //p.x -= proposalShell.getBorderWidth();
         p.y += getLineHeight(offset);
-        p = toDisplay(p);
-        return p;
+        return toDisplay(p);
     }
+    
+    public void useCompletionProposal(final CompletionProposal proposal) {
+        int start = inputStartOffset() + proposal.replaceStart();
+        int length = proposal.replaceLength();
+        String text = proposal.text();
+        
+        //? need not to use syncExec? it's weird
+        replaceTextRange(start, length, text);
+        // setSelectionRange(start, text.length());
+        setSelectionToEnd();
+    }
+    
 }

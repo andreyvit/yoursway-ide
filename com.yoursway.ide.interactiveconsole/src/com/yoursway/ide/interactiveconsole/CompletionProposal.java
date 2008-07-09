@@ -12,6 +12,15 @@ public class CompletionProposal {
         this.text = text;
     }
     
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CompletionProposal) {
+            CompletionProposal p = (CompletionProposal) o;
+            return replaceStart == p.replaceStart && replaceLength == p.replaceLength && text.equals(p.text);
+        }
+        return false;
+    }
+    
     public String text() {
         return text;
     }
