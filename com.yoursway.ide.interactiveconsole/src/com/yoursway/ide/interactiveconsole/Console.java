@@ -33,8 +33,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
     private boolean inputting;
     private boolean needToScrollToEnd;
     
-    private String[] history;
-    private int historyIndex;
+    private final CommandHistory history;
     
     public Console(Composite parent, final IDebug debug) {
         super(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
@@ -46,7 +45,7 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         prepareForInput();
         
         this.debug = debug;
-        history = debug.getHistory(); //> get old history
+        history = new CommandHistory(debug);
         
         debug.addOutputListener(new IDebugOutputListener() {
             
@@ -112,10 +111,8 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
                         prepareForInput();
                         
                         debug.executeCommand(command);
-                        debug.addToHistory(command);
                         
-                        history = debug.getHistory();
-                        historyIndex = history.length;
+                        history.add(command);
                     }
                     
                     break;
@@ -144,19 +141,16 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
             
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                    String command = command();
                     
                     if (e.keyCode == SWT.ARROW_UP) {
-                        if (historyIndex > 0)
-                            historyIndex--;
+                        history.previous(command);
                     } else { // e.keyCode == SWT.ARROW_DOWN
-                        if (historyIndex < history.length - 1)
-                            historyIndex++;
+                        history.next(command);
                     }
                     
-                    if (historyIndex < history.length) {
-                        int commandLength = command().length(); //? ineffective
-                        replaceTextRange(getCharCount() - commandLength, commandLength, history[historyIndex]);
-                    }
+                    int commandLength = command.length();
+                    replaceTextRange(getCharCount() - commandLength, commandLength, history.command());
                     
                     setSelectionToEnd(); //? what if command didn't replace
                 }

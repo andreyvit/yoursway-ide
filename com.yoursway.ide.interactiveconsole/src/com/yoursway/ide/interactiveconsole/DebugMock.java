@@ -44,8 +44,8 @@ public class DebugMock implements IDebug {
         }
     }
     
-    public String[] getHistory() {
-        return history.toArray(new String[0]); //? ineffective
+    public List<String> getHistory() {
+        return history; //! returning changeable array field
     }
     
     public void addToHistory(String newCommand) {
