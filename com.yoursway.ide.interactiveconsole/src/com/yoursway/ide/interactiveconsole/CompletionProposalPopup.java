@@ -158,6 +158,8 @@ public class CompletionProposalPopup {
     }
     
     public void selectNext() {
+        if (proposalTable.getItemCount() == 0)
+            return;
         int i = proposalTable.getSelectionIndex();
         i++;
         if (i >= proposalTable.getItemCount())
