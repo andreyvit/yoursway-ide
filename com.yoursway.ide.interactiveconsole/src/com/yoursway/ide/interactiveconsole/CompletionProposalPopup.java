@@ -3,6 +3,8 @@ package com.yoursway.ide.interactiveconsole;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -14,7 +16,7 @@ public class CompletionProposalPopup {
     
     private final Shell shell;
     private final Table proposalTable;
-    private final IConsoleForProposalPopup console;
+    private final Console console;
     
     public CompletionProposalPopup(Shell parent, final Console console) {
         shell = new Shell(parent, SWT.ON_TOP | SWT.RESIZE);
@@ -37,16 +39,39 @@ public class CompletionProposalPopup {
             
         });
         
+        proposalTable.addMouseListener(new MouseListener() {
+            
+            public void mouseDoubleClick(MouseEvent e) {
+                
+            }
+            
+            public void mouseDown(MouseEvent e) {
+                
+            }
+            
+            public void mouseUp(MouseEvent e) {
+                console.focus();
+            }
+            
+        });
+        
     }
     
     public void show() {
         updateProposalList();
         setLocation();
         
-        if (proposalTable.getItemCount() == 1)
+        switch (proposalTable.getItemCount()) {
+        case 0:
+            // need not to show
+            //> beep
+            break;
+        case 1:
             apply(proposalTable.getItem(0), true);
-        else
+            break;
+        default:
             shell.setVisible(true);
+        }
     }
     
     public void hide() {
@@ -67,8 +92,10 @@ public class CompletionProposalPopup {
     private void updateProposalList() {
         List<CompletionProposal> proposals = console.getCompletionProposals();
         
-        if (proposals == null) {
+        if (proposals == null || proposals.size() == 0) {
+            proposalTable.removeAll();
             hide();
+            //> beep
             return;
         }
         

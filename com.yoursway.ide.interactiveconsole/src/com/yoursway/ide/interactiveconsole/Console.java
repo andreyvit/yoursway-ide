@@ -8,8 +8,6 @@ import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,7 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 
-public class Console implements IConsoleForProposalPopup {
+public class Console {
     
     private final IDebug debug;
     
@@ -38,6 +36,8 @@ public class Console implements IConsoleForProposalPopup {
     private boolean needToScrollToEnd;
     
     private static CommandHistory history = new CommandHistory();
+    
+    private static Shell shell;
     
     public Console(Composite shell, final IDebug debug) {
         text = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
@@ -164,24 +164,14 @@ public class Console implements IConsoleForProposalPopup {
             
         });
         
-        text.addKeyListener(new KeyListener() {
-            
-            public void keyPressed(KeyEvent e) {
-                
-            }
-            
-            public void keyReleased(KeyEvent e) {
-                if (e.keyCode == '\t' && e.stateMask == SWT.SHIFT) {
-                    proposalPopup.selectPrevious();
-                }
-            }
-            
-        });
-        
         text.addTraverseListener(new TraverseListener() {
             
             public void keyTraversed(TraverseEvent e) {
                 proposalPopup.update();
+                
+                if (e.keyCode == '\t' && e.stateMask == SWT.SHIFT) {
+                    proposalPopup.selectPrevious();
+                }
             }
             
         });
@@ -217,7 +207,7 @@ public class Console implements IConsoleForProposalPopup {
     
     public static void main(String[] args) {
         display = new Display();
-        Shell shell = new Shell(display);
+        shell = new Shell(display);
         shell.setText("Interactive Console");
         shell.setBounds(240, 240, 640, 240); //! magic :)
         shell.setLayout(new FillLayout());
@@ -305,6 +295,10 @@ public class Console implements IConsoleForProposalPopup {
             text.setSelectionRange(start + length, proposalText.length() - length);
         else
             moveCaretToEnd();
+    }
+    
+    public void focus() {
+        shell.setActive();
     }
     
 }
