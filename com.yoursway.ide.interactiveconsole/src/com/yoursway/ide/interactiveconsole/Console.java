@@ -98,6 +98,12 @@ public class Console {
             
             public void verifyKey(VerifyEvent e) {
                 
+                if (e.character == '\n' || e.character == '\r' || e.character == '\t')
+                    e.doit = false;
+                
+                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN)
+                    e.doit = false;
+                
                 if (!inInput()) {
                     if (e.character != 'c' || (e.stateMask != SWT.CONTROL && e.stateMask != SWT.COMMAND)) {
                         e.doit = false;
@@ -105,12 +111,23 @@ public class Console {
                     }
                 }
                 
-                switch (e.character) {
+                if (e.character == '\b' || e.keyCode == SWT.ARROW_LEFT) {
+                    if (text.getCaretOffset() <= inputOffset())
+                        e.doit = false;
+                }
                 
-                case '\n':
-                case '\r':
-                    e.doit = false;
-                    
+            }
+            
+        });
+        
+        text.addTraverseListener(new TraverseListener() {
+            
+            public void keyTraversed(TraverseEvent e) {
+                proposalPopup.update();
+                
+                switch (e.detail) {
+                
+                case SWT.TRAVERSE_RETURN:
                     if (proposalPopup.visible()) {
                         proposalPopup.apply();
                     } else {
@@ -124,54 +141,41 @@ public class Console {
                         debug.executeCommand(command);
                         history.add(command);
                     }
-                    
                     break;
                 
-                case '\t':
-                    e.doit = false;
+                case SWT.TRAVERSE_ARROW_NEXT:
+                case SWT.TRAVERSE_ARROW_PREVIOUS:
+                    if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                        String command = command();
+                        
+                        if (e.keyCode == SWT.ARROW_UP)
+                            history.previous(command);
+                        else
+                            history.next(command);
+                        
+                        int commandLength = command.length();
+                        text.replaceTextRange(text.getCharCount() - commandLength, commandLength, history
+                                .command());
+                        
+                        moveCaretToEnd(); //> don't move if command didn't replace
+                    }
+                    break;
+                
+                case SWT.TRAVERSE_TAB_NEXT:
                     proposalPopup.showOrSelectNext();
                     scrollToEnd();
                     break;
-                }
                 
-                if (e.character == '\b' || e.keyCode == SWT.ARROW_LEFT) {
-                    if (text.getCaretOffset() <= inputOffset())
-                        e.doit = false;
-                }
-
-                else if (e.keyCode == SWT.ESC) {
-                    proposalPopup.hide();
-                }
-
-                else if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
-                    e.doit = false;
-                    String command = command();
-                    
-                    if (e.keyCode == SWT.ARROW_UP) {
-                        history.previous(command);
-                    } else { // e.keyCode == SWT.ARROW_DOWN
-                        history.next(command);
-                    }
-                    
-                    int commandLength = command.length();
-                    text.replaceTextRange(text.getCharCount() - commandLength, commandLength, history
-                            .command());
-                    
-                    moveCaretToEnd(); //> don't move if command didn't replace
-                }
-                
-            }
-            
-        });
-        
-        text.addTraverseListener(new TraverseListener() {
-            
-            public void keyTraversed(TraverseEvent e) {
-                proposalPopup.update();
-                
-                if (e.keyCode == '\t' && e.stateMask == SWT.SHIFT) {
+                case SWT.TRAVERSE_TAB_PREVIOUS:
                     proposalPopup.selectPrevious();
+                    break;
+                
+                case SWT.TRAVERSE_ESCAPE:
+                    proposalPopup.hide();
+                    break;
+                
                 }
+                
             }
             
         });
