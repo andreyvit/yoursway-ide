@@ -136,7 +136,7 @@ public class CompletionProposalPopup {
     }
     
     public void selectNext() {
-        if (proposalTable.getItemCount() == 0)
+        if (!visible() || proposalTable.getItemCount() == 0)
             return;
         int i = proposalTable.getSelectionIndex();
         i++;
@@ -146,6 +146,8 @@ public class CompletionProposalPopup {
     }
     
     public void selectPrevious() {
+        if (!visible() || proposalTable.getItemCount() == 0)
+            return;
         int i = proposalTable.getSelectionIndex();
         i--;
         if (i < 0)
