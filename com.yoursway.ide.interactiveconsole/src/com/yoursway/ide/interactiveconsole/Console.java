@@ -116,6 +116,22 @@ public class Console {
                         e.doit = false;
                 }
                 
+                if (e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.PAGE_DOWN) {
+                    e.doit = false;
+                    
+                    int increment = text.getVerticalBar().getPageIncrement() / text.getLineHeight();
+                    int index = text.getTopIndex();
+                    index += (e.keyCode == SWT.PAGE_UP) ? -increment : increment;
+                    text.setTopIndex(index);
+                }
+                
+                if (e.keyCode == SWT.HOME || e.keyCode == SWT.END) {
+                    e.doit = false;
+                    
+                    int index = (e.keyCode == SWT.HOME) ? 0 : text.getLineCount();
+                    text.setTopIndex(index);
+                }
+                
             }
             
         });
