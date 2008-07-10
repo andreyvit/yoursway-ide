@@ -191,14 +191,18 @@ public class Console extends StyledText implements IConsoleForProposalPopup {
         shell.setBounds(240, 240, 640, 240); //! magic :)
         shell.setLayout(new FillLayout());
         
-        Console console = new Console(shell, new DebugMock(history));
+        Console console = new Console(shell, new ExternalDebug("irb", history));
         proposalPopup = new CompletionProposalPopup(shell, console);
         
         shell.open();
         
         while (!shell.isDisposed()) {
-            if (!display.readAndDispatch())
-                display.sleep();
+            try {
+                if (!display.readAndDispatch())
+                    display.sleep();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace(System.err);
+            }
         }
         
         display.dispose();
