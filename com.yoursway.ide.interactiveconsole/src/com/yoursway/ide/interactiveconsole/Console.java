@@ -27,22 +27,21 @@ import org.eclipse.swt.widgets.Shell;
 
 public class Console {
     
+    private static CommandHistory history = new CommandHistory();
     private final IDebug debug;
     
     private static Display display;
-    private static StyledText text;
+    private static Shell shell;
+    private static StyledText styledText;
     private static CompletionProposalPopup proposalPopup;
     
+    private boolean disabled = false;
     private boolean inputting;
     private boolean needToScrollToEnd;
     
-    private static CommandHistory history = new CommandHistory();
-    
-    private static Shell shell;
-    
     public Console(Composite shell, final IDebug debug) {
-        text = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        text.setFont(new Font(display, "Monaco", 12, 0));
+        styledText = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        styledText.setFont(new Font(display, "Monaco", 12, 0));
         
         output("Hello world!\n", false);
         prepareForInput();
@@ -50,6 +49,14 @@ public class Console {
         this.debug = debug;
         
         // listeners
+        
+        debug.addTerminationListener(new ITerminationListener() {
+            
+            public void terminated() {
+                disabled = true;
+            }
+            
+        });
         
         debug.addOutputListener(new IOutputListener() {
             
@@ -65,14 +72,14 @@ public class Console {
             
         });
         
-        text.addExtendedModifyListener(new ExtendedModifyListener() {
+        styledText.addExtendedModifyListener(new ExtendedModifyListener() {
             
             public void modifyText(ExtendedModifyEvent event) {
                 if (inputting) {
-                    StyleRange style = new StyleRange(event.start, event.length, text.getForeground(), text
-                            .getBackground(), SWT.BOLD);
+                    StyleRange style = new StyleRange(event.start, event.length, styledText.getForeground(),
+                            styledText.getBackground(), SWT.BOLD);
                     style.underline = true;
-                    text.setStyleRange(style);
+                    styledText.setStyleRange(style);
                 }
                 
                 if (needToScrollToEnd) {
@@ -84,10 +91,10 @@ public class Console {
             
         });
         
-        text.addVerifyListener(new VerifyListener() {
+        styledText.addVerifyListener(new VerifyListener() {
             
             public void verifyText(VerifyEvent e) {
-                ScrollBar scrollbar = text.getVerticalBar();
+                ScrollBar scrollbar = styledText.getVerticalBar();
                 boolean scrolledToEnd = (scrollbar.getSelection() + scrollbar.getPageIncrement() == scrollbar
                         .getMaximum());
                 needToScrollToEnd = scrolledToEnd;
@@ -95,9 +102,18 @@ public class Console {
             
         });
         
-        text.addVerifyKeyListener(new VerifyKeyListener() {
+        styledText.addVerifyKeyListener(new VerifyKeyListener() {
             
             public void verifyKey(VerifyEvent e) {
+                
+                if (disabled || !inInput()) {
+                    if (e.character != 'c' || (e.stateMask != SWT.CONTROL && e.stateMask != SWT.COMMAND)) {
+                        e.doit = false;
+                        return;
+                    }
+                }
+                
+                //
                 
                 if (e.character == '\n' || e.character == '\r' || e.character == '\t')
                     e.doit = false;
@@ -105,41 +121,41 @@ public class Console {
                 if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN)
                     e.doit = false;
                 
-                if (!inInput()) {
-                    if (e.character != 'c' || (e.stateMask != SWT.CONTROL && e.stateMask != SWT.COMMAND)) {
-                        e.doit = false;
-                        return;
-                    }
-                }
-                
                 if (e.character == '\b' || e.keyCode == SWT.ARROW_LEFT) {
-                    if (text.getCaretOffset() <= inputOffset())
+                    if (styledText.getCaretOffset() <= inputOffset())
                         e.doit = false;
                 }
                 
                 if (e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.PAGE_DOWN) {
                     e.doit = false;
                     
-                    int increment = text.getVerticalBar().getPageIncrement() / text.getLineHeight();
-                    int index = text.getTopIndex();
+                    int increment = styledText.getVerticalBar().getPageIncrement()
+                            / styledText.getLineHeight();
+                    int index = styledText.getTopIndex();
                     index += (e.keyCode == SWT.PAGE_UP) ? -increment : increment;
-                    text.setTopIndex(index);
+                    styledText.setTopIndex(index);
                 }
                 
                 if (e.keyCode == SWT.HOME || e.keyCode == SWT.END) {
                     e.doit = false;
                     
-                    int index = (e.keyCode == SWT.HOME) ? 0 : text.getLineCount();
-                    text.setTopIndex(index);
+                    int index = (e.keyCode == SWT.HOME) ? 0 : styledText.getLineCount();
+                    styledText.setTopIndex(index);
                 }
                 
             }
             
         });
         
-        text.addTraverseListener(new TraverseListener() {
+        styledText.addTraverseListener(new TraverseListener() {
             
             public void keyTraversed(TraverseEvent e) {
+                
+                if (disabled) {
+                    e.doit = false;
+                    return;
+                }
+                
                 proposalPopup.update();
                 
                 switch (e.detail) {
@@ -152,7 +168,7 @@ public class Console {
                         if (command.trim().equals(""))
                             return;
                         
-                        text.append("\n");
+                        styledText.append("\n");
                         prepareForInput();
                         
                         debug.executeCommand(command);
@@ -171,8 +187,8 @@ public class Console {
                             history.next(command);
                         
                         int commandLength = command.length();
-                        text.replaceTextRange(text.getCharCount() - commandLength, commandLength, history
-                                .command());
+                        styledText.replaceTextRange(styledText.getCharCount() - commandLength, commandLength,
+                                history.command());
                         
                         moveCaretToEnd(); //> don't move if command didn't replace
                     }
@@ -197,7 +213,7 @@ public class Console {
             
         });
         
-        text.addMouseListener(new MouseListener() {
+        styledText.addMouseListener(new MouseListener() {
             
             public void mouseDoubleClick(MouseEvent e) {
                 
@@ -213,7 +229,7 @@ public class Console {
             
         });
         
-        text.getVerticalBar().addSelectionListener(new SelectionListener() {
+        styledText.getVerticalBar().addSelectionListener(new SelectionListener() {
             
             public void widgetDefaultSelected(SelectionEvent e) {
                 
@@ -252,40 +268,40 @@ public class Console {
     
     private void output(final String string, boolean error) {
         inputting = false;
-        int place = text.getText().lastIndexOf('\n');
+        int place = styledText.getText().lastIndexOf('\n');
         if (place < 0)
             place = 0;
-        text.replaceTextRange(place, 0, string);
+        styledText.replaceTextRange(place, 0, string);
         if (error) {
-            text.setStyleRange(new StyleRange(place, string.length(), new Color(display, 192, 0, 0), text
-                    .getBackground())); //! magic
+            styledText.setStyleRange(new StyleRange(place, string.length(), new Color(display, 192, 0, 0),
+                    styledText.getBackground())); //! magic
         }
         inputting = true;
     }
     
     private void prepareForInput() {
         inputting = false;
-        text.append("\n" + inputPrompt());
+        styledText.append("\n" + inputPrompt());
         moveCaretToEnd();
         inputting = true;
     }
     
     private void scrollToEnd() {
-        Point selection = text.getSelection();
+        Point selection = styledText.getSelection();
         moveCaretToEnd();
-        text.setSelection(selection);
+        styledText.setSelection(selection);
     }
     
     private void moveCaretToEnd() {
-        text.setSelection(text.getCharCount());
+        styledText.setSelection(styledText.getCharCount());
     }
     
     private boolean inInput() {
-        return (text.getSelection().x >= inputOffset());
+        return (styledText.getSelection().x >= inputOffset());
     }
     
     private int inputOffset() {
-        return text.getText().lastIndexOf('\n') + 1 + inputPrompt().length(); //!
+        return styledText.getText().lastIndexOf('\n') + 1 + inputPrompt().length(); //!
     }
     
     private String inputPrompt() {
@@ -293,11 +309,11 @@ public class Console {
     }
     
     private String command() {
-        return text.getText().substring(inputOffset());
+        return styledText.getText().substring(inputOffset());
     }
     
     public List<CompletionProposal> getCompletionProposals() {
-        int position = text.getSelection().x - inputOffset();
+        int position = styledText.getSelection().x - inputOffset();
         if (position < 0)
             return null;
         return debug.complete(command(), position);
@@ -305,19 +321,19 @@ public class Console {
     
     public Point getLocationForPopup() {
         int offset = inputOffset();
-        Point p = text.getLocationAtOffset(offset);
-        p.y += text.getLineHeight(offset);
-        return text.toDisplay(p);
+        Point p = styledText.getLocationAtOffset(offset);
+        p.y += styledText.getLineHeight(offset);
+        return styledText.toDisplay(p);
     }
     
     public void useCompletionProposal(final CompletionProposal proposal, boolean select) {
         int start = inputOffset() + proposal.replaceStart();
         int length = proposal.replaceLength();
-        String proposalText = proposal.text();
+        String text = proposal.text();
         
-        text.replaceTextRange(start, length, proposalText);
+        styledText.replaceTextRange(start, length, text);
         if (select)
-            text.setSelectionRange(start + length, proposalText.length() - length);
+            styledText.setSelectionRange(start + length, text.length() - length);
         else
             moveCaretToEnd();
     }

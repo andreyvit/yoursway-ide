@@ -22,6 +22,23 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
             new OutputStreamMonitor(process.getInputStream(), outputter(), false).start();
             new OutputStreamMonitor(process.getErrorStream(), outputter(), true).start();
             
+            Thread processMonitor = new Thread() {
+                
+                @Override
+                public void run() {
+                    try {
+                        process.waitFor();
+                    } catch (InterruptedException e) {
+                        Thread.interrupted();
+                    } finally {
+                        terminated();
+                    }
+                }
+                
+            };
+            
+            processMonitor.start();
+            
         } catch (IOException e) {
             //!
             e.printStackTrace();
@@ -38,4 +55,9 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
         }
     }
     
+    @Override
+    protected void terminated() {
+        output("TERMINATED", true);
+        super.terminated();
+    }
 }

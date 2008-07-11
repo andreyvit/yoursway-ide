@@ -5,9 +5,19 @@ import java.util.List;
 
 public abstract class AbstractDebug implements IDebug {
     
+    private final List<ITerminationListener> terminationListeners = new LinkedList<ITerminationListener>();
     private final List<IOutputListener> outputListeners = new LinkedList<IOutputListener>();
-    
     private final List<OutputEntry> output = new LinkedList<OutputEntry>();
+    
+    public void addTerminationListener(ITerminationListener listener) {
+        terminationListeners.add(listener);
+    }
+    
+    protected void terminated() {
+        for (ITerminationListener listener : terminationListeners) {
+            listener.terminated();
+        }
+    }
     
     public synchronized void addOutputListener(IOutputListener listener) {
         for (OutputEntry e : output) {
@@ -38,4 +48,5 @@ public abstract class AbstractDebug implements IDebug {
             
         };
     }
+    
 }

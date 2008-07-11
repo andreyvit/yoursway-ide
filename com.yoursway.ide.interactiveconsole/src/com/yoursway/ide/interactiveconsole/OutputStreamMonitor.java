@@ -30,8 +30,6 @@ public class OutputStreamMonitor {
                         outputter.outputted(String.copyValueOf(cbuf, 0, read), error);
                     }
                     
-                    outputter.outputted("TERMINATED", error); //>
-                    
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
