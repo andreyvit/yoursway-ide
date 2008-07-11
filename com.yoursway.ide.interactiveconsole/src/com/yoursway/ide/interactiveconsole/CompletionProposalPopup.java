@@ -18,12 +18,12 @@ public class CompletionProposalPopup {
     private final Table proposalTable;
     private final Console console;
     
-    public CompletionProposalPopup(Shell parent, final Console console) {
+    public CompletionProposalPopup(Shell parent, final Console console, IUserSettings settings) {
         shell = new Shell(parent, SWT.ON_TOP | SWT.RESIZE);
         proposalTable = new Table(shell, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
         
         shell.setLayout(new FillLayout());
-        shell.setSize(200, 100);
+        shell.setSize(settings.proposalListSize());
         
         this.console = console;
         

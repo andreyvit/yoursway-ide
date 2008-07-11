@@ -16,8 +16,6 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -27,26 +25,33 @@ import org.eclipse.swt.widgets.Shell;
 
 public class Console {
     
-    private static CommandHistory history = new CommandHistory();
-    private final IDebug debug;
-    
     private static Display display;
     private static Shell shell;
     private static StyledText styledText;
     private static CompletionProposalPopup proposalPopup;
     
-    private boolean disabled = false;
+    private final IUserSettings settings;
+    
+    private final CommandHistory history;
+    private final IDebug debug;
+    
+    private boolean disabled;
     private boolean inputting;
     private boolean needToScrollToEnd;
     
-    public Console(Composite shell, final IDebug debug) {
+    public Console(Composite shell, final IUserSettings settings) {
+        this.settings = settings;
+        
+        history = settings.history();
+        debug = settings.debug();
+        
+        disabled = false;
+        
         styledText = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        styledText.setFont(new Font(display, "Monaco", 12, 0));
+        styledText.setFont(settings.consoleFont());
         
-        output("Hello world!\n", false);
+        output(settings.greetings(), false);
         prepareForInput();
-        
-        this.debug = debug;
         
         // listeners
         
@@ -72,25 +77,6 @@ public class Console {
             
         });
         
-        styledText.addExtendedModifyListener(new ExtendedModifyListener() {
-            
-            public void modifyText(ExtendedModifyEvent event) {
-                if (inputting) {
-                    StyleRange style = new StyleRange(event.start, event.length, styledText.getForeground(),
-                            styledText.getBackground(), SWT.BOLD);
-                    style.underline = true;
-                    styledText.setStyleRange(style);
-                }
-                
-                if (needToScrollToEnd) {
-                    scrollToEnd();
-                }
-                
-                proposalPopup.update();
-            }
-            
-        });
-        
         styledText.addVerifyListener(new VerifyListener() {
             
             public void verifyText(VerifyEvent e) {
@@ -102,12 +88,29 @@ public class Console {
             
         });
         
+        styledText.addExtendedModifyListener(new ExtendedModifyListener() {
+            
+            public void modifyText(ExtendedModifyEvent event) {
+                if (inputting) {
+                    StyleRange style = styleRange(event.start, event.length);
+                    styledText.setStyleRange(settings.inputStyle(style));
+                }
+                
+                if (needToScrollToEnd) {
+                    scrollToEnd();
+                }
+                
+                proposalPopup.update();
+            }
+            
+        });
+        
         styledText.addVerifyKeyListener(new VerifyKeyListener() {
             
             public void verifyKey(VerifyEvent e) {
                 
                 if (disabled || !inInput()) {
-                    if (e.character != 'c' || (e.stateMask != SWT.CONTROL && e.stateMask != SWT.COMMAND)) {
+                    if (!settings.isCopyHotkeys(e)) {
                         e.doit = false;
                         return;
                     }
@@ -243,14 +246,16 @@ public class Console {
     }
     
     public static void main(String[] args) {
-        display = new Display();
+        IUserSettings settings = new UserSettingsMock();
+        
+        display = settings.display();
         shell = new Shell(display);
-        shell.setText("Interactive Console");
-        shell.setBounds(240, 240, 640, 240); //! magic :)
+        shell.setText(settings.consoleTitle());
+        shell.setBounds(settings.consoleBounds());
         shell.setLayout(new FillLayout());
         
-        Console console = new Console(shell, new ExternalDebug("irb", history));
-        proposalPopup = new CompletionProposalPopup(shell, console);
+        Console console = new Console(shell, settings);
+        proposalPopup = new CompletionProposalPopup(shell, console, settings);
         
         shell.open();
         
@@ -273,10 +278,14 @@ public class Console {
             place = 0;
         styledText.replaceTextRange(place, 0, string);
         if (error) {
-            styledText.setStyleRange(new StyleRange(place, string.length(), new Color(display, 192, 0, 0),
-                    styledText.getBackground())); //! magic
+            StyleRange range = styleRange(place, string.length());
+            styledText.setStyleRange(settings.errorStyle(range));
         }
         inputting = true;
+    }
+    
+    private StyleRange styleRange(int place, int length) {
+        return new StyleRange(place, length, styledText.getForeground(), styledText.getBackground());
     }
     
     private void prepareForInput() {
@@ -305,7 +314,7 @@ public class Console {
     }
     
     private String inputPrompt() {
-        return ">";
+        return settings.inputPrompt();
     }
     
     private String command() {
