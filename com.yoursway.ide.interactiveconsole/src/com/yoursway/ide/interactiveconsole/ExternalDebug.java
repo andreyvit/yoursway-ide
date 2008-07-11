@@ -19,16 +19,8 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
             OutputStream outputStream = process.getOutputStream();
             writer = new BufferedWriter(new OutputStreamWriter(outputStream));
             
-            IOutputter outputter = new IOutputter() {
-                
-                public void output(String string) {
-                    outputString(string);
-                }
-                
-            };
-            
-            new OutputStreamMonitor(process.getInputStream(), outputter);
-            new OutputStreamMonitor(process.getErrorStream(), outputter);
+            new OutputStreamMonitor(process.getInputStream(), outputter(), false).start();
+            new OutputStreamMonitor(process.getErrorStream(), outputter(), true).start();
             
         } catch (IOException e) {
             //!

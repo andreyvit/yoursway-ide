@@ -5,21 +5,37 @@ import java.util.List;
 
 public abstract class AbstractDebug implements IDebug {
     
-    private final List<IDebugOutputListener> outputListeners = new LinkedList<IDebugOutputListener>();
-    private final StringBuilder output = new StringBuilder();
+    private final List<IOutputListener> outputListeners = new LinkedList<IOutputListener>();
     
-    public void addOutputListener(IDebugOutputListener listener) {
-        outputListeners.add(listener);
+    private final List<OutputEntry> output = new LinkedList<OutputEntry>();
+    
+    public synchronized void addOutputListener(IOutputListener listener) {
+        for (OutputEntry e : output) {
+            listener.outputted(e.text(), e.error());
+        }
         
-        listener.outputString(output.toString());
+        outputListeners.add(listener);
     }
     
-    protected void outputString(String string) {
-        output.append(string);
+    protected void output(String text) {
+        output(text, false);
+    }
+    
+    protected synchronized void output(String text, boolean error) {
+        output.add(new OutputEntry(text, error));
         
-        for (IDebugOutputListener listener : outputListeners) {
-            listener.outputString(string);
+        for (IOutputListener listener : outputListeners) {
+            listener.outputted(text, error);
         }
     }
     
+    protected IOutputListener outputter() {
+        return new IOutputListener() {
+            
+            public void outputted(String text, boolean error) {
+                output(text, error);
+            }
+            
+        };
+    }
 }

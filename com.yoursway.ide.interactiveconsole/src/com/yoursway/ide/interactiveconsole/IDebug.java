@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IDebug {
     
-    void addOutputListener(IDebugOutputListener listener);
+    void addOutputListener(IOutputListener listener);
     
     void executeCommand(String command);
     

@@ -16,6 +16,7 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -43,20 +44,20 @@ public class Console {
         text = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         text.setFont(new Font(display, "Monaco", 12, 0));
         
-        output("Hello world!\n");
+        output("Hello world!\n", false);
         prepareForInput();
         
         this.debug = debug;
         
         // listeners
         
-        debug.addOutputListener(new IDebugOutputListener() {
+        debug.addOutputListener(new IOutputListener() {
             
-            public void outputString(final String string) {
+            public void outputted(final String text, final boolean error) {
                 display.syncExec(new Runnable() {
                     
                     public void run() {
-                        output(string);
+                        output(text, error);
                     }
                     
                 });
@@ -249,12 +250,16 @@ public class Console {
         display.dispose();
     }
     
-    private void output(final String string) {
+    private void output(final String string, boolean error) {
         inputting = false;
         int place = text.getText().lastIndexOf('\n');
         if (place < 0)
             place = 0;
         text.replaceTextRange(place, 0, string);
+        if (error) {
+            text.setStyleRange(new StyleRange(place, string.length(), new Color(display, 192, 0, 0), text
+                    .getBackground())); //! magic
+        }
         inputting = true;
     }
     

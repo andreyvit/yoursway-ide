@@ -8,12 +8,14 @@ import java.io.Reader;
 
 public class OutputStreamMonitor {
     
-    public OutputStreamMonitor(InputStream inputStream, final IOutputter outputter) {
+    private final Thread thread;
+    
+    public OutputStreamMonitor(InputStream inputStream, final IOutputListener outputter, final boolean error) {
         //> encoding
         
         final Reader reader = new BufferedReader(new InputStreamReader(inputStream));
         
-        Thread thread = new Thread() {
+        thread = new Thread() {
             
             @Override
             public void run() {
@@ -25,10 +27,10 @@ public class OutputStreamMonitor {
                         if (read == -1)
                             break;
                         
-                        outputter.output(String.copyValueOf(cbuf, 0, read));
+                        outputter.outputted(String.copyValueOf(cbuf, 0, read), error);
                     }
                     
-                    outputter.output("TERMINATED"); //>
+                    outputter.outputted("TERMINATED", error); //>
                     
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -38,6 +40,9 @@ public class OutputStreamMonitor {
             
         };
         
+    }
+    
+    public void start() {
         thread.start();
     }
     

@@ -12,7 +12,7 @@ public class DebugMock extends DebugWithHistoryCompletion {
                 try {
                     while (true) {
                         sleep(10000);
-                        outputString("hahaha\n");
+                        output("hahaha\n", true);
                     }
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -26,7 +26,7 @@ public class DebugMock extends DebugWithHistoryCompletion {
     }
     
     public void executeCommand(String command) {
-        outputString("ok: " + command + "\n");
+        output("ok: " + command + "\n");
     }
     
 }
