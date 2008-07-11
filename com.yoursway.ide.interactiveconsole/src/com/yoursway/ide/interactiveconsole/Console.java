@@ -18,34 +18,41 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 
 public class Console {
     
-    private static Display display;
-    private static Shell shell;
-    private static StyledText styledText;
-    private static CompletionProposalPopup proposalPopup;
-    
     private final IUserSettings settings;
     
     private final CommandHistory history;
     private final IDebug debug;
     
+    private final Display display;
+    private final Shell shell;
+    private final StyledText styledText;
+    private final CompletionProposalPopup proposalPopup;
+    
     private boolean disabled;
     private boolean inputting;
     private boolean needToScrollToEnd;
     
-    public Console(Composite shell, final IUserSettings settings) {
+    public Console(final IUserSettings settings) {
         this.settings = settings;
         
         history = settings.history();
         debug = settings.debug();
         
         disabled = false;
+        
+        display = settings.display();
+        shell = new Shell(display);
+        shell.setText(settings.consoleTitle());
+        shell.setBounds(settings.consoleBounds());
+        shell.setLayout(new FillLayout());
+        
+        proposalPopup = new CompletionProposalPopup(shell, this, settings);
         
         styledText = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         styledText.setFont(settings.consoleFont());
@@ -248,14 +255,9 @@ public class Console {
     public static void main(String[] args) {
         IUserSettings settings = new UserSettingsMock();
         
-        display = settings.display();
-        shell = new Shell(display);
-        shell.setText(settings.consoleTitle());
-        shell.setBounds(settings.consoleBounds());
-        shell.setLayout(new FillLayout());
-        
-        Console console = new Console(shell, settings);
-        proposalPopup = new CompletionProposalPopup(shell, console, settings);
+        Console console = new Console(settings);
+        Shell shell = console.shell();
+        Display display = settings.display();
         
         shell.open();
         
@@ -269,6 +271,10 @@ public class Console {
         }
         
         display.dispose();
+    }
+    
+    private Shell shell() {
+        return shell;
     }
     
     private void output(final String string, boolean error) {
