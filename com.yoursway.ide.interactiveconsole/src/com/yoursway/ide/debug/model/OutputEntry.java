@@ -1,4 +1,4 @@
-package com.yoursway.ide.interactiveconsole;
+package com.yoursway.ide.debug.model;
 
 public class OutputEntry {
     

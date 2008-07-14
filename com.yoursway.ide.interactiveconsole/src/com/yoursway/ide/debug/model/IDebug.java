@@ -1,6 +1,7 @@
-package com.yoursway.ide.interactiveconsole;
+package com.yoursway.ide.debug.model;
 
 import java.util.List;
+
 
 public interface IDebug {
     

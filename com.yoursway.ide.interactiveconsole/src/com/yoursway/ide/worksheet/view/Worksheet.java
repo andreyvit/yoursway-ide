@@ -15,11 +15,13 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import com.yoursway.ide.debug.model.IDebug;
+import com.yoursway.ide.debug.model.IOutputListener;
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 import com.yoursway.ide.worksheet.viewmodel.UserSettingsMock;
 
@@ -27,11 +29,14 @@ public class Worksheet {
     
     private final IUserSettings settings;
     
+    private final IDebug debug;
+    
     private final Display display;
     private final Shell shell;
     private final StyledText styledText;
     
     private final List<Insertion> insertions = new LinkedList<Insertion>();
+    private Insertion outputInsertion;
     
     public Worksheet(final IUserSettings settings) {
         this.settings = settings;
@@ -68,8 +73,7 @@ public class Worksheet {
         styledText.addVerifyKeyListener(new VerifyKeyListener() {
             public void verifyKey(VerifyEvent e) {
                 if (settings.isExecHotkey(e)) {
-                    int offset = styledText.getCaretOffset();
-                    updateInsertion(offset);
+                    executeCommand();
                 }
 
                 else if (settings.isRemoveInsertionsHotkey(e)) {
@@ -82,6 +86,16 @@ public class Worksheet {
             }
         });
         
+        debug = settings.debug();
+        debug.addOutputListener(new IOutputListener() {
+            public void outputted(final String text, boolean error) {
+                display.syncExec(new Runnable() {
+                    public void run() {
+                        output(text);
+                    }
+                });
+            }
+        });
     }
     
     public static void main(String[] args) {
@@ -119,17 +133,26 @@ public class Worksheet {
         return 1;
     }
     
-    private void updateInsertion(int offset) {
+    private synchronized void executeCommand() {
+        int offset = styledText.getCaretOffset();
         int lineIndex = styledText.getLineAtOffset(offset);
-        updateInsertionAtLine(lineIndex);
+        
+        outputInsertion = resetInsertionAtLine(lineIndex);
+        executeCommandAtLine(lineIndex);
     }
     
-    private void updateInsertionAtLine(int lineIndex) throws AssertionError {
+    private void executeCommandAtLine(int lineIndex) {
+        String command = styledText.getLine(lineIndex);
+        debug.executeCommand(command);
+    }
+    
+    private Insertion resetInsertionAtLine(int lineIndex) throws AssertionError {
         if (lineHasInsertion(lineIndex)) {
             Insertion insertion = insertion(lineIndex);
-            insertion.setText("updated");
+            insertion.setText("");
+            return insertion;
         } else {
-            addInsertionAtLine(lineIndex);
+            return addInsertionAtLine(lineIndex);
         }
     }
     
@@ -177,19 +200,16 @@ public class Worksheet {
         return styledText.getText(offset, offset + 1).equals("\n" + insertionPlaceholder());
     }
     
-    private void addInsertionAtLine(int lineIndex) throws AssertionError {
+    private Insertion addInsertionAtLine(int lineIndex) throws AssertionError {
         int offset = lineEndOffset(lineIndex);
         
         styledText.replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
         offset++; // "\n"
         
-        Label label = new Label(styledText, SWT.NONE);
-        label.setText("ok");
-        
-        Insertion insertion = new Insertion(offset, label, this);
+        Insertion insertion = new Insertion(offset, "", this);
         insertions.add(insertion);
         
-        updateMetrics(offset, label);
+        return insertion;
     }
     
     public void updateMetrics(int offset, Control control) {
@@ -202,5 +222,13 @@ public class Worksheet {
         
         style.metrics = new GlyphMetrics(rect.height, 0, rect.width);
         styledText.setStyleRange(style);
+    }
+    
+    private synchronized void output(String text) {
+        outputInsertion.append(text);
+    }
+    
+    public Composite styledText() {
+        return styledText;
     }
 }

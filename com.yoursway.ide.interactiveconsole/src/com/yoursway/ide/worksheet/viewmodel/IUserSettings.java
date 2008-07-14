@@ -5,7 +5,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
+import com.yoursway.ide.debug.model.IDebug;
+
 public interface IUserSettings {
+    
+    IDebug debug();
     
     Display display();
     

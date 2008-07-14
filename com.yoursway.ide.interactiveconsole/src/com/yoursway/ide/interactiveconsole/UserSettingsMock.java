@@ -9,6 +9,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
+import com.yoursway.ide.debug.model.ExternalDebug;
+import com.yoursway.ide.debug.model.IDebug;
+
 public class UserSettingsMock implements IUserSettings {
     
     private final Display display;

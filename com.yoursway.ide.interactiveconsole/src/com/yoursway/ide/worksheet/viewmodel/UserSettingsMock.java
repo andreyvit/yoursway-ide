@@ -6,12 +6,21 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
+import com.yoursway.ide.debug.model.ExternalDebug;
+import com.yoursway.ide.debug.model.IDebug;
+
 public class UserSettingsMock implements IUserSettings {
     
+    private final IDebug debug;
     private final Display display;
     
     public UserSettingsMock() {
+        debug = new ExternalDebug("irb", null);
         display = new Display();
+    }
+    
+    public IDebug debug() {
+        return debug;
     }
     
     public Display display() {

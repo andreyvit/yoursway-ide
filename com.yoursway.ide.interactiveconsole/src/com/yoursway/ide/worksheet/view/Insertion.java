@@ -1,5 +1,6 @@
 package com.yoursway.ide.worksheet.view;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.PaintObjectEvent;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.VerifyEvent;
@@ -12,11 +13,14 @@ public class Insertion {
     private final Label label;
     private final Worksheet worksheet;
     
-    public Insertion(int offset, Label label, Worksheet worksheet) {
+    public Insertion(int offset, String text, Worksheet worksheet) {
         this.offset = offset;
-        this.label = label;
-        
         this.worksheet = worksheet;
+        
+        label = new Label(worksheet.styledText(), SWT.NONE);
+        label.setText(text);
+        
+        worksheet.updateMetrics(offset, label);
     }
     
     public int offset() {
@@ -64,5 +68,9 @@ public class Insertion {
         label.setText(text);
         
         worksheet.updateMetrics(offset, label);
+    }
+    
+    public void append(String text) {
+        setText(label.getText() + text);
     }
 }

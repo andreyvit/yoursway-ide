@@ -1,10 +1,11 @@
-package com.yoursway.ide.interactiveconsole;
+package com.yoursway.ide.debug.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
 
 public class OutputStreamMonitor {
     

@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.yoursway.ide.debug.model.CompletionProposal;
+
 public class CompletionProposalPopup {
     
     private final Shell shell;

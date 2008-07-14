@@ -1,9 +1,11 @@
-package com.yoursway.ide.interactiveconsole;
+package com.yoursway.ide.debug.model;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
+import com.yoursway.ide.interactiveconsole.CommandHistory;
 
 public class ExternalDebug extends DebugWithHistoryCompletion {
     

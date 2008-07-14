@@ -22,6 +22,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 
+import com.yoursway.ide.debug.model.CompletionProposal;
+import com.yoursway.ide.debug.model.IDebug;
+import com.yoursway.ide.debug.model.IOutputListener;
+import com.yoursway.ide.debug.model.ITerminationListener;
+
 public class Console {
     
     private final IUserSettings settings;

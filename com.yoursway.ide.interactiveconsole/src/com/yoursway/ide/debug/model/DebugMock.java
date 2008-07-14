@@ -1,4 +1,6 @@
-package com.yoursway.ide.interactiveconsole;
+package com.yoursway.ide.debug.model;
+
+import com.yoursway.ide.interactiveconsole.CommandHistory;
 
 public class DebugMock extends DebugWithHistoryCompletion {
     
