@@ -7,9 +7,12 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.PaintObjectEvent;
 import org.eclipse.swt.custom.PaintObjectListener;
+import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.GlyphMetrics;
@@ -47,7 +50,7 @@ public class Worksheet {
         shell.setBounds(settings.worksheetBounds());
         shell.setLayout(new FillLayout());
         
-        styledText = new StyledText(shell, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        styledText = new StyledText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //? SWT.WRAP
         styledText.setFont(settings.workspaceFont());
         
         styledText.addVerifyListener(new VerifyListener() {
@@ -80,18 +83,52 @@ public class Worksheet {
                     removeAllInsertions();
                 }
 
-                else {
-                    // it's ok, nothing to do
+                else if (e.character == '\n' || e.character == '\r') {
+                    int offset = styledText.getCaretOffset();
+                    int lineIndex = styledText.getLineAtOffset(offset) + 1;
+                    if (isInsertionLine(lineIndex)) {
+                        offset = lineEndOffset(lineIndex);
+                        styledText.setSelection(offset, offset);
+                    }
                 }
+
+                else {
+                    // not handle or block other keys
+                }
+            }
+        });
+        styledText.addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+                if (caretInInsertionLine()) {
+                    if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_LEFT || e.character == '\b') {
+                        styledText.invokeAction(ST.LINE_UP);
+                    }
+
+                    else if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_RIGHT) {
+                        if (caretInLastLine())
+                            styledText.invokeAction(ST.LINE_UP);
+                        else
+                            styledText.invokeAction(ST.LINE_DOWN);
+                    }
+
+                    else {
+                        // not handle or block other keys
+                    }
+                }
+            }
+            
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+                
             }
         });
         
         debug = settings.debug();
         debug.addOutputListener(new IOutputListener() {
-            public void outputted(final String text, boolean error) {
+            public void outputted(final String text, final boolean error) {
                 display.syncExec(new Runnable() {
                     public void run() {
-                        output(text);
+                        output(text, error);
                     }
                 });
             }
@@ -134,9 +171,7 @@ public class Worksheet {
     }
     
     private synchronized void executeCommand() {
-        int offset = styledText.getCaretOffset();
-        int lineIndex = styledText.getLineAtOffset(offset);
-        
+        int lineIndex = caretLine();
         outputInsertion = resetInsertionAtLine(lineIndex);
         executeCommandAtLine(lineIndex);
     }
@@ -206,7 +241,7 @@ public class Worksheet {
         styledText.replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
         offset++; // "\n"
         
-        Insertion insertion = new Insertion(offset, "", this);
+        Insertion insertion = new Insertion(offset, "", this, settings);
         insertions.add(insertion);
         
         return insertion;
@@ -224,11 +259,31 @@ public class Worksheet {
         styledText.setStyleRange(style);
     }
     
-    private synchronized void output(String text) {
-        outputInsertion.append(text);
+    private synchronized void output(String text, boolean error) {
+        outputInsertion.append(text, error);
     }
     
     public Composite styledText() {
         return styledText;
     }
+    
+    private boolean caretInInsertionLine() {
+        return isInsertionLine(caretLine());
+    }
+    
+    private boolean isInsertionLine(int lineIndex) {
+        if (styledText.getLineCount() <= lineIndex)
+            return false;
+        return (styledText.getLine(lineIndex).equals(insertionPlaceholder()));
+    }
+    
+    private boolean caretInLastLine() {
+        return caretLine() == styledText.getLineCount() - 1;
+    }
+    
+    private int caretLine() {
+        int offset = styledText.getCaretOffset();
+        return styledText.getLineAtOffset(offset);
+    }
+    
 }

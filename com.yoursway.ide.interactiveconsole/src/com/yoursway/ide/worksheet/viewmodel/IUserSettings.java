@@ -1,5 +1,6 @@
 package com.yoursway.ide.worksheet.viewmodel;
 
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
@@ -22,5 +23,7 @@ public interface IUserSettings {
     boolean isExecHotkey(KeyEvent e);
     
     boolean isRemoveInsertionsHotkey(KeyEvent e);
+    
+    StyleRange errorStyle(int offset, int length);
     
 }
