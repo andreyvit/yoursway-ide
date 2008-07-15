@@ -46,7 +46,7 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
             if (view.inLastLine())
                 view.newLineAtEnd();
             else
-                view.lineDown();
+                view.lineDown(false);
         }
 
         else if (settings.isRemoveInsertionsHotkey(e)) {
@@ -84,15 +84,19 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
     
     public void keyPressed(KeyEvent e) {
         if (view.inInsertionLine()) {
+            boolean selection = ((e.stateMask & SWT.SHIFT) == SWT.SHIFT);
+            
             if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_LEFT || e.character == '\b') {
-                view.lineUp();
+                view.lineUp(selection);
             }
 
             else if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_RIGHT) {
-                if (view.inLastLine())
-                    view.lineUp();
-                else
-                    view.lineDown();
+                if (view.inLastLine()) {
+                    view.lineUp(selection);
+                    if (e.keyCode == SWT.ARROW_RIGHT)
+                        view.lineEnd(selection);
+                } else
+                    view.lineDown(selection);
             }
 
             else {

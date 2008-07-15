@@ -240,14 +240,6 @@ public class Worksheet {
         styledText.setSelection(offset);
     }
     
-    public void lineUp() {
-        styledText.invokeAction(ST.LINE_UP);
-    }
-    
-    public void lineDown() {
-        styledText.invokeAction(ST.LINE_DOWN);
-    }
-    
     public void newLineAtEnd() {
         styledText.append("\n");
         styledText.setSelection(styledText.getCharCount());
@@ -276,4 +268,16 @@ public class Worksheet {
         return styledText.getLine(caretLine()).equals("");
     }
     
+    public void lineUp(boolean selection) {
+        styledText.invokeAction(selection ? ST.SELECT_LINE_UP : ST.LINE_UP);
+    }
+    
+    public void lineDown(boolean selection) {
+        styledText.invokeAction(selection ? ST.SELECT_LINE_DOWN : ST.LINE_DOWN);
+    }
+    
+    public void lineEnd(boolean selection) {
+        styledText.invokeAction(selection ? ST.SELECT_LINE_END : ST.LINE_END);
+        
+    }
 }
