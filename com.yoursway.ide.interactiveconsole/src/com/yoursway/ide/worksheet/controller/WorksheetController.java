@@ -54,8 +54,27 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
         }
 
         else if (e.character == '\n' || e.character == '\r') {
-            if (view.lineHasInsertion())
-                view.selectInsertionLineEnd();
+            if (view.lineHasInsertion()) {
+                if (view.atLineEnd())
+                    view.selectInsertionLineEnd();
+                else
+                    view.removeInsertion();
+            }
+        }
+
+        else if (e.keyCode == SWT.DEL) {
+            if (view.lineHasInsertion() && view.atLineEnd())
+                view.removeInsertion();
+        }
+
+        else if (e.character == '\b') {
+            if (view.atLineBegin() && !view.lineEmpty()) {
+                int prevLine = view.caretLine() - 2;
+                if (prevLine >= 0) {
+                    if (view.lineHasInsertion(prevLine))
+                        view.removeInsertion(prevLine);
+                }
+            }
         }
 
         else {

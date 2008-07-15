@@ -125,7 +125,7 @@ public class Worksheet {
         return styledText.getLine(lineIndex);
     }
     
-    private int caretLine() {
+    public int caretLine() {
         int offset = styledText.getCaretOffset();
         return styledText.getLineAtOffset(offset);
     }
@@ -141,7 +141,7 @@ public class Worksheet {
             return addInsertion(lineIndex);
     }
     
-    private boolean lineHasInsertion(int lineIndex) {
+    public boolean lineHasInsertion(int lineIndex) {
         int offset = lineEndOffset(lineIndex);
         if (styledText.getCharCount() < offset + 2)
             return false;
@@ -165,13 +165,11 @@ public class Worksheet {
         styledText.setStyleRange(style);
     }
     
-    public void removeAllInsertions() {
-        for (int i = 0; i < styledText.getLineCount(); i++) {
-            removeInsertion(i);
-        }
+    public boolean removeInsertion() {
+        return removeInsertion(caretLine());
     }
     
-    private boolean removeInsertion(int lineIndex) {
+    public boolean removeInsertion(int lineIndex) {
         if (!lineHasInsertion(lineIndex))
             return false;
         
@@ -185,6 +183,12 @@ public class Worksheet {
             throw new AssertionError("Insertion object hasn't been removed from collection.");
         
         return true;
+    }
+    
+    public void removeAllInsertions() {
+        for (int i = 0; i < styledText.getLineCount(); i++) {
+            removeInsertion(i);
+        }
     }
     
     private int lineEndOffset(int lineIndex) {
@@ -257,4 +261,19 @@ public class Worksheet {
                 existingInsertion(i).becomeObsolete();
         }
     }
+    
+    public boolean atLineBegin() {
+        int offset = styledText.getOffsetAtLine(caretLine());
+        return styledText.getCaretOffset() == offset;
+    }
+    
+    public boolean atLineEnd() {
+        int offset = lineEndOffset(caretLine());
+        return styledText.getCaretOffset() == offset;
+    }
+    
+    public boolean lineEmpty() {
+        return styledText.getLine(caretLine()).equals("");
+    }
+    
 }
