@@ -3,6 +3,7 @@ package com.yoursway.ide.worksheet.view;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.PaintObjectEvent;
@@ -39,7 +40,8 @@ public class Worksheet {
     private final StyledText styledText;
     
     private final List<Insertion> insertions = new LinkedList<Insertion>();
-    private Insertion outputInsertion;
+    private Insertion outputInsertion = null;
+    private final Queue<Execution> executions = new LinkedList<Execution>(); //? sync
     
     public Worksheet(final IUserSettings settings) {
         this.settings = settings;
@@ -118,8 +120,7 @@ public class Worksheet {
             }
             
             public void keyReleased(KeyEvent e) {
-                // TODO Auto-generated method stub
-                
+                // nothing                
             }
         });
         
@@ -131,6 +132,10 @@ public class Worksheet {
                         output(text, error);
                     }
                 });
+            }
+            
+            public void completed() {
+                resetOutputInsertion();
             }
         });
     }
@@ -172,23 +177,32 @@ public class Worksheet {
     
     private synchronized void executeCommand() {
         int lineIndex = caretLine();
-        outputInsertion = resetInsertionAtLine(lineIndex);
-        executeCommandAtLine(lineIndex);
-    }
-    
-    private void executeCommandAtLine(int lineIndex) {
-        String command = styledText.getLine(lineIndex);
-        debug.executeCommand(command);
-    }
-    
-    private Insertion resetInsertionAtLine(int lineIndex) throws AssertionError {
-        if (lineHasInsertion(lineIndex)) {
-            Insertion insertion = insertion(lineIndex);
-            insertion.setText("");
-            return insertion;
-        } else {
-            return addInsertionAtLine(lineIndex);
+        String command = commandAtLine(lineIndex);
+        Insertion insertion = insertionAtLine(lineIndex);
+        executions.add(new Execution(command, insertion, debug));
+        if (executions.size() == 1) {
+            outputInsertion = executions.peek().start();
         }
+    }
+    
+    private synchronized void resetOutputInsertion() {
+        executions.poll();
+        outputInsertion = null;
+        
+        Execution execution = executions.peek();
+        if (execution != null)
+            outputInsertion = execution.start();
+    }
+    
+    private String commandAtLine(int lineIndex) {
+        return styledText.getLine(lineIndex);
+    }
+    
+    private Insertion insertionAtLine(int lineIndex) throws AssertionError {
+        if (lineHasInsertion(lineIndex))
+            return insertion(lineIndex);
+        else
+            return addInsertionAtLine(lineIndex);
     }
     
     private Insertion insertion(int lineIndex) {

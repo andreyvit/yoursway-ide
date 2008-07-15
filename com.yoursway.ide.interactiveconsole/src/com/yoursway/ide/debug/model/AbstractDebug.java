@@ -3,7 +3,6 @@ package com.yoursway.ide.debug.model;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public abstract class AbstractDebug implements IDebug {
     
     private final List<ITerminationListener> terminationListeners = new LinkedList<ITerminationListener>();
@@ -36,17 +35,33 @@ public abstract class AbstractDebug implements IDebug {
         output.add(new OutputEntry(text, error));
         
         for (IOutputListener listener : outputListeners) {
-            listener.outputted(text, error);
+            try {
+                listener.outputted(text, error);
+            } catch (Throwable e) {
+                //>
+            }
+        }
+    }
+    
+    protected void completed() {
+        for (IOutputListener listener : outputListeners) {
+            try {
+                listener.completed();
+            } catch (Throwable e) {
+                //>
+            }
         }
     }
     
     protected IOutputListener outputter() {
         return new IOutputListener() {
-            
             public void outputted(String text, boolean error) {
                 output(text, error);
             }
             
+            public void completed() {
+                //?
+            }
         };
     }
     

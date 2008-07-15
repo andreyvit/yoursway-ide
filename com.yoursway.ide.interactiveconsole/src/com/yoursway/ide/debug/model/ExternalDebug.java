@@ -11,6 +11,7 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
     
     private Process process;
     private BufferedWriter writer;
+    private OutputCompletedMonitor outputCompletedMonitor;
     
     public ExternalDebug(String executable, CommandHistory history) {
         super(history);
@@ -21,11 +22,14 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
             OutputStream outputStream = process.getOutputStream();
             writer = new BufferedWriter(new OutputStreamWriter(outputStream));
             
-            new OutputStreamMonitor(process.getInputStream(), outputter(), false).start();
-            new OutputStreamMonitor(process.getErrorStream(), outputter(), true).start();
+            outputCompletedMonitor = new OutputCompletedMonitor();
+            
+            new OutputStreamMonitor(process.getInputStream(), outputter(), false, outputCompletedMonitor)
+                    .start();
+            new OutputStreamMonitor(process.getErrorStream(), outputter(), true, outputCompletedMonitor)
+                    .start();
             
             Thread processMonitor = new Thread() {
-                
                 @Override
                 public void run() {
                     try {
@@ -36,9 +40,9 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
                         terminated();
                     }
                 }
-                
             };
             
+            outputCompletedMonitor.start();
             processMonitor.start();
             
         } catch (IOException e) {
@@ -49,6 +53,8 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
     
     public void executeCommand(String command) {
         try {
+            outputCompletedMonitor.reset();
+            
             writer.write(command + '\n');
             writer.flush();
         } catch (IOException e) {
@@ -62,4 +68,43 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
         output("TERMINATED", true);
         super.terminated();
     }
+    
+    public final class OutputCompletedMonitor extends Thread {
+        private boolean reset = false;
+        private boolean outputted = true;
+        
+        @Override
+        public synchronized void run() {
+            try {
+                while (true) {
+                    while (!reset)
+                        wait();
+                    
+                    outputted = true;
+                    while (outputted) {
+                        outputted = false;
+                        wait(1000);
+                    }
+                    
+                    reset = false;
+                    completed();
+                }
+            } catch (InterruptedException e) {
+                interrupted();
+            }
+            
+        }
+        
+        public synchronized void output() {
+            outputted = true;
+            notify();
+        }
+        
+        public synchronized void reset() {
+            reset = true;
+            notify();
+        }
+        
+    }
+    
 }

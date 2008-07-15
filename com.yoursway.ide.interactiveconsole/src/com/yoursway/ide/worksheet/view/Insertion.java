@@ -27,6 +27,8 @@ public class Insertion {
         embeddedStyledText.setBackground(new Color(settings.display(), 220, 220, 220));
         embeddedStyledText.setEditable(false);
         
+        //embeddedStyledText.set
+        
         setText(text);
     }
     
@@ -71,10 +73,14 @@ public class Insertion {
         }
     }
     
-    public void setText(String text) {
-        embeddedStyledText.setText(text);
-        
-        worksheet.updateMetrics(offset, embeddedStyledText);
+    public void setText(final String text) {
+        settings.display().syncExec(new Runnable() {
+            public void run() {
+                //! check isDisposed
+                embeddedStyledText.setText(text);
+                worksheet.updateMetrics(offset, embeddedStyledText);
+            }
+        });
     }
     
     public void append(String text, boolean error) {

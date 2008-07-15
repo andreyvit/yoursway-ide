@@ -87,6 +87,10 @@ public class Console {
                 });
             }
             
+            public void completed() {
+                //?
+            }
+            
         });
         
         styledText.addVerifyListener(new VerifyListener() {

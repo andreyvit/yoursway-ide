@@ -4,4 +4,6 @@ public interface IOutputListener {
     
     void outputted(String text, boolean error);
     
+    void completed();
+    
 }

@@ -2,7 +2,6 @@ package com.yoursway.ide.debug.model;
 
 import java.util.List;
 
-
 public interface IDebug {
     
     void addTerminationListener(ITerminationListener listener);
