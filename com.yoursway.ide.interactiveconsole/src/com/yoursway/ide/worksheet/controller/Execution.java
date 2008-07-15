@@ -14,11 +14,11 @@ public class Execution {
         this.output = output;
         this.debug = debug;
         
-        output.setText("...");
+        output.becomeWaiting();
     }
     
     public Insertion start() {
-        output.setText("");
+        output.reset();
         debug.executeCommand(command);
         return output;
     }

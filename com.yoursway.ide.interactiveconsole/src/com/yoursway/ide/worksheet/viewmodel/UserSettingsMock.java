@@ -57,4 +57,8 @@ public class UserSettingsMock implements IUserSettings {
         return style;
     }
     
+    public String insertionPlaceholder() {
+        return "\uFFFC";
+    }
+    
 }

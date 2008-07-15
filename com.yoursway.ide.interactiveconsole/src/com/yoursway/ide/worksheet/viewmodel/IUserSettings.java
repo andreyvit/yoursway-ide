@@ -26,4 +26,6 @@ public interface IUserSettings {
     
     StyleRange errorStyle(int offset, int length);
     
+    String insertionPlaceholder();
+    
 }

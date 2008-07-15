@@ -79,6 +79,7 @@ public class Worksheet {
         
         styledText.addVerifyKeyListener(controller);
         styledText.addKeyListener(controller);
+        styledText.addExtendedModifyListener(controller);
     }
     
     public static void main(String[] args) {
@@ -107,7 +108,7 @@ public class Worksheet {
     }
     
     private String insertionPlaceholder() {
-        return "\uFFFC";
+        return settings.insertionPlaceholder();
     }
     
     private int insertionPlaceholderLength() throws AssertionError {
@@ -246,5 +247,14 @@ public class Worksheet {
     public void newLineAtEnd() {
         styledText.append("\n");
         styledText.setSelection(styledText.getCharCount());
+    }
+    
+    public void makeInsertionsObsolete(int start, int end) {
+        int firstLine = styledText.getLineAtOffset(start);
+        int lastLine = styledText.getLineAtOffset(end);
+        for (int i = firstLine; i <= lastLine; i++) {
+            if (lineHasInsertion(i))
+                existingInsertion(i).becomeObsolete();
+        }
     }
 }

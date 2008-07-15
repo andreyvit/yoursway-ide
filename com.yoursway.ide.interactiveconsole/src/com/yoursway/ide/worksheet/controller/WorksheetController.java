@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ExtendedModifyEvent;
+import org.eclipse.swt.custom.ExtendedModifyListener;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -15,7 +18,8 @@ import com.yoursway.ide.worksheet.view.Insertion;
 import com.yoursway.ide.worksheet.view.Worksheet;
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
-public class WorksheetController implements VerifyKeyListener, KeyListener, IOutputListener {
+public class WorksheetController implements IOutputListener, VerifyKeyListener, KeyListener,
+        ExtendedModifyListener {
     
     private final Worksheet view;
     private final IUserSettings settings;
@@ -80,6 +84,19 @@ public class WorksheetController implements VerifyKeyListener, KeyListener, IOut
     
     public void keyReleased(KeyEvent e) {
         // nothing                
+    }
+    
+    public void modifyText(ExtendedModifyEvent e) {
+        int start = e.start;
+        int end = e.start + (e.length > 0 ? e.length - 1 : 0);
+        
+        if (end > start) {
+            String text = ((StyledText) e.widget).getText(start, end);
+            if (text.equals("\n" + settings.insertionPlaceholder()))
+                return;
+        }
+        
+        view.makeInsertionsObsolete(start, end);
     }
     
     private synchronized void executeCommand() {

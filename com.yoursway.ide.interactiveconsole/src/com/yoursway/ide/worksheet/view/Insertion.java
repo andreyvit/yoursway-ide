@@ -4,6 +4,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.PaintObjectEvent;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
@@ -15,10 +17,11 @@ import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 public class Insertion {
     
     private int offset;
-    private final StyledText embeddedStyledText;
+    private final StyledText embeddedText;
     private final Worksheet worksheet;
     private final IUserSettings settings;
     private final Composite parent;
+    private boolean obsolete;
     
     public Insertion(final int offset, String text, final Worksheet worksheet, final Composite parent,
             IUserSettings settings) {
@@ -28,11 +31,23 @@ public class Insertion {
         this.worksheet = worksheet;
         this.parent = parent;
         
-        embeddedStyledText = new StyledText(parent, SWT.MULTI | SWT.WRAP);
-        embeddedStyledText.setBackground(new Color(settings.display(), 220, 220, 220));
-        embeddedStyledText.setEditable(false);
+        embeddedText = new StyledText(parent, SWT.MULTI | SWT.WRAP);
+        embeddedText.setBackground(new Color(settings.display(), 220, 220, 220));
+        embeddedText.setEditable(false);
         
         setText(text);
+        
+        embeddedText.addPaintListener(new PaintListener() {
+            public void paintControl(PaintEvent e) {
+                if (obsolete) {
+                    e.gc.setBackground(parent.getBackground());
+                    e.gc.setAlpha(129);
+                    Point size = embeddedText.getSize();
+                    e.gc.fillRectangle(0, 0, size.x, size.y);
+                }
+            }
+        });
+        
     }
     
     public int offset() {
@@ -42,8 +57,8 @@ public class Insertion {
     public void dispose() {
         if (disposed())
             return;
-        if (embeddedStyledText != null && !embeddedStyledText.isDisposed()) {
-            embeddedStyledText.dispose();
+        if (embeddedText != null && !embeddedText.isDisposed()) {
+            embeddedText.dispose();
             //? label = null;
         }
         offset = -1;
@@ -69,19 +84,21 @@ public class Insertion {
         StyleRange style = e.style;
         int start = style.start;
         if (start == offset) {
-            Point size = embeddedStyledText.getSize();
+            Point size = embeddedText.getSize();
             int x = e.x; //? + MARGIN;
             //? int y = e.y + e.ascent - size.y; //? - 2 * size.y / 3;
             int y = e.y + (e.ascent - size.y + e.descent) / 2;
-            embeddedStyledText.setLocation(x, y);
+            embeddedText.setLocation(x, y);
         }
     }
     
-    public void setText(final String text) {
+    private void setText(final String text) {
+        obsolete = false;
+        
         settings.display().syncExec(new Runnable() {
             public void run() {
                 //! check isDisposed
-                embeddedStyledText.setText(text);
+                embeddedText.setText(text);
                 updateSize();
             }
         });
@@ -91,11 +108,11 @@ public class Insertion {
         settings.display().syncExec(new Runnable() {
             public void run() {
                 //! check isDisposed
-                int start = embeddedStyledText.getCharCount();
-                embeddedStyledText.append(text);
+                int start = embeddedText.getCharCount();
+                embeddedText.append(text);
                 if (error) {
                     StyleRange style = settings.errorStyle(start, text.length());
-                    embeddedStyledText.setStyleRange(style);
+                    embeddedText.setStyleRange(style);
                 }
                 updateSize();
             }
@@ -106,13 +123,26 @@ public class Insertion {
         // instead of embeddedStyledText.pack();
         
         int clientWidth = parent.getClientArea().width;
-        embeddedStyledText.setSize(clientWidth, embeddedStyledText.getSize().y);
+        embeddedText.setSize(clientWidth, embeddedText.getSize().y);
         
-        if (embeddedStyledText.getCharCount() > 0) {
-            Rectangle bounds = embeddedStyledText.getTextBounds(0, embeddedStyledText.getCharCount() - 1);
-            embeddedStyledText.setSize(embeddedStyledText.getSize().x, bounds.height);
+        if (embeddedText.getCharCount() > 0) {
+            Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
+            embeddedText.setSize(embeddedText.getSize().x, bounds.height);
         }
         
-        worksheet.updateMetrics(offset, embeddedStyledText.getBounds());
+        worksheet.updateMetrics(offset, embeddedText.getBounds());
+    }
+    
+    public void becomeObsolete() {
+        obsolete = true;
+        embeddedText.redraw();
+    }
+    
+    public void becomeWaiting() {
+        setText("...");
+    }
+    
+    public void reset() {
+        setText("");
     }
 }
