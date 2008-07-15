@@ -12,6 +12,8 @@ import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.VerifyEvent;
@@ -52,7 +54,7 @@ public class Worksheet {
         shell.setBounds(settings.worksheetBounds());
         shell.setLayout(new FillLayout());
         
-        styledText = new StyledText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //? SWT.WRAP
+        styledText = new StyledText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); // SWT.WRAP or SWT.H_SCROLL
         styledText.setFont(settings.workspaceFont());
         
         styledText.addVerifyListener(new VerifyListener() {
@@ -71,6 +73,18 @@ public class Worksheet {
             public void paintObject(PaintObjectEvent e) {
                 for (Insertion insertion : insertions) {
                     insertion.updateLocation(e);
+                }
+            }
+        });
+        styledText.addControlListener(new ControlListener() {
+            public void controlMoved(ControlEvent e) {
+                // nothing
+            }
+            
+            public void controlResized(ControlEvent e) {
+                for (Insertion insertion : insertions) {
+                    insertion.updateSize();
+                    //insertion.updateSize(styledText.getClientArea().width);
                 }
             }
         });
@@ -266,10 +280,8 @@ public class Worksheet {
         style.start = offset;
         style.length = insertionPlaceholderLength();
         
-        control.pack();
         Rectangle rect = control.getBounds();
-        
-        style.metrics = new GlyphMetrics(rect.height, 0, rect.width);
+        style.metrics = new GlyphMetrics(rect.height, 0, rect.width - 1); // hack: -1 
         styledText.setStyleRange(style);
     }
     

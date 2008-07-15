@@ -7,6 +7,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
@@ -17,17 +18,15 @@ public class Insertion {
     private final Worksheet worksheet;
     private final IUserSettings settings;
     
-    public Insertion(int offset, String text, Worksheet worksheet, IUserSettings settings) {
+    public Insertion(final int offset, String text, final Worksheet worksheet, IUserSettings settings) {
         this.settings = settings;
         
         this.offset = offset;
         this.worksheet = worksheet;
         
-        embeddedStyledText = new StyledText(worksheet.styledText(), SWT.MULTI);
+        embeddedStyledText = new StyledText(worksheet.styledText(), SWT.MULTI | SWT.WRAP);
         embeddedStyledText.setBackground(new Color(settings.display(), 220, 220, 220));
         embeddedStyledText.setEditable(false);
-        
-        //embeddedStyledText.set
         
         setText(text);
     }
@@ -68,7 +67,8 @@ public class Insertion {
         if (start == offset) {
             Point size = embeddedStyledText.getSize();
             int x = e.x; //? + MARGIN;
-            int y = e.y + e.ascent - size.y; //? - 2 * size.y / 3;
+            //? int y = e.y + e.ascent - size.y; //? - 2 * size.y / 3;
+            int y = e.y + (e.ascent - size.y + e.descent) / 2;
             embeddedStyledText.setLocation(x, y);
         }
     }
@@ -78,7 +78,7 @@ public class Insertion {
             public void run() {
                 //! check isDisposed
                 embeddedStyledText.setText(text);
-                worksheet.updateMetrics(offset, embeddedStyledText);
+                updateSize();
             }
         });
     }
@@ -90,6 +90,20 @@ public class Insertion {
             StyleRange style = settings.errorStyle(start, text.length());
             embeddedStyledText.setStyleRange(style);
         }
+        updateSize();
+    }
+    
+    public void updateSize() {
+        // instead of embeddedStyledText.pack();
+        
+        int clientWidth = worksheet.styledText().getClientArea().width;
+        embeddedStyledText.setSize(clientWidth, embeddedStyledText.getSize().y);
+        
+        if (embeddedStyledText.getCharCount() > 0) {
+            Rectangle bounds = embeddedStyledText.getTextBounds(0, embeddedStyledText.getCharCount() - 1);
+            embeddedStyledText.setSize(embeddedStyledText.getSize().x, bounds.height);
+        }
+        
         worksheet.updateMetrics(offset, embeddedStyledText);
     }
 }
