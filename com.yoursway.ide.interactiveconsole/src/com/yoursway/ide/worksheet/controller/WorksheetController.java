@@ -34,7 +34,15 @@ public class WorksheetController implements VerifyKeyListener, KeyListener, IOut
     
     public void verifyKey(VerifyEvent e) {
         if (settings.isExecHotkey(e)) {
-            executeCommand();
+            e.doit = false;
+            if (!view.command().trim().equals("")) {
+                executeCommand();
+                view.selectInsertionLineEnd();
+            }
+            if (view.inLastLine())
+                view.newLineAtEnd();
+            else
+                view.lineDown();
         }
 
         else if (settings.isRemoveInsertionsHotkey(e)) {

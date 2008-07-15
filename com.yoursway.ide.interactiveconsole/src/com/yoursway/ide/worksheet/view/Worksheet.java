@@ -232,7 +232,7 @@ public class Worksheet {
             throw new AssertionError("Selected line must have an insertion.");
         
         int offset = lineEndOffset(caretLine() + 1);
-        styledText.setSelection(offset, offset);
+        styledText.setSelection(offset);
     }
     
     public void lineUp() {
@@ -243,4 +243,8 @@ public class Worksheet {
         styledText.invokeAction(ST.LINE_DOWN);
     }
     
+    public void newLineAtEnd() {
+        styledText.append("\n");
+        styledText.setSelection(styledText.getCharCount());
+    }
 }

@@ -42,7 +42,7 @@ public class UserSettingsMock implements IUserSettings {
     }
     
     public boolean isExecHotkey(KeyEvent e) {
-        return e.stateMask == SWT.COMMAND && e.character == 'e';
+        return e.stateMask == SWT.COMMAND && (e.character == '\n' || e.character == '\r');
     }
     
     public boolean isRemoveInsertionsHotkey(KeyEvent e) {
