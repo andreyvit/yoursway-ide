@@ -8,6 +8,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Composite;
 
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
@@ -17,14 +18,17 @@ public class Insertion {
     private final StyledText embeddedStyledText;
     private final Worksheet worksheet;
     private final IUserSettings settings;
+    private final Composite parent;
     
-    public Insertion(final int offset, String text, final Worksheet worksheet, IUserSettings settings) {
+    public Insertion(final int offset, String text, final Worksheet worksheet, final Composite parent,
+            IUserSettings settings) {
         this.settings = settings;
         
         this.offset = offset;
         this.worksheet = worksheet;
+        this.parent = parent;
         
-        embeddedStyledText = new StyledText(worksheet.styledText(), SWT.MULTI | SWT.WRAP);
+        embeddedStyledText = new StyledText(parent, SWT.MULTI | SWT.WRAP);
         embeddedStyledText.setBackground(new Color(settings.display(), 220, 220, 220));
         embeddedStyledText.setEditable(false);
         
@@ -83,20 +87,25 @@ public class Insertion {
         });
     }
     
-    public void append(String text, boolean error) {
-        int start = embeddedStyledText.getCharCount();
-        embeddedStyledText.append(text);
-        if (error) {
-            StyleRange style = settings.errorStyle(start, text.length());
-            embeddedStyledText.setStyleRange(style);
-        }
-        updateSize();
+    public void append(final String text, final boolean error) {
+        settings.display().syncExec(new Runnable() {
+            public void run() {
+                //! check isDisposed
+                int start = embeddedStyledText.getCharCount();
+                embeddedStyledText.append(text);
+                if (error) {
+                    StyleRange style = settings.errorStyle(start, text.length());
+                    embeddedStyledText.setStyleRange(style);
+                }
+                updateSize();
+            }
+        });
     }
     
     public void updateSize() {
         // instead of embeddedStyledText.pack();
         
-        int clientWidth = worksheet.styledText().getClientArea().width;
+        int clientWidth = parent.getClientArea().width;
         embeddedStyledText.setSize(clientWidth, embeddedStyledText.getSize().y);
         
         if (embeddedStyledText.getCharCount() > 0) {
@@ -104,6 +113,6 @@ public class Insertion {
             embeddedStyledText.setSize(embeddedStyledText.getSize().x, bounds.height);
         }
         
-        worksheet.updateMetrics(offset, embeddedStyledText);
+        worksheet.updateMetrics(offset, embeddedStyledText.getBounds());
     }
 }

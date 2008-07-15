@@ -15,13 +15,21 @@ public abstract class AbstractDebug implements IDebug {
     
     protected void terminated() {
         for (ITerminationListener listener : terminationListeners) {
-            listener.terminated();
+            try {
+                listener.terminated();
+            } catch (Throwable e) {
+                e.printStackTrace(System.err); //>
+            }
         }
     }
     
     public synchronized void addOutputListener(IOutputListener listener) {
-        for (OutputEntry e : output) {
-            listener.outputted(e.text(), e.error());
+        try {
+            for (OutputEntry e : output) {
+                listener.outputted(e.text(), e.error());
+            }
+        } catch (Throwable e) {
+            e.printStackTrace(System.err); //>
         }
         
         outputListeners.add(listener);
@@ -38,7 +46,7 @@ public abstract class AbstractDebug implements IDebug {
             try {
                 listener.outputted(text, error);
             } catch (Throwable e) {
-                //>
+                e.printStackTrace(System.err); //>
             }
         }
     }
@@ -48,7 +56,7 @@ public abstract class AbstractDebug implements IDebug {
             try {
                 listener.completed();
             } catch (Throwable e) {
-                //>
+                e.printStackTrace(System.err); //>
             }
         }
     }
