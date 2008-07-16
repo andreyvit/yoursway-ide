@@ -15,14 +15,12 @@ import com.yoursway.ide.worksheet.viewmodel.UserSettingsMock;
 public class Worksheet {
     
     private final IUserSettings settings;
-    private final WorksheetController controller;
     
     private final Shell shell;
     private final ExtendedText extendedText;
     
     public Worksheet(final IUserSettings settings) {
         this.settings = settings;
-        controller = new WorksheetController(this, settings);
         
         shell = new Shell(settings.display());
         shell.setText(settings.worksheetTitle());
@@ -32,10 +30,9 @@ public class Worksheet {
         extendedText = new ExtendedText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); //> SWT.WRAP or SWT.H_SCROLL switching
         extendedText.setFont(settings.workspaceFont());
         
+        WorksheetController controller = new WorksheetController(this, settings);
         extendedText.addVerifyKeyListener(controller);
-        extendedText.addKeyListener(controller);
         extendedText.addExtendedModifyListener(controller);
-        extendedText.addMouseListener(controller);
     }
     
     public static void main(String[] args) {
@@ -104,32 +101,10 @@ public class Worksheet {
             return addInsertion(lineIndex);
     }
     
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#lineHasInsertion
-     *  (com.yoursway.ide.worksheet.view.Worksheet)} instead
-     */
-    @Deprecated
-    public boolean lineHasInsertion() {
-        return extendedText.lineHasInsertion();
-    }
-    
     private Insertion addInsertion(int lineIndex) {
         Insertion insertion = new Insertion("", extendedText, settings);
         extendedText.addInsertion(lineIndex, insertion);
         return insertion;
-    }
-    
-    public boolean removeInsertion() {
-        return extendedText.removeInsertion(extendedText.caretLine());
-    }
-    
-    public void removePrevLineInserionIfExists() {
-        int prevLine = extendedText.caretLine() - 2;
-        if (prevLine >= 0) {
-            if (extendedText.lineHasInsertion(prevLine))
-                extendedText.removeInsertion(prevLine);
-        }
     }
     
     public void removeAllInsertions() {
@@ -138,32 +113,13 @@ public class Worksheet {
         }
     }
     
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#inInsertionLine()} instead
-     */
-    @Deprecated
-    public boolean inInsertionLine() {
-        return extendedText.inInsertionLine();
-    }
-    
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#inLastLine()} instead
-     */
-    @Deprecated
     public boolean inLastLine() {
         return extendedText.inLastLine();
     }
     
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#selectInsertionLineEnd
-     *  (com.yoursway.ide.worksheet.view.Worksheet)} instead
-     */
     @Deprecated
     public void selectInsertionLineEnd() {
-        extendedText.selectInsertionLineEnd(this);
+        extendedText.selectInsertionLineEnd();
     }
     
     public void makeNewLineAtEnd() {
@@ -180,54 +136,15 @@ public class Worksheet {
         }
     }
     
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#atLineBegin()} instead
-     */
-    @Deprecated
-    public boolean atLineBegin() {
-        return extendedText.atLineBegin();
-    }
-    
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#atLineEnd ()} instead
-     */
-    @Deprecated
-    public boolean atLineEnd() {
-        return extendedText.atLineEnd();
-    }
-    
-    public boolean lineEmpty() {
-        return extendedText.getLine(extendedText.caretLine()).length() == 0;
-    }
-    
-    public void lineUp(boolean selection) {
-        extendedText.invokeAction(selection ? ST.SELECT_LINE_UP : ST.LINE_UP);
-    }
-    
-    public void lineDown(boolean selection) {
-        extendedText.invokeAction(selection ? ST.SELECT_LINE_DOWN : ST.LINE_DOWN);
-    }
-    
-    public void lineEnd(boolean selection) {
-        extendedText.invokeAction(selection ? ST.SELECT_LINE_END : ST.LINE_END);
-    }
-    
-    /**
-     * @deprecated Use {@link
-     *  com.yoursway.ide.worksheet.view.ExtendedText#moveCaretFromInsertionLine
-     *  (boolean)} instead
-     */
-    @Deprecated
-    public void moveCaretFromInsertionLine(boolean selection) {
-        extendedText.moveCaretFromInsertionLine(selection);
-    }
-    
     public void showSelectedText() {
         MessageBox messageBox = new MessageBox(shell);
         messageBox.setMessage(extendedText.selectionWithoutInsertions());
         messageBox.open();
+    }
+    
+    @Deprecated
+    public void lineDown() {
+        extendedText.invokeAction(false ? ST.SELECT_LINE_DOWN : ST.LINE_DOWN);
     }
     
 }

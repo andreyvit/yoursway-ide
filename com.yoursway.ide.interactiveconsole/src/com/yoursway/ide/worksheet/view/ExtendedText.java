@@ -17,6 +17,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
+import com.yoursway.ide.worksheet.controller.ExtendedTextController;
+
 public class ExtendedText extends StyledText {
     
     private final List<Insertion> insertions = new LinkedList<Insertion>();
@@ -55,6 +57,10 @@ public class ExtendedText extends StyledText {
             }
         });
         
+        ExtendedTextController controller = new ExtendedTextController(this);
+        addVerifyKeyListener(controller);
+        addKeyListener(controller);
+        addMouseListener(controller);
     }
     
     private String insertionPlaceholder() {
@@ -77,7 +83,7 @@ public class ExtendedText extends StyledText {
         insertions.add(insertion);
     }
     
-    private int lineEndOffset(int lineIndex) {
+    public int lineEndOffset(int lineIndex) {
         int lineOffset = getOffsetAtLine(lineIndex);
         int lineLength = getLine(lineIndex).length();
         return lineOffset + lineLength;
@@ -139,7 +145,7 @@ public class ExtendedText extends StyledText {
     }
     
     //! for controller
-    public void selectInsertionLineEnd(Worksheet worksheet) {
+    public void selectInsertionLineEnd() {
         if (!lineHasInsertion())
             throw new AssertionError("Selected line must have an insertion.");
         
@@ -155,12 +161,6 @@ public class ExtendedText extends StyledText {
         if (firstLine > lastLine)
             throw new AssertionError("First line of selection must be <= than last.");
         return new Point(firstLine, lastLine);
-    }
-    
-    //! for controller
-    public boolean atLineEnd() {
-        int offset = lineEndOffset(caretLine());
-        return getCaretOffset() == offset;
     }
     
     public boolean inInsertionLine() {
