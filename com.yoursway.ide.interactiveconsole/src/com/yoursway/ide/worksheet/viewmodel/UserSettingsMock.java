@@ -49,6 +49,10 @@ public class UserSettingsMock implements IUserSettings {
         return e.stateMask == SWT.COMMAND && e.character == 'r';
     }
     
+    public boolean isShowTextHotkey(KeyEvent e) {
+        return e.stateMask == SWT.COMMAND && e.character == 's';
+    }
+    
     public StyleRange errorStyle(int start, int length) {
         StyleRange style = new StyleRange();
         style.start = start;

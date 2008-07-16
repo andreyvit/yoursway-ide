@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import com.yoursway.ide.worksheet.controller.WorksheetController;
@@ -332,6 +333,17 @@ public class Worksheet {
     
     private boolean caretAtSelectionEnd() {
         return styledText.getCaretOffset() == styledText.getSelection().y;
+    }
+    
+    public String selectionWithoutInsertions() {
+        String selection = styledText.getSelectionText();
+        return selection.replace("\n" + insertionPlaceholder(), "");
+    }
+    
+    public void showSelectedText() {
+        MessageBox messageBox = new MessageBox(shell);
+        messageBox.setMessage(selectionWithoutInsertions());
+        messageBox.open();
     }
     
 }

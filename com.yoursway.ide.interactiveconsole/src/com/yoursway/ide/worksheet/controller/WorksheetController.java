@@ -55,6 +55,10 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
             view.removeAllInsertions();
         }
 
+        else if (settings.isShowTextHotkey(e)) {
+            view.showSelectedText();
+        }
+
         else if (e.character == '\n' || e.character == '\r') {
             if (view.lineHasInsertion()) {
                 if (view.atLineEnd())

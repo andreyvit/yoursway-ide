@@ -24,6 +24,8 @@ public interface IUserSettings {
     
     boolean isRemoveInsertionsHotkey(KeyEvent e);
     
+    boolean isShowTextHotkey(KeyEvent e);
+    
     StyleRange errorStyle(int offset, int length);
     
     String insertionPlaceholder();
