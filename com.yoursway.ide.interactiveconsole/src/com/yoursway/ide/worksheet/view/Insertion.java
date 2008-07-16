@@ -22,6 +22,8 @@ public class Insertion {
     private final IUserSettings settings;
     private final Composite parent;
     private boolean obsolete;
+    private boolean pending;
+    private long whenUpdateSize = 0;
     
     public Insertion(final int offset, String text, final Worksheet worksheet, final Composite parent,
             IUserSettings settings) {
@@ -93,44 +95,81 @@ public class Insertion {
     }
     
     private void setText(final String text) {
+        setText(text, false);
+    }
+    
+    private void setText(final String text, boolean pending) {
         obsolete = false;
+        this.pending = pending;
         
         settings.display().syncExec(new Runnable() {
             public void run() {
-                //! check isDisposed
                 embeddedText.setText(text);
-                updateSize();
+                updateSizeNeatly();
             }
         });
     }
     
     public void append(final String text, final boolean error) {
+        pending = false;
+        
         settings.display().syncExec(new Runnable() {
             public void run() {
-                //! check isDisposed
                 int start = embeddedText.getCharCount();
                 embeddedText.append(text);
                 if (error) {
                     StyleRange style = settings.errorStyle(start, text.length());
                     embeddedText.setStyleRange(style);
                 }
-                updateSize();
+                updateSizeNeatly();
             }
         });
     }
     
     public void updateSize() {
-        // instead of embeddedStyledText.pack();
+        // instead of embeddedText.pack();
         
-        int clientWidth = parent.getClientArea().width;
-        embeddedText.setSize(clientWidth, embeddedText.getSize().y);
+        if (pending) //?
+            return;
         
+        whenUpdateSize = 0;
+        
+        embeddedText.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int clientWidth = parent.getClientArea().width;
+                embeddedText.setSize(clientWidth, embeddedText.getSize().y);
+                
+                if (embeddedText.getCharCount() > 0) {
+                    Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
+                    embeddedText.setSize(embeddedText.getSize().x, bounds.height);
+                }
+                
+                worksheet.updateMetrics(offset, embeddedText.getBounds());
+            }
+        });
+    }
+    
+    private void updateSizeNeatly() {
         if (embeddedText.getCharCount() > 0) {
             Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
-            embeddedText.setSize(embeddedText.getSize().x, bounds.height);
+            int currentHeight = embeddedText.getSize().y;
+            
+            if (bounds.height > currentHeight)
+                updateSize();
+            
+            if (bounds.height < currentHeight && !pending)
+                updateSizeSometimes();
         }
-        
-        worksheet.updateMetrics(offset, embeddedText.getBounds());
+    }
+    
+    private void updateSizeSometimes() {
+        long now = System.currentTimeMillis();
+        if (now >= whenUpdateSize) {
+            if (whenUpdateSize == 0)
+                whenUpdateSize = now + 300; //! magic
+            else
+                updateSize();
+        }
     }
     
     public void becomeObsolete() {
@@ -139,10 +178,11 @@ public class Insertion {
     }
     
     public void becomeWaiting() {
-        setText("...");
+        setText("...", true);
     }
     
     public void reset() {
-        setText("");
+        setText("", true);
     }
+    
 }

@@ -147,6 +147,7 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
     
     public synchronized void completed() {
         executions.poll();
+        outputInsertion.updateSize();
         outputInsertion = null;
         
         Execution execution = executions.peek();
