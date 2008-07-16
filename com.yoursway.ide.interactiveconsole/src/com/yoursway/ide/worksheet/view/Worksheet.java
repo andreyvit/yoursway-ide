@@ -81,6 +81,7 @@ public class Worksheet {
         styledText.addVerifyKeyListener(controller);
         styledText.addKeyListener(controller);
         styledText.addExtendedModifyListener(controller);
+        styledText.addMouseListener(controller);
     }
     
     public static void main(String[] args) {
@@ -119,14 +120,36 @@ public class Worksheet {
     }
     
     public String command() {
-        return command(caretLine());
+        if (multilineSelection())
+            return multilineCommand();
+        else
+            return command(caretLine());
     }
     
     private String command(int lineIndex) {
         return styledText.getLine(lineIndex);
     }
     
-    public int caretLine() {
+    private boolean multilineSelection() {
+        Point lines = selectedLines();
+        return lines.x != lines.y;
+    }
+    
+    private String multilineCommand() {
+        Point lines = selectedLines();
+        StringBuilder multicommand = new StringBuilder();
+        for (int i = lines.x; i <= lines.y; i++) {
+            if (isInsertionLine(i))
+                continue;
+            
+            multicommand.append(command(i));
+            if (i < lines.y)
+                multicommand.append('\n');
+        }
+        return multicommand.toString();
+    }
+    
+    private int caretLine() {
         int offset = styledText.getCaretOffset();
         return styledText.getLineAtOffset(offset);
     }
@@ -142,11 +165,12 @@ public class Worksheet {
             return addInsertion(lineIndex);
     }
     
-    public boolean lineHasInsertion(int lineIndex) {
-        int offset = lineEndOffset(lineIndex);
-        if (styledText.getCharCount() < offset + 2)
-            return false;
-        return styledText.getText(offset, offset + 1).equals("\n" + insertionPlaceholder());
+    public boolean lineHasInsertion() {
+        return lineHasInsertion(selectedLines().y);
+    }
+    
+    private boolean lineHasInsertion(int lineIndex) {
+        return isInsertionLine(lineIndex + 1);
     }
     
     private Insertion existingInsertion(int lineIndex) {
@@ -170,7 +194,7 @@ public class Worksheet {
         return removeInsertion(caretLine());
     }
     
-    public boolean removeInsertion(int lineIndex) {
+    private boolean removeInsertion(int lineIndex) {
         if (!lineHasInsertion(lineIndex))
             return false;
         
@@ -184,6 +208,14 @@ public class Worksheet {
             throw new AssertionError("Insertion object hasn't been removed from collection.");
         
         return true;
+    }
+    
+    public void removePrevLineInserionIfExists() {
+        int prevLine = caretLine() - 2;
+        if (prevLine >= 0) {
+            if (lineHasInsertion(prevLine))
+                removeInsertion(prevLine);
+        }
     }
     
     public void removeAllInsertions() {
@@ -224,15 +256,6 @@ public class Worksheet {
         return caretLine() == styledText.getLineCount() - 1;
     }
     
-    public boolean lineHasInsertion() {
-        //? replace lineHasInsertion with "a"
-        boolean a = isInsertionLine(selectedLines().y + 1);
-        boolean b = lineHasInsertion(selectedLines().y);
-        if (a != b)
-            throw new AssertionError("a must be equal to b");
-        return a;
-    }
-    
     public void selectInsertionLineEnd() {
         if (!lineHasInsertion())
             throw new AssertionError("Selected line must have an insertion.");
@@ -241,7 +264,7 @@ public class Worksheet {
         styledText.setSelection(offset);
     }
     
-    public void newLineAtEnd() {
+    public void makeNewLineAtEnd() {
         styledText.append("\n");
         styledText.setSelection(styledText.getCharCount());
     }
@@ -279,26 +302,6 @@ public class Worksheet {
     
     public void lineEnd(boolean selection) {
         styledText.invokeAction(selection ? ST.SELECT_LINE_END : ST.LINE_END);
-        
-    }
-    
-    public boolean multilineSelection() {
-        Point lines = selectedLines();
-        return lines.x != lines.y;
-    }
-    
-    public String multilineCommand() {
-        Point lines = selectedLines();
-        StringBuilder multicommand = new StringBuilder();
-        for (int i = lines.x; i <= lines.y; i++) {
-            if (isInsertionLine(i))
-                continue;
-            
-            multicommand.append(command(i));
-            if (i < lines.y)
-                multicommand.append('\n');
-        }
-        return multicommand.toString();
     }
     
     private Point selectedLines() {
@@ -308,6 +311,27 @@ public class Worksheet {
         if (firstLine > lastLine)
             throw new AssertionError("First line of selection must be <= than last.");
         return new Point(firstLine, lastLine);
+    }
+    
+    public void moveCaretFromInsertionLine(boolean selection) {
+        if (inInsertionLine())
+            moveCaret(selection, atLineBegin() ? -1 : inLastLine() ? -2 : 1);
+    }
+    
+    private void moveCaret(boolean selection, int where) {
+        if (selection) {
+            Point sel = styledText.getSelection();
+            if (caretAtSelectionEnd())
+                styledText.setSelection(sel.x, sel.y + where);
+            else
+                styledText.setSelection(sel.x + where, sel.y);
+        } else {
+            styledText.setCaretOffset(styledText.getCaretOffset() + where);
+        }
+    }
+    
+    private boolean caretAtSelectionEnd() {
+        return styledText.getCaretOffset() == styledText.getSelection().y;
     }
     
 }
