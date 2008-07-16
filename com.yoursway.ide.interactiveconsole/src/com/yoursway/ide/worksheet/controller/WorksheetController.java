@@ -40,7 +40,10 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
         if (settings.isExecHotkey(e)) {
             e.doit = false;
             if (!view.command().trim().equals("")) {
-                executeCommand();
+                if (view.multilineSelection())
+                    executeMultilineCommand();
+                else
+                    executeCommand();
                 view.selectInsertionLineEnd();
             }
             if (view.inLastLine())
@@ -122,8 +125,16 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
         view.makeInsertionsObsolete(start, end);
     }
     
-    private synchronized void executeCommand() {
-        executions.add(new Execution(view.command(), view.insertion(), debug));
+    private void executeCommand() {
+        executeCommand(view.command(), view.insertion());
+    }
+    
+    private void executeMultilineCommand() {
+        executeCommand(view.multilineCommand(), view.insertion());
+    }
+    
+    private synchronized void executeCommand(String command, Insertion insertion) {
+        executions.add(new Execution(command, insertion, debug));
         if (executions.size() == 1)
             outputInsertion = executions.peek().start();
     }

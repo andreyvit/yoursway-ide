@@ -15,6 +15,7 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.GlyphMetrics;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -131,7 +132,7 @@ public class Worksheet {
     }
     
     public Insertion insertion() {
-        return insertion(caretLine());
+        return insertion(selectedLines().y);
     }
     
     private Insertion insertion(int lineIndex) {
@@ -225,8 +226,8 @@ public class Worksheet {
     
     public boolean lineHasInsertion() {
         //? replace lineHasInsertion with "a"
-        boolean a = isInsertionLine(caretLine() + 1);
-        boolean b = lineHasInsertion(caretLine());
+        boolean a = isInsertionLine(selectedLines().y + 1);
+        boolean b = lineHasInsertion(selectedLines().y);
         if (a != b)
             throw new AssertionError("a must be equal to b");
         return a;
@@ -236,7 +237,7 @@ public class Worksheet {
         if (!lineHasInsertion())
             throw new AssertionError("Selected line must have an insertion.");
         
-        int offset = lineEndOffset(caretLine() + 1);
+        int offset = lineEndOffset(selectedLines().y + 1);
         styledText.setSelection(offset);
     }
     
@@ -280,4 +281,33 @@ public class Worksheet {
         styledText.invokeAction(selection ? ST.SELECT_LINE_END : ST.LINE_END);
         
     }
+    
+    public boolean multilineSelection() {
+        Point lines = selectedLines();
+        return lines.x != lines.y;
+    }
+    
+    public String multilineCommand() {
+        Point lines = selectedLines();
+        StringBuilder multicommand = new StringBuilder();
+        for (int i = lines.x; i <= lines.y; i++) {
+            if (isInsertionLine(i))
+                continue;
+            
+            multicommand.append(command(i));
+            if (i < lines.y)
+                multicommand.append('\n');
+        }
+        return multicommand.toString();
+    }
+    
+    private Point selectedLines() {
+        Point sel = styledText.getSelection();
+        int firstLine = styledText.getLineAtOffset(sel.x);
+        int lastLine = styledText.getLineAtOffset(sel.y);
+        if (firstLine > lastLine)
+            throw new AssertionError("First line of selection must be <= than last.");
+        return new Point(firstLine, lastLine);
+    }
+    
 }
