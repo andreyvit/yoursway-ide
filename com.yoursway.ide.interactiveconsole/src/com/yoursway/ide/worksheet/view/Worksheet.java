@@ -1,22 +1,8 @@
 package com.yoursway.ide.worksheet.view;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.PaintObjectEvent;
-import org.eclipse.swt.custom.PaintObjectListener;
 import org.eclipse.swt.custom.ST;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -32,9 +18,7 @@ public class Worksheet {
     private final WorksheetController controller;
     
     private final Shell shell;
-    private final StyledText styledText;
-    
-    private final List<Insertion> insertions = new LinkedList<Insertion>();
+    private final ExtendedText extendedText;
     
     public Worksheet(final IUserSettings settings) {
         this.settings = settings;
@@ -45,44 +29,13 @@ public class Worksheet {
         shell.setBounds(settings.worksheetBounds());
         shell.setLayout(new FillLayout());
         
-        styledText = new StyledText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); //> SWT.WRAP or SWT.H_SCROLL switching
-        styledText.setFont(settings.workspaceFont());
+        extendedText = new ExtendedText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); //> SWT.WRAP or SWT.H_SCROLL switching
+        extendedText.setFont(settings.workspaceFont());
         
-        styledText.addVerifyListener(new VerifyListener() {
-            public void verifyText(VerifyEvent e) {
-                for (Iterator<Insertion> it = insertions.iterator(); it.hasNext();) {
-                    Insertion insertion = it.next();
-                    
-                    insertion.updateOffset(e);
-                    
-                    if (insertion.disposed())
-                        it.remove();
-                }
-            }
-        });
-        styledText.addPaintObjectListener(new PaintObjectListener() {
-            public void paintObject(PaintObjectEvent e) {
-                for (Insertion insertion : insertions) {
-                    insertion.updateLocation(e);
-                }
-            }
-        });
-        styledText.addControlListener(new ControlListener() {
-            public void controlMoved(ControlEvent e) {
-                // nothing
-            }
-            
-            public void controlResized(ControlEvent e) {
-                for (Insertion insertion : insertions) {
-                    insertion.updateSize();
-                }
-            }
-        });
-        
-        styledText.addVerifyKeyListener(controller);
-        styledText.addKeyListener(controller);
-        styledText.addExtendedModifyListener(controller);
-        styledText.addMouseListener(controller);
+        extendedText.addVerifyKeyListener(controller);
+        extendedText.addKeyListener(controller);
+        extendedText.addExtendedModifyListener(controller);
+        extendedText.addMouseListener(controller);
     }
     
     public static void main(String[] args) {
@@ -110,37 +63,27 @@ public class Worksheet {
         return shell;
     }
     
-    private String insertionPlaceholder() {
-        return settings.insertionPlaceholder();
-    }
-    
-    private int insertionPlaceholderLength() throws AssertionError {
-        if (insertionPlaceholder().length() != 1)
-            throw new AssertionError("An insertion placeholder must have 1 char length.");
-        return 1;
-    }
-    
     public String command() {
         if (multilineSelection())
             return multilineCommand();
         else
-            return command(caretLine());
+            return command(extendedText.caretLine());
     }
     
     private String command(int lineIndex) {
-        return styledText.getLine(lineIndex);
+        return extendedText.getLine(lineIndex);
     }
     
     private boolean multilineSelection() {
-        Point lines = selectedLines();
+        Point lines = extendedText.selectedLines();
         return lines.x != lines.y;
     }
     
     private String multilineCommand() {
-        Point lines = selectedLines();
+        Point lines = extendedText.selectedLines();
         StringBuilder multicommand = new StringBuilder();
         for (int i = lines.x; i <= lines.y; i++) {
-            if (isInsertionLine(i))
+            if (extendedText.isInsertionLine(i))
                 continue;
             
             multicommand.append(command(i));
@@ -150,199 +93,140 @@ public class Worksheet {
         return multicommand.toString();
     }
     
-    private int caretLine() {
-        int offset = styledText.getCaretOffset();
-        return styledText.getLineAtOffset(offset);
-    }
-    
     public Insertion insertion() {
-        return insertion(selectedLines().y);
+        return insertion(extendedText.selectedLines().y);
     }
     
     private Insertion insertion(int lineIndex) {
-        if (lineHasInsertion(lineIndex))
-            return existingInsertion(lineIndex);
+        if (extendedText.lineHasInsertion(lineIndex))
+            return extendedText.existingInsertion(lineIndex);
         else
             return addInsertion(lineIndex);
     }
     
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#lineHasInsertion
+     *  (com.yoursway.ide.worksheet.view.Worksheet)} instead
+     */
+    @Deprecated
     public boolean lineHasInsertion() {
-        return lineHasInsertion(selectedLines().y);
+        return extendedText.lineHasInsertion();
     }
     
-    private boolean lineHasInsertion(int lineIndex) {
-        return isInsertionLine(lineIndex + 1);
-    }
-    
-    private Insertion existingInsertion(int lineIndex) {
-        int offset = lineEndOffset(lineIndex) + 1;
-        for (Insertion insertion : insertions) {
-            if (insertion.offset() == offset)
-                return insertion;
-        }
-        return null;
-    }
-    
-    public void updateMetrics(int offset, Rectangle rect) {
-        StyleRange style = new StyleRange();
-        style.start = offset;
-        style.length = insertionPlaceholderLength();
-        style.metrics = new GlyphMetrics(rect.height, 0, rect.width - 1); // hack: -1 
-        styledText.setStyleRange(style);
+    private Insertion addInsertion(int lineIndex) {
+        Insertion insertion = new Insertion("", extendedText, settings);
+        extendedText.addInsertion(lineIndex, insertion);
+        return insertion;
     }
     
     public boolean removeInsertion() {
-        return removeInsertion(caretLine());
-    }
-    
-    private boolean removeInsertion(int lineIndex) {
-        if (!lineHasInsertion(lineIndex))
-            return false;
-        
-        int s = insertions.size();
-        
-        int offset = lineEndOffset(lineIndex);
-        //! must be 2 == ("\n" + insertionPlaceholder()).length()
-        styledText.replaceTextRange(offset, 2, "");
-        
-        if (insertions.size() != s - 1)
-            throw new AssertionError("Insertion object hasn't been removed from collection.");
-        
-        return true;
+        return extendedText.removeInsertion(extendedText.caretLine());
     }
     
     public void removePrevLineInserionIfExists() {
-        int prevLine = caretLine() - 2;
+        int prevLine = extendedText.caretLine() - 2;
         if (prevLine >= 0) {
-            if (lineHasInsertion(prevLine))
-                removeInsertion(prevLine);
+            if (extendedText.lineHasInsertion(prevLine))
+                extendedText.removeInsertion(prevLine);
         }
     }
     
     public void removeAllInsertions() {
-        for (int i = 0; i < styledText.getLineCount(); i++) {
-            removeInsertion(i);
+        for (int i = 0; i < extendedText.getLineCount(); i++) {
+            extendedText.removeInsertion(i);
         }
     }
     
-    private int lineEndOffset(int lineIndex) {
-        int lineOffset = styledText.getOffsetAtLine(lineIndex);
-        int lineLength = styledText.getLine(lineIndex).length();
-        return lineOffset + lineLength;
-    }
-    
-    private Insertion addInsertion(int lineIndex) throws AssertionError {
-        int offset = lineEndOffset(lineIndex);
-        
-        styledText.replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
-        offset++; // "\n"
-        
-        Insertion insertion = new Insertion(offset, "", this, styledText, settings);
-        insertions.add(insertion);
-        
-        return insertion;
-    }
-    
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#inInsertionLine()} instead
+     */
+    @Deprecated
     public boolean inInsertionLine() {
-        return isInsertionLine(caretLine());
+        return extendedText.inInsertionLine();
     }
     
-    private boolean isInsertionLine(int lineIndex) {
-        if (styledText.getLineCount() <= lineIndex)
-            return false;
-        return (styledText.getLine(lineIndex).equals(insertionPlaceholder()));
-    }
-    
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#inLastLine()} instead
+     */
+    @Deprecated
     public boolean inLastLine() {
-        return caretLine() == styledText.getLineCount() - 1;
+        return extendedText.inLastLine();
     }
     
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#selectInsertionLineEnd
+     *  (com.yoursway.ide.worksheet.view.Worksheet)} instead
+     */
+    @Deprecated
     public void selectInsertionLineEnd() {
-        if (!lineHasInsertion())
-            throw new AssertionError("Selected line must have an insertion.");
-        
-        int offset = lineEndOffset(selectedLines().y + 1);
-        styledText.setSelection(offset);
+        extendedText.selectInsertionLineEnd(this);
     }
     
     public void makeNewLineAtEnd() {
-        styledText.append("\n");
-        styledText.setSelection(styledText.getCharCount());
+        extendedText.append("\n");
+        extendedText.setSelection(extendedText.getCharCount());
     }
     
     public void makeInsertionsObsolete(int start, int end) {
-        int firstLine = styledText.getLineAtOffset(start);
-        int lastLine = styledText.getLineAtOffset(end);
+        int firstLine = extendedText.getLineAtOffset(start);
+        int lastLine = extendedText.getLineAtOffset(end);
         for (int i = firstLine; i <= lastLine; i++) {
-            if (lineHasInsertion(i))
-                existingInsertion(i).becomeObsolete();
+            if (extendedText.lineHasInsertion(i))
+                extendedText.existingInsertion(i).becomeObsolete();
         }
     }
     
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#atLineBegin()} instead
+     */
+    @Deprecated
     public boolean atLineBegin() {
-        int offset = styledText.getOffsetAtLine(caretLine());
-        return styledText.getCaretOffset() == offset;
+        return extendedText.atLineBegin();
     }
     
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#atLineEnd ()} instead
+     */
+    @Deprecated
     public boolean atLineEnd() {
-        int offset = lineEndOffset(caretLine());
-        return styledText.getCaretOffset() == offset;
+        return extendedText.atLineEnd();
     }
     
     public boolean lineEmpty() {
-        return styledText.getLine(caretLine()).equals("");
+        return extendedText.getLine(extendedText.caretLine()).length() == 0;
     }
     
     public void lineUp(boolean selection) {
-        styledText.invokeAction(selection ? ST.SELECT_LINE_UP : ST.LINE_UP);
+        extendedText.invokeAction(selection ? ST.SELECT_LINE_UP : ST.LINE_UP);
     }
     
     public void lineDown(boolean selection) {
-        styledText.invokeAction(selection ? ST.SELECT_LINE_DOWN : ST.LINE_DOWN);
+        extendedText.invokeAction(selection ? ST.SELECT_LINE_DOWN : ST.LINE_DOWN);
     }
     
     public void lineEnd(boolean selection) {
-        styledText.invokeAction(selection ? ST.SELECT_LINE_END : ST.LINE_END);
+        extendedText.invokeAction(selection ? ST.SELECT_LINE_END : ST.LINE_END);
     }
     
-    private Point selectedLines() {
-        Point sel = styledText.getSelection();
-        int firstLine = styledText.getLineAtOffset(sel.x);
-        int lastLine = styledText.getLineAtOffset(sel.y);
-        if (firstLine > lastLine)
-            throw new AssertionError("First line of selection must be <= than last.");
-        return new Point(firstLine, lastLine);
-    }
-    
+    /**
+     * @deprecated Use {@link
+     *  com.yoursway.ide.worksheet.view.ExtendedText#moveCaretFromInsertionLine
+     *  (boolean)} instead
+     */
+    @Deprecated
     public void moveCaretFromInsertionLine(boolean selection) {
-        if (inInsertionLine())
-            moveCaret(selection, atLineBegin() ? -1 : inLastLine() ? -2 : 1);
-    }
-    
-    private void moveCaret(boolean selection, int where) {
-        if (selection) {
-            Point sel = styledText.getSelection();
-            if (caretAtSelectionEnd())
-                styledText.setSelection(sel.x, sel.y + where);
-            else
-                styledText.setSelection(sel.x + where, sel.y);
-        } else {
-            styledText.setCaretOffset(styledText.getCaretOffset() + where);
-        }
-    }
-    
-    private boolean caretAtSelectionEnd() {
-        return styledText.getCaretOffset() == styledText.getSelection().y;
-    }
-    
-    public String selectionWithoutInsertions() {
-        String selection = styledText.getSelectionText();
-        return selection.replace("\n" + insertionPlaceholder(), "");
+        extendedText.moveCaretFromInsertionLine(selection);
     }
     
     public void showSelectedText() {
         MessageBox messageBox = new MessageBox(shell);
-        messageBox.setMessage(selectionWithoutInsertions());
+        messageBox.setMessage(extendedText.selectionWithoutInsertions());
         messageBox.open();
     }
     

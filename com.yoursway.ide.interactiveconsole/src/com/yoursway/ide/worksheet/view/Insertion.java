@@ -10,7 +10,6 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
 
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
@@ -18,22 +17,17 @@ public class Insertion {
     
     private int offset;
     private final StyledText embeddedText;
-    private final Worksheet worksheet;
     private final IUserSettings settings;
-    private final Composite parent;
+    private final ExtendedText extendedText;
     private boolean obsolete;
     private boolean pending;
     private long whenUpdateSize = 0;
     
-    public Insertion(final int offset, String text, final Worksheet worksheet, final Composite parent,
-            IUserSettings settings) {
+    public Insertion(String text, final ExtendedText extendedText, IUserSettings settings) {
         this.settings = settings;
+        this.extendedText = extendedText;
         
-        this.offset = offset;
-        this.worksheet = worksheet;
-        this.parent = parent;
-        
-        embeddedText = new StyledText(parent, SWT.MULTI | SWT.WRAP);
+        embeddedText = new StyledText(extendedText, SWT.MULTI | SWT.WRAP);
         embeddedText.setBackground(new Color(settings.display(), 220, 220, 220));
         embeddedText.setEditable(false);
         
@@ -42,7 +36,7 @@ public class Insertion {
         embeddedText.addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
                 if (obsolete) {
-                    e.gc.setBackground(parent.getBackground());
+                    e.gc.setBackground(extendedText.getBackground());
                     e.gc.setAlpha(129);
                     Point size = embeddedText.getSize();
                     e.gc.fillRectangle(0, 0, size.x, size.y);
@@ -50,6 +44,10 @@ public class Insertion {
             }
         });
         
+    }
+    
+    public void offset(int offset) { //!
+        this.offset = offset;
     }
     
     public int offset() {
@@ -134,9 +132,10 @@ public class Insertion {
         
         whenUpdateSize = 0;
         
+        //! embeddedText can be disposed here (press COMMAND+Q)
         embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
-                int clientWidth = parent.getClientArea().width;
+                int clientWidth = extendedText.getClientArea().width;
                 embeddedText.setSize(clientWidth, embeddedText.getSize().y);
                 
                 if (embeddedText.getCharCount() > 0) {
@@ -144,7 +143,7 @@ public class Insertion {
                     embeddedText.setSize(embeddedText.getSize().x, bounds.height);
                 }
                 
-                worksheet.updateMetrics(offset, embeddedText.getBounds());
+                extendedText.updateMetrics(offset, embeddedText.getBounds());
             }
         });
     }

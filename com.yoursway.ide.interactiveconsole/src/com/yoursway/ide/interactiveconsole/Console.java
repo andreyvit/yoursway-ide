@@ -184,7 +184,7 @@ public class Console {
                         proposalPopup.apply();
                     } else {
                         String command = command();
-                        if (command.trim().equals(""))
+                        if (command.trim().length() == 0)
                             return;
                         
                         styledText.append("\n");
