@@ -63,7 +63,7 @@ public class ExtendedTextInternal extends StyledText {
         addMouseListener(controller);
     }
     
-    private String insertionPlaceholder() {
+    String insertionPlaceholder() {
         return "\uFFFC";
     }
     

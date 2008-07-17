@@ -28,11 +28,11 @@ public class ExtendedText {
         internal.addVerifyKeyListener(listener);
     }
     
-    int lineIndexToExternal(int internalLineIndex) {
+    private int externalLineIndex(int internalLineIndex) {
         return internalLineIndex - insertionLinesAbove(internalLineIndex, false);
     }
     
-    int lineIndexToInternal(int externalLineIndex) {
+    private int internalLineIndex(int externalLineIndex) {
         int internalLineIndex = externalLineIndex + insertionLinesAbove(externalLineIndex, true);
         if (internal.isInsertionLine(internalLineIndex))
             throw new AssertionError("External line can't be insertion line.");
@@ -52,18 +52,32 @@ public class ExtendedText {
         return count;
     }
     
+    private int internalOffset(int externalOffset) {
+        //! ineffective //> by lines
+        int workingOffset = externalOffset;
+        String text = internal.getText();
+        char p = internal.insertionPlaceholder().charAt(0);
+        for (int i = 0; i <= workingOffset; i++) {
+            if (text.charAt(i) == p) {
+                workingOffset += 2;
+                //! magic 2 == ("\n" + insertionPlaceholder).length()
+            }
+        }
+        return workingOffset;
+    }
+    
     public int caretLine() {
-        return lineIndexToExternal(internal.caretLine());
+        return externalLineIndex(internal.caretLine());
     }
     
     public String getLine(int lineIndex) {
-        return internal.getLine(lineIndexToInternal(lineIndex));
+        return internal.getLine(internalLineIndex(lineIndex));
     }
     
     public Point selectedLines() {
         Point internalLines = internal.selectedLines();
-        int x = lineIndexToExternal(internalLines.x);
-        int y = lineIndexToExternal(internalLines.y);
+        int x = externalLineIndex(internalLines.x);
+        int y = externalLineIndex(internalLines.y);
         return new Point(x, y);
     }
     
@@ -71,20 +85,16 @@ public class ExtendedText {
         internal.setFont(font);
     }
     
-    //! internal
-    @Deprecated
     public void addInsertion(int lineIndex, Insertion insertion) {
-        internal.addInsertion(lineIndex, insertion);
+        internal.addInsertion(internalLineIndex(lineIndex), insertion);
     }
     
     public void append(String string) {
         internal.append(string);
     }
     
-    //! internal
-    @Deprecated
     public Insertion existingInsertion(int lineIndex) {
-        return internal.existingInsertion(lineIndex);
+        return internal.existingInsertion(internalLineIndex(lineIndex));
     }
     
     //! internal
@@ -93,10 +103,10 @@ public class ExtendedText {
         return internal.getCharCount();
     }
     
-    //! internal
+    //! offset is internal
     @Deprecated
     public int getLineAtOffset(int offset) {
-        return internal.getLineAtOffset(offset);
+        return externalLineIndex(internal.getLineAtOffset(offset));
     }
     
     //! internal
@@ -111,10 +121,8 @@ public class ExtendedText {
         internal.invokeAction(action);
     }
     
-    //! internal
-    @Deprecated
     public boolean lineHasInsertion(int lineIndex) {
-        return internal.lineHasInsertion(lineIndex);
+        return internal.lineHasInsertion(internalLineIndex(lineIndex));
     }
     
     //! internal

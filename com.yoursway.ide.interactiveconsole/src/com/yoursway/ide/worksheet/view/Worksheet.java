@@ -88,12 +88,9 @@ public class Worksheet {
     }
     
     public Insertion insertion() {
-        int externalLineIndex = extendedText.selectedLines().y;
-        int internalLineIndex = extendedText.lineIndexToInternal(externalLineIndex);
-        return insertion(internalLineIndex);
+        return insertion(extendedText.selectedLines().y);
     }
     
-    //! internal
     private Insertion insertion(int lineIndex) {
         if (extendedText.lineHasInsertion(lineIndex))
             return extendedText.existingInsertion(lineIndex);
@@ -127,6 +124,8 @@ public class Worksheet {
         extendedText.setSelection(extendedText.getCharCount());
     }
     
+    //! start & end are internal
+    @Deprecated
     public void makeInsertionsObsolete(int start, int end) {
         int firstLine = extendedText.getLineAtOffset(start);
         int lastLine = extendedText.getLineAtOffset(end);

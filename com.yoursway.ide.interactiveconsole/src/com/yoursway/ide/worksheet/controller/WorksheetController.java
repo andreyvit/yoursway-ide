@@ -62,9 +62,9 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
         int start = e.start;
         int end = e.start + (e.length > 0 ? e.length - 1 : 0);
         
-        if (end > start) { //!
+        if (end >= start) { //!
             String text = ((StyledText) e.widget).getText(start, end); //!
-            if (text.equals("\n" + settings.insertionPlaceholder()))
+            if (text.equals("\n" + settings.insertionPlaceholder()) || text.equals("\n")) //! hack
                 return;
         }
         
