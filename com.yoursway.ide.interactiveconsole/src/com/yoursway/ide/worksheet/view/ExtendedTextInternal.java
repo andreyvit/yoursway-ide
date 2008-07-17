@@ -1,8 +1,9 @@
 package com.yoursway.ide.worksheet.view;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.swt.custom.PaintObjectEvent;
 import org.eclipse.swt.custom.PaintObjectListener;
@@ -21,27 +22,43 @@ import com.yoursway.ide.worksheet.controller.ExtendedTextController;
 
 public class ExtendedTextInternal extends StyledText {
     
-    private final List<Insertion> insertions = new LinkedList<Insertion>();
+    //private final List<Insertion> insertions = new LinkedList<Insertion>();
+    private final Map<Insertion, Integer> insertions = new HashMap<Insertion, Integer>();
     
     public ExtendedTextInternal(Composite parent, int style) {
         super(parent, style);
         
         addVerifyListener(new VerifyListener() {
             public void verifyText(VerifyEvent e) {
-                for (Iterator<Insertion> it = insertions.iterator(); it.hasNext();) {
-                    Insertion insertion = it.next();
+                int start = e.start;
+                int replaceCharCount = e.end - e.start;
+                int newCharCount = e.text.length();
+                
+                Iterator<Entry<Insertion, Integer>> it = insertions.entrySet().iterator();
+                while (it.hasNext()) {
+                    Entry<Insertion, Integer> entry = it.next();
+                    Insertion insertion = entry.getKey();
+                    int offset = entry.getValue();
                     
-                    insertion.updateOffset(e);
-                    
-                    if (insertion.disposed())
+                    if (start <= offset && offset < start + replaceCharCount) {
+                        insertion.dispose();
                         it.remove();
+                    } else if (offset >= start) {
+                        offset += newCharCount - replaceCharCount;
+                        entry.setValue(offset);
+                    }
                 }
             }
         });
         addPaintObjectListener(new PaintObjectListener() {
             public void paintObject(PaintObjectEvent e) {
-                for (Insertion insertion : insertions) {
-                    insertion.updateLocation(e);
+                int offset = e.style.start;
+                
+                for (Entry<Insertion, Integer> entry : insertions.entrySet()) {
+                    if (offset == entry.getValue()) {
+                        entry.getKey().updateLocation(e);
+                        break;
+                    }
                 }
             }
         });
@@ -51,7 +68,7 @@ public class ExtendedTextInternal extends StyledText {
             }
             
             public void controlResized(ControlEvent e) {
-                for (Insertion insertion : insertions) {
+                for (Insertion insertion : insertions.keySet()) {
                     insertion.updateSize();
                 }
             }
@@ -75,14 +92,10 @@ public class ExtendedTextInternal extends StyledText {
     
     public void addInsertion(int lineIndex, Insertion insertion) {
         int offset = lineEndOffset(lineIndex);
-        
         replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
         offset++; // "\n"
-        
+        insertions.put(insertion, offset);
         insertion.createWidget(this);
-        insertion.offset(offset);
-        
-        insertions.add(insertion);
     }
     
     public int lineEndOffset(int lineIndex) {
@@ -93,9 +106,9 @@ public class ExtendedTextInternal extends StyledText {
     
     public Insertion existingInsertion(int lineIndex) {
         int offset = lineEndOffset(lineIndex) + 1;
-        for (Insertion insertion : insertions) {
-            if (insertion.offset() == offset)
-                return insertion;
+        for (Entry<Insertion, Integer> entry : insertions.entrySet()) {
+            if (entry.getValue() == offset)
+                return entry.getKey();
         }
         return null;
     }
@@ -132,9 +145,9 @@ public class ExtendedTextInternal extends StyledText {
         return (getLine(lineIndex).equals(insertionPlaceholder()));
     }
     
-    public void updateMetrics(int offset, Rectangle rect) { //!
+    public void updateMetrics(Insertion insertion, Rectangle rect) { //!
         StyleRange style = new StyleRange();
-        style.start = offset;
+        style.start = insertions.get(insertion);
         style.length = insertionPlaceholderLength();
         style.metrics = new GlyphMetrics(rect.height, 0, rect.width - 1); // hack: -1 
         setStyleRange(style);

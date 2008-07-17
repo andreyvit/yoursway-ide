@@ -219,16 +219,10 @@ public class ExtendedText {
         return internal.getClientArea();
     }
     
-    //! for Insertion
-    @Deprecated
-    Composite internal() {
-        return internal;
-    }
-    
     //! for Insertion //> move to internal
     @Deprecated
-    void updateMetrics(int offset, Rectangle rect) {
-        internal.updateMetrics(offset, rect);
+    void updateMetrics(Insertion insertion, Rectangle rect) {
+        internal.updateMetrics(insertion, rect);
     }
     
 }
