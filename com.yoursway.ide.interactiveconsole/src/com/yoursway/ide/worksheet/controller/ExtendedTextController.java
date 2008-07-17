@@ -26,8 +26,7 @@ public class ExtendedTextController implements VerifyKeyListener, KeyListener, M
             if (view.lineHasInsertion()) {
                 if (atLineEnd())
                     view.selectInsertionLineEnd();
-                else
-                    view.removeInsertion(view.caretLine());
+                //? else view.removeInsertion(view.caretLine());
             }
         }
 

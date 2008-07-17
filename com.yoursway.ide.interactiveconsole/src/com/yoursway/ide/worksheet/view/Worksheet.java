@@ -1,7 +1,6 @@
 package com.yoursway.ide.worksheet.view;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -114,18 +113,11 @@ public class Worksheet {
         return extendedText.inLastLine();
     }
     
-    @Deprecated
-    public void selectInsertionLineEnd() {
-        extendedText.selectInsertionLineEnd();
-    }
-    
     public void makeNewLineAtEnd() {
         extendedText.append("\n");
         extendedText.setSelection(extendedText.getCharCount());
     }
     
-    //! start & end are internal
-    @Deprecated
     public void makeInsertionsObsolete(int start, int end) {
         int firstLine = extendedText.getLineAtOffset(start);
         int lastLine = extendedText.getLineAtOffset(end);
@@ -137,13 +129,15 @@ public class Worksheet {
     
     public void showSelectedText() {
         MessageBox messageBox = new MessageBox(shell);
-        messageBox.setMessage(extendedText.selectionWithoutInsertions());
+        messageBox.setMessage(extendedText.getSelectionText());
         messageBox.open();
     }
     
-    @Deprecated
     public void lineDown() {
-        extendedText.invokeAction(false ? ST.SELECT_LINE_DOWN : ST.LINE_DOWN);
+        extendedText.lineDown();
     }
     
+    public boolean isNewLineChar(int offset) {
+        return extendedText.getText(offset, offset).equals("\n");
+    }
 }

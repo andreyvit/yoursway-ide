@@ -5,7 +5,6 @@ import java.util.Queue;
 
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 
@@ -35,10 +34,9 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
     public void verifyKey(VerifyEvent e) {
         if (settings.isExecHotkey(e)) {
             e.doit = false;
-            if (view.command().trim().length() != 0) {
+            if (view.command().trim().length() != 0)
                 executeCommand();
-                view.selectInsertionLineEnd();
-            }
+            
             if (view.inLastLine())
                 view.makeNewLineAtEnd();
             else
@@ -62,11 +60,9 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
         int start = e.start;
         int end = e.start + (e.length > 0 ? e.length - 1 : 0);
         
-        if (end >= start) { //!
-            String text = ((StyledText) e.widget).getText(start, end); //!
-            if (text.equals("\n" + settings.insertionPlaceholder()) || text.equals("\n")) //! hack
-                return;
-        }
+        //> check backspaces which doesn't change the line 
+        if (e.length == 1 && view.isNewLineChar(e.start)) //> check line breaking 
+            return;
         
         view.makeInsertionsObsolete(start, end);
     }

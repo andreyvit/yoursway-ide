@@ -54,7 +54,7 @@ public class Insertion {
         return offset;
     }
     
-    public void dispose() {
+    private void dispose() {
         if (disposed())
             return;
         if (embeddedText != null && !embeddedText.isDisposed()) {

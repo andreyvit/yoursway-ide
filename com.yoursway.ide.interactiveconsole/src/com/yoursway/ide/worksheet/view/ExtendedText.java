@@ -1,12 +1,16 @@
 package com.yoursway.ide.worksheet.view;
 
+import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
+import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Widget;
 
 public class ExtendedText {
     
@@ -16,16 +20,70 @@ public class ExtendedText {
         internal = new ExtendedTextInternal(parent, style);
     }
     
-    //! internal
-    @Deprecated
-    public void addExtendedModifyListener(ExtendedModifyListener extendedModifyListener) {
-        internal.addExtendedModifyListener(extendedModifyListener);
+    public void addExtendedModifyListener(final ExtendedModifyListener listener) {
+        //! several listeners
+        
+        internal.addExtendedModifyListener(new ExtendedModifyListener() {
+            public void modifyText(ExtendedModifyEvent e) {
+                Widget _widget = e.widget;
+                int _length = e.length;
+                String _replacedText = e.replacedText;
+                int _start = e.start;
+                
+                e.widget = null;
+                e.length = textWithoutInsertions(_start, _length).length();
+                e.replacedText = replacedTextWithoutInsertions(_replacedText, _start, _length);
+                e.start = externalOffset(_start);
+                
+                if (e.length != 0 || e.replacedText.length() != 0) {
+                    listener.modifyText(e);
+                }
+                
+                //? check e fields
+                
+                e.widget = _widget;
+                e.length = _length;
+                e.replacedText = _replacedText;
+                e.start = _start;
+            }
+            
+            private String textWithoutInsertions(int _start, int _length) {
+                if (_length == 0)
+                    return "";
+                int end = _start + _length - 1;
+                if (insertionAtEdge(_start, _length))
+                    end--;
+                return withoutInsertions(internal.getText(_start, end));
+            }
+            
+            private String replacedTextWithoutInsertions(String _replacedText, int _start, int _length) {
+                String text = _replacedText;
+                if (insertionAtEdge(_start, _length))
+                    text = text.substring(0, text.length() - 1);
+                return withoutInsertions(text);
+            }
+            
+            private boolean insertionAtEdge(int _start, int _length) {
+                int i = _start + _length;
+                return (internal.getCharCount() > i)
+                        && (internal.getText(i, i).equals(internal.insertionPlaceholder()));
+            }
+            
+        });
     }
     
-    //! internal
-    @Deprecated
-    public void addVerifyKeyListener(VerifyKeyListener listener) {
-        internal.addVerifyKeyListener(listener);
+    public void addVerifyKeyListener(final VerifyKeyListener listener) {
+        //! several listeners
+        
+        internal.addVerifyKeyListener(new VerifyKeyListener() {
+            public void verifyKey(VerifyEvent e) {
+                //? change fields
+                
+                listener.verifyKey(e);
+                
+                //? change fields
+            }
+        });
     }
     
     private int externalLineIndex(int internalLineIndex) {
@@ -53,17 +111,27 @@ public class ExtendedText {
     }
     
     private int internalOffset(int externalOffset) {
-        //! ineffective //> by lines
+        //? ineffective //> by lines
         int workingOffset = externalOffset;
         String text = internal.getText();
         char p = internal.insertionPlaceholder().charAt(0);
         for (int i = 0; i <= workingOffset; i++) {
-            if (text.charAt(i) == p) {
+            if (text.length() > i && text.charAt(i) == p) {
                 workingOffset += 2;
                 //! magic 2 == ("\n" + insertionPlaceholder).length()
             }
         }
         return workingOffset;
+    }
+    
+    private int externalOffset(int internalOffset) {
+        //? ineffective
+        int workingOffset = internalOffset;
+        String text = internal.getText();
+        char p = internal.insertionPlaceholder().charAt(0);
+        if (text.length() > internalOffset && text.charAt(internalOffset) == p)
+            workingOffset--;
+        return withoutInsertions(text.substring(0, workingOffset)).length();
     }
     
     public int caretLine() {
@@ -97,66 +165,50 @@ public class ExtendedText {
         return internal.existingInsertion(internalLineIndex(lineIndex));
     }
     
-    //! internal
-    @Deprecated
     public int getCharCount() {
-        return internal.getCharCount();
+        return externalOffset(internal.getCharCount()); //! it works :) change name?
     }
     
-    //! offset is internal
-    @Deprecated
     public int getLineAtOffset(int offset) {
-        return externalLineIndex(internal.getLineAtOffset(offset));
+        return externalLineIndex(internal.getLineAtOffset(internalOffset(offset)));
     }
     
-    //! internal
-    @Deprecated
     public boolean inLastLine() {
-        return internal.inLastLine();
-    }
-    
-    //! internal !!!
-    @Deprecated
-    public void invokeAction(int action) {
-        internal.invokeAction(action);
+        return caretLine() == getLineCount() - 1;
     }
     
     public boolean lineHasInsertion(int lineIndex) {
         return internal.lineHasInsertion(internalLineIndex(lineIndex));
     }
     
-    //! internal
-    @Deprecated
     public boolean removeInsertion(int lineIndex) {
-        return internal.removeInsertion(lineIndex);
+        return internal.removeInsertion(internalLineIndex(lineIndex));
     }
     
-    @Deprecated
-    void selectInsertionLineEnd() {
-        internal.selectInsertionLineEnd();
+    public String getText(int start, int end) {
+        return internal.getText(internalOffset(start), internalOffset(end));
     }
     
-    //!
-    @Deprecated
-    String selectionWithoutInsertions() {
-        return internal.selectionWithoutInsertions();
+    public String getSelectionText() {
+        return withoutInsertions(internal.getSelectionText());
     }
     
-    //! internal
-    @Deprecated
+    private String withoutInsertions(String text) {
+        return text.replace("\n" + internal.insertionPlaceholder(), "");
+    }
+    
     public void setSelection(int start) {
-        internal.setSelection(start);
+        internal.setSelection(internalOffset(start));
     }
     
-    @Deprecated
-    ExtendedTextInternal internal() {
-        return internal;
-    }
-    
-    //! internal
-    @Deprecated
     public int getLineCount() {
-        return internal.getLineCount();
+        return externalLineIndex(internal.getLineCount()); //! it works :) change name?
+    }
+    
+    public void lineDown() {
+        internal.invokeAction(ST.LINE_DOWN);
+        if (internal.inInsertionLine())
+            internal.invokeAction(ST.LINE_DOWN);
     }
     
     public Color getBackground() {
@@ -169,7 +221,13 @@ public class ExtendedText {
     
     //! for Insertion
     @Deprecated
-    public void updateMetrics(int offset, Rectangle rect) {
+    Composite internal() {
+        return internal;
+    }
+    
+    //! for Insertion //> move to internal
+    @Deprecated
+    void updateMetrics(int offset, Rectangle rect) {
         internal.updateMetrics(offset, rect);
     }
     

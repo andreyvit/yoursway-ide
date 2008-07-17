@@ -130,12 +130,6 @@ public class ExtendedTextInternal extends StyledText {
         return (getLine(lineIndex).equals(insertionPlaceholder()));
     }
     
-    //!
-    public String selectionWithoutInsertions() {
-        String text = getSelectionText();
-        return text.replace("\n" + insertionPlaceholder(), "");
-    }
-    
     public void updateMetrics(int offset, Rectangle rect) { //!
         StyleRange style = new StyleRange();
         style.start = offset;
@@ -193,13 +187,13 @@ public class ExtendedTextInternal extends StyledText {
         return getCaretOffset() == getSelection().y;
     }
     
-    //!
+    //! for controller
     public boolean atLineBegin() {
         int offset = getOffsetAtLine(caretLine());
         return getCaretOffset() == offset;
     }
     
-    //!
+    //! for controller
     public boolean inLastLine() {
         return caretLine() == getLineCount() - 1;
     }
