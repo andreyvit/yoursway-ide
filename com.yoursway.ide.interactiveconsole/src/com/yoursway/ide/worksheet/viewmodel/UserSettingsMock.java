@@ -57,7 +57,7 @@ public class UserSettingsMock implements IUserSettings {
         StyleRange style = new StyleRange();
         style.start = start;
         style.length = length;
-        style.foreground = new Color(display, 192, 0, 0);
+        style.foreground = new Color(display, 255, 192, 192);
         return style;
     }
     
