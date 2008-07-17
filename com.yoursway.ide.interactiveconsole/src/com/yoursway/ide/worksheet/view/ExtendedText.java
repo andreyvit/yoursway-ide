@@ -16,30 +16,63 @@ public class ExtendedText {
         internal = new ExtendedTextInternal(parent, style);
     }
     
+    //! internal
+    @Deprecated
     public void addExtendedModifyListener(ExtendedModifyListener extendedModifyListener) {
         internal.addExtendedModifyListener(extendedModifyListener);
     }
     
+    //! internal
+    @Deprecated
     public void addVerifyKeyListener(VerifyKeyListener listener) {
         internal.addVerifyKeyListener(listener);
     }
     
+    int lineIndexToExternal(int internalLineIndex) {
+        return internalLineIndex - insertionLinesAbove(internalLineIndex, false);
+    }
+    
+    int lineIndexToInternal(int externalLineIndex) {
+        int internalLineIndex = externalLineIndex + insertionLinesAbove(externalLineIndex, true);
+        if (internal.isInsertionLine(internalLineIndex))
+            throw new AssertionError("External line can't be insertion line.");
+        return internalLineIndex;
+    }
+    
+    private int insertionLinesAbove(int lineIndex, boolean external) {
+        int workingLineIndex = lineIndex;
+        int count = 0;
+        for (int i = 0; i <= workingLineIndex; i++) {
+            if (internal.isInsertionLine(i)) {
+                count++;
+                if (external)
+                    workingLineIndex++;
+            }
+        }
+        return count;
+    }
+    
     public int caretLine() {
-        return internal.caretLine();
+        return lineIndexToExternal(internal.caretLine());
     }
     
     public String getLine(int lineIndex) {
-        return internal.getLine(lineIndex);
+        return internal.getLine(lineIndexToInternal(lineIndex));
     }
     
     public Point selectedLines() {
-        return internal.selectedLines();
+        Point internalLines = internal.selectedLines();
+        int x = lineIndexToExternal(internalLines.x);
+        int y = lineIndexToExternal(internalLines.y);
+        return new Point(x, y);
     }
     
     public void setFont(Font font) {
         internal.setFont(font);
     }
     
+    //! internal
+    @Deprecated
     public void addInsertion(int lineIndex, Insertion insertion) {
         internal.addInsertion(lineIndex, insertion);
     }
@@ -48,55 +81,72 @@ public class ExtendedText {
         internal.append(string);
     }
     
+    //! internal
+    @Deprecated
     public Insertion existingInsertion(int lineIndex) {
         return internal.existingInsertion(lineIndex);
     }
     
+    //! internal
+    @Deprecated
     public int getCharCount() {
         return internal.getCharCount();
     }
     
+    //! internal
+    @Deprecated
     public int getLineAtOffset(int offset) {
         return internal.getLineAtOffset(offset);
     }
     
+    //! internal
+    @Deprecated
     public boolean inLastLine() {
         return internal.inLastLine();
     }
     
+    //! internal !!!
+    @Deprecated
     public void invokeAction(int action) {
         internal.invokeAction(action);
     }
     
-    public boolean isInsertionLine(int lineIndex) {
-        return internal.isInsertionLine(lineIndex);
-    }
-    
+    //! internal
+    @Deprecated
     public boolean lineHasInsertion(int lineIndex) {
         return internal.lineHasInsertion(lineIndex);
     }
     
+    //! internal
+    @Deprecated
     public boolean removeInsertion(int lineIndex) {
         return internal.removeInsertion(lineIndex);
     }
     
-    public void selectInsertionLineEnd() {
+    @Deprecated
+    void selectInsertionLineEnd() {
         internal.selectInsertionLineEnd();
     }
     
-    public String selectionWithoutInsertions() {
+    //!
+    @Deprecated
+    String selectionWithoutInsertions() {
         return internal.selectionWithoutInsertions();
     }
     
+    //! internal
+    @Deprecated
     public void setSelection(int start) {
         internal.setSelection(start);
     }
     
-    //!
+    @Deprecated
     ExtendedTextInternal internal() {
         return internal;
     }
     
+    //! internal
+    @Deprecated
     public int getLineCount() {
         return internal.getLineCount();
     }
@@ -109,6 +159,8 @@ public class ExtendedText {
         return internal.getClientArea();
     }
     
+    //! for Insertion
+    @Deprecated
     public void updateMetrics(int offset, Rectangle rect) {
         internal.updateMetrics(offset, rect);
     }

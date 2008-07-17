@@ -80,9 +80,6 @@ public class Worksheet {
         Point lines = extendedText.selectedLines();
         StringBuilder multicommand = new StringBuilder();
         for (int i = lines.x; i <= lines.y; i++) {
-            if (extendedText.isInsertionLine(i))
-                continue;
-            
             multicommand.append(command(i));
             if (i < lines.y)
                 multicommand.append('\n');
@@ -91,9 +88,12 @@ public class Worksheet {
     }
     
     public Insertion insertion() {
-        return insertion(extendedText.selectedLines().y);
+        int externalLineIndex = extendedText.selectedLines().y;
+        int internalLineIndex = extendedText.lineIndexToInternal(externalLineIndex);
+        return insertion(internalLineIndex);
     }
     
+    //! internal
     private Insertion insertion(int lineIndex) {
         if (extendedText.lineHasInsertion(lineIndex))
             return extendedText.existingInsertion(lineIndex);
