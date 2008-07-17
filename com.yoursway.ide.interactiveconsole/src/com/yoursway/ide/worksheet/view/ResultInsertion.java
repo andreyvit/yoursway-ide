@@ -7,9 +7,12 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
@@ -18,6 +21,7 @@ public class ResultInsertion implements Insertion {
     private final IUserSettings settings;
     private final ExtendedText extendedText;
     
+    private Composite composite;
     private StyledText embeddedText;
     
     private boolean obsolete;
@@ -30,9 +34,32 @@ public class ResultInsertion implements Insertion {
     }
     
     public void createWidget(Composite parent) {
-        embeddedText = new StyledText(parent, SWT.MULTI | SWT.WRAP);
-        embeddedText.setBackground(new Color(settings.display(), 220, 220, 220));
+        composite = new Composite(parent, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
+        
+        Display display = composite.getDisplay();
+        final Color color = new Color(display, 100, 100, 100); //! magic
+        
+        composite.addPaintListener(new PaintListener() {
+            public void paintControl(PaintEvent e) {
+                e.gc.setBackground(color);
+                Point size = composite.getSize();
+                int radius = 10, left = 10; //! magic
+                e.gc.fillRoundRectangle(left, 0, size.x - left, size.y, radius, radius);
+                
+                if (obsolete) {
+                    e.gc.setBackground(extendedText.getBackground());
+                    e.gc.setAlpha(129);
+                    e.gc.fillRectangle(0, 0, size.x, size.y);
+                }
+            }
+        });
+        
+        embeddedText = new StyledText(composite, SWT.MULTI | SWT.WRAP);
+        embeddedText.setBackground(color);
+        embeddedText.setForeground(new Color(display, 255, 255, 255)); //! magic
+        embeddedText.setFont(new Font(display, "Monaco", 12, SWT.BOLD)); //! magic
         embeddedText.setEditable(false);
+        embeddedText.setLocation(15, 5); //! magic
         
         setText("");
         
@@ -41,7 +68,7 @@ public class ResultInsertion implements Insertion {
                 if (obsolete) {
                     e.gc.setBackground(extendedText.getBackground());
                     e.gc.setAlpha(129);
-                    Point size = embeddedText.getSize();
+                    Point size = ((Control) e.widget).getSize();
                     e.gc.fillRectangle(0, 0, size.x, size.y);
                 }
             }
@@ -53,14 +80,19 @@ public class ResultInsertion implements Insertion {
             embeddedText.dispose();
             embeddedText = null;
         }
+        
+        if (composite != null && !composite.isDisposed()) {
+            composite.dispose();
+            composite = null;
+        }
     }
     
     public void updateLocation(PaintObjectEvent e) {
-        Point size = embeddedText.getSize();
+        Point size = composite.getSize();
         int x = e.x; //? + MARGIN;
         //? int y = e.y + e.ascent - size.y; //? - 2 * size.y / 3;
-        int y = e.y + (e.ascent - size.y + e.descent) / 2;
-        embeddedText.setLocation(x, y);
+        int y = e.y + (e.ascent - size.y + e.descent) / 2 - 2; //! magic -2
+        composite.setLocation(x, y);
     }
     
     private void setText(final String text) {
@@ -68,7 +100,7 @@ public class ResultInsertion implements Insertion {
     }
     
     private void setText(final String text, boolean pending) {
-        obsolete = false;
+        becomeUpdated();
         this.pending = pending;
         
         settings.display().syncExec(new Runnable() {
@@ -106,17 +138,27 @@ public class ResultInsertion implements Insertion {
         //! embeddedText can be disposed here (press COMMAND+Q)
         embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
-                int clientWidth = extendedText.getClientArea().width;
-                embeddedText.setSize(clientWidth, embeddedText.getSize().y);
+                embeddedText.pack();
                 
-                if (embeddedText.getCharCount() > 0) {
-                    Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
-                    embeddedText.setSize(embeddedText.getSize().x, bounds.height);
+                int clientWidth = extendedText.getClientArea().width;
+                int maxWidth = clientWidth - 50;
+                
+                if (embeddedText.getSize().x > maxWidth) {
+                    embeddedText.setSize(maxWidth, embeddedText.getSize().y);
+                    
+                    if (embeddedText.getCharCount() > 0) {
+                        Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
+                        embeddedText.setSize(bounds.width, bounds.height);
+                    }
                 }
                 
-                extendedText.updateMetrics(ResultInsertion.this, embeddedText.getBounds());
+                Point size = embeddedText.getSize();
+                composite.setSize(size.x + 20, size.y + 10); //! magic
+                
+                extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
             }
         });
+        
     }
     
     private void updateSizeNeatly() {
@@ -144,6 +186,16 @@ public class ResultInsertion implements Insertion {
     
     public void becomeObsolete() {
         obsolete = true;
+        redraw();
+    }
+    
+    private void becomeUpdated() {
+        obsolete = false;
+        redraw();
+    }
+    
+    private void redraw() {
+        composite.redraw();
         embeddedText.redraw();
     }
     
