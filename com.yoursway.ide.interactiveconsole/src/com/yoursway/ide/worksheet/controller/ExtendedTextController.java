@@ -9,13 +9,13 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.VerifyEvent;
 
-import com.yoursway.ide.worksheet.view.ExtendedText;
+import com.yoursway.ide.worksheet.view.ExtendedTextInternal;
 
 public class ExtendedTextController implements VerifyKeyListener, KeyListener, MouseListener {
     
-    private final ExtendedText view;
+    private final ExtendedTextInternal view;
     
-    public ExtendedTextController(ExtendedText view) {
+    public ExtendedTextController(ExtendedTextInternal view) {
         this.view = view;
         
     }

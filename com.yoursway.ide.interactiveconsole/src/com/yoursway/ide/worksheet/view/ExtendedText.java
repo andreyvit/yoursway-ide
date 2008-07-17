@@ -1,207 +1,116 @@
 package com.yoursway.ide.worksheet.view;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.eclipse.swt.custom.PaintObjectEvent;
-import org.eclipse.swt.custom.PaintObjectListener;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.GlyphMetrics;
+import org.eclipse.swt.custom.ExtendedModifyListener;
+import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
-import com.yoursway.ide.worksheet.controller.ExtendedTextController;
-
-public class ExtendedText extends StyledText {
+public class ExtendedText {
     
-    private final List<Insertion> insertions = new LinkedList<Insertion>();
+    ExtendedTextInternal internal; //? rename to ExtendedTextWidget widget
     
     public ExtendedText(Composite parent, int style) {
-        super(parent, style);
-        
-        addVerifyListener(new VerifyListener() {
-            public void verifyText(VerifyEvent e) {
-                for (Iterator<Insertion> it = insertions.iterator(); it.hasNext();) {
-                    Insertion insertion = it.next();
-                    
-                    insertion.updateOffset(e);
-                    
-                    if (insertion.disposed())
-                        it.remove();
-                }
-            }
-        });
-        addPaintObjectListener(new PaintObjectListener() {
-            public void paintObject(PaintObjectEvent e) {
-                for (Insertion insertion : insertions) {
-                    insertion.updateLocation(e);
-                }
-            }
-        });
-        addControlListener(new ControlListener() {
-            public void controlMoved(ControlEvent e) {
-                // nothing
-            }
-            
-            public void controlResized(ControlEvent e) {
-                for (Insertion insertion : insertions) {
-                    insertion.updateSize();
-                }
-            }
-        });
-        
-        ExtendedTextController controller = new ExtendedTextController(this);
-        addVerifyKeyListener(controller);
-        addKeyListener(controller);
-        addMouseListener(controller);
+        internal = new ExtendedTextInternal(parent, style);
     }
     
-    private String insertionPlaceholder() {
-        return "\uFFFC";
+    public void addExtendedModifyListener(ExtendedModifyListener extendedModifyListener) {
+        internal.addExtendedModifyListener(extendedModifyListener);
     }
     
-    private int insertionPlaceholderLength() throws AssertionError {
-        if (insertionPlaceholder().length() != 1)
-            throw new AssertionError("An insertion placeholder must have 1 char length.");
-        return 1;
+    public void addVerifyKeyListener(VerifyKeyListener listener) {
+        internal.addVerifyKeyListener(listener);
+    }
+    
+    public int caretLine() {
+        return internal.caretLine();
+    }
+    
+    public String getLine(int lineIndex) {
+        return internal.getLine(lineIndex);
+    }
+    
+    public Point selectedLines() {
+        return internal.selectedLines();
+    }
+    
+    public void setFont(Font font) {
+        internal.setFont(font);
     }
     
     public void addInsertion(int lineIndex, Insertion insertion) {
-        int offset = lineEndOffset(lineIndex);
-        
-        replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
-        offset++; // "\n"
-        
-        insertion.offset(offset);
-        insertions.add(insertion);
+        internal.addInsertion(lineIndex, insertion);
     }
     
-    public int lineEndOffset(int lineIndex) {
-        int lineOffset = getOffsetAtLine(lineIndex);
-        int lineLength = getLine(lineIndex).length();
-        return lineOffset + lineLength;
+    public void append(String string) {
+        internal.append(string);
     }
     
     public Insertion existingInsertion(int lineIndex) {
-        int offset = lineEndOffset(lineIndex) + 1;
-        for (Insertion insertion : insertions) {
-            if (insertion.offset() == offset)
-                return insertion;
-        }
-        return null;
+        return internal.existingInsertion(lineIndex);
     }
     
-    public boolean removeInsertion(int lineIndex) {
-        if (!lineHasInsertion(lineIndex))
-            return false;
-        
-        int s = insertions.size();
-        
-        int offset = lineEndOffset(lineIndex);
-        //! must be 2 == ("\n" + insertionPlaceholder()).length()
-        replaceTextRange(offset, 2, "");
-        
-        if (insertions.size() != s - 1)
-            throw new AssertionError("Insertion object hasn't been removed from collection.");
-        
-        return true;
+    public int getCharCount() {
+        return internal.getCharCount();
     }
     
-    //! for controller
-    public boolean lineHasInsertion() {
-        return lineHasInsertion(selectedLines().y);
+    public int getLineAtOffset(int offset) {
+        return internal.getLineAtOffset(offset);
+    }
+    
+    public boolean inLastLine() {
+        return internal.inLastLine();
+    }
+    
+    public void invokeAction(int action) {
+        internal.invokeAction(action);
+    }
+    
+    public boolean isInsertionLine(int lineIndex) {
+        return internal.isInsertionLine(lineIndex);
     }
     
     public boolean lineHasInsertion(int lineIndex) {
-        return isInsertionLine(lineIndex + 1);
+        return internal.lineHasInsertion(lineIndex);
     }
     
-    //!
-    public boolean isInsertionLine(int lineIndex) {
-        if (getLineCount() <= lineIndex)
-            return false;
-        return (getLine(lineIndex).equals(insertionPlaceholder()));
+    public boolean removeInsertion(int lineIndex) {
+        return internal.removeInsertion(lineIndex);
     }
     
-    //!
-    public String selectionWithoutInsertions() {
-        String selection = getSelectionText();
-        return selection.replace("\n" + insertionPlaceholder(), "");
-    }
-    
-    public void updateMetrics(int offset, Rectangle rect) { //!
-        StyleRange style = new StyleRange();
-        style.start = offset;
-        style.length = insertionPlaceholderLength();
-        style.metrics = new GlyphMetrics(rect.height, 0, rect.width - 1); // hack: -1 
-        setStyleRange(style);
-    }
-    
-    //! for controller
     public void selectInsertionLineEnd() {
-        if (!lineHasInsertion())
-            throw new AssertionError("Selected line must have an insertion.");
-        
-        int offset = lineEndOffset(selectedLines().y + 1);
-        setSelection(offset);
+        internal.selectInsertionLineEnd();
     }
     
-    //?
-    public Point selectedLines() {
-        Point sel = getSelection();
-        int firstLine = getLineAtOffset(sel.x);
-        int lastLine = getLineAtOffset(sel.y);
-        if (firstLine > lastLine)
-            throw new AssertionError("First line of selection must be <= than last.");
-        return new Point(firstLine, lastLine);
+    public String selectionWithoutInsertions() {
+        return internal.selectionWithoutInsertions();
     }
     
-    public boolean inInsertionLine() {
-        return isInsertionLine(caretLine());
-    }
-    
-    public void moveCaretFromInsertionLine(boolean selection) {
-        if (inInsertionLine())
-            moveCaret(selection, atLineBegin() ? -1 : inLastLine() ? -2 : 1);
-    }
-    
-    //?
-    public int caretLine() {
-        return getLineAtOffset(getCaretOffset());
-    }
-    
-    private void moveCaret(boolean selection, int where) {
-        if (selection) {
-            Point sel = getSelection();
-            if (caretAtSelectionEnd())
-                setSelection(sel.x, sel.y + where);
-            else
-                setSelection(sel.x + where, sel.y);
-        } else {
-            setCaretOffset(getCaretOffset() + where);
-        }
-    }
-    
-    private boolean caretAtSelectionEnd() {
-        return getCaretOffset() == getSelection().y;
+    public void setSelection(int start) {
+        internal.setSelection(start);
     }
     
     //!
-    public boolean atLineBegin() {
-        int offset = getOffsetAtLine(caretLine());
-        return getCaretOffset() == offset;
+    ExtendedTextInternal internal() {
+        return internal;
     }
     
-    //!
-    public boolean inLastLine() {
-        return caretLine() == getLineCount() - 1;
+    public int getLineCount() {
+        return internal.getLineCount();
+    }
+    
+    public Color getBackground() {
+        return internal.getBackground();
+    }
+    
+    public Rectangle getClientArea() {
+        return internal.getClientArea();
+    }
+    
+    public void updateMetrics(int offset, Rectangle rect) {
+        internal.updateMetrics(offset, rect);
     }
     
 }

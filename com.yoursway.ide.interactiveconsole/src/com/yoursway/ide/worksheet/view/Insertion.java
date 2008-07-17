@@ -27,7 +27,7 @@ public class Insertion {
         this.settings = settings;
         this.extendedText = extendedText;
         
-        embeddedText = new StyledText(extendedText, SWT.MULTI | SWT.WRAP);
+        embeddedText = new StyledText(extendedText.internal(), SWT.MULTI | SWT.WRAP);
         embeddedText.setBackground(new Color(settings.display(), 220, 220, 220));
         embeddedText.setEditable(false);
         
