@@ -79,7 +79,9 @@ public class ExtendedTextInternal extends StyledText {
         replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
         offset++; // "\n"
         
+        insertion.createWidget(this);
         insertion.offset(offset);
+        
         insertions.add(insertion);
     }
     

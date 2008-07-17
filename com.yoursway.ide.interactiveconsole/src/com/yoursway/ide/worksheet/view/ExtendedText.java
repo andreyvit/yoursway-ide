@@ -153,7 +153,7 @@ public class ExtendedText {
         internal.setFont(font);
     }
     
-    public void addInsertion(int lineIndex, Insertion insertion) {
+    public void addInsertion(int lineIndex, ResultInsertion insertion) {
         internal.addInsertion(internalLineIndex(lineIndex), insertion);
     }
     

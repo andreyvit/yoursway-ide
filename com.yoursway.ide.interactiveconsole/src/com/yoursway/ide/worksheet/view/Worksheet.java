@@ -86,19 +86,19 @@ public class Worksheet {
         return multicommand.toString();
     }
     
-    public Insertion insertion() {
+    public ResultInsertion insertion() {
         return insertion(extendedText.selectedLines().y);
     }
     
-    private Insertion insertion(int lineIndex) {
+    private ResultInsertion insertion(int lineIndex) {
         if (extendedText.lineHasInsertion(lineIndex))
-            return extendedText.existingInsertion(lineIndex);
+            return (ResultInsertion) extendedText.existingInsertion(lineIndex);
         else
             return addInsertion(lineIndex);
     }
     
-    private Insertion addInsertion(int lineIndex) {
-        Insertion insertion = new Insertion("", extendedText, settings);
+    private ResultInsertion addInsertion(int lineIndex) {
+        ResultInsertion insertion = new ResultInsertion(settings, extendedText);
         extendedText.addInsertion(lineIndex, insertion);
         return insertion;
     }
@@ -122,8 +122,10 @@ public class Worksheet {
         int firstLine = extendedText.getLineAtOffset(start);
         int lastLine = extendedText.getLineAtOffset(end);
         for (int i = firstLine; i <= lastLine; i++) {
-            if (extendedText.lineHasInsertion(i))
-                extendedText.existingInsertion(i).becomeObsolete();
+            if (extendedText.lineHasInsertion(i)) {
+                ResultInsertion insertion = (ResultInsertion) extendedText.existingInsertion(i);
+                insertion.becomeObsolete();
+            }
         }
     }
     

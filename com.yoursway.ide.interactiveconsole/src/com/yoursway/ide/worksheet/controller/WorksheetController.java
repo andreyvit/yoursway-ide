@@ -10,7 +10,7 @@ import org.eclipse.swt.events.VerifyEvent;
 
 import com.yoursway.ide.debug.model.IDebug;
 import com.yoursway.ide.debug.model.IOutputListener;
-import com.yoursway.ide.worksheet.view.Insertion;
+import com.yoursway.ide.worksheet.view.ResultInsertion;
 import com.yoursway.ide.worksheet.view.Worksheet;
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
@@ -21,7 +21,7 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
     private final IDebug debug;
     
     private final Queue<Execution> executions = new LinkedList<Execution>(); //? sync
-    private Insertion outputInsertion = null;
+    private ResultInsertion outputInsertion = null;
     
     public WorksheetController(Worksheet view, IUserSettings settings) {
         this.view = view;
