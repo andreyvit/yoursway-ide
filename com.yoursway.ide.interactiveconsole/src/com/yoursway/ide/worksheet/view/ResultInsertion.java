@@ -22,13 +22,13 @@ public class ResultInsertion implements Insertion {
     private final ExtendedText extendedText;
     
     private final Animation animation;
-    protected int alpha = 0;
+    private int alpha = 0;
+    private int oldMaxWidth;
     
     private Composite composite;
     private StyledText embeddedText;
     
     private boolean pending;
-    private long whenUpdateSize = 0;
     
     private int newLines = 0;
     
@@ -40,6 +40,8 @@ public class ResultInsertion implements Insertion {
     }
     
     public void createWidget(Composite parent) {
+        oldMaxWidth = maxWidth();
+        
         composite = new Composite(parent, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
         
         Display display = composite.getDisplay();
@@ -79,8 +81,19 @@ public class ResultInsertion implements Insertion {
         animation.targetAlpha(255);
         
         animation.start(new AnimationUpdater() {
-            public void updateSize(int width, int height) {
-                resizeComposite(width, height);
+            public void updateSize(final int width, final int height) {
+                if (composite.isDisposed())
+                    return;
+                
+                composite.getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        if (composite.isDisposed())
+                            return;
+                        
+                        composite.setSize(width, height);
+                        extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
+                    }
+                });
             }
             
             public void updateAlpha(final int alpha) {
@@ -91,15 +104,27 @@ public class ResultInsertion implements Insertion {
     }
     
     public void dispose() {
-        if (embeddedText != null && !embeddedText.isDisposed()) {
-            embeddedText.dispose();
+        if (embeddedText != null) {
+            if (!embeddedText.isDisposed())
+                embeddedText.dispose();
             embeddedText = null;
         }
         
-        if (composite != null && !composite.isDisposed()) {
-            composite.dispose();
+        if (composite != null) {
+            if (!composite.isDisposed())
+                composite.dispose();
             composite = null;
         }
+        
+        if (!animation.isDisposed()) {
+            animation.dispose();
+        }
+    }
+    
+    private boolean isDisposed() {
+        //! (composite == null) before init too 
+        return composite == null || embeddedText == null || composite.isDisposed()
+                || embeddedText.isDisposed();
     }
     
     public void updateLocation(PaintObjectEvent e) {
@@ -155,8 +180,6 @@ public class ResultInsertion implements Insertion {
     }
     
     public void updateSize() {
-        whenUpdateSize = 0;
-        
         if (embeddedText.isDisposed())
             return;
         
@@ -167,24 +190,22 @@ public class ResultInsertion implements Insertion {
                 
                 embeddedText.pack();
                 
-                int clientWidth = extendedText.getClientArea().width;
-                int maxWidth = clientWidth - 50;
-                
+                int maxWidth = maxWidth();
                 if (embeddedText.getSize().x > maxWidth) {
-                    //packed = false;
-                    
                     embeddedText.setSize(maxWidth, embeddedText.getSize().y);
                     
                     if (embeddedText.getCharCount() > 0) {
                         Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
                         embeddedText.setSize(bounds.width, bounds.height);
                     }
-                    
-                    //> resizeComposite(embeddedText.getSize().x + 30, composite.getSize().y);
                 }
                 
                 Point targetSize = embeddedText.getSize();
                 animation.targetSize(targetSize.x + 30, targetSize.y + 10); //! magic
+                if (oldMaxWidth != maxWidth) {
+                    animation.instantWidth();
+                    oldMaxWidth = maxWidth;
+                }
             }
         });
     }
@@ -198,31 +219,16 @@ public class ResultInsertion implements Insertion {
     }
     
     private void redraw() {
-        if (composite.isDisposed())
+        if (isDisposed())
             return;
         
         composite.getDisplay().asyncExec(new Runnable() {
             public void run() {
-                if (composite.isDisposed() || embeddedText.isDisposed())
+                if (isDisposed())
                     return;
                 
                 composite.redraw();
                 embeddedText.redraw();
-            }
-        });
-    }
-    
-    private void resizeComposite(final int width, final int height) {
-        if (composite.isDisposed())
-            return;
-        
-        composite.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                if (composite.isDisposed())
-                    return;
-                
-                composite.setSize(width, height);
-                extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
             }
         });
     }
@@ -233,6 +239,10 @@ public class ResultInsertion implements Insertion {
     
     public void reset() {
         setText("", true);
+    }
+    
+    private int maxWidth() {
+        return extendedText.getClientArea().width - 50;
     }
     
 }
