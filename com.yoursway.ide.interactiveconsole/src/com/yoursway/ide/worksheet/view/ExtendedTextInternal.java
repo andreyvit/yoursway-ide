@@ -71,6 +71,7 @@ public class ExtendedTextInternal extends StyledText {
                 for (Insertion insertion : insertions.keySet()) {
                     insertion.updateSize();
                 }
+                redraw();
             }
         });
         

@@ -28,6 +28,8 @@ public class ResultInsertion implements Insertion {
     private boolean pending;
     private long whenUpdateSize = 0;
     
+    private int newLines = 0;
+    
     public ResultInsertion(IUserSettings settings, ExtendedText extendedText) {
         this.settings = settings;
         this.extendedText = extendedText;
@@ -59,9 +61,9 @@ public class ResultInsertion implements Insertion {
         embeddedText.setForeground(new Color(display, 255, 255, 255)); //! magic
         embeddedText.setFont(new Font(display, "Monaco", 12, SWT.BOLD)); //! magic
         embeddedText.setEditable(false);
-        embeddedText.setLocation(15, 5); //! magic
+        embeddedText.setLocation(18, 5); //! magic
         
-        setText("");
+        setText("", false);
         
         embeddedText.addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
@@ -95,11 +97,8 @@ public class ResultInsertion implements Insertion {
         composite.setLocation(x, y);
     }
     
-    private void setText(final String text) {
-        setText(text, false);
-    }
-    
     private void setText(final String text, boolean pending) {
+        newLines = 0;
         becomeUpdated();
         this.pending = pending;
         
@@ -111,15 +110,30 @@ public class ResultInsertion implements Insertion {
         });
     }
     
-    public void append(final String text, final boolean error) {
+    public void append(String text, final boolean error) {
         pending = false;
+        
+        StringBuilder sb = new StringBuilder();
+        
+        for (; newLines > 0; newLines--) {
+            sb.append('\n');
+        }
+        
+        int end = text.length();
+        while (text.charAt(end - 1) == '\n') {
+            end--;
+            newLines++;
+        }
+        sb.append(text, 0, end);
+        
+        final String t = sb.toString();
         
         settings.display().syncExec(new Runnable() {
             public void run() {
                 int start = embeddedText.getCharCount();
-                embeddedText.append(text);
+                embeddedText.append(t);
                 if (error) {
-                    StyleRange style = settings.errorStyle(start, text.length());
+                    StyleRange style = settings.errorStyle(start, t.length());
                     embeddedText.setStyleRange(style);
                 }
                 updateSizeNeatly();
@@ -153,7 +167,7 @@ public class ResultInsertion implements Insertion {
                 }
                 
                 Point size = embeddedText.getSize();
-                composite.setSize(size.x + 20, size.y + 10); //! magic
+                composite.setSize(size.x + 30, size.y + 10); //! magic
                 
                 extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
             }
@@ -195,8 +209,12 @@ public class ResultInsertion implements Insertion {
     }
     
     private void redraw() {
-        composite.redraw();
-        embeddedText.redraw();
+        composite.getDisplay().asyncExec(new Runnable() {
+            public void run() {
+                composite.redraw();
+                embeddedText.redraw();
+            }
+        });
     }
     
     public void becomeWaiting() {
