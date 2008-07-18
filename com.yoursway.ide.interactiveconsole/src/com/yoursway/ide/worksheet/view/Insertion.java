@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public interface Insertion {
     
-    void createWidget(Composite parent);
+    void createWidget(Composite parent, ResizingListener listener);
     
     void updateLocation(PaintObjectEvent e);
     

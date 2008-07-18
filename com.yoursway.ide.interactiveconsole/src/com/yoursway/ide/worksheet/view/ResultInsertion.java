@@ -39,7 +39,7 @@ public class ResultInsertion implements Insertion {
         animation = new Animation();
     }
     
-    public void createWidget(Composite parent) {
+    public void createWidget(Composite parent, final ResizingListener listener) {
         oldMaxWidth = maxWidth();
         
         composite = new Composite(parent, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
@@ -90,8 +90,9 @@ public class ResultInsertion implements Insertion {
                         if (composite.isDisposed())
                             return;
                         
-                        composite.setSize(width, height);
-                        extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
+                        Point size = new Point(width, height);
+                        composite.setSize(size);
+                        listener.resized(size);
                     }
                 });
             }
