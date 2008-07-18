@@ -219,10 +219,4 @@ public class ExtendedText {
         return internal.getClientArea();
     }
     
-    //! for Insertion //> move to internal
-    @Deprecated
-    void updateMetrics(Insertion insertion, Rectangle rect) {
-        internal.updateMetrics(insertion, rect);
-    }
-    
 }

@@ -15,7 +15,6 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 import com.yoursway.ide.worksheet.controller.ExtendedTextController;
@@ -91,12 +90,16 @@ public class ExtendedTextInternal extends StyledText {
         return 1;
     }
     
-    public void addInsertion(int lineIndex, Insertion insertion) {
+    public void addInsertion(int lineIndex, final Insertion insertion) {
         int offset = lineEndOffset(lineIndex);
         replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
         offset++; // "\n"
         insertions.put(insertion, offset);
-        insertion.createWidget(this);
+        insertion.createWidget(this, new ResizingListener() {
+            public void resized(Point size) {
+                updateMetrics(insertion, size);
+            }
+        });
     }
     
     public int lineEndOffset(int lineIndex) {
@@ -146,13 +149,12 @@ public class ExtendedTextInternal extends StyledText {
         return (getLine(lineIndex).equals(insertionPlaceholder()));
     }
     
-    @Deprecated
-    public void updateMetrics(Insertion insertion, Rectangle rect) {
+    private void updateMetrics(Insertion insertion, Point size) {
         StyleRange style = new StyleRange();
         style.start = insertions.get(insertion);
         style.length = insertionPlaceholderLength();
-        int width = rect.width - (rect.width > 20 ? 20 : 0); // hack
-        style.metrics = new GlyphMetrics(rect.height, 0, width);
+        int width = size.x - (size.x > 20 ? 20 : 0); // hack
+        style.metrics = new GlyphMetrics(size.y, 0, width);
         setStyleRange(style);
     }
     
