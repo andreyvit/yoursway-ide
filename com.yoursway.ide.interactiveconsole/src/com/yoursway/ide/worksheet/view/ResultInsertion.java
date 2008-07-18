@@ -21,10 +21,12 @@ public class ResultInsertion implements Insertion {
     private final IUserSettings settings;
     private final ExtendedText extendedText;
     
+    private final Animation animation;
+    protected int alpha = 0;
+    
     private Composite composite;
     private StyledText embeddedText;
     
-    private boolean obsolete;
     private boolean pending;
     private long whenUpdateSize = 0;
     
@@ -33,6 +35,8 @@ public class ResultInsertion implements Insertion {
     public ResultInsertion(IUserSettings settings, ExtendedText extendedText) {
         this.settings = settings;
         this.extendedText = extendedText;
+        
+        animation = new Animation();
     }
     
     public void createWidget(Composite parent) {
@@ -48,11 +52,9 @@ public class ResultInsertion implements Insertion {
                 int radius = 10, left = 10; //! magic
                 e.gc.fillRoundRectangle(left, 0, size.x - left, size.y, radius, radius);
                 
-                if (obsolete) {
-                    e.gc.setBackground(extendedText.getBackground());
-                    e.gc.setAlpha(129);
-                    e.gc.fillRectangle(0, 0, size.x, size.y);
-                }
+                e.gc.setBackground(extendedText.getBackground());
+                e.gc.setAlpha(255 - alpha);
+                e.gc.fillRectangle(0, 0, size.x, size.y);
             }
         });
         
@@ -67,12 +69,23 @@ public class ResultInsertion implements Insertion {
         
         embeddedText.addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
-                if (obsolete) {
-                    e.gc.setBackground(extendedText.getBackground());
-                    e.gc.setAlpha(129);
-                    Point size = ((Control) e.widget).getSize();
-                    e.gc.fillRectangle(0, 0, size.x, size.y);
-                }
+                e.gc.setBackground(extendedText.getBackground());
+                e.gc.setAlpha(255 - alpha);
+                Point size = ((Control) e.widget).getSize();
+                e.gc.fillRectangle(0, 0, size.x, size.y);
+            }
+        });
+        
+        animation.targetAlpha(255);
+        
+        animation.start(new AnimationUpdater() {
+            public void updateSize(int width, int height) {
+                resizeComposite(width, height);
+            }
+            
+            public void updateAlpha(final int alpha) {
+                ResultInsertion.this.alpha = alpha;
+                redraw();
             }
         });
     }
@@ -144,7 +157,9 @@ public class ResultInsertion implements Insertion {
     public void updateSize() {
         whenUpdateSize = 0;
         
-        //! embeddedText can be disposed here (press COMMAND+Q)
+        if (embeddedText.isDisposed())
+            return;
+        
         embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (pending && embeddedText.getSize().y > 0)
@@ -156,27 +171,30 @@ public class ResultInsertion implements Insertion {
                 int maxWidth = clientWidth - 50;
                 
                 if (embeddedText.getSize().x > maxWidth) {
+                    //packed = false;
+                    
                     embeddedText.setSize(maxWidth, embeddedText.getSize().y);
                     
                     if (embeddedText.getCharCount() > 0) {
                         Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
                         embeddedText.setSize(bounds.width, bounds.height);
                     }
+                    
+                    //> resizeComposite(embeddedText.getSize().x + 30, composite.getSize().y);
                 }
                 
-                Point size = embeddedText.getSize();
-                composite.setSize(size.x + 30, size.y + 10); //! magic
-                
-                extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
+                Point targetSize = embeddedText.getSize();
+                animation.targetSize(targetSize.x + 30, targetSize.y + 10); //! magic
             }
         });
-        
     }
     
     private void updateSizeNeatly() {
         if (embeddedText.getCharCount() > 0) {
             Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
             int currentHeight = embeddedText.getSize().y;
+            
+            updateSize();
             
             if (bounds.height > currentHeight)
                 updateSize();
@@ -197,20 +215,39 @@ public class ResultInsertion implements Insertion {
     }
     
     public void becomeObsolete() {
-        obsolete = true;
-        redraw();
+        animation.targetAlpha(129);
     }
     
     private void becomeUpdated() {
-        obsolete = false;
-        redraw();
+        animation.targetAlpha(255);
     }
     
     private void redraw() {
+        if (composite.isDisposed())
+            return;
+        
         composite.getDisplay().asyncExec(new Runnable() {
             public void run() {
+                if (composite.isDisposed() || embeddedText.isDisposed())
+                    return;
+                
                 composite.redraw();
                 embeddedText.redraw();
+            }
+        });
+    }
+    
+    private void resizeComposite(final int width, final int height) {
+        if (composite.isDisposed())
+            return;
+        
+        composite.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                if (composite.isDisposed())
+                    return;
+                
+                composite.setSize(width, height);
+                extendedText.updateMetrics(ResultInsertion.this, composite.getBounds());
             }
         });
     }
