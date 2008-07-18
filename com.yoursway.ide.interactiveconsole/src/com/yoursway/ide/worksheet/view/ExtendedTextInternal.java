@@ -146,11 +146,13 @@ public class ExtendedTextInternal extends StyledText {
         return (getLine(lineIndex).equals(insertionPlaceholder()));
     }
     
-    public void updateMetrics(Insertion insertion, Rectangle rect) { //!
+    @Deprecated
+    public void updateMetrics(Insertion insertion, Rectangle rect) {
         StyleRange style = new StyleRange();
         style.start = insertions.get(insertion);
         style.length = insertionPlaceholderLength();
-        style.metrics = new GlyphMetrics(rect.height, 0, rect.width - 1); // hack: -1 
+        int width = rect.width - (rect.width > 20 ? 20 : 0); // hack
+        style.metrics = new GlyphMetrics(rect.height, 0, width);
         setStyleRange(style);
     }
     
