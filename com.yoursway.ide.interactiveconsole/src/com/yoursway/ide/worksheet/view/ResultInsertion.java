@@ -118,7 +118,7 @@ public class ResultInsertion implements Insertion {
         settings.display().syncExec(new Runnable() {
             public void run() {
                 embeddedText.setText(text);
-                updateSizeNeatly();
+                updateSize();
             }
         });
     }
@@ -149,7 +149,7 @@ public class ResultInsertion implements Insertion {
                     StyleRange style = settings.errorStyle(start, t.length());
                     embeddedText.setStyleRange(style);
                 }
-                updateSizeNeatly();
+                updateSize();
             }
         });
     }
@@ -187,31 +187,6 @@ public class ResultInsertion implements Insertion {
                 animation.targetSize(targetSize.x + 30, targetSize.y + 10); //! magic
             }
         });
-    }
-    
-    private void updateSizeNeatly() {
-        if (embeddedText.getCharCount() > 0) {
-            Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
-            int currentHeight = embeddedText.getSize().y;
-            
-            updateSize();
-            
-            if (bounds.height > currentHeight)
-                updateSize();
-            
-            if (bounds.height < currentHeight && !pending)
-                updateSizeSometimes();
-        }
-    }
-    
-    private void updateSizeSometimes() {
-        long now = System.currentTimeMillis();
-        if (now >= whenUpdateSize) {
-            if (whenUpdateSize == 0)
-                whenUpdateSize = now + 300; //! magic
-            else
-                updateSize();
-        }
     }
     
     public void becomeObsolete() {

@@ -19,6 +19,10 @@ public class Animation {
                     int alpha = 0;
                     final int d = 2;
                     
+                    int xDelay = 0;
+                    int yDelay = 0;
+                    int delay = 10;
+                    
                     while (true) {
                         int x = targetWidth - width;
                         int y = targetHeight - height;
@@ -28,7 +32,23 @@ public class Animation {
                         y = f(y, d);
                         a = f(a, d * 3);
                         
-                        //> delay before decrease
+                        if (x < 0) {
+                            if (xDelay < delay) {
+                                xDelay++;
+                                x = 0;
+                            }
+                        } else {
+                            xDelay = 0;
+                        }
+                        
+                        if (y < 0) {
+                            if (yDelay < delay) {
+                                yDelay++;
+                                y = 0;
+                            }
+                        } else {
+                            yDelay = 0;
+                        }
                         
                         if (x != 0 || y != 0) {
                             width += x;
