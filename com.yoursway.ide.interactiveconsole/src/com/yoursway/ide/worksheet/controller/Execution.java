@@ -9,9 +9,9 @@ public class Execution {
     private final ResultInsertion output;
     private final IDebug debug;
     
-    public Execution(String command, ResultInsertion output, IDebug debug) {
-        this.command = command;
-        this.output = output;
+    public Execution(Command command, IDebug debug) {
+        this.command = command.commandText();
+        output = command.insertion();
         this.debug = debug;
         
         output.becomeWaiting();
