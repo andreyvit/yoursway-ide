@@ -1,5 +1,8 @@
 package com.yoursway.ide.worksheet.view;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -7,6 +10,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import com.yoursway.ide.worksheet.controller.Command;
+import com.yoursway.ide.worksheet.controller.ResultInsertionGetter;
 import com.yoursway.ide.worksheet.controller.WorksheetController;
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 import com.yoursway.ide.worksheet.viewmodel.UserSettingsMock;
@@ -59,35 +64,31 @@ public class Worksheet {
         return shell;
     }
     
-    public String command() {
-        if (multilineSelection())
-            return multilineCommand();
-        else
-            return command(extendedText.caretLine());
-    }
-    
-    private String command(int lineIndex) {
-        return extendedText.getLine(lineIndex);
-    }
-    
-    private boolean multilineSelection() {
+    public boolean multilineSelection() {
         Point lines = extendedText.selectedLines();
         return lines.x != lines.y;
     }
     
-    private String multilineCommand() {
+    public Iterable<Command> selectedCommands() {
+        List<Command> commands = new LinkedList<Command>();
         Point lines = extendedText.selectedLines();
-        StringBuilder multicommand = new StringBuilder();
         for (int i = lines.x; i <= lines.y; i++) {
-            multicommand.append(command(i));
-            if (i < lines.y)
-                multicommand.append('\n');
+            String commandText = commandText(i);
+            if (commandText.trim().length() == 0)
+                continue;
+            
+            final int j = i;
+            commands.add(new Command(commandText, new ResultInsertionGetter() {
+                public ResultInsertion get() {
+                    return insertion(j);
+                }
+            }));
         }
-        return multicommand.toString();
+        return commands;
     }
     
-    public ResultInsertion insertion() {
-        return insertion(extendedText.selectedLines().y);
+    private String commandText(int lineIndex) {
+        return extendedText.getLine(lineIndex);
     }
     
     private ResultInsertion insertion(int lineIndex) {
@@ -142,4 +143,5 @@ public class Worksheet {
     public boolean isNewLineChar(int offset) {
         return extendedText.getText(offset, offset).equals("\n");
     }
+    
 }

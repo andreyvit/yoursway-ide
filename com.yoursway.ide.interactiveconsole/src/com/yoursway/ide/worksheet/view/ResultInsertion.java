@@ -142,16 +142,14 @@ public class ResultInsertion implements Insertion {
     }
     
     public void updateSize() {
-        // instead of embeddedText.pack();
-        
-        if (pending) //?
-            return;
-        
         whenUpdateSize = 0;
         
         //! embeddedText can be disposed here (press COMMAND+Q)
         embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
+                if (pending && embeddedText.getSize().y > 0)
+                    return;
+                
                 embeddedText.pack();
                 
                 int clientWidth = extendedText.getClientArea().width;

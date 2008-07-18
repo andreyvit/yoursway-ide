@@ -34,13 +34,17 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
     public void verifyKey(VerifyEvent e) {
         if (settings.isExecHotkey(e)) {
             e.doit = false;
-            if (view.command().trim().length() != 0)
-                executeCommand();
             
-            if (view.inLastLine())
-                view.makeNewLineAtEnd();
-            else
-                view.lineDown();
+            for (Command command : view.selectedCommands()) {
+                executeCommand(command);
+            }
+            
+            if (!view.multilineSelection()) {
+                if (view.inLastLine())
+                    view.makeNewLineAtEnd();
+                else
+                    view.lineDown();
+            }
         }
 
         else if (settings.isRemoveInsertionsHotkey(e)) {
@@ -67,8 +71,8 @@ public class WorksheetController implements IOutputListener, VerifyKeyListener, 
         view.makeInsertionsObsolete(start, end);
     }
     
-    private void executeCommand() {
-        executions.add(new Execution(view.command(), view.insertion(), debug));
+    private void executeCommand(Command command) {
+        executions.add(new Execution(command, debug));
         if (executions.size() == 1)
             outputInsertion = executions.peek().start();
     }
