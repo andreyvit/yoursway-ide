@@ -21,6 +21,7 @@ public class DocumentContentController implements DocumentContentWindowCallback,
         this.view = factory.bind(this.viewModel, this);
         try {
             viewModel.data.setValue(readAsString(document.file()));
+            viewModel.file.setValue(document.file());
         } catch (IOException e) {
             e.printStackTrace();
         }
