@@ -3,6 +3,9 @@ package com.yoursway.ide.debug.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.yoursway.utils.bugs.Bugs;
+import com.yoursway.utils.bugs.Severity;
+
 public abstract class AbstractDebug implements IDebug {
     
     private final List<ITerminationListener> terminationListeners = new LinkedList<ITerminationListener>();
@@ -18,18 +21,19 @@ public abstract class AbstractDebug implements IDebug {
             try {
                 listener.terminated();
             } catch (Throwable e) {
-                e.printStackTrace(System.err); //>
+                Bugs.listenerFailed(e, listener);
             }
         }
     }
     
     public synchronized void addOutputListener(IOutputListener listener) {
+        //? refactor
         try {
             for (OutputEntry e : output) {
                 listener.outputted(e.text(), e.error());
             }
         } catch (Throwable e) {
-            e.printStackTrace(System.err); //>
+            Bugs.listenerFailed(e, listener);
         }
         
         outputListeners.add(listener);
@@ -46,7 +50,7 @@ public abstract class AbstractDebug implements IDebug {
             try {
                 listener.outputted(text, error);
             } catch (Throwable e) {
-                e.printStackTrace(System.err); //>
+                Bugs.listenerFailed(e, listener);
             }
         }
     }
@@ -56,7 +60,7 @@ public abstract class AbstractDebug implements IDebug {
             try {
                 listener.completed();
             } catch (Throwable e) {
-                e.printStackTrace(System.err); //>
+                Bugs.listenerFailed(e, listener);
             }
         }
     }
@@ -68,7 +72,7 @@ public abstract class AbstractDebug implements IDebug {
             }
             
             public void completed() {
-                //?
+                Bugs.illegalCaseRecovery(Severity.UNKNOWN, "The outputter.completed() method invoked.");
             }
         };
     }

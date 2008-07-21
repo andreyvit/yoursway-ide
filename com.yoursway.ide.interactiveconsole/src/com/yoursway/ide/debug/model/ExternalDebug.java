@@ -29,7 +29,7 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
             new OutputStreamMonitor(process.getErrorStream(), outputter(), true, outputCompletedMonitor)
                     .start();
             
-            Thread processMonitor = new Thread() {
+            Thread processMonitor = new Thread(ExternalDebug.class.getSimpleName() + " processMonitor") {
                 @Override
                 public void run() {
                     try {
@@ -46,8 +46,7 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
             processMonitor.start();
             
         } catch (IOException e) {
-            //!
-            e.printStackTrace();
+            e.printStackTrace(); //!
         }
     }
     
@@ -58,8 +57,7 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
             writer.write(command + '\n');
             writer.flush();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace(); //!
         }
     }
     
@@ -72,6 +70,10 @@ public class ExternalDebug extends DebugWithHistoryCompletion {
     public final class OutputCompletedMonitor extends Thread {
         private boolean reset = false;
         private boolean outputted = true;
+        
+        public OutputCompletedMonitor() {
+            super(OutputCompletedMonitor.class.getSimpleName());
+        }
         
         @Override
         public synchronized void run() {
