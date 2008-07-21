@@ -18,7 +18,7 @@ public class OutputStreamMonitor {
         
         final Reader reader = new BufferedReader(new InputStreamReader(inputStream));
         
-        thread = new Thread() {
+        thread = new Thread(OutputStreamMonitor.class.getSimpleName()) {
             
             @Override
             public void run() {
@@ -35,8 +35,7 @@ public class OutputStreamMonitor {
                     }
                     
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    e.printStackTrace(); //!
                 }
             }
             

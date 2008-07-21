@@ -7,7 +7,7 @@ public class DebugMock extends DebugWithHistoryCompletion {
     public DebugMock(CommandHistory history) {
         super(history);
         
-        Thread outputter = new Thread() {
+        Thread outputter = new Thread(DebugMock.class.getSimpleName() + " outputter") {
             
             @Override
             public void run() {
@@ -17,8 +17,7 @@ public class DebugMock extends DebugWithHistoryCompletion {
                         output("hahaha\n", true);
                     }
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    e.printStackTrace(); //!
                 }
             }
             
