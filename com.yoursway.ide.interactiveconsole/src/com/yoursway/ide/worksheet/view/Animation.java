@@ -16,7 +16,7 @@ public class Animation {
     public void start(final AnimationUpdater updater) {
         this.updater = updater;
         
-        thread = new Thread() {
+        thread = new Thread(Animation.class.getSimpleName()) {
             private int alpha = 0;
             private final int d = 2;
             
