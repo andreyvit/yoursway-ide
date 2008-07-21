@@ -102,14 +102,14 @@ public class ResultInsertion implements InsertionContent {
     }
     
     public void dispose() {
+        if (!animation.isDisposed()) {
+            animation.dispose();
+        }
+        
         if (embeddedText != null) {
             if (!embeddedText.isDisposed())
                 embeddedText.dispose();
             embeddedText = null;
-        }
-        
-        if (!animation.isDisposed()) {
-            animation.dispose();
         }
     }
     
@@ -125,6 +125,9 @@ public class ResultInsertion implements InsertionContent {
         
         settings.display().syncExec(new Runnable() {
             public void run() {
+                if (isDisposed())
+                    return;
+                
                 embeddedText.setText(text);
                 updateSize();
             }
@@ -141,7 +144,7 @@ public class ResultInsertion implements InsertionContent {
         }
         
         int end = text.length();
-        while (text.charAt(end - 1) == '\n') {
+        while (end > 0 && text.charAt(end - 1) == '\n') {
             end--;
             newLines++;
         }
@@ -151,6 +154,9 @@ public class ResultInsertion implements InsertionContent {
         
         settings.display().syncExec(new Runnable() {
             public void run() {
+                if (isDisposed())
+                    return;
+                
                 int start = embeddedText.getCharCount();
                 embeddedText.append(t);
                 if (error) {
@@ -163,12 +169,12 @@ public class ResultInsertion implements InsertionContent {
     }
     
     public void updateSize() {
-        if (embeddedText.isDisposed())
+        if (isDisposed())
             return;
         
         embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
-                if (embeddedText.isDisposed())
+                if (isDisposed())
                     return;
                 
                 if (pending && embeddedText.getSize().y > 0)

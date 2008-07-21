@@ -180,6 +180,8 @@ public class ExtendedTextInternal extends StyledText {
         int width = size.x - (size.x > 20 ? 20 : 0); // hack
         style.metrics = new GlyphMetrics(size.y, 0, width);
         setStyleRange(style);
+        
+        showSelection(); //? when
     }
     
     //! for controller
