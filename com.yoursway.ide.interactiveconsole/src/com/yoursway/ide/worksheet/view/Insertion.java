@@ -41,10 +41,6 @@ public class Insertion {
         }
     }
     
-    public void updateSize() {
-        content.updateSize();
-    }
-    
     public void dispose() {
         if (!content.isDisposed())
             content.dispose();
