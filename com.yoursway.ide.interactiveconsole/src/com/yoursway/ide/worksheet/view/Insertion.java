@@ -1,22 +1,64 @@
 package com.yoursway.ide.worksheet.view;
 
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
-public interface Insertion {
+public class Insertion {
     
-    //    void createWidget(Composite parent, ResizingListener listener);
+    private final InsertionContent content;
+    private int offset;
+    private final Composite composite;
     
-    void updateLocation();
+    private final ExtendedTextInternal extendedText;
     
-    void updateSize();
+    public Insertion(InsertionContent insertion, int offset, Composite composite,
+            ExtendedTextInternal extendedText) {
+        this.content = insertion;
+        this.offset = offset;
+        this.composite = composite;
+        
+        this.extendedText = extendedText;
+    }
     
-    void dispose();
+    public int offset() {
+        return offset;
+    }
     
-    void createWidget(Composite parent, ResizingListener listener, ExtendedTextForInsertion ext);
+    public void offset(int offset) {
+        this.offset = offset;
+    }
     
-    Rectangle getBounds();
+    public InsertionContent content() {
+        return content;
+    }
     
-    void setLocation(int x, int y);
+    public void updateLocation() {
+        Point location = extendedText.getLocationAtOffset(offset);
+        if (!composite.getLocation().equals(location)) {
+            composite.setLocation(location);
+            content.redraw(); //? ineffective //> don't do it every time
+        }
+    }
+    
+    public void updateSize() {
+        content.updateSize();
+    }
+    
+    public void dispose() {
+        if (!content.isDisposed())
+            content.dispose();
+        if (!composite.isDisposed())
+            composite.dispose();
+        
+    }
+    
+    public Rectangle getBounds() {
+        return composite.getBounds();
+    }
+    
+    public void setLocation(int x, int y) {
+        composite.setLocation(x, y);
+    }
     
 }
