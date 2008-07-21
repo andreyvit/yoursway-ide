@@ -1,7 +1,6 @@
 package com.yoursway.ide.worksheet.view;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.PaintObjectEvent;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
@@ -31,6 +30,7 @@ public class ResultInsertion implements Insertion {
     private boolean pending;
     
     private int newLines = 0;
+    private ExtendedTextForInsertion ext;
     
     public ResultInsertion(IUserSettings settings, ExtendedText extendedText) {
         this.settings = settings;
@@ -39,8 +39,11 @@ public class ResultInsertion implements Insertion {
         animation = new Animation();
     }
     
-    public void createWidget(Composite parent, final ResizingListener listener) {
+    public void createWidget(final Composite parent, final ResizingListener listener,
+            final ExtendedTextForInsertion ext) {
         oldMaxWidth = maxWidth();
+        
+        this.ext = ext;
         
         composite = new Composite(parent, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
         
@@ -128,12 +131,12 @@ public class ResultInsertion implements Insertion {
                 || embeddedText.isDisposed();
     }
     
-    public void updateLocation(PaintObjectEvent e) {
-        Point size = composite.getSize();
-        int x = e.x; //? + MARGIN;
-        //? int y = e.y + e.ascent - size.y; //? - 2 * size.y / 3;
-        int y = e.y + (e.ascent - size.y + e.descent) / 2 - 2; //! magic -2
-        composite.setLocation(x, y);
+    public void updateLocation() {
+        Point location = ext.getInsertionLocation();
+        if (!composite.getLocation().equals(location)) {
+            composite.setLocation(location);
+            redraw(); //? ineffective //> don't do it every time
+        }
     }
     
     private void setText(final String text, boolean pending) {
@@ -186,6 +189,9 @@ public class ResultInsertion implements Insertion {
         
         embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
+                if (embeddedText.isDisposed())
+                    return;
+                
                 if (pending && embeddedText.getSize().y > 0)
                     return;
                 
@@ -246,4 +252,11 @@ public class ResultInsertion implements Insertion {
         return extendedText.getClientArea().width - 50;
     }
     
+    public Rectangle getBounds() {
+        return composite.getBounds();
+    }
+    
+    public void setLocation(int x, int y) {
+        composite.setLocation(x, y);
+    }
 }
