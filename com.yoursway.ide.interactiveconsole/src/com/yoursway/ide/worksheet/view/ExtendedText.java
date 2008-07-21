@@ -161,7 +161,7 @@ public class ExtendedText {
         internal.append(string);
     }
     
-    public Insertion existingInsertion(int lineIndex) {
+    public InsertionContent existingInsertion(int lineIndex) {
         return internal.existingInsertion(internalLineIndex(lineIndex));
     }
     
