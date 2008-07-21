@@ -8,7 +8,6 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -22,7 +21,6 @@ public class ResultInsertion implements InsertionContent {
     
     private final Animation animation;
     private int alpha = 0;
-    private int oldMaxWidth;
     
     private Composite composite;
     private StyledText embeddedText;
@@ -38,8 +36,13 @@ public class ResultInsertion implements InsertionContent {
         animation = new Animation();
     }
     
-    public void init(final Composite composite) {
-        oldMaxWidth = maxWidth();
+    public void init(final Composite composite, ListenersAcceptor la) {
+        
+        la.addResizeListener(new ResizeListener() {
+            public void resized(Point size) {
+                updateSize(true);
+            }
+        });
         
         this.composite = composite;
         
@@ -129,7 +132,7 @@ public class ResultInsertion implements InsertionContent {
                     return;
                 
                 embeddedText.setText(text);
-                updateSize();
+                updateSize(false);
             }
         });
     }
@@ -163,43 +166,29 @@ public class ResultInsertion implements InsertionContent {
                     StyleRange style = settings.errorStyle(start, t.length());
                     embeddedText.setStyleRange(style);
                 }
-                updateSize();
+                updateSize(false);
             }
         });
     }
     
-    public void updateSize() {
+    private void updateSize(boolean containerResized) {
         if (isDisposed())
             return;
         
-        embeddedText.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                if (isDisposed())
-                    return;
-                
-                if (pending && embeddedText.getSize().y > 0)
-                    return;
-                
-                embeddedText.pack();
-                
-                int maxWidth = maxWidth();
-                if (embeddedText.getSize().x > maxWidth) {
-                    embeddedText.setSize(maxWidth, embeddedText.getSize().y);
-                    
-                    if (embeddedText.getCharCount() > 0) {
-                        Rectangle bounds = embeddedText.getTextBounds(0, embeddedText.getCharCount() - 1);
-                        embeddedText.setSize(bounds.width, bounds.height);
-                    }
-                }
-                
-                Point targetSize = embeddedText.getSize();
-                animation.targetSize(targetSize.x + 30, targetSize.y + 10); //! magic
-                if (oldMaxWidth != maxWidth) {
-                    animation.instantWidth();
-                    oldMaxWidth = maxWidth;
-                }
-            }
-        });
+        if (pending && embeddedText.getSize().y > 0)
+            return;
+        
+        Point size = embeddedText.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        
+        int maxWidth = extendedText.getClientArea().width - 50;
+        
+        if (size.x > maxWidth)
+            size = embeddedText.computeSize(maxWidth, SWT.DEFAULT);
+        
+        embeddedText.setSize(size);
+        animation.targetSize(size.x + 30, size.y + 10); //! magic
+        if (containerResized)
+            animation.instantWidth();
     }
     
     public void becomeObsolete() {
@@ -231,10 +220,6 @@ public class ResultInsertion implements InsertionContent {
     
     public void reset() {
         setText("", true);
-    }
-    
-    private int maxWidth() {
-        return extendedText.getClientArea().width - 50;
     }
     
 }

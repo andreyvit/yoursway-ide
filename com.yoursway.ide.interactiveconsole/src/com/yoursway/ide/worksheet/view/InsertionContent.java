@@ -4,9 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public interface InsertionContent {
     
-    void init(Composite parent);
-    
-    void updateSize();
+    void init(Composite composite, ListenersAcceptor la);
     
     void redraw();
     

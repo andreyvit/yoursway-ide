@@ -24,6 +24,8 @@ public class ExtendedTextInternal extends StyledText {
     
     private final Collection<Insertion> insertions = new LinkedList<Insertion>();
     
+    private final Collection<ResizeListener> resizeListeners = new LinkedList<ResizeListener>();
+    
     public ExtendedTextInternal(Composite parent, int style) {
         super(parent, style);
         
@@ -61,13 +63,14 @@ public class ExtendedTextInternal extends StyledText {
             }
         });
         addControlListener(new ControlListener() {
+            
             public void controlMoved(ControlEvent e) {
                 // nothing
             }
             
             public void controlResized(ControlEvent e) {
-                for (Insertion insertion : insertions) {
-                    insertion.updateSize();
+                for (ResizeListener listener : resizeListeners) {
+                    listener.resized(getSize());
                 }
                 redraw(); //?
             }
@@ -106,12 +109,13 @@ public class ExtendedTextInternal extends StyledText {
     }
     
     public void addInsertion(int lineIndex, final InsertionContent content) {
-        int lineEndOffset = lineEndOffset(lineIndex);
-        replaceTextRange(lineEndOffset, 0, "\n" + insertionPlaceholder());
-        final int offset = lineEndOffset + 1; // "\n"
+        int offset = lineEndOffset(lineIndex);
+        replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
+        offset++; // "\n"
         final Composite composite = new Composite(this, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
         
-        insertions.add(new Insertion(content, offset, composite, this));
+        final Insertion insertion = new Insertion(content, offset, composite, this);
+        insertions.add(insertion);
         
         composite.addControlListener(new ControlListener() {
             public void controlMoved(ControlEvent e) {
@@ -119,11 +123,15 @@ public class ExtendedTextInternal extends StyledText {
             }
             
             public void controlResized(ControlEvent e) {
-                updateMetrics(offset, composite.getSize());
+                updateMetrics(insertion.offset(), composite.getSize());
             }
         });
         
-        content.init(composite);
+        content.init(composite, new ListenersAcceptor() {
+            public void addResizeListener(ResizeListener listener) {
+                resizeListeners.add(listener);
+            }
+        });
     }
     
     public int lineEndOffset(int lineIndex) {
