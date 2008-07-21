@@ -1,10 +1,10 @@
 package com.yoursway.ide.worksheet.view;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.LinkedList;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.PaintObjectEvent;
 import org.eclipse.swt.custom.PaintObjectListener;
 import org.eclipse.swt.custom.StyleRange;
@@ -22,8 +22,7 @@ import com.yoursway.ide.worksheet.controller.ExtendedTextController;
 
 public class ExtendedTextInternal extends StyledText {
     
-    //private final List<Insertion> insertions = new LinkedList<Insertion>();
-    private final Map<Insertion, Integer> insertions = new HashMap<Insertion, Integer>();
+    private final Collection<Insertion> insertions = new LinkedList<Insertion>();
     
     public ExtendedTextInternal(Composite parent, int style) {
         super(parent, style);
@@ -34,18 +33,17 @@ public class ExtendedTextInternal extends StyledText {
                 int replaceCharCount = e.end - e.start;
                 int newCharCount = e.text.length();
                 
-                Iterator<Entry<Insertion, Integer>> it = insertions.entrySet().iterator();
+                Iterator<Insertion> it = insertions.iterator();
                 while (it.hasNext()) {
-                    Entry<Insertion, Integer> entry = it.next();
-                    Insertion insertion = entry.getKey();
-                    int offset = entry.getValue();
+                    Insertion insertion = it.next();
+                    int offset = insertion.offset();
                     
                     if (start <= offset && offset < start + replaceCharCount) {
                         insertion.dispose();
                         it.remove();
                     } else if (offset >= start) {
                         offset += newCharCount - replaceCharCount;
-                        entry.setValue(offset);
+                        insertion.offset(offset);
                     }
                 }
             }
@@ -54,9 +52,9 @@ public class ExtendedTextInternal extends StyledText {
             public void paintObject(PaintObjectEvent e) {
                 int offset = e.style.start;
                 
-                for (Entry<Insertion, Integer> entry : insertions.entrySet()) {
-                    if (offset == entry.getValue()) {
-                        entry.getKey().updateLocation();
+                for (Insertion insertion : insertions) {
+                    if (offset == insertion.offset()) {
+                        insertion.updateLocation();
                         break;
                     }
                 }
@@ -68,10 +66,10 @@ public class ExtendedTextInternal extends StyledText {
             }
             
             public void controlResized(ControlEvent e) {
-                for (Insertion insertion : insertions.keySet()) {
+                for (Insertion insertion : insertions) {
                     insertion.updateSize();
                 }
-                redraw();
+                redraw(); //?
             }
         });
         
@@ -88,7 +86,7 @@ public class ExtendedTextInternal extends StyledText {
         int deltaX = destX - x;
         int deltaY = destY - y;
         
-        for (Insertion insertion : insertions.keySet()) {
+        for (Insertion insertion : insertions) {
             Rectangle rect = insertion.getBounds();
             if (rect.intersects(x, y, width, height) || rect.intersects(destX, destY, width, height)) {
                 insertion.setLocation(rect.x + deltaX, rect.y + deltaY);
@@ -107,20 +105,25 @@ public class ExtendedTextInternal extends StyledText {
         return 1;
     }
     
-    public void addInsertion(int lineIndex, final Insertion insertion) {
-        int offset = lineEndOffset(lineIndex);
-        replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
-        offset++; // "\n"
-        insertions.put(insertion, offset);
-        insertion.createWidget(this, new ResizingListener() {
-            public void resized(Point size) {
-                updateMetrics(insertion, size);
+    public void addInsertion(int lineIndex, final InsertionContent content) {
+        int lineEndOffset = lineEndOffset(lineIndex);
+        replaceTextRange(lineEndOffset, 0, "\n" + insertionPlaceholder());
+        final int offset = lineEndOffset + 1; // "\n"
+        final Composite composite = new Composite(this, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
+        
+        insertions.add(new Insertion(content, offset, composite, this));
+        
+        composite.addControlListener(new ControlListener() {
+            public void controlMoved(ControlEvent e) {
+                // nothing
             }
-        }, new ExtendedTextForInsertion() {
-            public Point getInsertionLocation() {
-                return getLocationAtOffset(offsetOf(insertion));
+            
+            public void controlResized(ControlEvent e) {
+                updateMetrics(offset, composite.getSize());
             }
         });
+        
+        content.init(composite);
     }
     
     public int lineEndOffset(int lineIndex) {
@@ -129,11 +132,11 @@ public class ExtendedTextInternal extends StyledText {
         return lineOffset + lineLength;
     }
     
-    public Insertion existingInsertion(int lineIndex) {
+    public InsertionContent existingInsertion(int lineIndex) {
         int offset = lineEndOffset(lineIndex) + 1;
-        for (Entry<Insertion, Integer> entry : insertions.entrySet()) {
-            if (entry.getValue() == offset)
-                return entry.getKey();
+        for (Insertion insertion : insertions) {
+            if (insertion.offset() == offset)
+                return insertion.content();
         }
         return null;
     }
@@ -170,17 +173,13 @@ public class ExtendedTextInternal extends StyledText {
         return (getLine(lineIndex).equals(insertionPlaceholder()));
     }
     
-    private void updateMetrics(Insertion insertion, Point size) {
+    private void updateMetrics(int offset, Point size) {
         StyleRange style = new StyleRange();
-        style.start = offsetOf(insertion);
+        style.start = offset;
         style.length = insertionPlaceholderLength();
         int width = size.x - (size.x > 20 ? 20 : 0); // hack
         style.metrics = new GlyphMetrics(size.y, 0, width);
         setStyleRange(style);
-    }
-    
-    private int offsetOf(final Insertion insertion) {
-        return insertions.get(insertion);
     }
     
     //! for controller

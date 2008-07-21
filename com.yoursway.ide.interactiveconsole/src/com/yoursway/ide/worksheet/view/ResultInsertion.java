@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Display;
 
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
 
-public class ResultInsertion implements Insertion {
+public class ResultInsertion implements InsertionContent {
     
     private final IUserSettings settings;
     private final ExtendedText extendedText;
@@ -30,7 +30,6 @@ public class ResultInsertion implements Insertion {
     private boolean pending;
     
     private int newLines = 0;
-    private ExtendedTextForInsertion ext;
     
     public ResultInsertion(IUserSettings settings, ExtendedText extendedText) {
         this.settings = settings;
@@ -39,13 +38,10 @@ public class ResultInsertion implements Insertion {
         animation = new Animation();
     }
     
-    public void createWidget(final Composite parent, final ResizingListener listener,
-            final ExtendedTextForInsertion ext) {
+    public void init(final Composite composite) {
         oldMaxWidth = maxWidth();
         
-        this.ext = ext;
-        
-        composite = new Composite(parent, SWT.NO_FOCUS | SWT.NO_BACKGROUND);
+        this.composite = composite;
         
         Display display = composite.getDisplay();
         final Color color = new Color(display, 100, 100, 100); //! magic
@@ -93,9 +89,7 @@ public class ResultInsertion implements Insertion {
                         if (composite.isDisposed())
                             return;
                         
-                        Point size = new Point(width, height);
-                        composite.setSize(size);
-                        listener.resized(size);
+                        composite.setSize(width, height);
                     }
                 });
             }
@@ -114,29 +108,14 @@ public class ResultInsertion implements Insertion {
             embeddedText = null;
         }
         
-        if (composite != null) {
-            if (!composite.isDisposed())
-                composite.dispose();
-            composite = null;
-        }
-        
         if (!animation.isDisposed()) {
             animation.dispose();
         }
     }
     
-    private boolean isDisposed() {
-        //! (composite == null) before init too 
-        return composite == null || embeddedText == null || composite.isDisposed()
-                || embeddedText.isDisposed();
-    }
-    
-    public void updateLocation() {
-        Point location = ext.getInsertionLocation();
-        if (!composite.getLocation().equals(location)) {
-            composite.setLocation(location);
-            redraw(); //? ineffective //> don't do it every time
-        }
+    public boolean isDisposed() {
+        //! (embeddedText == null) before init too 
+        return embeddedText == null || embeddedText.isDisposed();
     }
     
     private void setText(final String text, boolean pending) {
@@ -225,11 +204,11 @@ public class ResultInsertion implements Insertion {
         animation.targetAlpha(255);
     }
     
-    private void redraw() {
+    public void redraw() { //?
         if (isDisposed())
             return;
         
-        composite.getDisplay().asyncExec(new Runnable() {
+        embeddedText.getDisplay().asyncExec(new Runnable() {
             public void run() {
                 if (isDisposed())
                     return;
@@ -252,11 +231,4 @@ public class ResultInsertion implements Insertion {
         return extendedText.getClientArea().width - 50;
     }
     
-    public Rectangle getBounds() {
-        return composite.getBounds();
-    }
-    
-    public void setLocation(int x, int y) {
-        composite.setLocation(x, y);
-    }
 }
