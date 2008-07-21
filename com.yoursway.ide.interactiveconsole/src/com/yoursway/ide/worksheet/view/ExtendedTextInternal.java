@@ -15,6 +15,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 import com.yoursway.ide.worksheet.controller.ExtendedTextController;
@@ -55,7 +56,7 @@ public class ExtendedTextInternal extends StyledText {
                 
                 for (Entry<Insertion, Integer> entry : insertions.entrySet()) {
                     if (offset == entry.getValue()) {
-                        entry.getKey().updateLocation(e);
+                        entry.getKey().updateLocation();
                         break;
                     }
                 }
@@ -80,6 +81,22 @@ public class ExtendedTextInternal extends StyledText {
         addMouseListener(controller);
     }
     
+    @Override
+    public void scroll(int destX, int destY, int x, int y, int width, int height, boolean all) {
+        super.scroll(destX, destY, x, y, width, height, false);
+        
+        int deltaX = destX - x;
+        int deltaY = destY - y;
+        
+        for (Insertion insertion : insertions.keySet()) {
+            Rectangle rect = insertion.getBounds();
+            if (rect.intersects(x, y, width, height) || rect.intersects(destX, destY, width, height)) {
+                insertion.setLocation(rect.x + deltaX, rect.y + deltaY);
+            }
+        }
+        // other children scrolling are not supported
+    }
+    
     String insertionPlaceholder() {
         return "\uFFFC";
     }
@@ -98,6 +115,10 @@ public class ExtendedTextInternal extends StyledText {
         insertion.createWidget(this, new ResizingListener() {
             public void resized(Point size) {
                 updateMetrics(insertion, size);
+            }
+        }, new ExtendedTextForInsertion() {
+            public Point getInsertionLocation() {
+                return getLocationAtOffset(offsetOf(insertion));
             }
         });
     }
@@ -151,11 +172,15 @@ public class ExtendedTextInternal extends StyledText {
     
     private void updateMetrics(Insertion insertion, Point size) {
         StyleRange style = new StyleRange();
-        style.start = insertions.get(insertion);
+        style.start = offsetOf(insertion);
         style.length = insertionPlaceholderLength();
         int width = size.x - (size.x > 20 ? 20 : 0); // hack
         style.metrics = new GlyphMetrics(size.y, 0, width);
         setStyleRange(style);
+    }
+    
+    private int offsetOf(final Insertion insertion) {
+        return insertions.get(insertion);
     }
     
     //! for controller
