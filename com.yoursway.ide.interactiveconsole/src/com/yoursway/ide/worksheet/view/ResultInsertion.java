@@ -203,7 +203,9 @@ public class ResultInsertion implements InsertionContent {
         Point size = embeddedText.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         
         int maxWidth = extendedText.getClientArea().width - 50;
-        
+        if (maxWidth < 10)
+            maxWidth = 10; //! hack
+            
         if (size.x > maxWidth)
             size = embeddedText.computeSize(maxWidth, SWT.DEFAULT);
         
