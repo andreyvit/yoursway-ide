@@ -17,7 +17,11 @@ public class ExtendedText {
     ExtendedTextInternal internal; //? rename to ExtendedTextWidget widget
     
     public ExtendedText(Composite parent, int style) {
-        internal = new ExtendedTextInternal(parent, style);
+        try {
+            internal = new ExtendedTextInternal(parent, style);
+        } catch (Throwable e) {
+            e.getClass();
+        }
     }
     
     public void addExtendedModifyListener(final ExtendedModifyListener listener) {
