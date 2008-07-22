@@ -1,24 +1,23 @@
-package com.yoursway.ide.worksheet.view;
+package org.eclipse.swt.custom;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.PaintObjectEvent;
-import org.eclipse.swt.custom.PaintObjectListener;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 import com.yoursway.ide.worksheet.controller.ExtendedTextController;
+import com.yoursway.ide.worksheet.view.Insertion;
+import com.yoursway.ide.worksheet.view.InsertionContent;
+import com.yoursway.ide.worksheet.view.ListenersAcceptor;
+import com.yoursway.ide.worksheet.view.ResizeListener;
 
 public class ExtendedTextInternal extends StyledText {
     
@@ -85,32 +84,43 @@ public class ExtendedTextInternal extends StyledText {
     @Override
     public void scroll(int destX, int destY, int x, int y, int width, int height, boolean all) {
         super.scroll(destX, destY, x, y, width, height, false);
-        
-        int deltaX = destX - x;
-        int deltaY = destY - y;
-        
-        int minX = x < destX ? x : destX;
-        int minY = y < destY ? y : destY;
-        int maxX = (x > destX ? x : destX) + width;
-        int maxY = (y > destY ? y : destY) + height;
-        
-        for (Insertion insertion : insertions) {
-            Rectangle rect = insertion.getBounds();
-            if (rect.intersects(minX, minY, maxX - minX, maxY - minY)) {
-                insertion.setLocation(rect.x + deltaX, rect.y + deltaY);
-            }
-        }
-        // other children scrolling are not supported
     }
     
-    /*
     @Override
     boolean scrollVertical(int pixels, boolean adjustScrollBar) {
-        System.out.println("scrollVertical");
-        return super.scrollVertical(pixels, adjustScrollBar);
+        boolean scrolled = super.scrollVertical(pixels, adjustScrollBar);
+        
+        for (Insertion insertion : insertions) {
+            Point loc = insertion.getLocation();
+            insertion.setLocation(loc.x, loc.y - pixels);
+        }
+        
+        return scrolled;
     }
-    */
-
+    
+    @Override
+    boolean scrollHorizontal(int pixels, boolean adjustScrollBar) {
+        boolean scrolled = super.scrollHorizontal(pixels, adjustScrollBar);
+        
+        for (Insertion insertion : insertions) {
+            Point loc = insertion.getLocation();
+            insertion.setLocation(loc.x - pixels, loc.y);
+        }
+        
+        return scrolled;
+    }
+    
+    @Override
+    void scrollText(int srcY, int destY) {
+        super.scrollText(srcY, destY);
+        
+        for (Insertion insertion : insertions) {
+            Point loc = insertion.getLocation();
+            if (loc.y >= srcY)
+                insertion.setLocation(loc.x, loc.y + destY - srcY);
+        }
+    }
+    
     public String insertionPlaceholder() {
         return "\uFFFC";
     }
