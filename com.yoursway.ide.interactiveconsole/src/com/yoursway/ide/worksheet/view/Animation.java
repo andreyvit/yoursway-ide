@@ -2,11 +2,13 @@ package com.yoursway.ide.worksheet.view;
 
 import java.lang.Thread.State;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Animation {
     
     private AnimationUpdater updater;
+    private boolean disposed = false;
     
     private volatile int targetWidth = 0;
     private volatile int targetHeight = 0;
@@ -30,9 +32,15 @@ public class Animation {
         public void run() {
             try {
                 while (true) {
-                    for (Animation animation : animations) {
-                        if (animation.isDisposed())
+                    Iterator<Animation> it = animations.iterator();
+                    while (it.hasNext()) {
+                        Animation animation = it.next();
+                        
+                        if (animation.isDisposed()) {
+                            animation.updater = null;
+                            it.remove();
                             continue;
+                        }
                         
                         animation.updateSize();
                         animation.updateAlpha();
@@ -58,6 +66,13 @@ public class Animation {
     }
     
     private void updateSize() {
+        if (!updater.visible()) {
+            width = targetWidth;
+            height = targetHeight;
+            updater.updateSize(width, height);
+            return;
+        }
+        
         int x = f(targetWidth - width, d);
         if (x < 0) {
             if (xDelay < delay) {
@@ -93,6 +108,12 @@ public class Animation {
     }
     
     private void updateAlpha() {
+        if (!updater.visible()) {
+            alpha = targetAlpha;
+            updater.updateAlpha(alpha);
+            return;
+        }
+        
         int a = f(targetAlpha - alpha, d * 3);
         if (a != 0) {
             alpha += a;
@@ -130,11 +151,11 @@ public class Animation {
         if (isDisposed())
             return;
         
-        animations.remove(this);
+        disposed = true;
     }
     
     public boolean isDisposed() {
-        return !animations.contains(this);
+        return disposed;
     }
     
 }
