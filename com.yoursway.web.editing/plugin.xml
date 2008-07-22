@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="wysiwyg"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-scoped"
+            thread="main"
+            visible="true">
+         <run
+               class="com.yoursway.web.editing.SWTApp">
+         </run>
+      </application>
+   </extension>
+
+</plugin>
