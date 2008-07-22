@@ -2,6 +2,7 @@ package com.yoursway.ide.worksheet.view;
 
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
+import org.eclipse.swt.custom.ExtendedTextInternal;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;

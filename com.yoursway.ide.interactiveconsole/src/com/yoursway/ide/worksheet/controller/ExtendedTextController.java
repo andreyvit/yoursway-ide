@@ -1,6 +1,7 @@
 package com.yoursway.ide.worksheet.controller;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ExtendedTextInternal;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
@@ -9,7 +10,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.VerifyEvent;
 
-import com.yoursway.ide.worksheet.view.ExtendedTextInternal;
 
 public class ExtendedTextController implements VerifyKeyListener, KeyListener, MouseListener {
     

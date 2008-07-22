@@ -31,7 +31,7 @@ public class Worksheet {
         shell.setBounds(settings.worksheetBounds());
         shell.setLayout(new FillLayout());
         
-        extendedText = new ExtendedText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); //> SWT.WRAP or SWT.H_SCROLL switching
+        extendedText = new ExtendedText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //> SWT.WRAP or SWT.H_SCROLL switching
         extendedText.setFont(settings.workspaceFont());
         
         WorksheetController controller = new WorksheetController(this, settings);

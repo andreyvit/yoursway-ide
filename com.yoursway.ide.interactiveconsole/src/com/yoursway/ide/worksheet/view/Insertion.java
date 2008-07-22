@@ -1,7 +1,7 @@
 package com.yoursway.ide.worksheet.view;
 
+import org.eclipse.swt.custom.ExtendedTextInternal;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 public class Insertion {
@@ -49,12 +49,13 @@ public class Insertion {
         
     }
     
-    public Rectangle getBounds() {
-        return composite.getBounds();
+    public void setLocation(int x, int y) {
+        System.out.printf("setLocation(%d, %d)\n", x, y);
+        composite.setLocation(x, y);
     }
     
-    public void setLocation(int x, int y) {
-        composite.setLocation(x, y);
+    public Point getLocation() {
+        return composite.getLocation();
     }
     
 }
