@@ -20,7 +20,7 @@ public class ResultInsertion implements InsertionContent {
     private final ExtendedText extendedText;
     
     private final Animation animation;
-    private int alpha = 0;
+    private int alpha;
     
     private Composite composite;
     private StyledText embeddedText;
@@ -80,6 +80,7 @@ public class ResultInsertion implements InsertionContent {
             }
         });
         
+        alpha = 0;
         animation.targetAlpha(255);
         
         animation.start(new AnimationUpdater() {
@@ -100,6 +101,27 @@ public class ResultInsertion implements InsertionContent {
             public void updateAlpha(final int alpha) {
                 ResultInsertion.this.alpha = alpha;
                 redraw();
+            }
+            
+            public boolean visible() {
+                return true;
+                /*
+                final boolean[] visible = new boolean[1];
+                composite.getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        Rectangle clientArea = extendedText.getClientArea();
+                        Rectangle bounds = composite.getBounds();
+                        if (bounds.width == 0)
+                            bounds.width = 1;
+                        if (bounds.height == 0)
+                            bounds.height = 1;
+                        visible[0] = bounds.intersects(clientArea);
+                        if (!visible[0]) {
+                            System.out.println(bounds);
+                        }
+                    }
+                });
+                return visible[0];*/
             }
         });
     }
