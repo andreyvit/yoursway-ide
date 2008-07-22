@@ -22,7 +22,6 @@ public class ResultInsertion implements InsertionContent {
     private final Animation animation;
     private int alpha;
     
-    private Composite composite;
     private StyledText embeddedText;
     
     private boolean pending;
@@ -43,8 +42,6 @@ public class ResultInsertion implements InsertionContent {
                 updateSize(true);
             }
         });
-        
-        this.composite = composite;
         
         Display display = composite.getDisplay();
         final Color color = new Color(display, 100, 100, 100); //! magic
@@ -100,28 +97,38 @@ public class ResultInsertion implements InsertionContent {
             
             public void updateAlpha(final int alpha) {
                 ResultInsertion.this.alpha = alpha;
-                redraw();
+                
+                if (composite.isDisposed())
+                    return;
+                
+                composite.getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        if (composite.isDisposed())
+                            return;
+                        
+                        composite.redraw();
+                        redraw();
+                    }
+                });
             }
             
             public boolean visible() {
-                return true;
-                /*
+                if (composite.isDisposed())
+                    return false;
+                
                 final boolean[] visible = new boolean[1];
                 composite.getDisplay().syncExec(new Runnable() {
                     public void run() {
-                        Rectangle clientArea = extendedText.getClientArea();
-                        Rectangle bounds = composite.getBounds();
-                        if (bounds.width == 0)
-                            bounds.width = 1;
-                        if (bounds.height == 0)
-                            bounds.height = 1;
-                        visible[0] = bounds.intersects(clientArea);
-                        if (!visible[0]) {
-                            System.out.println(bounds);
+                        if (composite.isDisposed()) {
+                            visible[0] = false;
+                            return;
                         }
+                        
+                        visible[0] = composite.getVisible();
                     }
                 });
-                return visible[0];*/
+                
+                return visible[0];
             }
         });
     }
@@ -232,7 +239,6 @@ public class ResultInsertion implements InsertionContent {
                 if (isDisposed())
                     return;
                 
-                composite.redraw();
                 embeddedText.redraw();
             }
         });
