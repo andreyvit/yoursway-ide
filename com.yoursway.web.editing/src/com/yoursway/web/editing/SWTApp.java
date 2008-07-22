@@ -13,6 +13,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.internal.Platform;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -83,7 +84,7 @@ public class SWTApp implements IApplication{
 
             public void completed(ProgressEvent event) {
                 if(!init){
-                    browser.setUrl("javascript:document.body.contentEditable='true';document.designMode='on';void 0");
+                    browser.execute("document.body.contentEditable='true';document.designMode='on';");
                     init = true;
                     text = browser.getText();
                 }
@@ -123,6 +124,11 @@ public class SWTApp implements IApplication{
         }
         
         return IApplication.EXIT_OK;
+    }
+    
+    @SuppressWarnings("restriction")
+    private boolean isMac() {
+        return ("cocoa".equals(Platform.PLATFORM) || "carbon".equals(Platform.PLATFORM));
     }
     
     private void update(Browser browser) {
