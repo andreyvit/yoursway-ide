@@ -89,16 +89,29 @@ public class ExtendedTextInternal extends StyledText {
         int deltaX = destX - x;
         int deltaY = destY - y;
         
+        int minX = x < destX ? x : destX;
+        int minY = y < destY ? y : destY;
+        int maxX = (x > destX ? x : destX) + width;
+        int maxY = (y > destY ? y : destY) + height;
+        
         for (Insertion insertion : insertions) {
             Rectangle rect = insertion.getBounds();
-            if (rect.intersects(x, y, width, height) || rect.intersects(destX, destY, width, height)) {
+            if (rect.intersects(minX, minY, maxX - minX, maxY - minY)) {
                 insertion.setLocation(rect.x + deltaX, rect.y + deltaY);
             }
         }
         // other children scrolling are not supported
     }
     
-    String insertionPlaceholder() {
+    /*
+    @Override
+    boolean scrollVertical(int pixels, boolean adjustScrollBar) {
+        System.out.println("scrollVertical");
+        return super.scrollVertical(pixels, adjustScrollBar);
+    }
+    */
+
+    public String insertionPlaceholder() {
         return "\uFFFC";
     }
     
