@@ -18,6 +18,8 @@ public class Insertion {
         this.offset = offset;
         this.composite = composite;
         
+        composite.setVisible(false);
+        
         this.extendedText = extendedText;
     }
     
@@ -34,6 +36,8 @@ public class Insertion {
     }
     
     public void updateLocation() {
+        composite.setVisible(true);
+        
         Point location = extendedText.getLocationAtOffset(offset);
         if (!composite.getLocation().equals(location)) {
             composite.setLocation(location);
@@ -46,11 +50,9 @@ public class Insertion {
             content.dispose();
         if (!composite.isDisposed())
             composite.dispose();
-        
     }
     
     public void setLocation(int x, int y) {
-        System.out.printf("setLocation(%d, %d)\n", x, y);
         composite.setLocation(x, y);
     }
     
