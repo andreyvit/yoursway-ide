@@ -2,6 +2,7 @@ package com.yoursway.ide.worksheet.view;
 
 import org.eclipse.swt.custom.ExtendedTextInternal;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
 public class Insertion {
@@ -18,9 +19,9 @@ public class Insertion {
         this.offset = offset;
         this.composite = composite;
         
-        composite.setVisible(false);
-        
         this.extendedText = extendedText;
+        
+        updateLocation();
     }
     
     public int offset() {
@@ -36,11 +37,16 @@ public class Insertion {
     }
     
     public void updateLocation() {
-        composite.setVisible(true);
+        if (!composite.getVisible()) {
+            composite.setVisible(true);
+            composite.redraw();
+        }
         
         Point location = extendedText.getLocationAtOffset(offset);
         if (!composite.getLocation().equals(location)) {
-            composite.setLocation(location);
+            setLocation(location.x, location.y);
+            
+            composite.redraw();
             content.redraw(); //? ineffective //> don't do it every time
         }
     }
@@ -54,6 +60,15 @@ public class Insertion {
     
     public void setLocation(int x, int y) {
         composite.setLocation(x, y);
+        
+        Rectangle bounds = composite.getBounds();
+        if (bounds.width == 0)
+            bounds.width = 1; //! hack for intersects(...)
+        if (bounds.height == 0)
+            bounds.height = 1;
+        
+        if (!bounds.intersects(extendedText.getClientArea()))
+            composite.setVisible(false);
     }
     
     public Point getLocation() {
