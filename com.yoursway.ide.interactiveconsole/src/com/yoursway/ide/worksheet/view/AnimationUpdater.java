@@ -6,4 +6,6 @@ public interface AnimationUpdater {
     
     void updateAlpha(int alpha);
     
+    boolean visible();
+    
 }
