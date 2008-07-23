@@ -1,13 +1,14 @@
 package com.yoursway.ide.worksheet.demo;
 
-import com.yoursway.ide.oldconsole.CommandHistory;
-import com.yoursway.ide.worksheet.executors.standard.CommandExecutorWithHistoryCompletion;
+import java.util.Collections;
+import java.util.List;
 
-public class DebugMock extends CommandExecutorWithHistoryCompletion {
+import com.yoursway.ide.worksheet.executors.WorksheetCompletionProposal;
+import com.yoursway.ide.worksheet.executors.standard.AbstractWorksheetCommandExecutor;
+
+public class DebugMock extends AbstractWorksheetCommandExecutor {
     
-    public DebugMock(CommandHistory history) {
-        super(history);
-        
+    public DebugMock() {
         Thread outputter = new Thread(DebugMock.class.getSimpleName() + " outputter") {
             
             @Override
@@ -29,6 +30,10 @@ public class DebugMock extends CommandExecutorWithHistoryCompletion {
     
     public void executeCommand(String command) {
         output("ok: " + command + "\n");
+    }
+    
+    public List<WorksheetCompletionProposal> complete(String command, int position) {
+        return Collections.emptyList();
     }
     
 }
