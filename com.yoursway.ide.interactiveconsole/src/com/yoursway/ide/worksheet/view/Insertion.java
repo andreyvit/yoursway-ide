@@ -5,6 +5,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 
+import com.yoursway.utils.annotations.UseFromAnyThread;
+import com.yoursway.utils.annotations.UseFromUIThread;
+
 public class Insertion {
     
     private final InsertionContent content;
@@ -13,9 +16,17 @@ public class Insertion {
     
     private final ExtendedTextInternal extendedText;
     
-    public Insertion(InsertionContent insertion, int offset, Composite composite,
+    @UseFromUIThread
+    public Insertion(InsertionContent content, int offset, Composite composite,
             ExtendedTextInternal extendedText) {
-        this.content = insertion;
+        if (content == null)
+            throw new NullPointerException("content is null");
+        if (composite == null)
+            throw new NullPointerException("composite is null");
+        if (extendedText == null)
+            throw new NullPointerException("extendedText is null");
+        
+        this.content = content;
         this.offset = offset;
         this.composite = composite;
         
@@ -24,6 +35,7 @@ public class Insertion {
         updateLocation();
     }
     
+    @UseFromAnyThread
     public int offset() {
         return offset;
     }
@@ -32,10 +44,12 @@ public class Insertion {
         this.offset = offset;
     }
     
+    @UseFromAnyThread
     public InsertionContent content() {
         return content;
     }
     
+    @UseFromUIThread
     public void updateLocation() {
         if (!composite.getVisible()) {
             composite.setVisible(true);
@@ -51,6 +65,7 @@ public class Insertion {
         }
     }
     
+    @UseFromUIThread
     public void dispose() {
         if (!content.isDisposed())
             content.dispose();
@@ -58,6 +73,7 @@ public class Insertion {
             composite.dispose();
     }
     
+    @UseFromUIThread
     public void setLocation(int x, int y) {
         composite.setLocation(x, y);
         
@@ -71,6 +87,7 @@ public class Insertion {
             composite.setVisible(false);
     }
     
+    @UseFromUIThread
     public Point getLocation() {
         return composite.getLocation();
     }

@@ -13,6 +13,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
+import com.yoursway.utils.annotations.UseFromAnyThread;
+import com.yoursway.utils.annotations.UseFromUIThread;
+
 public class ExtendedText {
     
     ExtendedTextInternal internal; //? rename to ExtendedTextWidget widget
@@ -25,6 +28,7 @@ public class ExtendedText {
         }
     }
     
+    @UseFromUIThread
     public void addExtendedModifyListener(final ExtendedModifyListener listener) {
         //! several listeners
         
@@ -77,6 +81,7 @@ public class ExtendedText {
         });
     }
     
+    @UseFromUIThread
     public void addVerifyKeyListener(final VerifyKeyListener listener) {
         //! several listeners
         
@@ -139,14 +144,17 @@ public class ExtendedText {
         return withoutInsertions(text.substring(0, workingOffset)).length();
     }
     
+    @UseFromUIThread
     public int caretLine() {
         return externalLineIndex(internal.caretLine());
     }
     
+    @UseFromUIThread
     public String getLine(int lineIndex) {
         return internal.getLine(internalLineIndex(lineIndex));
     }
     
+    @UseFromUIThread
     public Point selectedLines() {
         Point internalLines = internal.selectedLines();
         int x = externalLineIndex(internalLines.x);
@@ -154,72 +162,89 @@ public class ExtendedText {
         return new Point(x, y);
     }
     
+    @UseFromUIThread
     public void setFont(Font font) {
         internal.setFont(font);
     }
     
+    @UseFromUIThread
     public void addInsertion(int lineIndex, ResultInsertion insertion) {
         internal.addInsertion(internalLineIndex(lineIndex), insertion);
     }
     
+    @UseFromUIThread
     public void append(String string) {
         internal.append(string);
     }
     
+    @UseFromUIThread
     public InsertionContent existingInsertion(int lineIndex) {
         return internal.existingInsertion(internalLineIndex(lineIndex));
     }
     
+    @UseFromUIThread
     public int getCharCount() {
         return externalOffset(internal.getCharCount()); //! it works :) change name?
     }
     
+    @UseFromUIThread
     public int getLineAtOffset(int offset) {
         return externalLineIndex(internal.getLineAtOffset(internalOffset(offset)));
     }
     
+    @UseFromUIThread
     public boolean inLastLine() {
         return caretLine() == getLineCount() - 1;
     }
     
+    @UseFromUIThread
     public boolean lineHasInsertion(int lineIndex) {
         return internal.lineHasInsertion(internalLineIndex(lineIndex));
     }
     
+    @UseFromUIThread
     public boolean removeInsertion(int lineIndex) {
         return internal.removeInsertion(internalLineIndex(lineIndex));
     }
     
+    @UseFromUIThread
     public String getText(int start, int end) {
         return internal.getText(internalOffset(start), internalOffset(end));
     }
     
+    @UseFromUIThread
     public String getSelectionText() {
         return withoutInsertions(internal.getSelectionText());
     }
     
+    @UseFromAnyThread
     private String withoutInsertions(String text) {
         return text.replace("\n" + internal.insertionPlaceholder(), "");
     }
     
+    @UseFromUIThread
     public void setSelection(int start) {
         internal.setSelection(internalOffset(start));
     }
     
+    @UseFromUIThread
     public int getLineCount() {
         return externalLineIndex(internal.getLineCount()); //! it works :) change name?
     }
     
+    @UseFromUIThread
     public void lineDown() {
         internal.invokeAction(ST.LINE_DOWN);
         if (internal.inInsertionLine())
             internal.invokeAction(ST.LINE_DOWN);
     }
     
+    @UseFromUIThread
     public Color getBackground() {
         return internal.getBackground();
     }
     
+    @UseFromUIThread
     public Rectangle getClientArea() {
         return internal.getClientArea();
     }

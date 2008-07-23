@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.yoursway.utils.annotations.UseFromAnyThread;
+
 public class Animation {
     
     private AnimationUpdater updater;
@@ -121,11 +123,13 @@ public class Animation {
         }
     }
     
+    @UseFromAnyThread
     public void targetSize(int width, int height) {
         targetWidth = width;
         targetHeight = height;
     }
     
+    @UseFromAnyThread
     public void targetAlpha(int alpha) {
         targetAlpha = alpha;
     }

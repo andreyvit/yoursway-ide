@@ -13,11 +13,12 @@ import org.eclipse.swt.graphics.GlyphMetrics;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 
-import com.yoursway.ide.worksheet.controller.ExtendedTextController;
 import com.yoursway.ide.worksheet.view.Insertion;
 import com.yoursway.ide.worksheet.view.InsertionContent;
 import com.yoursway.ide.worksheet.view.ListenersAcceptor;
 import com.yoursway.ide.worksheet.view.ResizeListener;
+import com.yoursway.utils.annotations.UseFromAnyThread;
+import com.yoursway.utils.annotations.UseFromUIThread;
 
 public class ExtendedTextInternal extends StyledText {
     
@@ -82,6 +83,7 @@ public class ExtendedTextInternal extends StyledText {
     }
     
     @Override
+    @UseFromUIThread
     public void scroll(int destX, int destY, int x, int y, int width, int height, boolean all) {
         super.scroll(destX, destY, x, y, width, height, false);
     }
@@ -121,16 +123,19 @@ public class ExtendedTextInternal extends StyledText {
         }
     }
     
+    @UseFromAnyThread
     public String insertionPlaceholder() {
         return "\uFFFC";
     }
     
+    @UseFromAnyThread
     private int insertionPlaceholderLength() throws AssertionError {
         if (insertionPlaceholder().length() != 1)
             throw new AssertionError("An insertion placeholder must have 1 char length.");
         return 1;
     }
     
+    @UseFromUIThread
     public void addInsertion(int lineIndex, final InsertionContent content) {
         int offset = lineEndOffset(lineIndex);
         replaceTextRange(offset, 0, "\n" + insertionPlaceholder());
@@ -157,12 +162,14 @@ public class ExtendedTextInternal extends StyledText {
         });
     }
     
+    @UseFromUIThread
     public int lineEndOffset(int lineIndex) {
         int lineOffset = getOffsetAtLine(lineIndex);
         int lineLength = getLine(lineIndex).length();
         return lineOffset + lineLength;
     }
     
+    @UseFromUIThread
     public InsertionContent existingInsertion(int lineIndex) {
         int offset = lineEndOffset(lineIndex) + 1;
         for (Insertion insertion : insertions) {
@@ -172,6 +179,7 @@ public class ExtendedTextInternal extends StyledText {
         return null;
     }
     
+    @UseFromUIThread
     public boolean removeInsertion(int lineIndex) {
         if (!lineHasInsertion(lineIndex))
             return false;
@@ -188,22 +196,25 @@ public class ExtendedTextInternal extends StyledText {
         return true;
     }
     
-    //! for controller
-    public boolean lineHasInsertion() {
+    @UseFromUIThread
+    boolean lineHasInsertion() {
         return lineHasInsertion(selectedLines().y);
     }
     
+    @UseFromUIThread
     public boolean lineHasInsertion(int lineIndex) {
         return isInsertionLine(lineIndex + 1);
     }
     
     //!
+    @UseFromUIThread
     public boolean isInsertionLine(int lineIndex) {
         if (getLineCount() <= lineIndex)
             return false;
         return (getLine(lineIndex).equals(insertionPlaceholder()));
     }
     
+    @UseFromUIThread
     private void updateMetrics(int offset, Point size) {
         StyleRange style = new StyleRange();
         style.start = offset;
@@ -215,8 +226,8 @@ public class ExtendedTextInternal extends StyledText {
         showSelection(); //? when
     }
     
-    //! for controller
-    public void selectInsertionLineEnd() {
+    @UseFromUIThread
+    void selectInsertionLineEnd() {
         if (!lineHasInsertion())
             throw new AssertionError("Selected line must have an insertion.");
         
@@ -225,6 +236,7 @@ public class ExtendedTextInternal extends StyledText {
     }
     
     //?
+    @UseFromUIThread
     public Point selectedLines() {
         Point sel = getSelection();
         int firstLine = getLineAtOffset(sel.x);
@@ -234,20 +246,24 @@ public class ExtendedTextInternal extends StyledText {
         return new Point(firstLine, lastLine);
     }
     
+    @UseFromUIThread
     public boolean inInsertionLine() {
         return isInsertionLine(caretLine());
     }
     
+    @UseFromUIThread
     public void moveCaretFromInsertionLine(boolean selection) {
         if (inInsertionLine())
             moveCaret(selection, atLineBegin() ? -1 : inLastLine() ? -2 : 1);
     }
     
     //?
+    @UseFromUIThread
     public int caretLine() {
         return getLineAtOffset(getCaretOffset());
     }
     
+    @UseFromUIThread
     private void moveCaret(boolean selection, int where) {
         if (selection) {
             Point sel = getSelection();
@@ -260,18 +276,19 @@ public class ExtendedTextInternal extends StyledText {
         }
     }
     
+    @UseFromUIThread
     private boolean caretAtSelectionEnd() {
         return getCaretOffset() == getSelection().y;
     }
     
-    //! for controller
-    public boolean atLineBegin() {
+    @UseFromUIThread
+    boolean atLineBegin() {
         int offset = getOffsetAtLine(caretLine());
         return getCaretOffset() == offset;
     }
     
-    //! for controller
-    public boolean inLastLine() {
+    @UseFromUIThread
+    boolean inLastLine() {
         return caretLine() == getLineCount() - 1;
     }
     
