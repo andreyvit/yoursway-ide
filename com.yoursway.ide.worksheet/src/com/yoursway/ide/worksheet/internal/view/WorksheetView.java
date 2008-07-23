@@ -71,8 +71,8 @@ public class WorksheetView {
     }
     
     private ResultBlock addBlock(int lineIndex) {
-        ResultBlock block = new ResultBlock(style, extendedText);
-        extendedText.addBlock(lineIndex, block);
+        ResultBlock block = new ResultBlock(style);
+        extendedText.addEmbeddedBlock(lineIndex, block);
         return block;
     }
     
@@ -91,7 +91,6 @@ public class WorksheetView {
         extendedText.setSelection(extendedText.getCharCount());
     }
     
-    @Deprecated
     public void makeInsertionsObsolete(int start, int end) {
         int firstLine = extendedText.getLineAtOffset(start);
         int lastLine = extendedText.getLineAtOffset(end);
