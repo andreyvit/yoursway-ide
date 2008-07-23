@@ -18,7 +18,7 @@ import com.yoursway.swt.animations.SizeAndAlphaAnimationApplier;
 import com.yoursway.swt.styledtext.insertions.EmbeddedBlock;
 import com.yoursway.swt.styledtext.insertions.ExtendedStyledText;
 import com.yoursway.swt.styledtext.insertions.ResizeListener;
-import com.yoursway.swt.styledtext.insertions.internal.YourSwayStyledTextEventSource;
+import com.yoursway.swt.styledtext.insertions.YourSwayStyledTextEventSource;
 import com.yoursway.utils.annotations.DeadlockWarningBlocksOnUIThread;
 import com.yoursway.utils.annotations.UseFromAnyThread;
 import com.yoursway.utils.annotations.UseFromUIThread;
