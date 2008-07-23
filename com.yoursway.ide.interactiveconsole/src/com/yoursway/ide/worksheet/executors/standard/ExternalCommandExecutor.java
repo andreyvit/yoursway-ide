@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.yoursway.ide.worksheet.executors.WorksheetCompletionProposal;
-import com.yoursway.ide.worksheet.internal.OutputStreamMonitor;
+import com.yoursway.ide.worksheet.internal.misc.OutputStreamMonitor;
 
 public class ExternalCommandExecutor extends AbstractWorksheetCommandExecutor {
     
@@ -100,7 +100,7 @@ public class ExternalCommandExecutor extends AbstractWorksheetCommandExecutor {
             
         }
         
-        public synchronized void output() {
+        public synchronized void outputDetected() {
             outputted = true;
             notify();
         }

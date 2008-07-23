@@ -1,125 +1,28 @@
 package com.yoursway.ide.worksheet;
 
-import java.util.LinkedList;
-import java.util.List;
+import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-
-import com.yoursway.ide.worksheet.internal.controller.Command;
-import com.yoursway.ide.worksheet.internal.controller.ResultBlockProvider;
+import com.yoursway.ide.worksheet.executors.WorksheetCommandExecutor;
 import com.yoursway.ide.worksheet.internal.controller.WorksheetController;
-import com.yoursway.ide.worksheet.internal.view.ResultBlock;
-import com.yoursway.swt.styledtext.insertions.ExtendedStyledText;
+import com.yoursway.ide.worksheet.internal.view.WorksheetView;
+import com.yoursway.ide.worksheet.internal.view.WorksheetViewCallback;
+import com.yoursway.ide.worksheet.internal.view.WorksheetViewFactory;
 
 public class Worksheet {
     
-    private final UserSettings settings;
-    
-    private final Shell shell;
-    private final ExtendedStyledText extendedText;
-    
-    public Worksheet(final UserSettings settings) {
-        this.settings = settings;
-        
-        shell = new Shell(settings.display());
-        shell.setText(settings.worksheetTitle());
-        shell.setBounds(settings.worksheetBounds());
-        shell.setLayout(new FillLayout());
-        
-        extendedText = new ExtendedStyledText(shell, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //> SWT.WRAP or SWT.H_SCROLL switching
-        extendedText.setFont(settings.workspaceFont());
-        
-        WorksheetController controller = new WorksheetController(this, settings);
-        extendedText.addVerifyKeyListener(controller);
-        extendedText.addExtendedModifyListener(controller);
-    }
-    
-    public Shell shell() {
-        return shell;
-    }
-    
-    public boolean multilineSelection() {
-        Point lines = extendedText.selectedLines();
-        return lines.x != lines.y;
-    }
-    
-    public Iterable<Command> selectedCommands() {
-        List<Command> commands = new LinkedList<Command>();
-        Point lines = extendedText.selectedLines();
-        for (int i = lines.x; i <= lines.y; i++) {
-            String commandText = commandText(i);
-            if (commandText.trim().length() == 0)
-                continue;
+    /**
+     * Please treat this method as an example only. Consider using proper outer
+     * MVC rather than calling this method.
+     */
+    public static void create(final Composite parent, WorksheetCommandExecutor executor,
+            WorksheetShortcuts shortcuts, final WorksheetStyle style) {
+        new WorksheetController(new WorksheetViewFactory() {
             
-            final int j = i;
-            commands.add(new Command(commandText, new ResultBlockProvider() {
-                public ResultBlock get() {
-                    return block(j);
-                }
-            }));
-        }
-        return commands;
-    }
-    
-    private String commandText(int lineIndex) {
-        return extendedText.getLine(lineIndex);
-    }
-    
-    private ResultBlock block(int lineIndex) {
-        if (extendedText.lineHasInsertion(lineIndex))
-            return (ResultBlock) extendedText.existingInsertion(lineIndex);
-        else
-            return addBlock(lineIndex);
-    }
-    
-    private ResultBlock addBlock(int lineIndex) {
-        ResultBlock block = new ResultBlock(settings, extendedText);
-        extendedText.addBlock(lineIndex, block);
-        return block;
-    }
-    
-    public void removeAllInsertions() {
-        for (int i = 0; i < extendedText.getLineCount(); i++) {
-            extendedText.removeInsertion(i);
-        }
-    }
-    
-    public boolean inLastLine() {
-        return extendedText.inLastLine();
-    }
-    
-    public void makeNewLineAtEnd() {
-        extendedText.append("\n");
-        extendedText.setSelection(extendedText.getCharCount());
-    }
-    
-    public void makeInsertionsObsolete(int start, int end) {
-        int firstLine = extendedText.getLineAtOffset(start);
-        int lastLine = extendedText.getLineAtOffset(end);
-        for (int i = firstLine; i <= lastLine; i++) {
-            if (extendedText.lineHasInsertion(i)) {
-                ResultBlock block = (ResultBlock) extendedText.existingInsertion(i);
-                block.becomeObsolete();
+            public WorksheetView createView(WorksheetViewCallback callback) {
+                return new WorksheetView(parent, callback, style);
             }
-        }
-    }
-    
-    public void showSelectedText() {
-        MessageBox messageBox = new MessageBox(shell);
-        messageBox.setMessage(extendedText.getSelectionText());
-        messageBox.open();
-    }
-    
-    public void lineDown() {
-        extendedText.lineDown();
-    }
-    
-    public boolean isNewLineChar(int offset) {
-        return extendedText.getText(offset, offset).equals("\n");
+            
+        }, executor, shortcuts);
     }
     
 }
