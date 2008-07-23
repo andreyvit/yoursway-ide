@@ -16,9 +16,8 @@ import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.swt.animations.SizeAndAlphaAnimation;
 import com.yoursway.swt.animations.SizeAndAlphaAnimationApplier;
 import com.yoursway.swt.styledtext.extended.EmbeddedBlock;
-import com.yoursway.swt.styledtext.extended.ExtendedStyledText;
+import com.yoursway.swt.styledtext.extended.EmbeddedBlockSite;
 import com.yoursway.swt.styledtext.extended.ResizeListener;
-import com.yoursway.swt.styledtext.extended.YourSwayStyledTextEventSource;
 import com.yoursway.utils.annotations.DeadlockWarningBlocksOnUIThread;
 import com.yoursway.utils.annotations.UseFromAnyThread;
 import com.yoursway.utils.annotations.UseFromUIThread;
@@ -26,39 +25,32 @@ import com.yoursway.utils.annotations.UseFromUIThread;
 public class ResultBlock implements EmbeddedBlock {
     
     private final WorksheetStyle style;
-    private final ExtendedStyledText extendedText;
+    private StyledText embeddedText;
+    private EmbeddedBlockSite site;
     
     private final SizeAndAlphaAnimation animation;
     private int alpha;
-    
-    private StyledText embeddedText;
     
     private boolean pending;
     
     private int newLines = 0;
     
     @UseFromAnyThread
-    public ResultBlock(WorksheetStyle style, ExtendedStyledText extendedText) {
+    public ResultBlock(WorksheetStyle style) {
         if (style == null)
             throw new NullPointerException("settings is null");
-        if (extendedText == null)
-            throw new NullPointerException("extendedText is null");
         
         this.style = style;
-        this.extendedText = extendedText;
         
         animation = new SizeAndAlphaAnimation();
     }
     
     @UseFromUIThread
-    public void init(final Composite composite, YourSwayStyledTextEventSource la) {
+    public void init(final Composite composite, final EmbeddedBlockSite site) {
+        if (site == null)
+            throw new NullPointerException("site is null");
         
-        la.addResizeListener(new ResizeListener() {
-            @UseFromUIThread
-            public void resized(Point size) {
-                updateSize(true);
-            }
-        });
+        this.site = site;
         
         Display display = composite.getDisplay();
         final Color color = new Color(display, 100, 100, 100); //! magic
@@ -70,7 +62,7 @@ public class ResultBlock implements EmbeddedBlock {
                 int radius = 10, left = 10; //! magic
                 e.gc.fillRoundRectangle(left, 0, size.x - left, size.y, radius, radius);
                 
-                e.gc.setBackground(extendedText.getBackground());
+                e.gc.setBackground(site.getBackground());
                 e.gc.setAlpha(255 - alpha);
                 e.gc.fillRectangle(0, 0, size.x, size.y);
             }
@@ -87,10 +79,17 @@ public class ResultBlock implements EmbeddedBlock {
         
         embeddedText.addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
-                e.gc.setBackground(extendedText.getBackground());
+                e.gc.setBackground(site.getBackground());
                 e.gc.setAlpha(255 - alpha);
                 Point size = ((Control) e.widget).getSize();
                 e.gc.fillRectangle(0, 0, size.x, size.y);
+            }
+        });
+        
+        site.addResizeListener(new ResizeListener() {
+            @UseFromUIThread
+            public void resized(Point size) {
+                updateSize(true);
             }
         });
         
@@ -232,7 +231,7 @@ public class ResultBlock implements EmbeddedBlock {
     }
     
     @UseFromUIThread
-    private void updateSize(boolean containerResized) {
+    private void updateSize(boolean siteResized) {
         if (isDisposed())
             return;
         
@@ -241,7 +240,7 @@ public class ResultBlock implements EmbeddedBlock {
         
         Point size = embeddedText.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         
-        int maxWidth = extendedText.getClientArea().width - 50;
+        int maxWidth = site.clientAreaSize().x - 50;
         if (maxWidth < 10)
             maxWidth = 10; //! hack
             
@@ -250,7 +249,7 @@ public class ResultBlock implements EmbeddedBlock {
         
         embeddedText.setSize(size);
         animation.targetSize(size.x + 30, size.y + 10); //! magic
-        if (containerResized)
+        if (siteResized)
             animation.instantWidth();
     }
     
