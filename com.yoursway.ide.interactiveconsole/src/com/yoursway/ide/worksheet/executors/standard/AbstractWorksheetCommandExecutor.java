@@ -6,7 +6,7 @@ import java.util.List;
 import com.yoursway.ide.worksheet.executors.OutputListener;
 import com.yoursway.ide.worksheet.executors.TerminationListener;
 import com.yoursway.ide.worksheet.executors.WorksheetCommandExecutor;
-import com.yoursway.ide.worksheet.internal.OutputEntry;
+import com.yoursway.ide.worksheet.internal.misc.OutputEntry;
 import com.yoursway.utils.bugs.Bugs;
 import com.yoursway.utils.bugs.Severity;
 

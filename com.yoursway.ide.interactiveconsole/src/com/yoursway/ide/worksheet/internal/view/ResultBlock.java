@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-import com.yoursway.ide.worksheet.UserSettings;
+import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.swt.animations.SizeAndAlphaAnimation;
 import com.yoursway.swt.animations.SizeAndAlphaAnimationApplier;
 import com.yoursway.swt.styledtext.insertions.EmbeddedBlock;
@@ -25,7 +25,7 @@ import com.yoursway.utils.annotations.UseFromUIThread;
 
 public class ResultBlock implements EmbeddedBlock {
     
-    private final UserSettings settings;
+    private final WorksheetStyle style;
     private final ExtendedStyledText extendedText;
     
     private final SizeAndAlphaAnimation animation;
@@ -38,13 +38,13 @@ public class ResultBlock implements EmbeddedBlock {
     private int newLines = 0;
     
     @UseFromAnyThread
-    public ResultBlock(UserSettings settings, ExtendedStyledText extendedText) {
-        if (settings == null)
+    public ResultBlock(WorksheetStyle style, ExtendedStyledText extendedText) {
+        if (style == null)
             throw new NullPointerException("settings is null");
         if (extendedText == null)
             throw new NullPointerException("extendedText is null");
         
-        this.settings = settings;
+        this.style = style;
         this.extendedText = extendedText;
         
         animation = new SizeAndAlphaAnimation();
@@ -184,7 +184,7 @@ public class ResultBlock implements EmbeddedBlock {
         becomeUpdated();
         this.pending = pending;
         
-        settings.display().syncExec(new Runnable() {
+        embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (isDisposed())
                     return;
@@ -215,7 +215,7 @@ public class ResultBlock implements EmbeddedBlock {
         
         final String t = sb.toString();
         
-        settings.display().syncExec(new Runnable() {
+        embeddedText.getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (isDisposed())
                     return;
@@ -223,7 +223,7 @@ public class ResultBlock implements EmbeddedBlock {
                 int start = embeddedText.getCharCount();
                 embeddedText.append(t);
                 if (error) {
-                    StyleRange style = settings.errorStyle(start, t.length());
+                    StyleRange style = ResultBlock.this.style.errorStyle(start, t.length());
                     embeddedText.setStyleRange(style);
                 }
                 updateSize(false);
