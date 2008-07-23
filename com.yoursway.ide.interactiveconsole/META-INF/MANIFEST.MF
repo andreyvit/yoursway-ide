@@ -3,11 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Interactiveconsole
 Bundle-SymbolicName: com.yoursway.ide.interactiveconsole
 Bundle-Version: 1.0.0
-Require-Bundle: org.eclipse.swt;bundle-version="3.5.0"
+Require-Bundle: org.eclipse.swt;bundle-version="3.5.0",
+ com.yoursway.swt.styledtext;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.yoursway.ide.worksheet,
  com.yoursway.ide.worksheet.demo,
  com.yoursway.ide.worksheet.executors,
  com.yoursway.ide.worksheet.executors.standard,
- com.yoursway.swt.animations,
- com.yoursway.swt.styledtext.insertions
+ com.yoursway.swt.animations
