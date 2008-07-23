@@ -5,7 +5,8 @@ Bundle-SymbolicName: com.yoursway.ide.worksheet
 Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.swt;bundle-version="3.5.0",
  com.yoursway.swt.styledtext;bundle-version="1.0.0",
- com.yoursway.swt.animations;bundle-version="1.0.0"
+ com.yoursway.swt.animations;bundle-version="1.0.0",
+ com.mkalugin.swthell;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.yoursway.ide.worksheet,
  com.yoursway.ide.worksheet.executors,

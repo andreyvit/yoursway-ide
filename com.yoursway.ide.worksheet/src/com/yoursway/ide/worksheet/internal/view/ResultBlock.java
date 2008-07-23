@@ -8,6 +8,8 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 
+import com.mkalugin.swthell.CoolScrollBar;
+import com.mkalugin.swthell.CoolScrollBarStyledTextBinding;
 import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.swt.animations.SizeAndAlphaAnimation;
 import com.yoursway.swt.animations.SizeAndAlphaAnimationApplier;
@@ -22,6 +24,7 @@ public class ResultBlock implements EmbeddedBlock {
     
     private final WorksheetStyle style;
     private StyledText embeddedText;
+    private CoolScrollBar scrollBar;
     private EmbeddedBlockSite site;
     
     private final SizeAndAlphaAnimation animation;
@@ -86,6 +89,11 @@ public class ResultBlock implements EmbeddedBlock {
         embeddedText.setEditable(false);
         embeddedText.setLocation(18, 5); //! magic
         
+        scrollBar = new CoolScrollBar(composite, SWT.NO_BACKGROUND, true, style.outputColor()); //! magic: outputColor
+        scrollBar.setBeginMargin(2);
+        scrollBar.setEndMargin(2);
+        new CoolScrollBarStyledTextBinding(embeddedText, scrollBar, composite);
+        
         setText("", false);
         
         embeddedText.addPaintListener(new PaintListener() {
@@ -116,6 +124,10 @@ public class ResultBlock implements EmbeddedBlock {
                             return;
                         
                         composite.setSize(width, height);
+                        
+                        //! magic
+                        scrollBar.setLocation(width - 12, 0);
+                        scrollBar.setSize(12, height);
                     }
                 });
             }
@@ -146,16 +158,16 @@ public class ResultBlock implements EmbeddedBlock {
                     return false;
                 
                 final boolean[] visible = new boolean[1];
-                composite.getDisplay().syncExec(new Runnable() {
-                    public void run() {
-                        if (composite.isDisposed()) {
-                            visible[0] = false;
-                            return;
-                        }
-                        
-                        visible[0] = composite.getVisible();
-                    }
-                });
+                composite.getDisplay().syncExec(new Runnable() { //!
+                            public void run() {
+                                if (composite.isDisposed()) {
+                                    visible[0] = false;
+                                    return;
+                                }
+                                
+                                visible[0] = composite.getVisible();
+                            }
+                        });
                 
                 return visible[0];
             }
@@ -253,10 +265,15 @@ public class ResultBlock implements EmbeddedBlock {
         if (size.x > maxWidth)
             size = embeddedText.computeSize(maxWidth, SWT.DEFAULT);
         
+        int maxHeight = 100; //! magic
+        if (size.y > maxHeight)
+            size.y = maxHeight;
+        
         embeddedText.setSize(size);
-        animation.targetSize(size.x + 30, size.y + 10); //! magic
+        animation.targetSize(size.x + 35, size.y + 10); //! magic
         if (siteResized)
             animation.instantWidth();
+        
     }
     
     @UseFromAnyThread
