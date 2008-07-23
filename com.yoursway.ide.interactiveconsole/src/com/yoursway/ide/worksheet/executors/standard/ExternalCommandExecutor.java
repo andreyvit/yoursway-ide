@@ -4,19 +4,19 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
+import java.util.List;
 
-import com.yoursway.ide.oldconsole.CommandHistory;
+import com.yoursway.ide.worksheet.executors.WorksheetCompletionProposal;
 import com.yoursway.ide.worksheet.internal.OutputStreamMonitor;
 
-public class ExternalCommandExecutor extends CommandExecutorWithHistoryCompletion {
+public class ExternalCommandExecutor extends AbstractWorksheetCommandExecutor {
     
     private Process process;
     private BufferedWriter writer;
     private OutputCompletedMonitor outputCompletedMonitor;
     
-    public ExternalCommandExecutor(String executable, CommandHistory history) {
-        super(history);
-        
+    public ExternalCommandExecutor(String executable) {
         try {
             process = Runtime.getRuntime().exec(executable);
             
@@ -110,6 +110,10 @@ public class ExternalCommandExecutor extends CommandExecutorWithHistoryCompletio
             notify();
         }
         
+    }
+    
+    public List<WorksheetCompletionProposal> complete(String command, int position) {
+        return Collections.emptyList();
     }
     
 }
