@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.ide.worksheet.internal.controller.Command;
 import com.yoursway.ide.worksheet.internal.controller.ResultBlockProvider;
-import com.yoursway.swt.styledtext.insertions.ExtendedStyledText;
+import com.yoursway.swt.styledtext.extended.ExtendedStyledText;
 
 public class WorksheetView {
     
