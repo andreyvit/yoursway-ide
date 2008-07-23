@@ -12,9 +12,9 @@ import org.eclipse.swt.events.VerifyEvent;
 
 public class ExtendedTextController implements VerifyKeyListener, KeyListener, MouseListener {
     
-    private final ExtendedTextInternal view;
+    private final YourSwayStyledTextInternal view;
     
-    public ExtendedTextController(ExtendedTextInternal view) {
+    public ExtendedTextController(YourSwayStyledTextInternal view) {
         this.view = view;
         
     }
