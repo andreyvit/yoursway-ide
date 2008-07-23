@@ -13,6 +13,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 import com.yoursway.ide.worksheet.viewmodel.IUserSettings;
+import com.yoursway.utils.annotations.SynchronizedWithUIThread;
+import com.yoursway.utils.annotations.UseFromAnyThread;
+import com.yoursway.utils.annotations.UseFromUIThread;
 
 public class ResultInsertion implements InsertionContent {
     
@@ -28,16 +31,24 @@ public class ResultInsertion implements InsertionContent {
     
     private int newLines = 0;
     
+    @UseFromAnyThread
     public ResultInsertion(IUserSettings settings, ExtendedText extendedText) {
+        if (settings == null)
+            throw new NullPointerException("settings is null");
+        if (extendedText == null)
+            throw new NullPointerException("extendedText is null");
+        
         this.settings = settings;
         this.extendedText = extendedText;
         
         animation = new Animation();
     }
     
+    @UseFromUIThread
     public void init(final Composite composite, ListenersAcceptor la) {
         
         la.addResizeListener(new ResizeListener() {
+            @UseFromUIThread
             public void resized(Point size) {
                 updateSize(true);
             }
@@ -81,6 +92,9 @@ public class ResultInsertion implements InsertionContent {
         animation.targetAlpha(255);
         
         animation.start(new AnimationUpdater() {
+            
+            @UseFromAnyThread
+            @SynchronizedWithUIThread
             public void updateSize(final int width, final int height) {
                 if (composite.isDisposed())
                     return;
@@ -95,6 +109,8 @@ public class ResultInsertion implements InsertionContent {
                 });
             }
             
+            @UseFromAnyThread
+            @SynchronizedWithUIThread
             public void updateAlpha(final int alpha) {
                 ResultInsertion.this.alpha = alpha;
                 
@@ -112,6 +128,8 @@ public class ResultInsertion implements InsertionContent {
                 });
             }
             
+            @UseFromAnyThread
+            @SynchronizedWithUIThread
             public boolean visible() {
                 if (composite.isDisposed())
                     return false;
@@ -130,9 +148,11 @@ public class ResultInsertion implements InsertionContent {
                 
                 return visible[0];
             }
+            
         });
     }
     
+    @UseFromUIThread
     public void dispose() {
         if (!animation.isDisposed()) {
             animation.dispose();
@@ -145,11 +165,14 @@ public class ResultInsertion implements InsertionContent {
         }
     }
     
+    @UseFromAnyThread
     public boolean isDisposed() {
         //! (embeddedText == null) before init too 
-        return embeddedText == null || embeddedText.isDisposed();
+        return embeddedText == null || embeddedText.isDisposed(); //?
     }
     
+    @UseFromAnyThread
+    @SynchronizedWithUIThread
     private void setText(final String text, boolean pending) {
         newLines = 0;
         becomeUpdated();
@@ -166,6 +189,8 @@ public class ResultInsertion implements InsertionContent {
         });
     }
     
+    @UseFromAnyThread
+    @SynchronizedWithUIThread
     public void append(String text, final boolean error) {
         pending = false;
         
@@ -200,6 +225,7 @@ public class ResultInsertion implements InsertionContent {
         });
     }
     
+    @UseFromUIThread
     private void updateSize(boolean containerResized) {
         if (isDisposed())
             return;
@@ -222,32 +248,30 @@ public class ResultInsertion implements InsertionContent {
             animation.instantWidth();
     }
     
+    @UseFromAnyThread
     public void becomeObsolete() {
         animation.targetAlpha(129);
     }
     
+    @UseFromAnyThread
     private void becomeUpdated() {
         animation.targetAlpha(255);
     }
     
+    @UseFromUIThread
     public void redraw() { //?
         if (isDisposed())
             return;
         
-        embeddedText.getDisplay().asyncExec(new Runnable() {
-            public void run() {
-                if (isDisposed())
-                    return;
-                
-                embeddedText.redraw();
-            }
-        });
+        embeddedText.redraw();
     }
     
+    @UseFromAnyThread
     public void becomeWaiting() {
         setText("...", true);
     }
     
+    @UseFromAnyThread
     public void reset() {
         setText("", true);
     }

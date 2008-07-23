@@ -1,7 +1,6 @@
-package com.yoursway.ide.worksheet.controller;
+package org.eclipse.swt.custom;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ExtendedTextInternal;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.KeyEvent;
