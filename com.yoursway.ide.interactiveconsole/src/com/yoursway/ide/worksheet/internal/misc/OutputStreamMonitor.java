@@ -1,4 +1,4 @@
-package com.yoursway.ide.worksheet.internal;
+package com.yoursway.ide.worksheet.internal.misc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class OutputStreamMonitor {
                             break;
                         
                         outputter.outputted(String.copyValueOf(cbuf, 0, read), error);
-                        outputCompletedMonitor.output();
+                        outputCompletedMonitor.outputDetected();
                     }
                     
                 } catch (IOException e) {

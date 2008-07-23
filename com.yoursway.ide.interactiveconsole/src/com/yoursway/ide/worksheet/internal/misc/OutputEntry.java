@@ -1,4 +1,4 @@
-package com.yoursway.ide.worksheet.internal;
+package com.yoursway.ide.worksheet.internal.misc;
 
 public class OutputEntry {
     
