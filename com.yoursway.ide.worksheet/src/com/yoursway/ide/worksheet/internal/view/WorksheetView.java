@@ -12,7 +12,9 @@ import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.ide.worksheet.internal.controller.Command;
 import com.yoursway.ide.worksheet.internal.controller.ResultBlockProvider;
 import com.yoursway.swt.styledtext.extended.ExtendedStyledText;
+import com.yoursway.utils.annotations.UseFromUIThread;
 
+@UseFromUIThread
 public class WorksheetView {
     
     private final WorksheetStyle style;
@@ -20,6 +22,9 @@ public class WorksheetView {
     private final ExtendedStyledText extendedText;
     
     public WorksheetView(Composite parent, WorksheetViewCallback callback, WorksheetStyle style) {
+        if (style == null)
+            throw new NullPointerException("style is null");
+        
         this.style = style;
         
         extendedText = new ExtendedStyledText(parent, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //> SWT.WRAP or SWT.H_SCROLL switching
@@ -44,6 +49,7 @@ public class WorksheetView {
             
             final int j = i;
             commands.add(new Command(commandText, new ResultBlockProvider() {
+                @UseFromUIThread
                 public ResultBlock get() {
                     return block(j);
                 }
@@ -56,6 +62,7 @@ public class WorksheetView {
         return extendedText.getLine(lineIndex);
     }
     
+    @UseFromUIThread
     private ResultBlock block(int lineIndex) {
         if (extendedText.lineHasInsertion(lineIndex))
             return (ResultBlock) extendedText.existingInsertion(lineIndex);
@@ -84,6 +91,7 @@ public class WorksheetView {
         extendedText.setSelection(extendedText.getCharCount());
     }
     
+    @Deprecated
     public void makeInsertionsObsolete(int start, int end) {
         int firstLine = extendedText.getLineAtOffset(start);
         int lastLine = extendedText.getLineAtOffset(end);
@@ -95,6 +103,7 @@ public class WorksheetView {
         }
     }
     
+    @UseFromUIThread
     public void showSelectedText() {
         MessageBox messageBox = new MessageBox(extendedText.getShell());
         messageBox.setMessage(extendedText.getSelectionText());
