@@ -18,7 +18,7 @@ public class UserSettingsMock implements UserSettings {
     private final Display display;
     
     public UserSettingsMock() {
-        executor = new ExternalCommandExecutor("irb", null);
+        executor = new ExternalCommandExecutor("irb");
         display = new Display();
     }
     
