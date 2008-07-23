@@ -13,6 +13,9 @@ import com.yoursway.ide.worksheet.internal.view.ResultBlock;
 import com.yoursway.ide.worksheet.internal.view.WorksheetView;
 import com.yoursway.ide.worksheet.internal.view.WorksheetViewCallback;
 import com.yoursway.ide.worksheet.internal.view.WorksheetViewFactory;
+import com.yoursway.utils.annotations.SynchronizedWithMonitorOfThis;
+import com.yoursway.utils.annotations.UseFromAnyThread;
+import com.yoursway.utils.annotations.UseFromUIThread;
 
 public class WorksheetController implements OutputListener, WorksheetViewCallback {
     
@@ -25,9 +28,17 @@ public class WorksheetController implements OutputListener, WorksheetViewCallbac
     
     public WorksheetController(WorksheetViewFactory viewFactory, WorksheetCommandExecutor executor,
             WorksheetShortcuts shortcuts) {
-        this.view = viewFactory.createView(this);
+        if (executor == null)
+            throw new NullPointerException("executor is null");
+        if (shortcuts == null)
+            throw new NullPointerException("shortcuts is null");
+        
+        view = viewFactory.createView(this);
         this.executor = executor;
         this.shortcuts = shortcuts;
+        
+        if (view == null)
+            throw new NullPointerException("view created by viewFactory is null");
         
         executor.addOutputListener(this);
     }
@@ -79,16 +90,21 @@ public class WorksheetController implements OutputListener, WorksheetViewCallbac
         view.makeInsertionsObsolete(start, end);
     }
     
+    @UseFromUIThread
     private void executeCommand(Command command) {
         executions.add(new Execution(command, executor));
         if (executions.size() == 1)
             outputBlock = executions.peek().start();
     }
     
+    @UseFromAnyThread
+    @SynchronizedWithMonitorOfThis
     public synchronized void outputted(String text, boolean error) {
         outputBlock.append(text, error);
     }
     
+    @UseFromAnyThread
+    @SynchronizedWithMonitorOfThis
     public synchronized void completed() {
         executions.poll();
         outputBlock = null;
