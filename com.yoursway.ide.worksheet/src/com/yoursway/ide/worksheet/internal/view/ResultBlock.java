@@ -5,12 +5,8 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.swt.animations.SizeAndAlphaAnimation;
@@ -46,18 +42,31 @@ public class ResultBlock implements EmbeddedBlock {
     }
     
     @UseFromUIThread
-    public void init(final Composite composite, final EmbeddedBlockSite site) {
+    public void init(Composite composite, EmbeddedBlockSite site) {
+        initSite(site);
+        initComposite(composite);
+        initEmbeddedText(composite);
+        initAnimation(composite);
+    }
+    
+    private void initSite(final EmbeddedBlockSite site) {
         if (site == null)
             throw new NullPointerException("site is null");
         
         this.site = site;
         
-        Display display = composite.getDisplay();
-        final Color color = new Color(display, 100, 100, 100); //! magic
-        
+        site.addResizeListener(new ResizeListener() {
+            @UseFromUIThread
+            public void resized(Point size) {
+                updateSize(true);
+            }
+        });
+    }
+    
+    private void initComposite(final Composite composite) {
         composite.addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
-                e.gc.setBackground(color);
+                e.gc.setBackground(style.resultBlockColor());
                 Point size = composite.getSize();
                 int radius = 10, left = 10; //! magic
                 e.gc.fillRoundRectangle(left, 0, size.x - left, size.y, radius, radius);
@@ -67,11 +76,13 @@ public class ResultBlock implements EmbeddedBlock {
                 e.gc.fillRectangle(0, 0, size.x, size.y);
             }
         });
-        
+    }
+    
+    private void initEmbeddedText(Composite composite) {
         embeddedText = new StyledText(composite, SWT.MULTI | SWT.WRAP);
-        embeddedText.setBackground(color);
-        embeddedText.setForeground(new Color(display, 255, 255, 255)); //! magic
-        embeddedText.setFont(new Font(display, "Monaco", 12, SWT.BOLD)); //! magic
+        embeddedText.setFont(style.resultFont());
+        embeddedText.setBackground(style.resultBlockColor());
+        embeddedText.setForeground(style.outputColor());
         embeddedText.setEditable(false);
         embeddedText.setLocation(18, 5); //! magic
         
@@ -81,18 +92,13 @@ public class ResultBlock implements EmbeddedBlock {
             public void paintControl(PaintEvent e) {
                 e.gc.setBackground(site.getBackground());
                 e.gc.setAlpha(255 - alpha);
-                Point size = ((Control) e.widget).getSize();
+                Point size = embeddedText.getSize();
                 e.gc.fillRectangle(0, 0, size.x, size.y);
             }
         });
-        
-        site.addResizeListener(new ResizeListener() {
-            @UseFromUIThread
-            public void resized(Point size) {
-                updateSize(true);
-            }
-        });
-        
+    }
+    
+    private void initAnimation(final Composite composite) {
         alpha = 0;
         animation.targetAlpha(255);
         
