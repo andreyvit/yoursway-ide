@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import com.yoursway.experiments.birdseye.component.EmptyNode;
 import com.yoursway.experiments.birdseye.model.Compartment;
 import com.yoursway.experiments.birdseye.model.Container;
 import com.yoursway.experiments.birdseye.model.Leaf;
@@ -144,6 +145,9 @@ public class BirdsEyeComposite extends Composite {
             drawLeaf(gc, (Leaf) node, area);
         else if (node instanceof Compartment)
             drawContainer(gc, (Compartment) node, area);
+        else if (node instanceof EmptyNode) {
+        	drawEmpty(gc, area);
+        }
         else
             drawNode(gc, ((Container) node).child(), area);
     }
@@ -170,6 +174,12 @@ public class BirdsEyeComposite extends Composite {
         gc.fillRectangle(area);
         gc.drawRectangle(area);
         drawGradient(gc, area, leaf.color());
+    }
+    
+    private void drawEmpty(GC gc, Rectangle area) {
+    	gc.setBackground(gc.getDevice().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+    	gc.fillRectangle(area);
+    	gc.drawRectangle(area);
     }
     
     public static void drawGradient(GC gc, Rectangle area, Color color) {

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Worksheet
 Bundle-SymbolicName: com.yoursway.ide.worksheet
 Bundle-Version: 1.0.0
-Require-Bundle: org.eclipse.swt;bundle-version="3.5.0",
+Require-Bundle: org.eclipse.swt,
  com.yoursway.swt.styledtext;bundle-version="1.0.0",
  com.yoursway.swt.animations;bundle-version="1.0.0",
  com.mkalugin.swthell;bundle-version="1.0.0"
