@@ -16,4 +16,6 @@ public interface WorksheetStyle {
     
     StyleRange errorStyle(int offset, int length);
     
+    Color resultScrollbarColor();
+    
 }
