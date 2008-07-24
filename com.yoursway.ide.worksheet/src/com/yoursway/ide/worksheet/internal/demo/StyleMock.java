@@ -3,6 +3,7 @@ package com.yoursway.ide.worksheet.internal.demo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
@@ -19,6 +20,8 @@ public class StyleMock implements WorksheetStyle {
     private final Color outputColor;
     private final Color errorColor;
     
+    private final Cursor scrollbarCursor;
+    
     public StyleMock(Display display) {
         font = new Font(display, "Monaco", 12, 0);
         resultFont = new Font(display, "Monaco", 12, SWT.BOLD);
@@ -28,6 +31,8 @@ public class StyleMock implements WorksheetStyle {
         
         outputColor = new Color(display, 255, 255, 255);
         errorColor = new Color(display, 255, 192, 192);
+        
+        scrollbarCursor = new Cursor(display, SWT.CURSOR_ARROW);
         
     }
     
@@ -57,6 +62,10 @@ public class StyleMock implements WorksheetStyle {
     
     public Color resultScrollbarColor() {
         return resultScrollbarColor;
+    }
+    
+    public Cursor scrollbarCursor() {
+        return scrollbarCursor;
     }
     
 }
