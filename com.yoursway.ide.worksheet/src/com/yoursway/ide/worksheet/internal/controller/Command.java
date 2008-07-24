@@ -1,21 +1,21 @@
 package com.yoursway.ide.worksheet.internal.controller;
 
-import com.yoursway.ide.worksheet.internal.view.ResultBlock;
+import com.yoursway.ide.worksheet.internal.view.ResultInset;
 import com.yoursway.utils.annotations.UseFromUIThread;
 
 public class Command {
     
     private final String commandText;
-    private final ResultBlockProvider blockProvider;
+    private final ResultInsetProvider insetProvider;
     
-    public Command(String commandText, ResultBlockProvider blockProvider) {
+    public Command(String commandText, ResultInsetProvider insetProvider) {
         if (commandText.trim().length() == 0)
             throw new AssertionError("A command must not be empty.");
-        if (blockProvider == null)
-            throw new NullPointerException("blockProvider is null");
+        if (insetProvider == null)
+            throw new NullPointerException("insetProvider is null");
         
         this.commandText = commandText;
-        this.blockProvider = blockProvider;
+        this.insetProvider = insetProvider;
     }
     
     public String commandText() {
@@ -23,8 +23,8 @@ public class Command {
     }
     
     @UseFromUIThread
-    public ResultBlock block() {
-        return blockProvider.get();
+    public ResultInset inset() {
+        return insetProvider.get();
     }
     
 }

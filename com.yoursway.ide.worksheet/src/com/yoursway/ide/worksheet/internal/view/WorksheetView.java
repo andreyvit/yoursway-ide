@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.ide.worksheet.internal.controller.Command;
-import com.yoursway.ide.worksheet.internal.controller.ResultBlockProvider;
+import com.yoursway.ide.worksheet.internal.controller.ResultInsetProvider;
 import com.yoursway.swt.styledtext.extended.ExtendedStyledText;
 import com.yoursway.utils.annotations.UseFromUIThread;
 
@@ -48,10 +48,10 @@ public class WorksheetView {
                 continue;
             
             final int j = i;
-            commands.add(new Command(commandText, new ResultBlockProvider() {
+            commands.add(new Command(commandText, new ResultInsetProvider() {
                 @UseFromUIThread
-                public ResultBlock get() {
-                    return block(j);
+                public ResultInset get() {
+                    return inset(j);
                 }
             }));
         }
@@ -63,22 +63,22 @@ public class WorksheetView {
     }
     
     @UseFromUIThread
-    private ResultBlock block(int lineIndex) {
-        if (extendedText.lineHasInsertion(lineIndex))
-            return (ResultBlock) extendedText.existingInsertion(lineIndex);
+    private ResultInset inset(int lineIndex) {
+        if (extendedText.lineHasInset(lineIndex))
+            return (ResultInset) extendedText.existingInset(lineIndex);
         else
-            return addBlock(lineIndex);
+            return addInset(lineIndex);
     }
     
-    private ResultBlock addBlock(int lineIndex) {
-        ResultBlock block = new ResultBlock(style);
-        extendedText.addEmbeddedBlock(lineIndex, block);
-        return block;
+    private ResultInset addInset(int lineIndex) {
+        ResultInset inset = new ResultInset(style);
+        extendedText.addInset(lineIndex, inset);
+        return inset;
     }
     
-    public void removeAllInsertions() {
+    public void removeAllInsets() {
         for (int i = 0; i < extendedText.getLineCount(); i++) {
-            extendedText.removeInsertion(i);
+            extendedText.removeInset(i);
         }
     }
     
@@ -91,13 +91,13 @@ public class WorksheetView {
         extendedText.setSelection(extendedText.getCharCount());
     }
     
-    public void makeInsertionsObsolete(int start, int end) {
+    public void makeInsetsObsolete(int start, int end) {
         int firstLine = extendedText.getLineAtOffset(start);
         int lastLine = extendedText.getLineAtOffset(end);
         for (int i = firstLine; i <= lastLine; i++) {
-            if (extendedText.lineHasInsertion(i)) {
-                ResultBlock block = (ResultBlock) extendedText.existingInsertion(i);
-                block.becomeObsolete();
+            if (extendedText.lineHasInset(i)) {
+                ResultInset inset = (ResultInset) extendedText.existingInset(i);
+                inset.becomeObsolete();
             }
         }
     }

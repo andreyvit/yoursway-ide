@@ -14,19 +14,19 @@ import com.mkalugin.swthell.CoolScrollBarStyledTextBinding;
 import com.yoursway.ide.worksheet.WorksheetStyle;
 import com.yoursway.swt.animations.SizeAndAlphaAnimation;
 import com.yoursway.swt.animations.SizeAndAlphaAnimationApplier;
-import com.yoursway.swt.styledtext.extended.EmbeddedBlock;
-import com.yoursway.swt.styledtext.extended.EmbeddedBlockSite;
+import com.yoursway.swt.styledtext.extended.Inset;
+import com.yoursway.swt.styledtext.extended.InsetSite;
 import com.yoursway.swt.styledtext.extended.ResizeListener;
 import com.yoursway.utils.annotations.DeadlockWarningBlocksOnUIThread;
 import com.yoursway.utils.annotations.UseFromAnyThread;
 import com.yoursway.utils.annotations.UseFromUIThread;
 
-public class ResultBlock implements EmbeddedBlock {
+public class ResultInset implements Inset {
     
     private final WorksheetStyle style;
     private StyledText embeddedText;
     private CoolScrollBar scrollBar;
-    private EmbeddedBlockSite site;
+    private InsetSite site;
     
     private final SizeAndAlphaAnimation animation;
     private int alpha;
@@ -36,7 +36,7 @@ public class ResultBlock implements EmbeddedBlock {
     private int newLines = 0;
     
     @UseFromAnyThread
-    public ResultBlock(WorksheetStyle style) {
+    public ResultInset(WorksheetStyle style) {
         if (style == null)
             throw new NullPointerException("settings is null");
         
@@ -46,14 +46,14 @@ public class ResultBlock implements EmbeddedBlock {
     }
     
     @UseFromUIThread
-    public void init(Composite composite, EmbeddedBlockSite site) {
+    public void init(Composite composite, InsetSite site) {
         initSite(site);
         initComposite(composite);
         initEmbeddedText(composite);
         initAnimation(composite);
     }
     
-    private void initSite(final EmbeddedBlockSite site) {
+    private void initSite(final InsetSite site) {
         if (site == null)
             throw new NullPointerException("site is null");
         
@@ -70,7 +70,7 @@ public class ResultBlock implements EmbeddedBlock {
     private void initComposite(final Composite composite) {
         composite.addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
-                e.gc.setBackground(style.resultBlockColor());
+                e.gc.setBackground(style.resultInsetColor());
                 Point size = composite.getSize();
                 int radius = 10, left = 10; //! magic
                 e.gc.fillRoundRectangle(left, 0, size.x - left, size.y, radius, radius);
@@ -85,7 +85,7 @@ public class ResultBlock implements EmbeddedBlock {
     private void initEmbeddedText(Composite composite) {
         embeddedText = new StyledText(composite, SWT.MULTI | SWT.WRAP);
         embeddedText.setFont(style.resultFont());
-        embeddedText.setBackground(style.resultBlockColor());
+        embeddedText.setBackground(style.resultInsetColor());
         embeddedText.setForeground(style.outputColor());
         embeddedText.setEditable(false);
         embeddedText.setLocation(18, 5); //! magic
@@ -136,7 +136,7 @@ public class ResultBlock implements EmbeddedBlock {
             @UseFromAnyThread
             @DeadlockWarningBlocksOnUIThread
             public void updateAlpha(final int alpha) {
-                ResultBlock.this.alpha = alpha;
+                ResultInset.this.alpha = alpha;
                 
                 if (composite.isDisposed())
                     return;
@@ -245,7 +245,7 @@ public class ResultBlock implements EmbeddedBlock {
                 int start = embeddedText.getCharCount();
                 embeddedText.append(t);
                 if (error) {
-                    StyleRange style = ResultBlock.this.style.errorStyle(start, t.length());
+                    StyleRange style = ResultInset.this.style.errorStyle(start, t.length());
                     embeddedText.setStyleRange(style);
                 }
                 updateSize(false);

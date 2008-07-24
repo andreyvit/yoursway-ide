@@ -11,7 +11,7 @@ public class ShortcutsMock implements WorksheetShortcuts {
         return e.stateMask == SWT.COMMAND && (e.character == '\n' || e.character == '\r');
     }
     
-    public boolean isRemoveInsertionsHotkey(KeyEvent e) {
+    public boolean isRemoveInsetsHotkey(KeyEvent e) {
         return e.stateMask == SWT.COMMAND && e.character == 'r';
     }
     
