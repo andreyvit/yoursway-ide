@@ -10,7 +10,7 @@ public interface WorksheetStyle {
     
     Font resultFont();
     
-    Color resultBlockColor();
+    Color resultInsetColor();
     
     Color outputColor();
     

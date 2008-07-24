@@ -35,7 +35,7 @@ public class StyleMock implements WorksheetStyle {
         return resultFont;
     }
     
-    public Color resultBlockColor() {
+    public Color resultInsetColor() {
         return resultBackColor;
     }
     
