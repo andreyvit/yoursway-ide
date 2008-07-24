@@ -96,6 +96,8 @@ public class ResultInset implements Inset {
         scrollBar.setEndMargin(2);
         new CoolScrollBarStyledTextBinding(embeddedText, scrollBar, composite);
         
+        scrollBar.setCursor(style.scrollbarCursor());
+        
         ((CoolStyledText) embeddedText).setScrollBar(scrollBar);
         
         setText("", false);
