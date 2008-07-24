@@ -7,6 +7,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import com.mkalugin.swthell.CoolScrollBar;
 import com.mkalugin.swthell.CoolScrollBarStyledTextBinding;
@@ -158,7 +159,11 @@ public class ResultBlock implements EmbeddedBlock {
                     return false;
                 
                 final boolean[] visible = new boolean[1];
-                composite.getDisplay().syncExec(new Runnable() { //!
+                
+                Display display = composite.getDisplay();
+                if (display.isDisposed())
+                    return false;
+                display.syncExec(new Runnable() { //!
                             public void run() {
                                 if (composite.isDisposed()) {
                                     visible[0] = false;
@@ -259,13 +264,16 @@ public class ResultBlock implements EmbeddedBlock {
         Point size = embeddedText.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         
         int maxWidth = site.clientAreaSize().x - 50;
-        if (maxWidth < 10)
-            maxWidth = 10; //! hack
+        if (maxWidth < 50)
+            maxWidth = 50; //! hack, magic
             
         if (size.x > maxWidth)
             size = embeddedText.computeSize(maxWidth, SWT.DEFAULT);
         
-        int maxHeight = 100; //! magic
+        int maxHeight = site.clientAreaSize().y / 3; //! magic
+        if (maxHeight > 100)
+            maxHeight = 100; //! magic
+            
         if (size.y > maxHeight)
             size.y = maxHeight;
         
@@ -273,7 +281,6 @@ public class ResultBlock implements EmbeddedBlock {
         animation.targetSize(size.x + 35, size.y + 10); //! magic
         if (siteResized)
             animation.instantWidth();
-        
     }
     
     @UseFromAnyThread
