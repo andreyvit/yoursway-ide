@@ -7,6 +7,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.CoolStyledText;
 import org.eclipse.swt.widgets.Display;
 
 import com.mkalugin.swthell.CoolScrollBar;
@@ -83,17 +84,19 @@ public class ResultInset implements Inset {
     }
     
     private void initEmbeddedText(Composite composite) {
-        embeddedText = new StyledText(composite, SWT.MULTI | SWT.WRAP);
+        embeddedText = new CoolStyledText(composite, SWT.MULTI | SWT.WRAP);
         embeddedText.setFont(style.resultFont());
         embeddedText.setBackground(style.resultInsetColor());
         embeddedText.setForeground(style.outputColor());
         embeddedText.setEditable(false);
         embeddedText.setLocation(18, 5); //! magic
         
-        scrollBar = new CoolScrollBar(composite, SWT.NO_BACKGROUND, true, style.outputColor()); //! magic: outputColor
+        scrollBar = new CoolScrollBar(composite, SWT.NO_BACKGROUND, true, style.resultScrollbarColor());
         scrollBar.setBeginMargin(2);
         scrollBar.setEndMargin(2);
         new CoolScrollBarStyledTextBinding(embeddedText, scrollBar, composite);
+        
+        ((CoolStyledText) embeddedText).setScrollBar(scrollBar);
         
         setText("", false);
         

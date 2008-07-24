@@ -14,6 +14,8 @@ public class StyleMock implements WorksheetStyle {
     private final Font resultFont;
     
     private final Color resultBackColor;
+    private final Color resultScrollbarColor;
+    
     private final Color outputColor;
     private final Color errorColor;
     
@@ -22,6 +24,8 @@ public class StyleMock implements WorksheetStyle {
         resultFont = new Font(display, "Monaco", 12, SWT.BOLD);
         
         resultBackColor = new Color(display, 100, 100, 100);
+        resultScrollbarColor = new Color(display, 170, 170, 170);
+        
         outputColor = new Color(display, 255, 255, 255);
         errorColor = new Color(display, 255, 192, 192);
         
@@ -49,6 +53,10 @@ public class StyleMock implements WorksheetStyle {
         style.length = length;
         style.foreground = errorColor;
         return style;
+    }
+    
+    public Color resultScrollbarColor() {
+        return resultScrollbarColor;
     }
     
 }
