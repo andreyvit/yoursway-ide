@@ -9,7 +9,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import com.yoursway.ide.worksheet.WorksheetShortcuts;
 import com.yoursway.ide.worksheet.executors.OutputListener;
 import com.yoursway.ide.worksheet.executors.WorksheetCommandExecutor;
-import com.yoursway.ide.worksheet.internal.view.ResultBlock;
+import com.yoursway.ide.worksheet.internal.view.ResultInset;
 import com.yoursway.ide.worksheet.internal.view.WorksheetView;
 import com.yoursway.ide.worksheet.internal.view.WorksheetViewCallback;
 import com.yoursway.ide.worksheet.internal.view.WorksheetViewFactory;
@@ -23,7 +23,7 @@ public class WorksheetController implements OutputListener, WorksheetViewCallbac
     private final WorksheetCommandExecutor executor;
     
     private final Queue<Execution> executions = new LinkedList<Execution>(); //? sync
-    private ResultBlock outputBlock = null;
+    private ResultInset outputInset = null;
     private final WorksheetShortcuts shortcuts;
     
     public WorksheetController(WorksheetViewFactory viewFactory, WorksheetCommandExecutor executor,
@@ -50,8 +50,8 @@ public class WorksheetController implements OutputListener, WorksheetViewCallbac
         boolean handled = true;
         if (shortcuts.isExecHotkey(e))
             executeSelectedCommands();
-        else if (shortcuts.isRemoveInsertionsHotkey(e))
-            removeAllInsertion();
+        else if (shortcuts.isRemoveInsetsHotkey(e))
+            removeAllInsets();
         else if (shortcuts.isShowTextHotkey(e))
             showSelectedText();
         else
@@ -64,8 +64,8 @@ public class WorksheetController implements OutputListener, WorksheetViewCallbac
         view.showSelectedText();
     }
     
-    private void removeAllInsertion() {
-        view.removeAllInsertions();
+    private void removeAllInsets() {
+        view.removeAllInsets();
     }
     
     private void executeSelectedCommands() {
@@ -87,31 +87,31 @@ public class WorksheetController implements OutputListener, WorksheetViewCallbac
         if (e.length == 1 && view.isNewLineChar(e.start)) //> check line breaking 
             return;
         
-        view.makeInsertionsObsolete(start, end);
+        view.makeInsetsObsolete(start, end);
     }
     
     @UseFromUIThread
     private void executeCommand(Command command) {
         executions.add(new Execution(command, executor));
         if (executions.size() == 1)
-            outputBlock = executions.peek().start();
+            outputInset = executions.peek().start();
     }
     
     @UseFromAnyThread
     @SynchronizedWithMonitorOfThis
     public synchronized void outputted(String text, boolean error) {
-        outputBlock.append(text, error);
+        outputInset.append(text, error);
     }
     
     @UseFromAnyThread
     @SynchronizedWithMonitorOfThis
     public synchronized void completed() {
         executions.poll();
-        outputBlock = null;
+        outputInset = null;
         
         Execution execution = executions.peek();
         if (execution != null)
-            outputBlock = execution.start();
+            outputInset = execution.start();
     }
     
 }

@@ -6,7 +6,7 @@ public interface WorksheetShortcuts {
     
     boolean isExecHotkey(KeyEvent e);
     
-    boolean isRemoveInsertionsHotkey(KeyEvent e);
+    boolean isRemoveInsetsHotkey(KeyEvent e);
     
     boolean isShowTextHotkey(KeyEvent e);
     
