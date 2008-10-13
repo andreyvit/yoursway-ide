@@ -2,6 +2,10 @@ package com.yoursway.ide.application.controllers.mainwindow;
 
 import static com.yoursway.utils.instrusive.IntrusiveMaps.newIntrusiveHashMap;
 
+import java.awt.FileDialog;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import com.yoursway.ide.application.controllers.AbstractController;
 import com.yoursway.ide.application.controllers.Context;
 import com.yoursway.ide.application.controllers.EditorRegistry;
@@ -59,13 +63,23 @@ public class MainWindowController extends AbstractController implements MainWind
     }
     
     private void hook() {
-        context.addHandler(new ApplicationCommands.CloseProjectCommand(), new Handler() {
+        context.addHandler(new ApplicationCommands.NewDocumentCommand(), new Handler() {
 
             public boolean run(Command command) {
-                project.close();
+//            	MessageDialog.openError(null, "", "Creating document not implemented yet");
+            	project.createDocument();
                 return true;
             }
             
+        });
+
+        context.addHandler(new ApplicationCommands.CloseProjectCommand(), new Handler() {
+        	
+        	public boolean run(Command command) {
+        		project.close();
+        		return true;
+        	}
+        	
         });
     }
 

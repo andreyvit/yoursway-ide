@@ -157,7 +157,7 @@ public class BirdsEyeViewImpl implements BirdsEyeView, BirdsEyeListener {
                 addIfNotNull(children, collect(child, factory, path));
         }
         if (children.isEmpty())
-            return null;
+            return new EmptyNode();
         else
             return new Container(children);
     }
