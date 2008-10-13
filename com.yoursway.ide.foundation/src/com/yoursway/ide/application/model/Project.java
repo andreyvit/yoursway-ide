@@ -1,7 +1,7 @@
 package com.yoursway.ide.application.model;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.yoursway.ide.application.model.DocumentAdditionReason.OPENED;
+import static com.yoursway.ide.application.model.DocumentAdditionReason.*;
 import static com.yoursway.utils.Listeners.newListenersByIdentity;
 
 import java.io.File;
@@ -60,7 +60,16 @@ public class Project implements DocumentOwner {
             
     }
     
-    private Document findDocument(File file) {
+	public void createDocument() {
+		File file = findNewUniqueName();
+		addDocument(new Document(this, file), CREATED);
+    }
+    
+	private File findNewUniqueName() {
+		return new File(location.getPath()+"/untitled");
+	}
+	
+	private Document findDocument(File file) {
         for (Document document : documents)
             try {
                 if (document.file().getCanonicalFile().equals(file.getCanonicalFile()))
