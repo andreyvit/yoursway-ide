@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WYSIWYG Web Editor
+Bundle-SymbolicName: com.yoursway.ide.webeditor
+Bundle-Version: 1.0.0
+Bundle-Vendor: YourSway
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.swt;bundle-version="3.4.0",
+ com.yoursway.ide.foundation;bundle-version="1.0.0",
+ com.google.collections;bundle-version="1.0.0",
+ com.yoursway.utils;bundle-version="1.0.0",
+ org.eclipse.core.databinding;bundle-version="1.1.0",
+ org.eclipse.jface.databinding;bundle-version="1.2.0",
+ com.yoursway.web.editing;bundle-version="1.0.0"
+Export-Package: com.yoursway.ide.webeditor

@@ -14,6 +14,7 @@ import com.yoursway.ide.platforms.api.PlatformSupport;
 import com.yoursway.ide.platforms.api.PlatformUtilities;
 import com.yoursway.ide.rails.projects.RailsProjectType;
 import com.yoursway.ide.views.project.ProjectTreeComponentFactoryFactory;
+import com.yoursway.ide.webeditor.WebEditorComponentType;
 
 public class YourSwayIdeApplication implements IApplication {
     
@@ -24,6 +25,7 @@ public class YourSwayIdeApplication implements IApplication {
         model.registerProjectType(new RailsProjectType());
         
         EditorRegistry editorRegistry = new EditorRegistry();
+        editorRegistry.add(new WebEditorComponentType());
         editorRegistry.add(new TextEditorComponentType());
         
         ViewRegistry viewRegistry = new ViewRegistry();
