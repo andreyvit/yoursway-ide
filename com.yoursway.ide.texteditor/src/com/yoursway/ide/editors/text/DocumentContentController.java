@@ -21,7 +21,7 @@ public class DocumentContentController implements DocumentContentWindowCallback,
 		if (document == null)
 			throw new NullPointerException("document is null");
 		this.document = document;
-		this.viewModel = new DocumentContentWindowModelImpl();
+		this.viewModel = new DocumentContentWindowModelImpl(document);
 		this.view = factory.bind(this.viewModel, this);
 		File file = document.file();
 		viewModel.file().setValue(file);

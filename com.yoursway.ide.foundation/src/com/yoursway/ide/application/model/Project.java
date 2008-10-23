@@ -1,7 +1,9 @@
 package com.yoursway.ide.application.model;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.yoursway.ide.application.model.DocumentAdditionReason.*;
+import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
+import static com.yoursway.ide.application.model.DocumentAdditionReason.CREATED;
+import static com.yoursway.ide.application.model.DocumentAdditionReason.OPENED;
 import static com.yoursway.utils.Listeners.newListenersByIdentity;
 
 import java.io.File;
@@ -92,5 +94,31 @@ public class Project implements DocumentOwner {
         for (ProjectListener listener : listeners)
             listener.closed();
     }
+
+	public Project project() {
+		return this;
+	}
+	
+	public Collection<File> findAllFiles() {
+		Collection<File> result = newArrayListWithExpectedSize(100);
+		findAllFilesIn(result, location);
+		return result;
+	}
+
+	private void findAllFilesIn(Collection<File> result, File container) {
+		File[] children = container.listFiles();
+		if (children != null)
+			for (File child : children)
+				if (child.isFile())
+					maybeEnlistFile(result, child);
+				else if (child.isDirectory())
+					findAllFilesIn(result, child);
+	}
+
+	private void maybeEnlistFile(Collection<File> result, File child) {
+		if (child.getName().startsWith("."))
+			return;
+		result.add(child);
+	}
     
 }

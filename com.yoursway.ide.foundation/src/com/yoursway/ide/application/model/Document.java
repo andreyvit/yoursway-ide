@@ -19,5 +19,9 @@ public class Document {
     public File file() {
         return file;
     }
+
+	public Project project() {
+		return owner.project();
+	}
     
 }
