@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 
+import com.yoursway.completion.CompletionProposalsProvider;
 import com.yoursway.completion.demo.DictionaryCompletion;
 import com.yoursway.completion.gui.CompletionController;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
@@ -75,12 +76,15 @@ public class DocumentContentWindowImpl implements DocumentContentWindow {
         textColorer.setCross(true, true);
         textColorer.setRegionMapper("default", true);
         
-		try {
-			new CompletionController(text,new DictionaryCompletion());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
         
+        CompletionProposalsProvider proposalsProvider;
+        if(model.file().getValue().getName().toLowerCase().endsWith(".py")){
+        	proposalsProvider = new PythonCompletion(model.document());
+        }else{
+        	proposalsProvider = new DictionaryCompletion();
+        }
+        
+        new CompletionController(text, proposalsProvider);
         
         text.addModifyListener(new ModifyListener(){
         	public void modifyText(ModifyEvent e) {
