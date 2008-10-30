@@ -77,15 +77,6 @@ public class DocumentContentWindowImpl implements DocumentContentWindow {
         textColorer.setRegionMapper("default", true);
         
         
-        CompletionProposalsProvider proposalsProvider;
-        if(model.file().getValue().getName().toLowerCase().endsWith(".py")){
-        	proposalsProvider = new PythonCompletion(model.document());
-        }else{
-        	proposalsProvider = new DictionaryCompletion();
-        }
-        
-        new CompletionController(text, proposalsProvider);
-        
         text.addModifyListener(new ModifyListener(){
         	public void modifyText(ModifyEvent e) {
 				try {
@@ -113,7 +104,17 @@ public class DocumentContentWindowImpl implements DocumentContentWindow {
                 String name = file.getName();
                 if (name == null)
                     throw new NullPointerException("name is null");
+
                 textColorer.chooseFileType(name);
+
+                CompletionProposalsProvider proposalsProvider;
+        		if(name.toLowerCase().endsWith(".py")){
+                	proposalsProvider = new PythonCompletion(model.document());
+                }else{
+                	proposalsProvider = new DictionaryCompletion();
+                }
+                
+                new CompletionController(text, proposalsProvider);
                 
                 String data = model.data().getValue();
                 text.setText(data);
