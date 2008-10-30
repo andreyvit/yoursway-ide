@@ -67,7 +67,12 @@ public class PythonCompletion implements CompletionProposalsProvider {
 			Display.getDefault().asyncExec(new Runnable(){
 
 				public void run() {
-					engine.run(goal);
+					try{
+						engine.run(goal);
+					}catch(RuntimeException e){
+						e.printStackTrace();
+						updateProposals();
+					}
 				}
 				
 			});
@@ -124,15 +129,7 @@ public class PythonCompletion implements CompletionProposalsProvider {
 		String wordStarting = wholeDocument.subSequence(beginIndex, caretOffset).toString();
         
         ASTNode minimalNode = ASTUtils.findMinimalNode(fileC.node(), caretOffset, caretOffset);
-        if (minimalNode != null) {
-            if (minimalNode instanceof VariableReference) {
-            	
-                getCompletionProposals(listener, fileC, (VariableReference) minimalNode, caretOffset);
-            }
-            else if (wordStarting == null || wordStarting.length() == 0) {
-            	getCompletionProposals(listener, fileC, null, caretOffset);
-            }
-        }
+        getCompletionProposals(listener, fileC, minimalNode, caretOffset, wordStarting);
         
 //        if (enableKeywordCompletion && wordStarting != null)
 //            for (String element : PythonKeyword.findByPrefix(wordStarting))
@@ -148,7 +145,7 @@ public class PythonCompletion implements CompletionProposalsProvider {
     }
     
     public IGoal createSelfGoal(PythonFileC fileC, final PythonVariableAcceptor pythonVariableAcceptor,
-            final PythonConstruct construct, final Engine engine) {
+            final PythonConstruct construct, final Engine engine, final String wordStarting) {
         if (construct.innerScope() instanceof MethodDeclarationC
                 && construct.innerScope().parentScope() instanceof ClassDeclarationC) {
             final MethodDeclarationC func = (MethodDeclarationC) construct.innerScope();
@@ -158,44 +155,45 @@ public class PythonCompletion implements CompletionProposalsProvider {
                         @Override
                         protected <T> void acceptIndividualResult(RuntimeObject result, IGrade<T> grade) {
                             Context context = createSelfContext(func, result);
-                            IGoal goal = findProposals(construct, context, pythonVariableAcceptor);
+                            IGoal goal = findProposals(construct, context, pythonVariableAcceptor, wordStarting);
                             engine.schedule(null, goal);
                         }
 
                     });
         } else {
-            return findProposals(construct, Context.EMPTY, pythonVariableAcceptor);
+            return findProposals(construct, Context.EMPTY, pythonVariableAcceptor, wordStarting);
         }
     }
     
-    private IGoal findProposals(PythonConstruct construct, Context context, PythonVariableAcceptor pythonVariableAcceptor) {
-    	if(construct instanceof VariableReferenceC){
-    		Frog frog = new Frog(((VariableReferenceC) construct).name() + "*");
-    		return new ResolveNameToObjectGoal(frog, construct, context, pythonVariableAcceptor);
-    	}else{
-    		Frog frog = new Frog("*");
-    		return new ResolveNameToObjectGoal(frog, construct, context, pythonVariableAcceptor);
-    	}
+    private IGoal findProposals(PythonConstruct construct, Context context, PythonVariableAcceptor pythonVariableAcceptor, String wordStarting) {
+		Frog frog = new Frog(wordStarting + "*");
+		return new ResolveNameToObjectGoal(frog, construct, context, pythonVariableAcceptor);
     }
     
-    public IGoal createGoal(Engine engine, PythonFileC fileC, PythonVariableAcceptor pythonVariableAcceptor, int namePos) {
+    public IGoal createGoal(Engine engine, PythonFileC fileC, String wordStarting, PythonVariableAcceptor pythonVariableAcceptor, int namePos) {
         ASTNode node = ASTUtils.findNodeAt(fileC.node(), namePos);
-        if(node != null){
-	        PythonConstruct construct = fileC.subconstructFor(node);
-	        return createSelfGoal(fileC, pythonVariableAcceptor, construct, engine);
+        PythonConstruct construct = null;
+        try{
+			construct = fileC.subconstructFor(node);
+        }catch(NullPointerException e){
+        }catch(RuntimeException e){
+        	e.printStackTrace();
+        }
+        if(node != null && construct != null){
+	        return createSelfGoal(fileC, pythonVariableAcceptor, construct, engine, wordStarting);
         }else{
-        	Frog frog = new Frog("*");
+        	Frog frog = new Frog(wordStarting+"*");
     		return new ResolveNameToObjectGoal(frog, fileC, Context.EMPTY, pythonVariableAcceptor);
         }
     }
 
-    private void getCompletionProposals(CompletionProposalUpdatesListener listener, PythonFileC file, VariableReference minimalNode, int caretOffset) {
+    private void getCompletionProposals(CompletionProposalUpdatesListener listener, PythonFileC file, ASTNode minimalNode, int caretOffset, final String wordStarting) {
     	completer = new StoppableEngineContainer(listener);
-		IGoal goal = createGoal(completer.getEngine(), file, new PythonVariableAcceptor(){
+		IGoal goal = createGoal(completer.getEngine(), file, wordStarting, new PythonVariableAcceptor(){
 
 			@Override
 			public void addResult(String key, RuntimeObject value) {
-				proposals.add(new CompletionProposalImpl(key, 0));
+				proposals.add(new CompletionProposalImpl(key, key.startsWith(wordStarting)?1:0));
 			}
 
 			public <T> void checkpoint(IGrade<T> grade) {
@@ -210,7 +208,10 @@ public class PythonCompletion implements CompletionProposalsProvider {
 		if(completer != null && !completer.isStopped()){
 			Collections.sort(proposals, new Comparator<CompletionProposalImpl>() {
 				public int compare(CompletionProposalImpl o1, CompletionProposalImpl o2) {
-					return o1.relevance() - o2.relevance();
+					int f = o1.relevance() - o2.relevance();
+					if (f>0) return 1;
+					if (f<0) return -1;
+					return o1.completion().compareToIgnoreCase(o2.completion());
 				}
 			});
 	
@@ -226,3 +227,4 @@ public class PythonCompletion implements CompletionProposalsProvider {
 	}
 
 }
+
