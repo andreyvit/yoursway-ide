@@ -50,7 +50,7 @@ public class ApplicationModel implements ProjectOwner {
     public void openProject(File location) {
         ProjectType type = recognizeType(location);
         if (type == null)
-            type = projectTypes.iterator().next(); // TODO: use a “generic” type
+            type = projectTypes.iterator().next(); // TODO: use a "generic" type
         addProject(new Project(this, type, location), ProjectAdditionReason.OPENED);
     }
     
