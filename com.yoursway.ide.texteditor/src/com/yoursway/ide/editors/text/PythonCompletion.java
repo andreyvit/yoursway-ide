@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.python.parser.ast.PythonArgument;
 import org.eclipse.swt.widgets.Display;
 
@@ -29,7 +28,6 @@ import com.yoursway.sadr.python_v2.constructs.MethodDeclarationC;
 import com.yoursway.sadr.python_v2.constructs.PythonConstruct;
 import com.yoursway.sadr.python_v2.constructs.PythonFileC;
 import com.yoursway.sadr.python_v2.constructs.PythonVariableAcceptor;
-import com.yoursway.sadr.python_v2.constructs.VariableReferenceC;
 import com.yoursway.sadr.python_v2.goals.CreateInstanceGoal;
 import com.yoursway.sadr.python_v2.goals.ResolveNameToObjectGoal;
 import com.yoursway.sadr.python_v2.goals.acceptors.PythonValueSetAcceptor;
@@ -47,13 +45,31 @@ public class PythonCompletion implements CompletionProposalsProvider {
 	private List<CompletionProposalImpl> proposals;
 	StoppableEngineContainer completer;
 	
+	public void asyncUpdate() {
+		Display.getDefault().asyncExec(
+				new Runnable(){
+					public void run() {
+						updateProposals();
+					}
+				});
+	}
+
+	
+	private static int counter = 0;
+	public static int setId() {
+		return ++counter;
+	}
+	
 	class StoppableEngineContainer {
 		private final Engine engine;
 		private final CompletionProposalUpdatesListener listener;
 
 		private boolean stopped = false;
+		private int uid;
+		private Thread thread;
 		
 		public StoppableEngineContainer(CompletionProposalUpdatesListener listener) {
+			uid = setId();
 	    	this.listener = listener;
 			this.engine = new Engine(new DefaultSchedulingStrategy(){
 	    		@Override
@@ -61,24 +77,48 @@ public class PythonCompletion implements CompletionProposalsProvider {
 	    			return stopped;
 	    		}
 	    	});
+
 		}
 		
-		public void asyncRun(final IGoal goal) {
-			Display.getDefault().asyncExec(new Runnable(){
+		public void asyncRun(final int caretOffset, final String wordStarting) {
+			
+			thread = new Thread(){
 
 				public void run() {
+					System.out.println("Engine #"+uid+" started.");
+					long start = System.currentTimeMillis();
+					PythonFileC fileC = currentProject();
+			        long dur = System.currentTimeMillis() - start;
+					
+					IGoal goal = createGoal(completer.getEngine(), fileC, wordStarting, new PythonVariableAcceptor(){
+
+						@Override
+						public void addResult(String key, RuntimeObject value) {
+							proposals.add(new CompletionProposalImpl(key, key.startsWith(wordStarting)?1:0));
+						}
+
+						public <T> void checkpoint(IGrade<T> grade) {
+							asyncUpdate();
+						}
+						
+					}, caretOffset);
+
 					try{
 						engine.run(goal);
 					}catch(RuntimeException e){
 						e.printStackTrace();
-						updateProposals();
+						asyncUpdate();
 					}
+					System.out.println("Engine #"+uid+" finished, took "+dur+" ms.");
 				}
+
 				
-			});
+			};
+			thread.start();
 		}
 		
 		public void stop() {
+			thread.interrupt();
 			stopped = true;
 		}
 
@@ -116,24 +156,32 @@ public class PythonCompletion implements CompletionProposalsProvider {
 		int beginIndex = findStartOfWord(wholeDocument, caretOffset);
 		proposals = new ArrayList<CompletionProposalImpl>();
 		
-		Collection<File> files = document.project().findAllFiles();
-		Collection<FileSourceUnit> sourceUnits = newArrayListWithCapacity(files.size());
-		for (File file : files)
-			if (file.getName().toLowerCase().endsWith(".py")) {
-				sourceUnits.add(new FileSourceUnit(file));
-			}
-		
-		ProjectRuntime projectRuntime = new ProjectRuntime(new ProjectUnit(sourceUnits));
-        PythonFileC fileC = projectRuntime.getModule(document.file());
         
 		String wordStarting = wholeDocument.subSequence(beginIndex, caretOffset).toString();
         
-        ASTNode minimalNode = ASTUtils.findMinimalNode(fileC.node(), caretOffset, caretOffset);
-        getCompletionProposals(listener, fileC, minimalNode, caretOffset, wordStarting);
+		getCompletionProposals(listener, caretOffset, wordStarting);
+
         
 //        if (enableKeywordCompletion && wordStarting != null)
 //            for (String element : PythonKeyword.findByPrefix(wordStarting))
 //                reportKeyword(element);
+	}
+
+	private PythonFileC currentProject() {
+		Collection<File> files = document.project().findAllFiles();
+		Collection<FileSourceUnit> sourceUnits = newArrayListWithCapacity(files.size());
+		String root = document.project().getLocation().getAbsolutePath();
+		if(!root.endsWith("/")) root += "/";
+		for (File file : files)
+			if (file.getName().toLowerCase().endsWith(".py")) {
+				String path = file.getAbsolutePath();
+				path = path.substring(0, path.length()-3).replace(root, "").replace("/", ".");
+				sourceUnits.add(new FileSourceUnit(file, path));
+			}
+		
+		ProjectRuntime projectRuntime = new ProjectRuntime(new ProjectUnit(sourceUnits));
+        PythonFileC fileC = projectRuntime.getModule(document.file());
+		return fileC;
 	}
 	
     private Context createSelfContext(final MethodDeclarationC func, RuntimeObject self) {
@@ -187,21 +235,9 @@ public class PythonCompletion implements CompletionProposalsProvider {
         }
     }
 
-    private void getCompletionProposals(CompletionProposalUpdatesListener listener, PythonFileC file, ASTNode minimalNode, int caretOffset, final String wordStarting) {
+    private void getCompletionProposals(CompletionProposalUpdatesListener listener, int caretOffset, final String wordStarting) {
     	completer = new StoppableEngineContainer(listener);
-		IGoal goal = createGoal(completer.getEngine(), file, wordStarting, new PythonVariableAcceptor(){
-
-			@Override
-			public void addResult(String key, RuntimeObject value) {
-				proposals.add(new CompletionProposalImpl(key, key.startsWith(wordStarting)?1:0));
-			}
-
-			public <T> void checkpoint(IGrade<T> grade) {
-				updateProposals();
-			}
-			
-		}, caretOffset);
-		completer.asyncRun(goal);
+		completer.asyncRun(caretOffset, wordStarting);
 	}
 
 	protected void updateProposals() {
