@@ -23,11 +23,11 @@ import com.yoursway.sadr.python.core.runtime.FileSourceUnit;
 import com.yoursway.sadr.python.core.runtime.ProjectRuntime;
 import com.yoursway.sadr.python.core.runtime.ProjectUnit;
 import com.yoursway.sadr.python_v2.constructs.ClassDeclarationC;
-import com.yoursway.sadr.python_v2.constructs.Frog;
 import com.yoursway.sadr.python_v2.constructs.MethodDeclarationC;
 import com.yoursway.sadr.python_v2.constructs.PythonConstruct;
 import com.yoursway.sadr.python_v2.constructs.PythonFileC;
 import com.yoursway.sadr.python_v2.constructs.PythonVariableAcceptor;
+import com.yoursway.sadr.python_v2.croco.Frog;
 import com.yoursway.sadr.python_v2.goals.CreateInstanceGoal;
 import com.yoursway.sadr.python_v2.goals.ResolveNameToObjectGoal;
 import com.yoursway.sadr.python_v2.goals.acceptors.PythonValueSetAcceptor;
@@ -194,10 +194,10 @@ public class PythonCompletion implements CompletionProposalsProvider {
     
     public IGoal createSelfGoal(PythonFileC fileC, final PythonVariableAcceptor pythonVariableAcceptor,
             final PythonConstruct construct, final Engine engine, final String wordStarting) {
-        if (construct.innerScope() instanceof MethodDeclarationC
-                && construct.innerScope().parentScope() instanceof ClassDeclarationC) {
-            final MethodDeclarationC func = (MethodDeclarationC) construct.innerScope();
-            ClassDeclarationC classC = (ClassDeclarationC) construct.innerScope().parentScope();
+        if (construct.scope() instanceof MethodDeclarationC
+                && construct.scope().parentScope() instanceof ClassDeclarationC) {
+            final MethodDeclarationC func = (MethodDeclarationC) construct.scope();
+            ClassDeclarationC classC = (ClassDeclarationC) construct.scope().parentScope();
             return new CreateInstanceGoal(classC, func, new PythonArguments(), Context.EMPTY,
                     new PythonValueSetAcceptor(Context.EMPTY) {
                         @Override
