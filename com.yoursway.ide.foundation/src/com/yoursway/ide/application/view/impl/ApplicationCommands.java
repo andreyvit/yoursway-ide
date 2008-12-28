@@ -24,5 +24,8 @@ public class ApplicationCommands {
     
     public final static class SaveFileAsCommand extends AbstractCommand {
     }
+    
+    public final static class NopCommand extends AbstractCommand {
+    }
 
 }
