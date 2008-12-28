@@ -43,6 +43,7 @@ public class ApplicationPresentationImpl implements ApplicationPresentation {
         this.platformSupport = platformSupport;
         this.menuFactory = menuFactory;
         
+        Display.setAppName("YourSway IDE");
         display = new Display();
         
         GlobalMenuSupport globalMenuSupport = platformSupport.globalMenuSupport();
