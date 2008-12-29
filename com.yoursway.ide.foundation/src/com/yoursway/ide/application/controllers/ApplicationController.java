@@ -86,9 +86,9 @@ public class ApplicationController extends AbstractController implements Applica
     
     void doRun() {
         //        model.createProject(model.getRegisteredProjectTypes().iterator().next());
-        File dir = new File(platformSupport.defaultProjectsLocation(), "huy");
-        dir.mkdirs();
-		model.openProject(dir);
+        File location = new File(platformSupport.defaultProjectsLocation(), "default-yside-project");
+        location.mkdirs();
+		model.openProject(location);
         presentation.runEventLoop();
     }
     

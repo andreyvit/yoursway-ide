@@ -13,5 +13,4 @@ public interface DocumentContentWindowModel {
 	IObservableValue<File> file();
 
 	Document document();
-    
 }

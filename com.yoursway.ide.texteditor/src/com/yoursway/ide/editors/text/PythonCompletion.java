@@ -28,10 +28,10 @@ import com.yoursway.sadr.python_v2.constructs.PythonConstruct;
 import com.yoursway.sadr.python_v2.constructs.PythonFileC;
 import com.yoursway.sadr.python_v2.constructs.PythonVariableAcceptor;
 import com.yoursway.sadr.python_v2.croco.Frog;
+import com.yoursway.sadr.python_v2.croco.Krocodile;
 import com.yoursway.sadr.python_v2.goals.CreateInstanceGoal;
 import com.yoursway.sadr.python_v2.goals.ResolveNameToObjectGoal;
 import com.yoursway.sadr.python_v2.goals.acceptors.PythonValueSetAcceptor;
-import com.yoursway.sadr.python_v2.model.Context;
 import com.yoursway.sadr.python_v2.model.ContextImpl;
 import com.yoursway.sadr.python_v2.model.PythonArguments;
 import com.yoursway.sadr.succeeder.DefaultSchedulingStrategy;
@@ -184,12 +184,12 @@ public class PythonCompletion implements CompletionProposalsProvider {
 		return fileC;
 	}
 	
-    private Context createSelfContext(final MethodDeclarationC func, RuntimeObject self) {
+    private Krocodile createSelfContext(final MethodDeclarationC func, RuntimeObject self) {
         ArrayList<PythonArgument> list = new ArrayList<PythonArgument>();
-        Context context = new ContextImpl(list, new PythonArguments());
+        ContextImpl context = new ContextImpl(list, new PythonArguments());
         PythonArgument arg = (PythonArgument) func.node().getArguments().get(0);
         context.put(arg.getName(), self);
-        return context;
+        return new Krocodile(Krocodile.EMPTY, func, context);
     }
     
     public IGoal createSelfGoal(PythonFileC fileC, final PythonVariableAcceptor pythonVariableAcceptor,
@@ -198,23 +198,23 @@ public class PythonCompletion implements CompletionProposalsProvider {
                 && construct.scope().parentScope() instanceof ClassDeclarationC) {
             final MethodDeclarationC func = (MethodDeclarationC) construct.scope();
             ClassDeclarationC classC = (ClassDeclarationC) construct.scope().parentScope();
-            return new CreateInstanceGoal(classC, func, new PythonArguments(), Context.EMPTY,
-                    new PythonValueSetAcceptor(Context.EMPTY) {
+            return new CreateInstanceGoal(classC, func, new PythonArguments(), Krocodile.EMPTY,
+                    new PythonValueSetAcceptor(pythonVariableAcceptor) {
                         @Override
                         protected <T> void acceptIndividualResult(RuntimeObject result, IGrade<T> grade) {
-                            Context context = createSelfContext(func, result);
+                            Krocodile context = createSelfContext(func, result);
                             IGoal goal = findProposals(construct, context, pythonVariableAcceptor, wordStarting);
                             engine.schedule(null, goal);
                         }
 
                     });
         } else {
-            return findProposals(construct, Context.EMPTY, pythonVariableAcceptor, wordStarting);
+            return findProposals(construct, Krocodile.EMPTY, pythonVariableAcceptor, wordStarting);
         }
     }
     
-    private IGoal findProposals(PythonConstruct construct, Context context, PythonVariableAcceptor pythonVariableAcceptor, String wordStarting) {
-		Frog frog = new Frog(wordStarting + "*");
+    private IGoal findProposals(PythonConstruct construct, Krocodile context, PythonVariableAcceptor pythonVariableAcceptor, String wordStarting) {
+		Frog frog = Frog.searchFrog(wordStarting + "*");
 		return new ResolveNameToObjectGoal(frog, construct, context, pythonVariableAcceptor);
     }
     
@@ -230,8 +230,8 @@ public class PythonCompletion implements CompletionProposalsProvider {
         if(node != null && construct != null){
 	        return createSelfGoal(fileC, pythonVariableAcceptor, construct, engine, wordStarting);
         }else{
-        	Frog frog = new Frog(wordStarting+"*");
-    		return new ResolveNameToObjectGoal(frog, fileC, Context.EMPTY, pythonVariableAcceptor);
+        	Frog frog = Frog.searchFrog(wordStarting+"*");
+    		return new ResolveNameToObjectGoal(frog, fileC, Krocodile.EMPTY, pythonVariableAcceptor);
         }
     }
 
