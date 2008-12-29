@@ -24,7 +24,7 @@ public class MacCocoaPlatform extends MacPlatform implements GlobalMenuSupport, 
     }
 
     public void setGlobalApplicationMenu(Display display, Menu menu) {
-        display.setApplicationMenuBar(menu);
+//        display.setApplicationMenuBar(menu);
     }
 
     public void displayGlobalAlert(String title, String details) {
