@@ -1,24 +1,24 @@
 package com.yoursway.web.editing;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
+import com.yoursway.utils.YsFileUtils;
 
 public class BrowserAdditions {
 	protected boolean init = false;
 	protected String text = "";
 	private final Browser browser;
+	private BrowserCallback callback;
 
 	/**
 	 * Simple stupid differ
@@ -32,15 +32,15 @@ public class BrowserAdditions {
 			// added
 			int start = findMCS(oldtext, text, 1);
 			int end = findMCS(oldtext, text, -1);
-			if (end <= start + text.length() - oldtext.length() + 1)
-				end = start + text.length() - oldtext.length() + 1;
+			if (end <= start + text.length() - oldtext.length())
+				end = start + text.length() - oldtext.length();
 			return "(added  ) [" + start + ":" + end + "] " + text.substring(start, end);
 		} else if (text.length() <= oldtext.length()) {
 			// removed or changed
 			int start = findMCS(text, oldtext, 1);
 			int end = findMCS(text, oldtext, -1);
-			if (end <= start + oldtext.length() - text.length() + 1)
-				end = start + oldtext.length() - text.length() + 1;
+			if (end <= start + oldtext.length() - text.length())
+				end = start + oldtext.length() - text.length();
 			if (start == end)
 				return null;
 			return "(removed) [" + start + ":" + end + "] "
@@ -84,8 +84,14 @@ public class BrowserAdditions {
 
 			public void completed(ProgressEvent event) {
 				if (!init) {
-					browser
-							.execute("document.body.contentEditable='true';document.designMode='on';");
+					try {
+						String path = "/" + getClass().getName().replaceAll("\\.", "/").replaceFirst("/[^/]+$", "");
+						InputStream stream = getClass().getClassLoader()
+								.getResourceAsStream(path+"/editor.js");
+						browser.execute(YsFileUtils.readAsStringAndClose(stream));
+					} catch (IOException e) {
+						throw new AssertionError(e);
+					}
 					init = true;
 					text = browser.getText();
 					System.out.println(text);
@@ -94,42 +100,32 @@ public class BrowserAdditions {
 			}
 		});
 
-		browser.addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e) {
-				catchUpWithPossibleEdits();
-			}
-		});
-
-		browser.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				catchUpWithPossibleEdits();
-			}
-		});
-		browser.addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				catchUpWithPossibleEdits();
-			}
-
-			public void keyReleased(KeyEvent e) {
-				catchUpWithPossibleEdits();
-			}
-		});
-
 		GridLayoutFactory.fillDefaults().applyTo(parent);
+
+		callback = new BrowserCallback(browser, "jDocumentChanged");
+		callback.addDocumentChangedListener(new DocumentChangeListener(){
+
+			@Override
+			void changed(String newContents) {
+				catchUpWithPossibleEdits(newContents);
+			}
+			
+		});
+
 	}
 
-	private boolean isMac() {
-		return ("cocoa".equals(SWT.getPlatform()) || "carbon".equals(SWT.getPlatform()));
-	}
-
-	public void catchUpWithPossibleEdits() {
+//	private boolean isMac() {
+//		return ("cocoa".equals(SWT.getPlatform()) || "carbon".equals(SWT.getPlatform()));
+//	}
+//
+	public void catchUpWithPossibleEdits(String text) {
 		if (!init || browser.isDisposed())
 			return;
-		String diff = getDiff(browser.getText());
+		String diff = getDiff(text);
 		if (diff != null)
 			System.out.println(diff);
 	}
-	
+
 	public Control getControl() {
 		return browser;
 	}
@@ -141,5 +137,9 @@ public class BrowserAdditions {
 	public void setHtml(String data) {
 		browser.setText(data);
 	}
-	
+
+	public void setUrl(String url) {
+		browser.setUrl(url);
+	}
+
 }

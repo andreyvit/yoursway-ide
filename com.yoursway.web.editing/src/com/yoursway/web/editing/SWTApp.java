@@ -18,12 +18,13 @@ public class SWTApp implements IApplication {
 		shell.setText("Text");
 
 		ba = new BrowserAdditions(shell);
+		ba.setHtml("My te<b>shj</b>gshdjklcsaniou");
+//		ba.setUrl("http://google.com/");
 
 		shell.setSize(700, 600);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
-				ba.catchUpWithPossibleEdits();
 				display.sleep();
 			}
 		}

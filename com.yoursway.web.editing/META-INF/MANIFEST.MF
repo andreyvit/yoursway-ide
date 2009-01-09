@@ -7,6 +7,7 @@ Bundle-Activator: com.yoursway.web.editing.Activator
 Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.ui.browser
+ org.eclipse.ui.browser,
+ com.yoursway.utils
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.web.editing;uses:="org.eclipse.equinox.app,org.eclipse.ui.plugin,org.osgi.framework"
