@@ -8,6 +8,7 @@ Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.browser,
- com.yoursway.utils
+ com.yoursway.utils,
+ com.yoursway.web.editing.django
 Eclipse-LazyStart: true
 Export-Package: com.yoursway.web.editing;uses:="org.eclipse.equinox.app,org.eclipse.ui.plugin,org.osgi.framework"

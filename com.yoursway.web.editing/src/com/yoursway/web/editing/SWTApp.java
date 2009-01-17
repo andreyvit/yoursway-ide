@@ -6,6 +6,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.yoursway.web.editing.django.wrapper.ParserRunner;
+
 public class SWTApp implements IApplication {
 	protected BrowserAdditions ba;
 
@@ -16,9 +18,15 @@ public class SWTApp implements IApplication {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Text");
+		
+		String djangoPath = "/var/django/dtm/";
+		ParserRunner pr = new ParserRunner(djangoPath);
+		pr.parse("/");
+		
+		ba = new BrowserAdditions(shell, pr);
+		ba.setHtml(pr.getHtml());
 
-		ba = new BrowserAdditions(shell);
-		ba.setHtml("My te<b>shj</b>gshdjklcsaniou");
+//		ba.setHtml("My te<b>shj</b>gshdjklcsaniou");
 //		ba.setUrl("http://google.com/");
 
 		shell.setSize(700, 600);

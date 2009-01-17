@@ -2,23 +2,33 @@ package com.yoursway.web.editing;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 import com.yoursway.utils.YsFileUtils;
+import com.yoursway.web.editing.django.wrapper.Fragment;
+import com.yoursway.web.editing.django.wrapper.SourcePositionLocator;
 
 public class BrowserAdditions {
 	protected boolean init = false;
 	protected String text = "";
 	private final Browser browser;
 	private BrowserCallback callback;
+	private final SourcePositionLocator locator;
 
 	/**
 	 * Simple stupid differ
@@ -73,7 +83,8 @@ public class BrowserAdditions {
 		return start;
 	}
 
-	public BrowserAdditions(Composite parent) {
+	public BrowserAdditions(Composite parent, SourcePositionLocator locator) {
+		this.locator = locator;
 		browser = new Browser(parent, SWT.NONE);
 		browser.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).align(
 				SWT.FILL, SWT.FILL).create());
@@ -111,6 +122,14 @@ public class BrowserAdditions {
 			}
 			
 		});
+		
+		new BrowserFunction(browser, "jGoToSource") {
+			@Override
+			public Object function(Object[] arguments) {
+				goToSource(((Double) arguments[0]).intValue());
+				return null;
+			}
+		};
 
 	}
 
@@ -140,6 +159,41 @@ public class BrowserAdditions {
 
 	public void setUrl(String url) {
 		browser.setUrl(url);
+	}
+	
+	public void goToSource(int magicOffset) {
+		int magicBase = computeMagicBase(); 
+		if (magicBase < 0) {
+			System.out.println("Cannot find <HTML>!");
+			return;
+		}
+		int offset = magicBase + magicOffset + 13;
+		
+		final Display display = browser.getDisplay();
+		final Shell shell = new Shell(display);
+		shell.setLayout(new FillLayout());
+		final StyledText styledText = new StyledText(shell, SWT.WRAP | SWT.BORDER);
+		
+		Fragment sourceFragment = locator.find(offset);
+		System.out.println(sourceFragment);
+		
+		styledText.setText(text);
+		styledText.setSelection(offset);
+		
+//		FontData data = display.getSystemFont().getFontData()[0];
+//		Font font = new Font(display, data.getName(), 10, SWT.NORMAL);
+//		styledText.setFont(font);
+//		styledText.setForeground(display.getSystemColor (SWT.COLOR_BLUE));
+		shell.setSize(700, 400);
+		shell.open();
+	}
+
+	private int computeMagicBase() {
+		Pattern pattern = Pattern.compile("<html[^>]*>", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(text);
+		if (!matcher.find())
+			return -1;
+		return matcher.end();
 	}
 
 }
