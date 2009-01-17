@@ -97,3 +97,4 @@ print '#-------'
 for item in nodes:
     print item.id, item.region[0], item.region[1], item.source.id, item.start, item.stop
 print '#-------'
+print text
