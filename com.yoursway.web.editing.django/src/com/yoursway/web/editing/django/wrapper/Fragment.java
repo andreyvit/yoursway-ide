@@ -1,5 +1,7 @@
 package com.yoursway.web.editing.django.wrapper;
 
+import static java.lang.String.format;
+
 public class Fragment {
 
 	public int start;
@@ -17,6 +19,11 @@ public class Fragment {
 		this.start = start;
 		this.end = end;
 		
+	}
+	
+	@Override
+	public String toString() {
+		return format("origin=<%d,%d> html=<%d,%d> in '%s'", originStart, originEnd, start, end, origin);
 	}
 	
 }
