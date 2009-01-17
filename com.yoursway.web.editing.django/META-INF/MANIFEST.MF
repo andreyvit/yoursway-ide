@@ -5,3 +5,5 @@ Bundle-SymbolicName: com.yoursway.web.editing.django
 Bundle-Version: 1.0.0
 Bundle-Vendor: YourSway
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.yoursway.utils
+Export-Package: com.yoursway.web.editing.django.wrapper
