@@ -2,16 +2,16 @@ package com.yoursway.web.editing.django.wrapper;
 
 import static java.lang.String.format;
 
-public class Fragment {
+public class TemplateSegment {
 
 	public int start;
 	public final int id;
 	public final int originStart;
 	public final int originEnd;
-	public final Source origin;
+	public final TemplateSource origin;
 	public final int end;
 
-	public Fragment(int id, int originStart, int originEnd, Source origin, int start, int end) {
+	public TemplateSegment(int id, int originStart, int originEnd, TemplateSource origin, int start, int end) {
 		this.id = id;
 		this.originStart = originStart;
 		this.originEnd = originEnd;

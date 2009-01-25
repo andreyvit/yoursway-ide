@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import com.yoursway.utils.YsFileUtils;
-import com.yoursway.web.editing.django.wrapper.Fragment;
+import com.yoursway.web.editing.django.wrapper.TemplateSegment;
 import com.yoursway.web.editing.django.wrapper.SourcePositionLocator;
 
 public class BrowserAdditions {
@@ -174,7 +174,7 @@ public class BrowserAdditions {
 		shell.setLayout(new FillLayout());
 		final StyledText styledText = new StyledText(shell, SWT.WRAP | SWT.BORDER);
 		
-		Fragment sourceFragment = locator.find(offset);
+		TemplateSegment sourceFragment = locator.find(offset);
 		System.out.println(sourceFragment);
 		
 		styledText.setText(text);

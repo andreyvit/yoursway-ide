@@ -14,8 +14,8 @@ import com.yoursway.utils.YsFileUtils;
 
 public class ParserRunner implements SourcePositionLocator {
 	private final String djangoPath;
-	private Map<Integer, Source> sourceIds = new HashMap<Integer, Source>();
-	private List<Fragment> fragments = new ArrayList<Fragment>();
+	private Map<Integer, TemplateSource> sourceIds = new HashMap<Integer, TemplateSource>();
+	private List<TemplateSegment> sourceRegions = new ArrayList<TemplateSegment>();
 	private String html;
 
 	public ParserRunner(String djangoPath) {
@@ -23,8 +23,8 @@ public class ParserRunner implements SourcePositionLocator {
 
 	}
 
-	public Fragment find(int position) {
-		for (Fragment f : fragments) {
+	public TemplateSegment find(int position) {
+		for (TemplateSegment f : sourceRegions) {
 			if (f.start <= position && f.end >= position) {
 				return f;
 			}
@@ -55,7 +55,7 @@ public class ParserRunner implements SourcePositionLocator {
 				System.out.println(String.format("Invalid line with %d parts: %s", parts.length, line));
 				continue;
 			}
-			Source source = new Source(Integer.valueOf(parts[0]), parts[1], parts[2]);
+			TemplateSource source = new TemplateSource(Integer.valueOf(parts[0]), parts[1], parts[2]);
 			sourceIds.put(source.id, source);
 		}
 		String line = reader.readLine();
@@ -65,10 +65,10 @@ public class ParserRunner implements SourcePositionLocator {
 			for (int i = 0; i < parts.length; i++) {
 				ints[i] = Integer.valueOf(parts[i]);
 			}
-			Source source = sourceIds.get(ints[3]);
-			Fragment fragment = new Fragment(ints[0], ints[1], ints[2], source, ints[4],
+			TemplateSource source = sourceIds.get(ints[3]);
+			TemplateSegment fragment = new TemplateSegment(ints[0], ints[1], ints[2], source, ints[4],
 					ints[5]);
-			fragments.add(fragment);
+			sourceRegions.add(fragment);
 			line = reader.readLine();
 		}
 		line = reader.readLine();

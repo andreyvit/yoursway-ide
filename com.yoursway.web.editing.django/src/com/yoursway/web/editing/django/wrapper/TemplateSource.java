@@ -1,11 +1,11 @@
 package com.yoursway.web.editing.django.wrapper;
 
-public class Source {
+public class TemplateSource {
 	public final int id;
 	public final String type;
 	public final String fileName;
 
-	public Source(int id, String type, String fileName) {
+	public TemplateSource(int id, String type, String fileName) {
 		this.id = id;
 		this.type = type;
 		this.fileName = fileName;
