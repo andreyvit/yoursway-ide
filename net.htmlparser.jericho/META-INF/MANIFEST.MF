@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jericho HTML Parser
+Bundle-Symbolic-Name: net.htmlparser.jericho;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: YourSway
+Export-Package: net.htmlparser.jericho
+Bundle-SymbolicName: net.htmlparser.jericho
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
