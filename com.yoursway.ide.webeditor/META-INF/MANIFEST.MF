@@ -11,5 +11,6 @@ Require-Bundle: org.eclipse.swt;bundle-version="3.4.0",
  com.yoursway.utils;bundle-version="1.0.0",
  org.eclipse.core.databinding;bundle-version="1.1.0",
  org.eclipse.jface.databinding;bundle-version="1.2.0",
- com.yoursway.web.editing;bundle-version="1.0.0"
+ com.yoursway.web.editing;bundle-version="1.0.0",
+ com.yoursway.web.editing.django;bundle-version="1.0.0"
 Export-Package: com.yoursway.ide.webeditor

@@ -7,12 +7,20 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 import com.yoursway.utils.YsFileUtils;
+import com.yoursway.web.editing.django.wrapper.SourcePositionLocator;
+import com.yoursway.web.editing.django.wrapper.TemplateSegment;
+import com.yoursway.web.html.HTMLReparser;
 
 public class BrowserAdditions {
 	protected boolean init = false;
@@ -55,6 +63,7 @@ public class BrowserAdditions {
 			@Override
 			public Object function(Object[] arguments) {
 				catchUpWithPossibleEdits((String) arguments[0]);
+				return null;
 			}
 		};
 		
@@ -107,8 +116,8 @@ public class BrowserAdditions {
 		
 //		Node node = reparser.followPath(path);
 		
-		TemplateSegment sourceFragment = locator.find(offset);
-		System.out.println(sourceFragment);
+//		TemplateSegment sourceFragment = locator.find(offset);
+//		System.out.println(sourceFragment);
 		
 		createWindow(arguments, 0);
 	}

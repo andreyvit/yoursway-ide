@@ -18,6 +18,7 @@ import org.xml.sax.helpers.ParserFactory;
 import com.yoursway.ide.application.model.Document;
 import com.yoursway.ide.application.view.mainwindow.EditorWindow;
 import com.yoursway.web.editing.BrowserAdditions;
+import com.yoursway.web.editing.django.wrapper.ParserRunner;
 
 public class DocumentContentWindowImpl implements DocumentContentWindow {
 
@@ -49,7 +50,7 @@ public class DocumentContentWindowImpl implements DocumentContentWindow {
 //        document = new Document();
 //        sourceViewer.setDocument(document);
         
-        ba = new BrowserAdditions(composite);
+        ba = new BrowserAdditions(composite, new ParserRunner("/tmp/django"));
         ba.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         new ControlUpdater(ba.getControl()) {

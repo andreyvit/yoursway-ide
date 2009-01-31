@@ -16,9 +16,9 @@ public class HTMLReparser {
 		HTMLReparser reparser = new HTMLReparser("<!DOCTYPE><html><div id='d1'></div><div id='d2'></div></html>");
 		String html = reparser.getDOM();
 		int realPosition = html.indexOf("d2") + 2;
-		reparser.source.get
-		int followedPosition = reparser.followPath(5, 2);
-		Assert.isTrue(realPosition == followedPosition);
+//		reparser.source.get
+//		int followedPosition = reparser.followPath(5, 2);
+//		Assert.isTrue(realPosition == followedPosition);
 	}
 
 	public Element followPath(int index, int offset) {

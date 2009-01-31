@@ -25,7 +25,7 @@ public class YourSwayIdeApplication implements IApplication {
         model.registerProjectType(new RailsProjectType());
         
         EditorRegistry editorRegistry = new EditorRegistry();
-        editorRegistry.add(new WebEditorComponentType());
+//        editorRegistry.add(new WebEditorComponentType());
         editorRegistry.add(new TextEditorComponentType());
         
         ViewRegistry viewRegistry = new ViewRegistry();

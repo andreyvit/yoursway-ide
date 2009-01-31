@@ -1,7 +1,7 @@
 [repos]
 	name = ide
 [dep "yscommons"]
-	commitid = 2139cc826dd30999a4009df0939866b3651754bd
+	commitid = c92dc8d6ebbe373321fe9b43a2e39da3c4179dd0
 	url = git://github.com/andreyvit/yoursway-commons.git
 	branch = master
 [dep "yslibraries"]
@@ -9,6 +9,6 @@
 	url = git://github.com/andreyvit/yoursway-libraries.git
 	branch = master
 [dep "sadr"]
-	commitid = c3a4a6d9cb1491934b5f3ba4c1f22e6819fe5c5d
+	commitid = 3a87d296554b79809753d30de43eaece11fb859f
 	url = git@github.com:andreyvit/yoursway-sadr.git
 	branch = master
