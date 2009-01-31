@@ -7,5 +7,5 @@
 	<classpathentry kind="lib" path="lib/log4j-api-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-api-1.2.15.jar.readme.txt"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.2.jar"/>
-	<classpathentry kind="output" path="classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
