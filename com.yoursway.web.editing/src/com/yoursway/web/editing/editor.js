@@ -8,7 +8,7 @@ function nodePath(node) {
 }
 
 document.addEventListener('keyup', function(e) {
-	  jDocumentChanged(printTree(document.body));
+  jDocumentChanged(document.body.innerHTML);
 });
 
 document.addEventListener('keydown', function(e) {

@@ -6,8 +6,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.yoursway.web.editing.django.wrapper.ParserRunner;
-
 public class SWTApp implements IApplication {
 	protected BrowserAdditions ba;
 
