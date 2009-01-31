@@ -1,0 +1,14 @@
+[repos]
+	name = ide
+[dep "yscommons"]
+	commitid = 2139cc826dd30999a4009df0939866b3651754bd
+	url = git://github.com/andreyvit/yoursway-commons.git
+	branch = master
+[dep "yslibraries"]
+	commitid = bb61a516fb42b976800cdb7811cd418242d9089a
+	url = git://github.com/andreyvit/yoursway-libraries.git
+	branch = master
+[dep "sadr"]
+	commitid = c3a4a6d9cb1491934b5f3ba4c1f22e6819fe5c5d
+	url = git@github.com:andreyvit/yoursway-sadr.git
+	branch = master
