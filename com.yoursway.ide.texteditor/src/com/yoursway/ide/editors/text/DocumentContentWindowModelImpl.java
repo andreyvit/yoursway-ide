@@ -9,10 +9,8 @@ import com.yoursway.ide.application.model.Document;
 
 public class DocumentContentWindowModelImpl implements DocumentContentWindowModel {
     
-    public final IObservableValue<String> data = WritableValue.withValueType(String.class);
-    
-    public final IObservableValue<File> file = WritableValue.withValueType(File.class);
-
+    private final IObservableValue<String> data = WritableValue.withValueType(String.class);
+	private final IObservableValue<File> file = WritableValue.withValueType(File.class);
 	private final Document document;
 
     public DocumentContentWindowModelImpl(Document document) {

@@ -16,14 +16,21 @@ public class SWTApp implements IApplication {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Text");
+		
+		String djangoPath = "/var/django/dtm/";
+		ParserRunner pr = new ParserRunner(djangoPath);
+		pr.parse("/");
+		
+		ba = new BrowserAdditions(shell, pr);
+		ba.setHtml(pr.getHtml());
 
-		ba = new BrowserAdditions(shell);
+//		ba.setHtml("My te<b>shj</b>gshdjklcsaniou");
+//		ba.setUrl("http://google.com/");
 
 		shell.setSize(700, 600);
 		shell.open();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
-				ba.catchUpWithPossibleEdits();
 				display.sleep();
 			}
 		}

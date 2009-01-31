@@ -7,6 +7,9 @@ Bundle-Activator: com.yoursway.web.editing.Activator
 Bundle-Vendor: YourSway
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.ui.browser
-Eclipse-LazyStart: true
+ org.eclipse.ui.browser,
+ com.yoursway.utils,
+ com.yoursway.web.editing.django,
+ net.htmlparser.jericho;bundle-version="1.0.0"
 Export-Package: com.yoursway.web.editing;uses:="org.eclipse.equinox.app,org.eclipse.ui.plugin,org.osgi.framework"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
