@@ -13,6 +13,7 @@ import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -20,68 +21,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import com.yoursway.utils.YsFileUtils;
-import com.yoursway.web.editing.django.wrapper.TemplateSegment;
 import com.yoursway.web.editing.django.wrapper.SourcePositionLocator;
+import com.yoursway.web.editing.django.wrapper.TemplateSegment;
+import com.yoursway.web.html.HTMLReparser;
 
 public class BrowserAdditions {
 	protected boolean init = false;
 	protected String text = "";
 	private final Browser browser;
-	private BrowserCallback callback;
 	private final SourcePositionLocator locator;
-
-	/**
-	 * Simple stupid differ
-	 */
-	public String getDiff(String update) {
-		String oldtext = text;
-		text = update;
-		if (oldtext.equals(text))
-			return null;
-		if (text.length() > oldtext.length()) {
-			// added
-			int start = findMCS(oldtext, text, 1);
-			int end = findMCS(oldtext, text, -1);
-			if (end <= start + text.length() - oldtext.length())
-				end = start + text.length() - oldtext.length();
-			return "(added  ) [" + start + ":" + end + "] " + text.substring(start, end);
-		} else if (text.length() <= oldtext.length()) {
-			// removed or changed
-			int start = findMCS(text, oldtext, 1);
-			int end = findMCS(text, oldtext, -1);
-			if (end <= start + oldtext.length() - text.length())
-				end = start + oldtext.length() - text.length();
-			if (start == end)
-				return null;
-			return "(removed) [" + start + ":" + end + "] "
-					+ oldtext.substring(start, end);
-		}
-		return null;
-	}
-
-	private int findMCS(String src, String mask, int dir) {
-		int start = 0;
-		int mstart = 0;
-		if (dir != 1) {
-			start = src.length() - 1;
-			mstart = mask.length() - 1;
-		}
-		while (start < src.length() && start >= 0 && mstart < mask.length()
-				&& mstart >= 0) {
-			if (dir == 1) {
-				if (src.charAt(start) != mask.charAt(mstart))
-					return start;
-				start++;
-				mstart++;
-			} else {
-				if (src.charAt(start) != mask.charAt(mstart))
-					return start;
-				start--;
-				mstart--;
-			}
-		}
-		return start;
-	}
+	private HTMLReparser reparser;
 
 	public BrowserAdditions(Composite parent, SourcePositionLocator locator) {
 		this.locator = locator;
@@ -105,7 +54,6 @@ public class BrowserAdditions {
 					}
 					init = true;
 					text = browser.getText();
-					System.out.println(text);
 				}
 				System.out.println("completed");
 			}
@@ -113,20 +61,17 @@ public class BrowserAdditions {
 
 		GridLayoutFactory.fillDefaults().applyTo(parent);
 
-		callback = new BrowserCallback(browser, "jDocumentChanged");
-		callback.addDocumentChangedListener(new DocumentChangeListener(){
-
+		new BrowserFunction(browser, "jDocumentChanged") {
 			@Override
-			void changed(String newContents) {
-				catchUpWithPossibleEdits(newContents);
+			public Object function(Object[] arguments) {
+				catchUpWithPossibleEdits((String) arguments[0]);
 			}
-			
-		});
+		};
 		
 		new BrowserFunction(browser, "jGoToSource") {
 			@Override
 			public Object function(Object[] arguments) {
-				goToSource(((Double) arguments[0]).intValue());
+				goToSource((String) arguments[0]);
 				return null;
 			}
 		};
@@ -137,12 +82,14 @@ public class BrowserAdditions {
 //		return ("cocoa".equals(SWT.getPlatform()) || "carbon".equals(SWT.getPlatform()));
 //	}
 //
-	public void catchUpWithPossibleEdits(String text) {
+	public void catchUpWithPossibleEdits(String newText) {
 		if (!init || browser.isDisposed())
 			return;
-		String diff = getDiff(text);
-		if (diff != null)
+		String diff = TextDiff.getDiff(text, newText);
+		if (diff != null){
+			text = newText;
 			System.out.println(diff);
+		}
 	}
 
 	public Control getControl() {
@@ -150,50 +97,44 @@ public class BrowserAdditions {
 	}
 
 	public void dispose() {
-
+		reparser.dispose();
+		browser.dispose();
 	}
 
 	public void setHtml(String data) {
-		browser.setText(data);
+		reparser = new HTMLReparser(data);
+		String dom = reparser.getDOM();
+		text = dom;
+		browser.setText(dom);
 	}
 
 	public void setUrl(String url) {
 		browser.setUrl(url);
 	}
 	
-	public void goToSource(int magicOffset) {
-		int magicBase = computeMagicBase(); 
-		if (magicBase < 0) {
-			System.out.println("Cannot find <HTML>!");
-			return;
-		}
-		int offset = magicBase + magicOffset + 13;
+	public void goToSource(String arguments) {
+		String[] path = arguments.split("/");
 		
-		final Display display = browser.getDisplay();
-		final Shell shell = new Shell(display);
-		shell.setLayout(new FillLayout());
-		final StyledText styledText = new StyledText(shell, SWT.WRAP | SWT.BORDER);
+//		Node node = reparser.followPath(path);
 		
 		TemplateSegment sourceFragment = locator.find(offset);
 		System.out.println(sourceFragment);
 		
+		createWindow(arguments, 0);
+	}
+
+	private void createWindow(String text, int offset) {
+		final Display display = browser.getDisplay();
+		final Shell shell = new Shell(display);
+		shell.setLayout(new FillLayout());
+		final StyledText styledText = new StyledText(shell, SWT.WRAP | SWT.BORDER);
+
+		
+		
 		styledText.setText(text);
 		styledText.setSelection(offset);
 		
-//		FontData data = display.getSystemFont().getFontData()[0];
-//		Font font = new Font(display, data.getName(), 10, SWT.NORMAL);
-//		styledText.setFont(font);
-//		styledText.setForeground(display.getSystemColor (SWT.COLOR_BLUE));
 		shell.setSize(700, 400);
 		shell.open();
 	}
-
-	private int computeMagicBase() {
-		Pattern pattern = Pattern.compile("<html[^>]*>", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(text);
-		if (!matcher.find())
-			return -1;
-		return matcher.end();
-	}
-
 }

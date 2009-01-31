@@ -1,6 +1,14 @@
+function nodePath(node) {
+  var output = "";
+  while(node){
+    output += "/"+node.name+'['+node.childIndex+']'
+    node = node.parentNode;
+  }
+  return output;
+}
 
 document.addEventListener('keyup', function(e) {
-	  jDocumentChanged(document.body.innerHTML);
+	  jDocumentChanged(printTree(document.body));
 });
 
 document.addEventListener('keydown', function(e) {
@@ -11,19 +19,12 @@ document.addEventListener('keydown', function(e) {
 		        alert(myRange.endOffset); 
 		    } 
 		    else if (window.getSelection) { //FF, Safari, Opera 
-			    var selection = window.getSelection(); 
-			    var range = window.getSelection().getRangeAt(0);
-			    var html = document.getElementsByTagName('html')[0];
-			    //alert(.innerHTML); 
-		        //alert(range.startOffset); 
-		        //alert(range.endOffset);
-		        var magic = document.createTextNode("§");
-		        range.insertNode(magic);
-		        var pos = html.innerHTML.indexOf("§");
-		        magic.parentNode.removeChild(magic);
-				jGoToSource(pos);
+			    var selection = window.getSelection();
+				  jGoToSource(nodePath(selection.anchorNode), selection.anchorOffset);
 			}
 	  }
 });
+
+jDocumentCreated(document);
 
 document.body.contentEditable='true';document.designMode='on';
